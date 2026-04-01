@@ -31,6 +31,7 @@ References:
 - [arel_wars_shared-reverse-engineering-notes.md](/Users/lpaiu/vs/others/arelwars/docs/arel_wars_shared-reverse-engineering-notes.md)
 - [aw1-script-opcode-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-script-opcode-notes.md)
 - [aw1-gxl-table-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-gxl-table-notes.md)
+- [aw1-stage-progression-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-stage-progression-notes.md)
 
 ## Hard Gaps To Close
 
