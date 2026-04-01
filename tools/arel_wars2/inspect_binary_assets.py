@@ -137,9 +137,26 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
 
     prefix_len = offsets[0] if offsets else len(decoded)
     section_lengths = []
+    lead_byte_histogram = Counter()
+    lead_word_histogram = Counter()
+    section_prototypes = []
     for index, offset in enumerate(offsets):
         next_offset = offsets[index + 1] if index + 1 < len(offsets) else len(decoded)
-        section_lengths.append(next_offset - (offset + len(marker)))
+        payload = decoded[offset + len(marker) : next_offset]
+        section_lengths.append(len(payload))
+        if payload:
+            lead_byte_histogram[payload[0]] += 1
+            if len(payload) >= 2:
+                lead_word_histogram[payload[:2].hex()] += 1
+            if len(section_prototypes) < 16:
+                section_prototypes.append(
+                    {
+                        "payloadLen": len(payload),
+                        "leadByte": payload[0],
+                        "leadWordHex": payload[:2].hex() if len(payload) >= 2 else None,
+                        "payloadHex": payload[:32].hex(),
+                    }
+                )
     histogram = Counter(section_lengths)
     return {
         "markerCounts": {"67ff000000": len(offsets)},
@@ -148,6 +165,9 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
         "sectionCount": len(section_lengths),
         "sectionLengthHistogram": dict(sorted(histogram.items())),
         "sectionLengthPreview": section_lengths[:24],
+        "leadByteHistogram": {str(key): value for key, value in sorted(lead_byte_histogram.items())},
+        "leadWordHistogram": dict(sorted(lead_word_histogram.items())),
+        "sectionPrototypePreview": section_prototypes,
     }
 
 

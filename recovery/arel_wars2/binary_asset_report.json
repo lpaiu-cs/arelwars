@@ -39872,7 +39872,10 @@
         "prefixLen": 5249,
         "sectionCount": 0,
         "sectionLengthHistogram": {},
-        "sectionLengthPreview": []
+        "sectionLengthPreview": [],
+        "leadByteHistogram": {},
+        "leadWordHistogram": {},
+        "sectionPrototypePreview": []
       },
       "anchorBoxes": {
         "stride": 53,
@@ -40200,7 +40203,10 @@
         "prefixLen": 3715,
         "sectionCount": 0,
         "sectionLengthHistogram": {},
-        "sectionLengthPreview": []
+        "sectionLengthPreview": [],
+        "leadByteHistogram": {},
+        "leadWordHistogram": {},
+        "sectionPrototypePreview": []
       },
       "anchorBoxes": {
         "stride": 60,
@@ -40913,6 +40919,214 @@
           7,
           30,
           7
+        ],
+        "leadByteHistogram": {
+          "0": 7,
+          "1": 9,
+          "2": 8,
+          "3": 18,
+          "4": 29,
+          "5": 7,
+          "6": 7,
+          "7": 5,
+          "9": 2,
+          "10": 1,
+          "11": 4,
+          "12": 1,
+          "13": 2,
+          "14": 13,
+          "15": 6,
+          "16": 3,
+          "17": 7,
+          "18": 3,
+          "19": 6,
+          "20": 5,
+          "21": 5,
+          "25": 1,
+          "27": 1,
+          "28": 1,
+          "32": 55,
+          "33": 13,
+          "34": 26,
+          "35": 8,
+          "36": 12,
+          "37": 4,
+          "38": 2,
+          "39": 3,
+          "40": 2,
+          "42": 1,
+          "43": 10,
+          "44": 1,
+          "45": 6,
+          "46": 2,
+          "53": 6,
+          "54": 54,
+          "55": 3,
+          "56": 54,
+          "57": 11,
+          "58": 4,
+          "59": 10,
+          "60": 15
+        },
+        "leadWordHistogram": {
+          "0000": 7,
+          "0100": 8,
+          "0101": 1,
+          "0200": 8,
+          "0300": 5,
+          "0301": 1,
+          "0323": 6,
+          "0327": 1,
+          "032a": 1,
+          "0337": 3,
+          "0400": 4,
+          "0401": 1,
+          "0403": 12,
+          "0404": 1,
+          "0423": 6,
+          "0426": 1,
+          "0429": 1,
+          "0437": 3,
+          "0500": 7,
+          "0600": 7,
+          "0700": 4,
+          "0701": 1,
+          "0900": 2,
+          "0a00": 1,
+          "0b00": 4,
+          "0c00": 1,
+          "0d00": 2,
+          "0e00": 13,
+          "0f00": 6,
+          "1000": 3,
+          "1100": 7,
+          "1200": 3,
+          "1300": 6,
+          "1400": 5,
+          "1500": 5,
+          "1900": 1,
+          "1b00": 1,
+          "1c00": 1,
+          "2000": 55,
+          "2100": 13,
+          "2200": 26,
+          "2300": 8,
+          "2400": 12,
+          "2500": 4,
+          "2600": 2,
+          "2700": 3,
+          "2800": 2,
+          "2a00": 1,
+          "2b00": 10,
+          "2c00": 1,
+          "2d00": 6,
+          "2e00": 2,
+          "3500": 6,
+          "3600": 54,
+          "3700": 3,
+          "3800": 54,
+          "3900": 11,
+          "3a00": 4,
+          "3b00": 10,
+          "3c00": 15
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001faffcaff1b00250001001e00a8ff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f9ffcaff1400270002001a00a2ff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f7ffcdff1c001c0003001a009eff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f1ffceff1c00220004000800bbff01"
+          },
+          {
+            "payloadLen": 43,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000000001ecffccff1e002200000001f0ffcfff1b002100010001f0ffc9ff"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 1,
+            "leadWordHex": "0101",
+            "payloadHex": "010101f8ff96ff76006200ffffc5ff140021000600e6ff74ff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001feffc5ff170020000600e6ff74ff01"
+          },
+          {
+            "payloadLen": 86,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001feffc5ff1e0024000600e6ff72ff017200000000010001faffc4ff1e00"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 7,
+            "leadWordHex": "0701",
+            "payloadHex": "0701010000a7ff7b006600faffbaff3200370008009aff6fff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 9,
+            "leadWordHex": "0900",
+            "payloadHex": "090002001e0001"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 11,
+            "leadWordHex": "0b00",
+            "payloadHex": "0b004500ffff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 13,
+            "leadWordHex": "0d00",
+            "payloadHex": "0d007300caff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 15,
+            "leadWordHex": "0f00",
+            "payloadHex": "0f007200ebff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 15,
+            "leadWordHex": "0f00",
+            "payloadHex": "0f006800caff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 15,
+            "leadWordHex": "0f00",
+            "payloadHex": "0f007200b5ff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 7,
+            "leadWordHex": "0700",
+            "payloadHex": "070001f8ffb9ff3900380008009aff6fff01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -41254,6 +41468,144 @@
           9,
           9,
           27
+        ],
+        "leadByteHistogram": {
+          "0": 2,
+          "1": 20,
+          "2": 7,
+          "3": 4,
+          "4": 5,
+          "5": 1,
+          "6": 1,
+          "8": 1,
+          "33": 1,
+          "34": 1,
+          "35": 1,
+          "36": 1,
+          "37": 1,
+          "38": 4,
+          "39": 3,
+          "40": 3
+        },
+        "leadWordHistogram": {
+          "0000": 2,
+          "0100": 19,
+          "0101": 1,
+          "0200": 6,
+          "0210": 1,
+          "0300": 3,
+          "0310": 1,
+          "0400": 1,
+          "0401": 4,
+          "0500": 1,
+          "0600": 1,
+          "0800": 1,
+          "2100": 1,
+          "2200": 1,
+          "2300": 1,
+          "2400": 1,
+          "2500": 1,
+          "2600": 4,
+          "2700": 3,
+          "2800": 3
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 7,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100100093ff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "02001b008dff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 6,
+            "leadWordHex": "0600",
+            "payloadHex": "0600c7ffabff01"
+          },
+          {
+            "payloadLen": 49,
+            "leadByte": 4,
+            "leadWordHex": "0401",
+            "payloadHex": "040104d01d24000005009eff0172000000000100120096ff0172000000000200"
+          },
+          {
+            "payloadLen": 83,
+            "leadByte": 4,
+            "leadWordHex": "0401",
+            "payloadHex": "040104d01d2400000500a0ff0169000000000100140098ff0169000000000200"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 4,
+            "leadWordHex": "0400",
+            "payloadHex": "04001000beff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 5,
+            "leadWordHex": "0500",
+            "payloadHex": "05001300caff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 8,
+            "leadWordHex": "0800",
+            "payloadHex": "0800f3ffb2ff01"
+          },
+          {
+            "payloadLen": 49,
+            "leadByte": 4,
+            "leadWordHex": "0401",
+            "payloadHex": "0401fed11d2403000600b8ff01720000000004000c00c2ff0172000000000500"
+          },
+          {
+            "payloadLen": 89,
+            "leadByte": 4,
+            "leadWordHex": "0401",
+            "payloadHex": "0401fed41d2403000200b9ff01690000000004000a00c4ff0169000000000500"
+          },
+          {
+            "payloadLen": 79,
+            "leadByte": 1,
+            "leadWordHex": "0101",
+            "payloadHex": "0101fccd1d240b00b7ff8dff0172000000000101fdcd1d240c00b7ff73ff0169"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000e00bdff84ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000f00c5ff8cff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01001000bdff95ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01001100abff75ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01001200b1ff85ff01"
+          }
         ]
       },
       "anchorBoxes": null,
@@ -41517,6 +41869,152 @@
           7,
           10,
           7
+        ],
+        "leadByteHistogram": {
+          "0": 2,
+          "1": 4,
+          "2": 8,
+          "3": 6,
+          "4": 7,
+          "5": 2,
+          "6": 2,
+          "11": 1,
+          "14": 1,
+          "15": 2,
+          "16": 2,
+          "17": 4,
+          "18": 3,
+          "19": 4,
+          "20": 16,
+          "21": 1,
+          "22": 1,
+          "23": 4,
+          "25": 1,
+          "27": 7,
+          "28": 1
+        },
+        "leadWordHistogram": {
+          "0000": 2,
+          "0100": 2,
+          "0101": 2,
+          "0200": 7,
+          "0201": 1,
+          "0300": 6,
+          "0400": 7,
+          "0500": 2,
+          "0600": 2,
+          "0b00": 1,
+          "0e00": 1,
+          "0f00": 2,
+          "1000": 2,
+          "1100": 4,
+          "1200": 3,
+          "1300": 4,
+          "1400": 16,
+          "1500": 1,
+          "1600": 1,
+          "1700": 4,
+          "1900": 1,
+          "1b00": 7,
+          "1c00": 1
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 26,
+            "leadByte": 1,
+            "leadWordHex": "0101",
+            "payloadHex": "010101170098ff68008100eaffbfff2c0035000200100062ff01"
+          },
+          {
+            "payloadLen": 97,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001eaffbfff2c0035000200100060ff017200000000010001eaffbfff2c00"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 1,
+            "leadWordHex": "0101",
+            "payloadHex": "01010117008eff6a008100e8ffbfff2c0035000300020053ff01"
+          },
+          {
+            "payloadLen": 108,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001e8ffbeff2c002e000300020055ff017200000000010001e8ffbeff2c00"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 2,
+            "leadWordHex": "0201",
+            "payloadHex": "0201011700a4ff91006b00edffc9ff2c002e0005007900cbff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 6,
+            "leadWordHex": "0600",
+            "payloadHex": "06002200aaff01"
+          },
+          {
+            "payloadLen": 119,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001ecffcaff2c002e0005007900cbff016900000000070023009eff017200"
+          },
+          {
+            "payloadLen": 22,
+            "leadByte": 20,
+            "leadWordHex": "1400",
+            "payloadHex": "1400c9ffacff0167780000000200000900a4ff14ff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 20,
+            "leadWordHex": "1400",
+            "payloadHex": "1400c9ffb9ff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 3,
+            "leadWordHex": "0300",
+            "payloadHex": "0300001400c9ffc6ff01"
+          },
+          {
+            "payloadLen": 19,
+            "leadByte": 20,
+            "leadWordHex": "1400",
+            "payloadHex": "1400c9ffaeff0167780000000a00bfff41ff01"
+          },
+          {
+            "payloadLen": 22,
+            "leadByte": 3,
+            "leadWordHex": "0300",
+            "payloadHex": "0300001400c9ffd4ff0167780000001400c9ffb9ff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 11,
+            "leadWordHex": "0b00",
+            "payloadHex": "0b00bbff51ff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 3,
+            "leadWordHex": "0300",
+            "payloadHex": "0300000c00bfff62ff01"
+          },
+          {
+            "payloadLen": 7,
+            "leadByte": 20,
+            "leadWordHex": "1400",
+            "payloadHex": "1400c9ffdaff01"
+          },
+          {
+            "payloadLen": 22,
+            "leadByte": 20,
+            "leadWordHex": "1400",
+            "payloadHex": "1400c9ffc4ff0167780000000100000d00baff94ff01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -41803,7 +42301,10 @@
         "prefixLen": 2376,
         "sectionCount": 0,
         "sectionLengthHistogram": {},
-        "sectionLengthPreview": []
+        "sectionLengthPreview": [],
+        "leadByteHistogram": {},
+        "leadWordHistogram": {},
+        "sectionPrototypePreview": []
       },
       "anchorBoxes": {
         "stride": 25,
@@ -42101,7 +42602,10 @@
         "prefixLen": 1118,
         "sectionCount": 0,
         "sectionLengthHistogram": {},
-        "sectionLengthPreview": []
+        "sectionLengthPreview": [],
+        "leadByteHistogram": {},
+        "leadWordHistogram": {},
+        "sectionPrototypePreview": []
       },
       "anchorBoxes": {
         "stride": 18,
@@ -42393,7 +42897,10 @@
         "prefixLen": 1871,
         "sectionCount": 0,
         "sectionLengthHistogram": {},
-        "sectionLengthPreview": []
+        "sectionLengthPreview": [],
+        "leadByteHistogram": {},
+        "leadWordHistogram": {},
+        "sectionPrototypePreview": []
       },
       "anchorBoxes": {
         "stride": 25,
@@ -42721,6 +43228,115 @@
           27,
           26,
           28
+        ],
+        "leadByteHistogram": {
+          "0": 11,
+          "2": 96,
+          "4": 1
+        },
+        "leadWordHistogram": {
+          "0000": 11,
+          "0200": 91,
+          "0201": 5,
+          "0402": 1
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f3ffc4ff1f002800000091ffb4ff00030092ffb3ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f2ffcaff1f002600000093ffb2ff00030094ffb1ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001efffc6ff1f002800000093ffafff00030094ffaeff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f5ffc3ff1c002800000091ffadff00030092ffacff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f1ffc6ff1d00240000008effafff0003008fffaeff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f2ffc3ff1e00210000008effafff0003008fffaeff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffc3ff1c00240000008effb2ff0003008fffb1ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001efffc4ff2000260000008effb2ff0003008fffb1ff01"
+          },
+          {
+            "payloadLen": 28,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000020001e6ffccff2700200000008fffb8ff00030090ffb7ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001e2ffcaff29002300000090ffb9ff00030091ffb8ff01"
+          },
+          {
+            "payloadLen": 33,
+            "leadByte": 2,
+            "leadWordHex": "0201",
+            "payloadHex": "0201012000ccff1f002100f7ffc9ff1d00240000008fffaeff00030090ffadff"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001faffcaff1b00250000008fffaeff00030090ffadff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f9ffcaff1400270000008dffaeff0003008effadff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f7ffcdff1c001c0000008cffafff0003008dffaeff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f1ffceff1c002200000090ffb5ff00030091ffb4ff01"
+          },
+          {
+            "payloadLen": 28,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000020001ecffccff1e002200000086ffb2ff00030087ffb1ff01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -43067,6 +43683,123 @@
           25,
           14,
           25
+        ],
+        "leadByteHistogram": {
+          "0": 11,
+          "2": 45,
+          "4": 12,
+          "12": 4,
+          "16": 2,
+          "20": 1
+        },
+        "leadWordHistogram": {
+          "0000": 10,
+          "0001": 1,
+          "0200": 43,
+          "0201": 2,
+          "0400": 8,
+          "0402": 4,
+          "0c00": 4,
+          "1000": 2,
+          "1400": 1
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff250024000000a0ffa7ff000100a0ffa7ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001ecffd1ff2400240002009bffa9ff0003009bffa9ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001ebffd1ff2400240004009fffb1ff0005009fffb1ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff230024000400a1ffafff000500a1ffafff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff2500240002009effa8ff0003009effa8ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff230024000000a1ffa5ff000100a1ffa5ff01"
+          },
+          {
+            "payloadLen": 30,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000020001f5ffc4ff2500240002009effb4ff010403009effb4ff0204"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f5ffc8ff250024000400a2ffacff01040500a2ffacff02"
+          },
+          {
+            "payloadLen": 27,
+            "leadByte": 4,
+            "leadWordHex": "0402",
+            "payloadHex": "04020001f5ffc8ff250024000000a1ffbbff01040100a1ffbbff02"
+          },
+          {
+            "payloadLen": 28,
+            "leadByte": 4,
+            "leadWordHex": "0402",
+            "payloadHex": "04020001f5ffc8ff2500240002009effb4ff010403009effb4ff0204"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f5ffc8ff250024000400a2ffacff01040500a2ffacff02"
+          },
+          {
+            "payloadLen": 27,
+            "leadByte": 4,
+            "leadWordHex": "0402",
+            "payloadHex": "04020001f5ffc8ff250024000000a1ffbbff01040100a1ffbbff02"
+          },
+          {
+            "payloadLen": 29,
+            "leadByte": 4,
+            "leadWordHex": "0400",
+            "payloadHex": "04000000020001e7ffcdff250024000600a7ffc3ff000700a7ffc3ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001e4ffcdff250024000600a6ffc5ff000700a6ffc5ff01"
+          },
+          {
+            "payloadLen": 70,
+            "leadByte": 0,
+            "leadWordHex": "0001",
+            "payloadHex": "0001010900a5ff66006b000400d0ff1d0024000000010400d0ff1d0024000000"
+          },
+          {
+            "payloadLen": 29,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f1ffcdff1d0024000400f0ffb7ff0203040500f0ffb7ff030403"
+          }
         ]
       },
       "anchorBoxes": {
@@ -43375,6 +44108,102 @@
           17,
           17,
           113
+        ],
+        "leadByteHistogram": {
+          "0": 1,
+          "1": 3,
+          "2": 10
+        },
+        "leadWordHistogram": {
+          "0000": 1,
+          "0100": 3,
+          "0200": 10
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 103,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000000000000000000000000000000000000000000100000200bcff40ff00"
+          },
+          {
+            "payloadLen": 111,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500b1ff1bff000600b1ff1bff0167b40000000200000500b1ff1bff00"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000800a8ff17ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000900a8ff17ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000a00a8ff17ff01"
+          },
+          {
+            "payloadLen": 80,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000500a8ff17ff000100000500a8ff17ff000000000100000000bcff72ff"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000800a8ff17ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000900a8ff17ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000a00a8ff17ff01"
+          },
+          {
+            "payloadLen": 80,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000500a8ff17ff000100000500a8ff17ff000000000100000000bcff72ff"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000800a8ff17ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000900a8ff17ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000500a8ff17ff000a00a8ff17ff01"
+          },
+          {
+            "payloadLen": 113,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000500a8ff17ff000100000500a8ff17ff0000000001000001006eff32ff"
+          }
         ]
       },
       "anchorBoxes": {
@@ -43706,6 +44535,123 @@
           18,
           26,
           18
+        ],
+        "leadByteHistogram": {
+          "0": 26,
+          "1": 75,
+          "2": 32,
+          "3": 3,
+          "6": 3,
+          "10": 1
+        },
+        "leadWordHistogram": {
+          "0000": 26,
+          "0100": 72,
+          "0101": 3,
+          "0200": 31,
+          "0201": 1,
+          "0300": 2,
+          "0301": 1,
+          "0600": 3,
+          "0a00": 1
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f3ffc4ff1f0028000000ebff91ff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f2ffcaff1f0026000000eeff90ff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001efffc6ff1f0028000000eeff8eff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f5ffc3ff1c0028000000ebff8aff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f1ffc6ff1d0024000000e9ff8bff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f2ffc3ff1e0021000000e9ff8bff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001eeffc3ff1c0024000000eaff8eff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001efffc4ff200026000000eaff8eff01"
+          },
+          {
+            "payloadLen": 21,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000010001e6ffccff270020000000ddff8bff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001e2ffcaff290023000000d0ff73ff01"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 1,
+            "leadWordHex": "0101",
+            "payloadHex": "0101012000ccff1f002100f7ffc9ff1d0024000000faff9cff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001faffcaff1b0025000000faff9cff01"
+          },
+          {
+            "payloadLen": 54,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000001f9ffcaff14002700000001f7ffcdff1c001c00000001f1ffceff1c0022"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f0ffcfff1b0021000000e8ff94ff01"
+          },
+          {
+            "payloadLen": 18,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "010001f0ffc9ff230022000000e2ff96ff01"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 1,
+            "leadWordHex": "0101",
+            "payloadHex": "010101f8ff96ff76006200ffffc5ff140021000000deff97ff01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -44056,6 +45002,128 @@
           25,
           33,
           25
+        ],
+        "leadByteHistogram": {
+          "0": 9,
+          "1": 8,
+          "2": 43,
+          "3": 3,
+          "4": 7,
+          "17": 1,
+          "21": 1
+        },
+        "leadWordHistogram": {
+          "0000": 8,
+          "0001": 1,
+          "0100": 7,
+          "0101": 1,
+          "0200": 42,
+          "0201": 1,
+          "0300": 1,
+          "0304": 2,
+          "0400": 3,
+          "0401": 2,
+          "0402": 2,
+          "1100": 1,
+          "1500": 1
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff250024000000efff9eff000100efff9eff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001ecffd1ff240024000200eeffa0ff000300eeffa0ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001ebffd1ff240024000400f0ffa2ff000500f0ffa2ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff230024000400f2ffa2ff000500f2ffa2ff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff250024000200f1ff9fff000300f1ff9fff01"
+          },
+          {
+            "payloadLen": 25,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001eeffd1ff230024000000f0ff9eff000100f0ff9eff01"
+          },
+          {
+            "payloadLen": 30,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000020001f5ffc4ff250024000200d3ffa8ff01040300d3ffa8ff0204"
+          },
+          {
+            "payloadLen": 27,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f5ffc8ff250024000400d5ffa7ff01040500d5ffa7ff0204"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f5ffc8ff250024000000d2ffadff01040100d2ffadff02"
+          },
+          {
+            "payloadLen": 28,
+            "leadByte": 4,
+            "leadWordHex": "0402",
+            "payloadHex": "04020001f5ffc8ff250024000200d3ffa8ff01040300d3ffa8ff0204"
+          },
+          {
+            "payloadLen": 27,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f5ffc8ff250024000400d5ffa7ff01040500d5ffa7ff0204"
+          },
+          {
+            "payloadLen": 26,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "020001f5ffc8ff250024000000d2ffadff01040100d2ffadff02"
+          },
+          {
+            "payloadLen": 30,
+            "leadByte": 4,
+            "leadWordHex": "0400",
+            "payloadHex": "04000000020001e7ffcdff250024000200e6ffb5ff01040300e6ffb5ff02"
+          },
+          {
+            "payloadLen": 28,
+            "leadByte": 4,
+            "leadWordHex": "0402",
+            "payloadHex": "04020001e4ffcdff250024000200e7ffb4ff01040300e7ffb4ff0204"
+          },
+          {
+            "payloadLen": 37,
+            "leadByte": 4,
+            "leadWordHex": "0401",
+            "payloadHex": "0401010900a5ff66006b000400d0ff1d0024000200beffb2ff0204030300beff"
+          },
+          {
+            "payloadLen": 14,
+            "leadByte": 21,
+            "leadWordHex": "1500",
+            "payloadHex": "15000800c6ff0016000800c6ff01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -44377,6 +45445,114 @@
           17,
           17,
           10
+        ],
+        "leadByteHistogram": {
+          "0": 14,
+          "1": 11,
+          "2": 1
+        },
+        "leadWordHistogram": {
+          "0000": 14,
+          "0100": 11,
+          "0200": 1
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 10,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000200daff67ff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000300fbff7eff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000400f9ffacff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000500dfff95ff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000600d6ff8fff01"
+          },
+          {
+            "payloadLen": 72,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000a00d3ff8eff0169000000000000000200000700b1ffd8ff01673c0000"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "0000f3ffc1ff000200000700b1ffd8ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "0000f3ffc1ff000200000800b1ffd8ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "0000f3ffc1ff000200000900b1ffd8ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "0000f3ffc1ff000200000700b1ffd8ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "0000f3ffc1ff000100000800b1ffd8ff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000900b1ffd8ff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "0100000700b1ffd8ff01"
+          },
+          {
+            "payloadLen": 10,
+            "leadByte": 2,
+            "leadWordHex": "0200",
+            "payloadHex": "0200000800b1ffd8ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "0000ecffbfff000200000900b1ffd8ff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "0000ecffbfff000200000700b1ffd8ff01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -44700,6 +45876,120 @@
           9,
           9,
           9
+        ],
+        "leadByteHistogram": {
+          "0": 26,
+          "1": 74,
+          "2": 31,
+          "3": 3,
+          "6": 3,
+          "10": 1
+        },
+        "leadWordHistogram": {
+          "0000": 26,
+          "0100": 74,
+          "0200": 31,
+          "0300": 3,
+          "0600": 3,
+          "0a00": 1
+        },
+        "sectionPrototypePreview": [
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000f1ffa3ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000f1ffa1ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000efff9eff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000edff9fff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000edff9fff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000eeffa1ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000eeffa1ff01"
+          },
+          {
+            "payloadLen": 11,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000001000000e3ff9fff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000d8ff8bff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000fbffadff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000fbffadff01"
+          },
+          {
+            "payloadLen": 17,
+            "leadByte": 0,
+            "leadWordHex": "0000",
+            "payloadHex": "000000000000000001000000eaffa6ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000ecffa6ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000e7ffa8ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000e4ffa9ff01"
+          },
+          {
+            "payloadLen": 9,
+            "leadByte": 1,
+            "leadWordHex": "0100",
+            "payloadHex": "01000000e4ffa9ff01"
+          }
         ]
       },
       "anchorBoxes": null,

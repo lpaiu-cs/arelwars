@@ -92,3 +92,10 @@ This document captures the parts of the recovery work that are likely to stay us
   - weapon / weapon2: `18`, `23`, `30`
   - armor: `53`, `60`
 - Dense `67ff000000` sections in AW2 `PZF` are a strong timing/state clue, analogous in spirit to AW1 late-stream tail markers even though the exact record layout is different.
+- The first two bytes of AW2 `67ff` payloads are already useful classifier keys.
+  Common leading words now seen in samples:
+  - `0100`
+  - `0200`
+  - `0000`
+  - `0401`
+  These should be treated as candidate control words before attempting a single universal tuple parser.
