@@ -189,6 +189,10 @@ animation:
   - `GetCurrentDelayFrameCount`는 current frame 직전까지의 누적 delay + 현재 `delayPos`를 돌려준다.
   - `GetTotalDelayFrameCount`는 전체 frame을 순회하면서 `delay == 0`인 frame만 `1` tick으로 보정한 합을 돌려준다.
   - 즉 runtime advance는 zero-delay frame을 즉시 소모하지만, total-count helper는 zero-delay frame을 최소 `1` tick으로 세는 비대칭이 있다.
+- clip state `+3`의 `globalDelayBias`는 현재 build 기준 dormant field로 보는 쪽이 맞다.
+  - `CreateAniClip`만 이 바이트를 `0`으로 초기화한다.
+  - whole-binary scan 기준 `CGxPZxAni + 0x08` clip-state 포인터를 따라 `+3`에 store 하는 경로를 찾지 못했다.
+  - symbolized consumer는 `DoPlay`와 delay helper뿐이므로, 현재 APK의 embedded `PZA` timeline에는 외부 signed-bias writer가 없다고 보는 편이 자연스럽다.
 - `DecodeAnimationData` 내부의 두 갈래는 서로 다른 animation 포맷이 아니라 `CGxStream` backend 차이로 보인다.
   - direct memory buffer path
   - callback-based stream path
@@ -202,6 +206,10 @@ animation:
   - frame `+0x1c`는 bbox record array
   - variant `1/3` bbox record는 사실상 `x:s16, y:s16, w:u16, h:u16`
   - variant `0`은 packed 4-byte form을 8-byte record로 확장하고, variant `3`은 두 group count를 합산한다.
+  - public type selector도 정리된다.
+    - `GetBoundingBoxCount(0)` / `GetBoundingBox(..., 0, index)` = attack box group
+    - `GetBoundingBoxCount(1)` / `GetBoundingBox(..., 1, index)` = damage box group
+    - other type 값은 두 그룹의 union bounding box를 만든다.
 - 따라서 raw `PZF` payload는 "항상 frame header 직후에 subframe record가 온다"고 가정하면 안 된다.
   - `010.pzx`처럼 bbox count가 0인 샘플은 바로 subframe list가 시작되지만
   - `004.pzx` 같은 variant `1` 샘플은 bbox record가 먼저 나오고
@@ -285,6 +293,19 @@ frame:
     - mode `3`: explicit attack count/token0 + damage count/token1 + full 8-byte box (`x:s16, y:s16, w:u16, h:u16`)
   - 현재 parsed asset set에서는 `explicit-att-dam`이 `251` stems, `compact-box-list`가 `2` stems이고, reference-point mode는 아직 보이지 않는다.
   - 집계 총량은 attack `1468`, damage `1260`, generic `11`, reference `0`이다.
+  - collision filter mask도 의미가 보인다.
+    - rect collision (`CollisionDetect(rect, filter)`)는 low byte만 쓴다.
+      - `0x01 = attack boxes`
+      - `0x02 = damage boxes`
+      - `0x03 = both`
+    - frame-vs-frame collision (`CollisionDetect(other, ..., filter)`)는 low nibble이 self 쪽, high nibble이 other 쪽이다.
+      - self: `0x01 attack`, `0x02 damage`, `0x03 both`
+      - other: `0x10 attack`, `0x20 damage`, `0x30 both`
+    - `filter & 0xFF00 == 0xFF00`이면 type-specific result를 버리고 generic hit `1`만 돌려준다.
+  - type-specific collision return code도 정리된다.
+    - rect collision: `2 = attack box hit`, `3 = damage box hit`
+    - frame-vs-frame collision: `4 = self attack vs other damage`, `5 = self damage vs other attack`, `6 = attack vs attack`, `7 = damage vs damage`
+    - `1 = generic collision` 또는 caller가 upper byte로 type 구분을 무시하게 한 경우
 - `CGxPZxFrame::Draw`와 `GsPZxSubFrame`는 이 `0x10-byte` record의 앞쪽만 쓴다.
   - `+0x00` bitmap pointer
   - `+0x04/+0x06` local x/y
@@ -315,12 +336,26 @@ frame:
 - 별도 fast path도 보인다.
   - `CGxEffectPZDMgr::LoadImage*`는 `extraLen == 1`이고 그 1-byte 값이 `0x65..0x74`이면 effected-bitmap 생성 경로 대신 normal image load 쪽으로 빠진다.
   - 하지만 `PZD.contentCount` bound를 다시 넣은 corrected parse 기준으로는 이 single-byte family가 실제 asset에서 더 이상 남지 않는다.
-  - 즉 이전 `66:15, 67:57, 71:1`은 parse artifact였고, native fast path 자체만 남아 있는 상태다.
-  - 따라서 `66/67` marker류는 executable opcode가 아니라 envelope / selector 계층으로 보는 쪽이 맞다.
+  - 즉 이전 `66:15, 67:57, 71:1`은 base `PZF` exact-fit 관점에서는 parse artifact였고, native fast path 자체만 남아 있는 상태다.
+  - 다만 selector semantics 자체가 artifact는 아니다. `EffectEx` family parser는 `0x65..0x74`와 `0x7f`를 별도 draw selector로 승격한다.
 - cache node 쪽도 확인됐다.
   - `CGxEffectPZDMgr::AddNewEFFECTED_BITMAP` / `CGxEffectExPZDMgr::AddNewEFFECTED_BITMAP`는 effect mode flag가 켜진 경우 source subframe의 `extraLen + extraPtr`를 새 cache entry에 통째로 복제한다.
   - 반면 cache lookup(`FindEffectedImage`)은 여전히 `<= 4` 바이트만 비교한다.
   - 따라서 non-executed envelope byte는 runtime cache object에는 남지만, 적어도 primary cache-match key는 아니다.
+- parallel family도 닫혔다.
+  - standalone loader `GsLoadPzf` / `GsLoadPzfPart`는 실제로 `CGxZeroEffectExPZDMgr`와 `CGxZeroEffectExPZFMgr`를 직접 생성한다.
+  - `CGxEffectExPZFParser::EndDecodeFrameFromBAR/FILE`는 `stride = 0x18` subframe record를 만들고:
+    - raw `extraLen + extraPtr`를 `+0x08/+0x0c`에 저장하고
+    - `extra`를 읽는 동안 마지막 `0x65..0x74` 또는 `0x7f`를 `+0x10` selector byte로 저장하고
+    - 그 selector를 볼 때마다 stream에서 추가 `u32`를 읽어 `+0x14` parameter로 저장한다.
+  - `CGxPZxEffectExFrame::__Draw`는 plain draw path에서 이 `+0x10/+0x14`를 실제로 소비한다.
+    - selector가 `0x65..0x74` 또는 `0x7f`이면 16-entry table lookup을 거쳐 module/draw mode를 고르고
+    - selector-associated `u32` parameter를 함께 bitmap draw call로 넘긴다.
+    - `__DrawFast`는 이 special branch를 타지 않는다.
+  - 따라서 `66/67/70/71/7f`는 `EffectEx` family에서는 executable opcode가 아니라 draw/module selector이고, `CGxEffectPZD::ApplyEffect`가 실행하는 `1..100` opcode 계층과 별개다.
+- 현재 APK의 extracted asset table에는 standalone `.pzf/.pzd` 파일이 없다.
+  - 그리고 embedded `.pzx` set은 `253/253`이 base `PZF`의 `0x10-byte` subframe layout으로 exact-fit 된다.
+  - 그래서 이번 브랜치에서 이미 닫은 current-game path는 `CGxPZxMgr -> CGxPZFMgr/PZAMgr` base family이고, `EffectEx/ZeroEffectEx`는 parallel native family로 정리하는 편이 맞다.
 - asset-side 교차검증도 이 해석을 지지한다.
   - runtime sequence `(3)`은 실제 raw payload `19`종에서 나온다. 대표형은 `03`, `0367ff000000`, `6603000000`, `67ff00000003`, `037100000000`이다.
   - runtime sequence `(4,3)`도 `8`종 payload(`0403`, `040367ff000000`, `660400000003`, `67eb0000000403`, ...)에서 공통으로 나온다.
@@ -371,29 +406,19 @@ frame:
   - 즉 disassemble 브랜치 관점에서 그 stream을 별도 timeline format으로 볼 이유는 크게 줄었다.
   - 남는 문제는 “tail이 시간축인가?”가 아니라 `PZF extraPayload`와 `PZD subframe`가 각각 무엇을 의미하느냐로 바뀌었다.
 
-## Working Hypothesis
+## Current Status
 
-현재 데이터 기반 분석에서 `frame-record`와 tail block을 `PZX` 내부 타임라인 후보로 보고 있었지만, 네이티브 심볼은 다른 해석을 강하게 시사한다.
+현재 APK의 embedded `.pzx` decode는 native-equivalent 기준으로 사실상 닫혔다.
 
-- `PZX` later stream은 "프레임 조각/서브프레임/보조 배치" 계층일 가능성이 높다.
-- 실제 재생 순서, delay, clip index, loop 같은 시간축 정보는 `CGxPZAParser::DecodeAnimationData`가 해석하는 별도 구조다.
-- 첫 번째 조각 stream을 `PZF` 계층, 이후 animation stream을 `PZA` 계층으로 대응시키면 현재까지 관찰된 "placement는 보이는데 시간축이 안 보인다"는 현상을 자연스럽게 설명할 수 있다.
-- 특히 현재는:
-  - 루트 `.pzx` 헤더에서 `PZF/PZA` subresource offset을 직접 잡을 수 있고
-  - raw `PZA` index table이 animation clip offsets와 정확히 맞고
-  - raw `PZF frameCount`가 `frameIndex` 풀 범위를 설명하고
-  - raw `PZF` stream 자체가 frame/subframe/extraPayload 계층으로 exact-fit 되고
-  - raw `PZD`도 `type 7/8` 모두 native `SeekIndexTable` / `DecodeImageData` 기준으로 byte-level layout이 닫힌다.
-- 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라:
-  - `PZF extraPayload`에서 `66/67/70...` 같은 non-executed envelope byte가 cache key / selector로 어떻게 쓰이는지
-  - bbox group 의미(att/dam/reference point)를 어떻게 런타임과 대응시키느냐
-  - `PZA` 출력이 `CGxPZxAni::DoPlay` / `GetCurrentDelayFrameCount`에서 실제 재생 시간축으로 어떻게 소비되는지
-  로 더 좁혀졌다.
-- 따라서 다음 reverse path의 우선순위는 `PZX tail` 일반화보다 `PZA parser -> PZx animation object` 연결 해체다.
+- root `PZX\x01` header는 `PZD/PZF/PZA` subresource offset table이다.
+- `PZD`는 `type 7` row-stream list와 `type 8` whole-stream-compressed first-stream sheet로 닫혔다.
+- `PZF`는 frame pool / bbox / subframe / `extraLen + extraPtr`까지 base family layout이 닫혔다.
+- `PZA`는 clip offset table, per-frame `frameIndex/delay/x/y/control`, 그리고 `CGxPZxAni::DoPlay` state machine까지 닫혔다.
+- bbox API selector와 collision return/filter도 런타임 의미가 정리됐다.
+- `globalDelayBias(+3)`는 현재 build 기준 dormant signed bias field다.
+- `66/67/70...` selector byte는 `EffectEx/ZeroEffectEx` parallel family에서는 draw/module selector + trailing `u32` parameter로 소비되고, current embedded `.pzx` set은 base family exact-fit path로 소비된다.
 
-## Next Reverse Steps
+## Residual Gaps
 
-1. `CGxEffectPZDMgr::LoadImage*`, `CGxEffectPZFMgr::LoadFrame`, `ChangeModule*`를 더 따라가서 non-executed envelope byte(`66/67/70...`)가 cache selector인지 module selector인지 고정한다.
-2. `CGxPZxFrameBB::*` consumer를 더 따라가서 bbox group이 충돌/reference point/attack box 중 무엇인지 붙인다.
-3. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, `PZA` 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
-4. 마지막에 later stream/tail 중 무엇이 truly native `PZF/PZA`이고, 무엇이 별도 overlay / placement metadata인지 결론을 낸다.
+1. `bbox variant 2` reference-point mode는 코드 경로는 보이지만 current asset set에 샘플이 없다.
+2. standalone `EffectEx/ZeroEffectEx` raw parser는 native semantics가 정리됐지만, 현재 APK에는 `.pzf/.pzd` 샘플이 없어서 asset-side exact-fit parser까지는 아직 구현하지 않았다.

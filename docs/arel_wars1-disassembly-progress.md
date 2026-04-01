@@ -138,6 +138,15 @@
     - `1`: explicit generic count + compact 4-byte box
     - `2`: reference point list
     - `3`: explicit attack/token0 + damage/token1 + full 8-byte box
+  - API type selector도 의미가 닫혔다.
+    - `type 0 = attack boxes`
+    - `type 1 = damage boxes`
+    - other type = union bounding box
+  - collision filter/return code도 정리됐다.
+    - rect collision low byte: `0x01 attack`, `0x02 damage`, `0x03 both`
+    - frame-vs-frame collision: self low nibble `0x01/0x02/0x03`, other high nibble `0x10/0x20/0x30`
+    - `filter & 0xFF00 == 0xFF00`이면 generic hit `1`
+    - otherwise return `2/3` (rect attack/damage) 또는 `4/5/6/7` (atk-vs-dam / dam-vs-atk / atk-vs-atk / dam-vs-dam)
   - 현재 parsed set 기준 mode 분포는 `explicit-att-dam = 251`, `compact-box-list = 2`, `reference-point-list = 0`이다.
   - 집계 총량은 attack `1468`, damage `1260`, generic `11`, reference `0`이다.
 - `CGxPZxAni` playback state
@@ -147,9 +156,17 @@
   - `DoPlay`는 frame-local `delay + globalDelayBias`를 effective delay로 쓰고, `delayPos = (delayPos + 1) % effectiveDelay`가 `0`일 때만 frame advance한다.
   - wrap 시 `bit2`를 세우고, loop가 아니면 current frame을 마지막 frame에 고정한 뒤 `Stop(false)`로 멈춘다.
   - `GetCurrentDelayFrameCount`는 current frame 이전 누적 delay + 현재 `delayPos`, `GetTotalDelayFrameCount`는 `delay==0` frame만 `1` tick으로 보정한 총합을 돌려준다.
+  - whole-binary scan 기준 `clipState + 3`에 대한 external writer는 찾지 못했다.
+  - 즉 current build에서 `globalDelayBias`는 init 시 `0`으로 놓이고 runtime helper가 읽기만 하는 dormant signed bias field로 보는 쪽이 맞다.
 - `PZF`
   - `PZD image count`를 raw `PZF` parser의 `max_subframe_index` bound로 다시 넣으면 outlier가 사라진다.
   - 현재 집계는 `exact-max-plus-one = 244`, `in-range = 7`, `empty = 2`, `out-of-range = 0`이다.
+- `EffectEx / ZeroEffectEx`
+  - standalone `GsLoadPzf` / `GsLoadPzfPart`가 실제로 `CGxZeroEffectExPZDMgr`와 `CGxZeroEffectExPZFMgr`를 직접 생성한다.
+  - `CGxEffectExPZFParser::EndDecodeFrameFromBAR/FILE`는 `stride = 0x18` subframe record를 만들고, raw `extraLen + extraPtr` 외에 마지막 `0x65..0x74` 또는 `0x7f`를 `selector byte(+0x10)`로 저장하며, 그 selector를 볼 때마다 trailing `u32 parameter(+0x14)`를 읽는다.
+  - `CGxPZxEffectExFrame::__Draw`는 plain draw path에서 바로 이 `selector + parameter`를 소비한다.
+  - 따라서 `66/67/70/71/7f`는 `EffectEx` family에서는 executable opcode가 아니라 draw/module selector다.
+  - 현재 APK asset table에는 standalone `.pzf/.pzd` 샘플이 없고, embedded `.pzx` set은 전부 base `PZF` layout으로 exact-fit 된다.
 
 ### Asset-side Validation
 
@@ -157,6 +174,7 @@
   - filtered cache-key histogram (`<= 4`만 집계): `0:13746, 1:4, 2:24, 3:2278, 4:68`
   - runtime opcode histogram (`1..100`만 실행): `1:4, 2:24, 3:2278, 4:68, 5:261, 6:11, 7:280, 8:68, 9:4, 10:93, 11:14, 12:43, 13:7, 14:16, 15:9, 20:4, 24:1, 28:1, 30:6, 40:8, 44:7, 50:14, 57:1, 60:4, 70:20, 72:4, 80:31, 86:1, 89:7, 99:15, 100:89`
   - corrected parse 기준 single-byte `0x65..0x74` family는 `{}`로 비었다.
+  - 대신 longer extra 안의 selector-byte heuristic 분포는 `67:3197, 66:930, 71:171, 69:67, 70:57, 7f:36, 72:32, 6a:25`이고, last-selector 기준 분포는 `67:3197, 66:930, 71:171, 69:67, 70:49, 7f:36, 72:32, 6a:25`다.
   - payload length 분포는 여전히 `5-byte`가 우세하고, marker family도 `67+u32 / 66+u32`가 우세하다.
   - runtime sequence `(3)`은 raw payload `19`종 (`03`, `0367ff000000`, `6603000000`, `67ff00000003`, ...)에서 나오고, `(4,3)`도 `8`종 payload에서 나온다.
   - 반면 `(7) -> 6607000000`, `(10) -> 660a000000`, `(100) -> 6764000000`, `(44,99) -> 702c630000`처럼 특정 envelope family에 고정된 sequence도 있다.
@@ -170,17 +188,14 @@
 
 ### Open
 
-- `PZF extraPayload`의 non-executed envelope byte(`66/67/70...`)가 정확히 어디서 추가 의미를 갖는지는 아직 남아 있다.
-  - 현재까지는 `FindEffectedImage`의 primary cache-hit key는 아니고, raw payload family를 나누는 secondary metadata 쪽으로 기운다.
-- bbox mode 자체는 닫혔지만, `CollisionDetect` filter 비트와 attack/damage/reference point의 실제 gameplay 의미는 더 따라갈 여지가 있다.
-- `globalDelayBias(+3)`가 실제 게임 코드 어디서 세팅되는지는 아직 못 찾았다.
-  - parser가 직접 채우지 않고, runtime helper가 서명값으로 더해 쓰는 것까지만 확인됐다.
+- current APK decode 관점에서 남은 핵심은 reference-point mode(`bbox variant 2`) 샘플 부재뿐이다.
+  - code path는 보이지만 실제 자산이 없어 asset-side exact-fit 검증까지는 못 했다.
+- `EffectEx / ZeroEffectEx` raw parser는 native semantics가 닫혔지만, 현재 APK에는 standalone `.pzf/.pzd` 샘플이 없어서 tool-side parser 구현까지는 아직 안 했다.
 
 ### Next Focus
 
-1. `66/67/70...` envelope byte가 effect cache selector인지 module selector인지, `ChangeModule*` / effect loaders를 기준으로 더 정리한다.
-2. `CGxPZxFrameBB::*`와 `CollisionDetect` consumer를 더 따라가서 bbox group의 gameplay 의미를 붙인다.
-3. `globalDelayBias(+3)` setter를 찾아 PZA 외부 시간축 보정이 있는지 확인한다.
+1. reference-point mode(`bbox variant 2`)가 실제 게임 데이터에서 쓰이는지, 아니면 dormant path인지 자산/consumer 기준으로 정리한다.
+2. standalone `EffectEx / ZeroEffectEx` sample을 확보할 수 있으면 `selector + trailing u32` layout까지 tool-side exact parser로 내린다.
 
 ### Refresh Commands
 
