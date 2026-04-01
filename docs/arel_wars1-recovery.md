@@ -32,6 +32,10 @@
   - row-oriented RLE bodies where each row expands to exactly `width` bytes via `skip(u16)`, `literal(0x80nn + nn bytes)`, and `repeat(0xC0nn + one value byte)` commands
   - `FE FF` row separators and an optional trailing `FF FF` sentinel after the last row
   - `variant=7` assets such as `180.pzx` appear to reuse the same row grammar directly in each zlib stream, without the outer chunk table/header layer
+  - later zlib streams now split into at least two metadata families:
+    - a simple fixed `10-byte` placement table used by `022`-`027`, `078`, and `179`
+    - frame-record streams used by stems such as `198`, `208`, and `240`, where each record starts with `itemCount`, `frameType`, `x`, `y`, `width`, `height`, then a list of chunk placements
+  - some frame-record assets interleave `5-byte` control chunks (`66 0c 00 00 00`, `67 ff 00 00 00`, and relatives) both inside and after records, so later streams still carry a second layer of animation metadata beyond pure chunk placement
 - `.mpl`
   Partially decoded by pattern. For all 65 paired stems, the current best model is:
   - the file layout is a 6-word header followed by two palette banks
@@ -98,8 +102,9 @@ npm run ios:sync
 
 1. Use the now-complete first-stream `.pzx` decode to recover chunk placement and the role of later zlib streams.
 2. Firm up `.mpl` into a real palette parser, including bank-selection metadata and oversized-bank handling.
-3. Turn extracted script data into structured event commands instead of raw string previews.
-4. Stand up a Phaser-side asset preview that can swap from synthetic placeholders to decoded `.pzx` and heuristic `.mpl` colors.
+3. Decode the control-heavy tail sections that begin with markers such as `67 ff 00 00 00`; they likely hold timeline or state-transition metadata layered on top of the frame records.
+4. Turn extracted script data into structured event commands instead of raw string previews.
+5. Stand up a Phaser-side asset preview that can swap from synthetic placeholders to decoded `.pzx` and heuristic `.mpl` colors.
 
 ## PZX Findings
 
@@ -118,6 +123,34 @@ npm run ios:sync
 - `179.pzx` has a second zlib stream that parses cleanly as `30` fixed `10-byte` placement records, one per decoded chunk.
 - The same simple placement pattern also appears in a small portrait/single-frame group: `022`, `023`, `024`, `025`, `026`, `027`, and `078`.
 - Those placement records are enough to build a first whole-sprite composite probe for `179`, although the chunk pixel bytes still appear to carry packed shading/effect bits above the final color index.
+- A broader `frame-record` family is now recognized in later zlib streams for `51` stems.
+  - `198.pzx` stream `1` parses as `9` frame records and consumes `400 / 486` bytes before a trailing metadata tail.
+  - `208.pzx` stream `1` parses as `17` frame records and consumes `1618 / 1966` bytes. Its records carry a recurring in-record control block `66 0c 00 00 00`.
+  - `240.pzx` stream `1` parses as `21` frame records and consumes `1812 / 2734` bytes.
+- The current working frame-record model is:
+
+```text
+record header:
+  itemCount:u16
+  frameType:u8  (observed value: 1)
+  x:i16
+  y:i16
+  width:u16
+  height:u16
+
+then itemCount chunk placements:
+  chunkIndex:u16
+  x:i16
+  y:i16
+  flag:u8
+
+optional 5-byte control chunks may appear:
+  - between item groups inside a record
+  - between consecutive records
+  - at the start of a trailing secondary section
+```
+
+- `208`, `240`, and `084` all leave a non-empty tail after the frame-record prefix. Those tails repeatedly contain `67 ff 00 00 00`, which is now the strongest candidate marker for a second animation/timeline metadata layer.
 - The row grammar currently held by the tools is:
 
 ```text

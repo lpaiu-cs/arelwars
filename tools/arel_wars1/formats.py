@@ -98,6 +98,34 @@ class PzxSimplePlacement:
     y: int
 
 
+@dataclass(frozen=True)
+class PzxFrameItem:
+    chunk_index: int
+    x: int
+    y: int
+    flag: int
+
+
+@dataclass(frozen=True)
+class PzxFrameRecord:
+    offset: int
+    item_count: int
+    frame_type: int
+    x: int
+    y: int
+    width: int
+    height: int
+    items: tuple[PzxFrameItem, ...]
+    control_chunks: tuple[bytes, ...]
+
+
+@dataclass(frozen=True)
+class PzxFrameRecordStream:
+    records: tuple[PzxFrameRecord, ...]
+    consumed: int
+    trailing: bytes
+
+
 def read_zt1(data: bytes) -> Zt1File:
     if len(data) < 8:
         raise ValueError("ZT1 payload is too short")
@@ -321,6 +349,123 @@ def read_pzx_simple_placement_stream(stream: bytes, chunk_count: int) -> tuple[P
         return None
 
     return tuple(placements)
+
+
+def _looks_like_pzx_frame_record(stream: bytes, offset: int) -> bool:
+    if offset + 11 > len(stream):
+        return False
+
+    item_count = struct.unpack("<H", stream[offset : offset + 2])[0]
+    frame_type = stream[offset + 2]
+    x = struct.unpack("<h", stream[offset + 3 : offset + 5])[0]
+    y = struct.unpack("<h", stream[offset + 5 : offset + 7])[0]
+    width = struct.unpack("<H", stream[offset + 7 : offset + 9])[0]
+    height = struct.unpack("<H", stream[offset + 9 : offset + 11])[0]
+
+    return (
+        1 <= item_count <= 64
+        and frame_type == 1
+        and -128 <= x <= 64
+        and -128 <= y <= 64
+        and 1 <= width <= 128
+        and 1 <= height <= 128
+    )
+
+
+def _looks_like_pzx_frame_item(stream: bytes, offset: int, chunk_count: int) -> bool:
+    if offset + 7 > len(stream):
+        return False
+
+    chunk_index = struct.unpack("<H", stream[offset : offset + 2])[0]
+    x = struct.unpack("<h", stream[offset + 2 : offset + 4])[0]
+    y = struct.unpack("<h", stream[offset + 4 : offset + 6])[0]
+    flag = stream[offset + 6]
+
+    return (
+        0 <= chunk_index < chunk_count
+        and -128 <= x <= 64
+        and -128 <= y <= 64
+        and flag <= 4
+    )
+
+
+def read_pzx_frame_record_stream(stream: bytes, chunk_count: int) -> PzxFrameRecordStream | None:
+    if chunk_count <= 0 or not _looks_like_pzx_frame_record(stream, 0):
+        return None
+
+    cursor = 0
+    records: list[PzxFrameRecord] = []
+
+    while _looks_like_pzx_frame_record(stream, cursor):
+        item_count = struct.unpack("<H", stream[cursor : cursor + 2])[0]
+        frame_type = stream[cursor + 2]
+        x = struct.unpack("<h", stream[cursor + 3 : cursor + 5])[0]
+        y = struct.unpack("<h", stream[cursor + 5 : cursor + 7])[0]
+        width = struct.unpack("<H", stream[cursor + 7 : cursor + 9])[0]
+        height = struct.unpack("<H", stream[cursor + 9 : cursor + 11])[0]
+
+        items: list[PzxFrameItem] = []
+        control_chunks: list[bytes] = []
+        next_cursor = cursor + 11
+        valid = True
+
+        while len(items) < item_count:
+            if _looks_like_pzx_frame_item(stream, next_cursor, chunk_count):
+                record = stream[next_cursor : next_cursor + 7]
+                chunk_index = struct.unpack("<H", record[:2])[0]
+                items.append(
+                    PzxFrameItem(
+                        chunk_index=chunk_index,
+                        x=struct.unpack("<h", record[2:4])[0],
+                        y=struct.unpack("<h", record[4:6])[0],
+                        flag=record[6],
+                    )
+                )
+                next_cursor += 7
+                continue
+
+            if next_cursor + 5 <= len(stream) and _looks_like_pzx_frame_item(stream, next_cursor + 5, chunk_count):
+                control_chunks.append(stream[next_cursor : next_cursor + 5])
+                next_cursor += 5
+                continue
+
+            valid = False
+            break
+
+        if not valid:
+            break
+
+        while next_cursor + 5 <= len(stream) and not _looks_like_pzx_frame_record(stream, next_cursor):
+            if _looks_like_pzx_frame_record(stream, next_cursor + 5):
+                control_chunks.append(stream[next_cursor : next_cursor + 5])
+                next_cursor += 5
+                continue
+            break
+
+        record_continues = next_cursor < len(stream) and _looks_like_pzx_frame_record(stream, next_cursor)
+
+        records.append(
+            PzxFrameRecord(
+                offset=cursor,
+                item_count=item_count,
+                frame_type=frame_type,
+                x=x,
+                y=y,
+                width=width,
+                height=height,
+                items=tuple(items),
+                control_chunks=tuple(control_chunks),
+            )
+        )
+        if not record_continues:
+            cursor = next_cursor
+            break
+        cursor = next_cursor
+
+    if not records:
+        return None
+
+    return PzxFrameRecordStream(records=tuple(records), consumed=cursor, trailing=stream[cursor:])
 
 
 def read_pzx_first_stream(stream: bytes, table_span: int) -> PzxFirstStream | None:

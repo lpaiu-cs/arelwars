@@ -10,6 +10,7 @@ import struct
 
 from formats import (
     find_zlib_streams,
+    read_pzx_frame_record_stream,
     read_pzx_first_stream,
     read_pzx_row_stream,
     read_pzx_simple_placement_stream,
@@ -152,6 +153,66 @@ def summarize_simple_placement_stream(stream: bytes, chunk_count: int, chunk_siz
     }
 
 
+def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: dict[int, tuple[int, int]]) -> dict[str, object] | None:
+    decoded = read_pzx_frame_record_stream(stream, chunk_count)
+    if decoded is None or len(decoded.records) < 2:
+        return None
+
+    all_items = [item for record in decoded.records for item in record.items]
+    all_control_chunks = [chunk for record in decoded.records for chunk in record.control_chunks]
+    min_item_x = min(item.x for item in all_items)
+    min_item_y = min(item.y for item in all_items)
+    max_item_x = max(item.x + chunk_sizes[item.chunk_index][0] for item in all_items)
+    max_item_y = max(item.y + chunk_sizes[item.chunk_index][1] for item in all_items)
+
+    return {
+        "recordCount": len(decoded.records),
+        "consumed": decoded.consumed,
+        "trailingLen": len(decoded.trailing),
+        "frameTypeValues": sorted({record.frame_type for record in decoded.records}),
+        "frameOriginRange": {
+            "x": [min(record.x for record in decoded.records), max(record.x for record in decoded.records)],
+            "y": [min(record.y for record in decoded.records), max(record.y for record in decoded.records)],
+        },
+        "frameSizeRange": {
+            "width": [min(record.width for record in decoded.records), max(record.width for record in decoded.records)],
+            "height": [min(record.height for record in decoded.records), max(record.height for record in decoded.records)],
+        },
+        "itemCountRange": [
+            min(record.item_count for record in decoded.records),
+            max(record.item_count for record in decoded.records),
+        ],
+        "itemChunkIndexRange": [min(item.chunk_index for item in all_items), max(item.chunk_index for item in all_items)],
+        "itemPlacementBbox": {"minX": min_item_x, "minY": min_item_y, "maxX": max_item_x, "maxY": max_item_y},
+        "flagValues": sorted({item.flag for item in all_items}),
+        "controlChunkCount": len(all_control_chunks),
+        "controlChunkLengths": sorted({len(chunk) for chunk in all_control_chunks}),
+        "recordOffsetsPreview": [record.offset for record in decoded.records[:12]],
+        "recordPreview": [
+            {
+                "offset": record.offset,
+                "itemCount": record.item_count,
+                "frameType": record.frame_type,
+                "x": record.x,
+                "y": record.y,
+                "width": record.width,
+                "height": record.height,
+                "controlChunkHex": [chunk.hex() for chunk in record.control_chunks[:4]],
+                "itemsPreview": [
+                    {
+                        "chunkIndex": item.chunk_index,
+                        "x": item.x,
+                        "y": item.y,
+                        "flag": item.flag,
+                    }
+                    for item in record.items[:8]
+                ],
+            }
+            for record in decoded.records[:4]
+        ],
+    }
+
+
 def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     data = path.read_bytes()
     streams = find_zlib_streams(data)
@@ -162,6 +223,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     first_stream_summary: dict[str, object] | None = None
     first_stream_error: str | None = None
     simple_placement_summary: dict[str, object] | None = None
+    frame_record_summaries: list[dict[str, object]] = []
 
     for index, item in enumerate(streams[:12]):
         entry = {
@@ -197,6 +259,17 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
                     entry["simplePlacement"] = placement_summary
                     if simple_placement_summary is None:
                         simple_placement_summary = {"streamIndex": index, **placement_summary}
+                try:
+                    frame_record_summary = summarize_frame_record_stream(
+                        item.decoded,
+                        int(first_stream_summary["chunkCount"]),
+                        chunk_sizes,
+                    )
+                except ValueError:
+                    frame_record_summary = None
+                if frame_record_summary is not None:
+                    entry["frameRecord"] = frame_record_summary
+                    frame_record_summaries.append({"streamIndex": index, **frame_record_summary})
         try:
             row_stream_summary = summarize_pzx_row_stream(item.decoded)
         except ValueError:
@@ -224,6 +297,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
         "firstStream": first_stream_summary,
         "firstStreamError": first_stream_error,
         "simplePlacementStream": simple_placement_summary,
+        "frameRecordStreams": frame_record_summaries,
     }
 
 
@@ -305,6 +379,26 @@ def main() -> None:
         for entry in pzx_entries
         if entry.get("simplePlacementStream") is not None
     ]
+    frame_record_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "variant": entry["header"]["field16Low6"],
+            "streamIndex": stream["streamIndex"],
+            "recordCount": stream["recordCount"],
+            "consumed": stream["consumed"],
+            "trailingLen": stream["trailingLen"],
+            "itemCountRange": stream["itemCountRange"],
+            "flagValues": stream["flagValues"],
+            "controlChunkCount": stream["controlChunkCount"],
+            "controlChunkLengths": stream["controlChunkLengths"],
+        }
+        for entry in pzx_entries
+        for stream in entry.get("frameRecordStreams", [])
+    ]
+    frame_record_stems = sorted({entry["stem"] for entry in frame_record_entries})
+    frame_record_control_stems = sorted(
+        {entry["stem"] for entry in frame_record_entries if int(entry["controlChunkCount"]) > 0}
+    )
     regular_mpl_palette_stems: list[str] = []
     regular_mpl_palette_set: set[str] = set()
     row_stream_regular_mpl_palette_stems: list[str] = []
@@ -416,6 +510,11 @@ def main() -> None:
             "rawRowStreamPreview": raw_row_stream_entries[:12],
             "simplePlacementPzxCount": len(simple_placement_entries),
             "simplePlacementPreview": simple_placement_entries[:12],
+            "frameRecordPzxCount": len(frame_record_stems),
+            "frameRecordStreamCount": len(frame_record_entries),
+            "frameRecordControlPzxCount": len(frame_record_control_stems),
+            "frameRecordControlPreview": frame_record_control_stems[:20],
+            "frameRecordPreview": frame_record_entries[:12],
             "regularMplPaletteCount": len(regular_mpl_palette_stems),
             "regularMplPalettePreview": regular_mpl_palette_stems[:20],
             "paletteCapacityFitCount": len(palette_capacity_fit_stems),
@@ -442,6 +541,10 @@ def main() -> None:
             "229.pzx uses only indices 0..38 while its MPL carries 148 colors per bank, so at least one asset family keeps oversized palette banks instead of trimming them to the exact max index.",
             "180.pzx raw row streams top out at palette index 46, which exactly fits the shared 179/180 MPL payload as a 47-color two-bank palette.",
             "179.pzx still does not map directly to the 47-color shared palette, which suggests its byte values pack extra shading or effect bits above the base color index.",
+            f"Auxiliary frame-record streams are now recognized for {len(frame_record_stems)} stems ({len(frame_record_entries)} streams), with each item encoded as chunkIndex(u16), x(i16), y(i16), flag(u8).",
+            f"{len(frame_record_control_stems)} of those stems also carry embedded 5-byte control chunks inside or between frame records; observed markers include 66 05 00 00 00, 66 0A 00 00 00, 66 0C 00 00 00, 67 78 00 00 00, and 67 FF 00 00 00.",
+            "198.pzx parses as a clean frame-record prefix, while 208.pzx and 240.pzx both continue into a second metadata tail after the frame-record section. 208 also inserts 66 0C 00 00 00 inside individual records.",
+            "084.pzx, 208.pzx, and 240.pzx all leave trailing sections beginning with 67 FF 00 00 00, which is the current best candidate separator for a secondary animation or timeline metadata layer.",
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",
