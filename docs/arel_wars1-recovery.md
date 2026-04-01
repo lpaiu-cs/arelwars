@@ -224,7 +224,6 @@ optional 5-byte control chunks may appear:
   - `215` now reads as a real cadence pattern instead of a flat `255` hold: `120 -> 70 -> 70 -> 80 -> 70 -> 120 -> 70`.
   - `226` now exposes a more plausible overlay timeline: `120`, then `200`, then a long `200`-unit run, ending on a `100`-unit close.
   - `230` now derives a consistent `120`-unit late-frame loop by borrowing non-`ff` control markers from anchor frames `13` and `14`.
-  - `240` and most of `084` still have no trustworthy local non-`ff` duration source. They now fall back to a separate `global-record-default=120`, which is derived from the dominant non-`ff` frame-record control value across the APK, instead of being silently flattened to `255`.
   - `084` still keeps one explicit `0`-unit instant event (`6700`) as a genuine zero-duration marker; that value is no longer propagated into neighboring events.
   - A second timing pass now borrows cadence only for stems that are still fully unresolved after the local pass, and only when a close donor stem exists inside the same `timelineKind`.
   - The current donor-backed overlay cadence set is `219`, `238`, `239`, and `240`, all of which now borrow from `226`:
@@ -238,25 +237,26 @@ optional 5-byte control chunks may appear:
   - A narrower local pass now also learns `overlay` timing prototypes from resolved `(tupleCount, markerCount)` shapes when the recovered durations stay within a tight spread.
     - `228`'s lone `before-linked` overlay (`tupleCount=3`, `markerCount=4`) now resolves locally to `70` instead of staying on the global `120`.
     - `084` now resolves both `after-linked` `tupleCount=3`, `markerCount=4` overlays to `70` through the same prototype rule.
-  - `084` also has one nearby `opaque-only` `6778` timing cue group, which is now attached to its large `before-linked` overlay. That event still lands on `120`, but it is now sourced from a local cue rather than the APK-wide default.
-  - `228`'s linked base pose is still left on `global-record-default=120`; there is not yet a trustworthy local or donor-linked prototype for that exact shape.
+  - `084` also has one nearby `opaque-only` `6778` timing cue group, which is now attached to its large `before-linked` overlay. That event still lands on `120`, but it is now sourced from a local cue rather than an APK-wide default.
   - A follow-up linked-event pass now uses two more local heuristics before falling back to donors:
     - `linked-family-prototype`: for `rising-anchor` stems, unresolved linked events can inherit `120` from nearby explicit linked shapes in `230`, as long as `(tupleCount, markerCount)` stays close.
     - `neighbor-group-cue`: unresolved events can also inherit a duration from an adjacent non-event meta group when that nearby explicit cue is unique within the local gap.
-  - This reduces the truly global-default linked set further:
-    - `084` now resolves linked groups `1`, `6`, `7`, `10`, `19`, `25`, and `28` through `linked-family-prototype`
-    - `084` linked group `0` and `221`'s lone linked event now resolve through `neighbor-group-cue`
-    - `214` now resolves through an exact `linked-prototype` instead of depending on donor stem `193`
+  - An exact `strong-structure-prototype` pass now reuses only direct local timing sources (`tail-marker`, `anchor-record`, `zero-marker`) when another stem has the same event structure.
+    - `188` now resolves to `120` from `208` instead of staying on a coarse donor-stem cadence.
+    - `205` and `211` now resolve their `base-frame-delta` events to `70` from `215` because their `(tupleCount, sectionCount, layout shape, prefix length, payload length)` signatures match exactly.
+  - A narrower `terminal-hold` rule now also handles two-event `single-anchor-cadence` tails, so `189` no longer falls back to `global-record-default`.
+  - There are currently no remaining `global-record-default`, `stem-default`, or `unresolved` events in either `timeline_candidate_strips/*.json` or the exported `preview_manifest.json`.
+  - The remaining non-direct timing sources are now limited to explicit inference labels such as `forward-fill`, `back-fill`, `event-donor`, `event-consensus`, `terminal-hold`, and `strong-structure-prototype`.
   - `230` and `084` now export explicit loop windows based on their strongest contiguous anchor runs:
     - `230`: event loop `1-3`
     - `084`: event loop `5-8`
 - Each timeline strip export now also writes per-event combined frames under `recovery/arel_wars1/timeline_candidate_strips/frames/<stem>/`.
   - Those event frames are now copied into the web runtime and used by the Phaser scene as lightweight candidate playback.
 - The runtime export now packages those results into `public/recovery/analysis/preview_manifest.json`.
-  - Current featured stems are `084`, `230`, `209`, `215`, `226`, `082`, and `203`.
-  - The manifest currently summarizes `21` active stems and `7` timeline classes for the web preview.
+  - Current featured stems are `084`, `082`, `083`, `223`, `207`, and `221`.
+  - The manifest currently summarizes `21` active stems and `5` active timeline classes for the web preview.
   - Each featured stem now exports `eventFrames[]` with raw `timingMarkers`, derived `playbackDurationMs`, `playbackSource`, and an inferred `loopSummary`, so the Phaser preview no longer uses a single fixed playback delay.
-  - Donor-backed timings now also carry `playbackDonorStem` and `playbackDonorScore` so the runtime manifest preserves which stems still rely on borrowed cadence.
+  - Inference-backed timings now also carry `playbackDonorStem`, `playbackDonorScore`, `playbackDonorGroupIndex`, and `playbackDonorTimelineKind` so the runtime manifest preserves where borrowed or prototype-matched cadence came from.
 - Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
   - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
   - `230-group00-base-frame-delta.png` confirms that one late-frame tail group is almost a direct frame delta, not a separate track.

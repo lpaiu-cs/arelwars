@@ -1,35 +1,35 @@
 {
   "stem": "239",
-  "timelineKind": "overlay-track-only",
-  "sequenceKind": "overlay-only",
+  "timelineKind": "single-anchor-cadence",
+  "sequenceKind": "single-anchor-repeat",
   "eventCount": 3,
-  "stemDefaultDurationMs": 120,
+  "stemDefaultDurationMs": null,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 2,
-    "reason": "overlay-track-only",
+    "reason": "single-anchor-cadence",
     "confidence": "medium"
   },
   "eventFramePaths": [
     "frames/239/00-g00-overlay.png",
-    "frames/239/01-g01-overlay.png",
-    "frames/239/02-g02-overlay.png"
+    "frames/239/01-g01-linked.png",
+    "frames/239/02-g02-linked.png"
   ],
   "events": [
     {
       "groupIndex": 0,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": null,
-      "relation": "unanchored",
-      "tupleCount": 1,
+      "anchorFrameIndex": 2,
+      "relation": "before-linked",
+      "tupleCount": 3,
       "chunkIndexRange": [
-        35,
+        27,
         35
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "donor-stem",
+      "playbackDurationMs": 80,
+      "playbackSource": "event-donor",
       "timingMarkers": [
         "67ff000000"
       ],
@@ -40,23 +40,25 @@
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
       "framePath": "frames/239/00-g00-overlay.png",
-      "playbackDonorStem": "226",
-      "playbackDonorScore": 181
+      "playbackDonorStem": "194",
+      "playbackDonorScore": 20,
+      "playbackDonorGroupIndex": 4,
+      "playbackDonorTimelineKind": "single-anchor-cadence"
     },
     {
       "groupIndex": 1,
-      "eventType": "overlay",
-      "linkType": "overlay-track",
-      "anchorFrameIndex": null,
-      "relation": "unanchored",
-      "tupleCount": 1,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 2,
+      "relation": null,
+      "tupleCount": 12,
       "chunkIndexRange": [
-        35,
-        35
+        0,
+        36
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 200,
-      "playbackSource": "donor-stem",
+      "playbackDurationMs": 120,
+      "playbackSource": "event-donor",
       "timingMarkers": [
         "67ff000000",
         "67ff000000"
@@ -68,24 +70,26 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/239/01-g01-overlay.png",
-      "playbackDonorStem": "226",
-      "playbackDonorScore": 181
+      "framePath": "frames/239/01-g01-linked.png",
+      "playbackDonorStem": "208",
+      "playbackDonorScore": 7,
+      "playbackDonorGroupIndex": 0,
+      "playbackDonorTimelineKind": "single-anchor-cadence"
     },
     {
       "groupIndex": 2,
-      "eventType": "overlay",
-      "linkType": "overlay-track",
-      "anchorFrameIndex": null,
-      "relation": "unanchored",
-      "tupleCount": 1,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 2,
+      "relation": null,
+      "tupleCount": 12,
       "chunkIndexRange": [
-        35,
-        35
+        0,
+        36
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 100,
-      "playbackSource": "donor-stem",
+      "playbackDurationMs": 120,
+      "playbackSource": "event-donor",
       "timingMarkers": [
         "67ff000000",
         "67ff000000"
@@ -97,9 +101,11 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/239/02-g02-overlay.png",
-      "playbackDonorStem": "226",
-      "playbackDonorScore": 181
+      "framePath": "frames/239/02-g02-linked.png",
+      "playbackDonorStem": "208",
+      "playbackDonorScore": 7,
+      "playbackDonorGroupIndex": 0,
+      "playbackDonorTimelineKind": "single-anchor-cadence"
     }
   ]
 }

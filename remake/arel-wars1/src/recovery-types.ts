@@ -58,6 +58,8 @@ export interface RecoveryPreviewFrame {
   playbackSource: string | null
   playbackDonorStem?: string | null
   playbackDonorScore?: number | null
+  playbackDonorGroupIndex?: number | null
+  playbackDonorTimelineKind?: string | null
   timingMarkers: string[] | null
   timingValues: number[] | null
   timingExplicitValues: number[] | null

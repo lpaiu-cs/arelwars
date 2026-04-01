@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections import Counter
 from typing import Any, Sequence
 
+from formats import get_pzx_meta_effective_tuples
+
 
 def group_meta_sections(meta_sections: Sequence[Any]) -> list[list[Any]]:
     groups: list[list[Any]] = []
@@ -81,7 +83,7 @@ def _classify_group(
 
 def classify_group(group: Sequence[Any], frame_records: Sequence[Any]) -> tuple[str, list[dict[str, int]]]:
     frame_item_sets, frame_chunk_sets, all_frame_chunks = _build_frame_sets(frame_records)
-    tuples = [item for section in group for item in section.tuples]
+    tuples = [item for section in group for item in get_pzx_meta_effective_tuples(section)]
     tuple_keys = [(item.chunk_index, item.x, item.y, item.flag) for item in tuples]
     unique_chunks = sorted({item.chunk_index for item in tuples})
     tail_only_chunks = sorted(chunk for chunk in unique_chunks if chunk not in all_frame_chunks)
@@ -95,7 +97,7 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
 
     summaries: list[dict[str, object]] = []
     for group_index, sections in enumerate(groups):
-        tuples = [item for section in sections for item in section.tuples]
+        tuples = [item for section in sections for item in get_pzx_meta_effective_tuples(section)]
         tuple_keys = [(item.chunk_index, item.x, item.y, item.flag) for item in tuples]
         unique_chunks = sorted({item.chunk_index for item in tuples})
         tail_only_chunks = sorted(chunk for chunk in unique_chunks if chunk not in all_frame_chunks)
@@ -137,6 +139,7 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
                         "extendedPrefixHex": section.extended_prefix_hex,
                         "extendedSuffixHex": section.extended_suffix_hex,
                         "extendedTupleCount": section.extended_tuple_count,
+                        "effectiveTupleCount": len(get_pzx_meta_effective_tuples(section)),
                         "tuplePreview": [
                             {
                                 "chunkIndex": item.chunk_index,
@@ -144,7 +147,7 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
                                 "y": item.y,
                                 "flag": item.flag,
                             }
-                            for item in section.tuples[:4]
+                            for item in get_pzx_meta_effective_tuples(section)[:4]
                         ],
                     }
                     for section in sections[:6]

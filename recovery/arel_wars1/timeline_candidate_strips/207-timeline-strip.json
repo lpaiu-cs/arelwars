@@ -1,53 +1,71 @@
 {
   "stem": "207",
   "timelineKind": "linked-only-scatter",
-  "sequenceKind": "single-anchor-delta",
-  "eventCount": 1,
+  "sequenceKind": "linked-mixed",
+  "eventCount": 2,
   "stemDefaultDurationMs": 120,
   "loopSummary": {
     "startEventIndex": 0,
-    "endEventIndex": 0,
+    "endEventIndex": 1,
     "reason": "linked-scatter",
     "confidence": "low"
   },
   "eventFramePaths": [
-    "frames/207/00-g00-linked.png"
+    "frames/207/00-g01-linked.png",
+    "frames/207/01-g02-linked.png"
   ],
   "events": [
     {
-      "groupIndex": 0,
+      "groupIndex": 1,
       "eventType": "linked",
       "linkType": "chunk-linked-reuse",
-      "anchorFrameIndex": 13,
+      "anchorFrameIndex": 7,
       "relation": null,
-      "tupleCount": 5,
+      "tupleCount": 8,
       "chunkIndexRange": [
         0,
-        39
+        41
       ],
       "durationHintMs": 120,
       "playbackDurationMs": 120,
       "playbackSource": "tail-marker",
       "timingMarkers": [
-        "67ff000000",
-        "67ff000000",
         "6778000000"
       ],
       "timingValues": [
-        255,
-        255,
         120
       ],
       "timingExplicitValues": [
         120
       ],
-      "anchorRecordMarkers": [
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/207/00-g01-linked.png"
+    },
+    {
+      "groupIndex": 2,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 8,
+      "chunkIndexRange": [
+        0,
+        42
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
         "67ff000000"
       ],
-      "anchorRecordTimingValues": [
+      "timingValues": [
         255
       ],
-      "framePath": "frames/207/00-g00-linked.png"
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/207/01-g02-linked.png"
     }
   ]
 }

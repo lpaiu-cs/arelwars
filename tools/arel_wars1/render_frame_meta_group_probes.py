@@ -7,7 +7,13 @@ import struct
 
 from PIL import Image, ImageDraw
 
-from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_frame_record_stream, read_pzx_meta_sections
+from formats import (
+    find_zlib_streams,
+    get_pzx_meta_effective_tuples,
+    read_pzx_first_stream,
+    read_pzx_frame_record_stream,
+    read_pzx_meta_sections,
+)
 from pzx_meta import classify_group, group_meta_sections
 
 
@@ -150,7 +156,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         if link_type not in {"base-frame-delta", "overlay-track", "chunk-linked-reuse"}:
             continue
 
-        tail_items = [item for section in group for item in section.tuples]
+        tail_items = [item for section in group for item in get_pzx_meta_effective_tuples(section)]
         if not tail_items:
             continue
 

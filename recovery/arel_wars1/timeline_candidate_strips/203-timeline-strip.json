@@ -1,33 +1,67 @@
 {
   "stem": "203",
-  "timelineKind": "linked-only-scatter",
-  "sequenceKind": "single-anchor-delta",
-  "eventCount": 1,
-  "stemDefaultDurationMs": 70,
+  "timelineKind": "single-anchor-cadence",
+  "sequenceKind": "single-anchor-repeat",
+  "eventCount": 2,
+  "stemDefaultDurationMs": null,
   "loopSummary": {
     "startEventIndex": 0,
-    "endEventIndex": 0,
-    "reason": "linked-scatter",
-    "confidence": "low"
+    "endEventIndex": 1,
+    "reason": "single-anchor-cadence",
+    "confidence": "medium"
   },
   "eventFramePaths": [
-    "frames/203/00-g01-linked.png"
+    "frames/203/00-g00-linked.png",
+    "frames/203/01-g01-linked.png"
   ],
   "events": [
+    {
+      "groupIndex": 0,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 0,
+      "relation": null,
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        16,
+        33
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255
+      ],
+      "framePath": "frames/203/00-g00-linked.png",
+      "playbackDonorStem": "211",
+      "playbackDonorScore": 10,
+      "playbackDonorGroupIndex": 1,
+      "playbackDonorTimelineKind": "single-anchor-cadence"
+    },
     {
       "groupIndex": 1,
       "eventType": "linked",
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 0,
       "relation": null,
-      "tupleCount": 2,
+      "tupleCount": 6,
       "chunkIndexRange": [
-        17,
+        16,
         32
       ],
       "durationHintMs": 255,
       "playbackDurationMs": 70,
-      "playbackSource": "donor-stem",
+      "playbackSource": "event-donor",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -45,9 +79,11 @@
       "anchorRecordTimingValues": [
         255
       ],
-      "framePath": "frames/203/00-g01-linked.png",
-      "playbackDonorStem": "236",
-      "playbackDonorScore": 30
+      "framePath": "frames/203/01-g01-linked.png",
+      "playbackDonorStem": "211",
+      "playbackDonorScore": 14,
+      "playbackDonorGroupIndex": 1,
+      "playbackDonorTimelineKind": "single-anchor-cadence"
     }
   ]
 }

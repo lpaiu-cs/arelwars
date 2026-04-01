@@ -9,7 +9,13 @@ import struct
 
 from PIL import Image, ImageDraw
 
-from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_frame_record_stream, read_pzx_meta_sections
+from formats import (
+    find_zlib_streams,
+    get_pzx_meta_effective_tuples,
+    read_pzx_first_stream,
+    read_pzx_frame_record_stream,
+    read_pzx_meta_sections,
+)
 from pzx_meta import group_meta_sections, summarize_meta_groups, summarize_sequence_candidates
 from render_frame_meta_group_probes import choose_mapper, collect_positions, render_composite
 
@@ -125,7 +131,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         if link_type not in {"base-frame-delta", "chunk-linked-reuse", "overlay-track"}:
             continue
 
-        tail_items = [item for section in group for item in section.tuples]
+        tail_items = [item for section in group for item in get_pzx_meta_effective_tuples(section)]
         if not tail_items:
             continue
 

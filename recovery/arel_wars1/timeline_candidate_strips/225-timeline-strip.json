@@ -2,11 +2,11 @@
   "stem": "225",
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "linked-mixed",
-  "eventCount": 12,
+  "eventCount": 13,
   "stemDefaultDurationMs": 50,
   "loopSummary": {
     "startEventIndex": 0,
-    "endEventIndex": 11,
+    "endEventIndex": 12,
     "reason": "linked-scatter",
     "confidence": "low"
   },
@@ -22,7 +22,8 @@
     "frames/225/08-g08-linked.png",
     "frames/225/09-g09-linked.png",
     "frames/225/10-g10-linked.png",
-    "frames/225/11-g11-linked.png"
+    "frames/225/11-g11-linked.png",
+    "frames/225/12-g12-linked.png"
   ],
   "events": [
     {
@@ -31,7 +32,7 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 3,
       "relation": null,
-      "tupleCount": 13,
+      "tupleCount": 14,
       "chunkIndexRange": [
         0,
         15
@@ -77,7 +78,7 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 3,
       "relation": null,
-      "tupleCount": 13,
+      "tupleCount": 14,
       "chunkIndexRange": [
         0,
         15
@@ -125,7 +126,7 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 2,
       "relation": null,
-      "tupleCount": 13,
+      "tupleCount": 14,
       "chunkIndexRange": [
         0,
         16
@@ -173,7 +174,7 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 5,
       "relation": null,
-      "tupleCount": 12,
+      "tupleCount": 13,
       "chunkIndexRange": [
         0,
         17
@@ -221,9 +222,9 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 0,
       "relation": null,
-      "tupleCount": 3,
+      "tupleCount": 10,
       "chunkIndexRange": [
-        12,
+        0,
         13
       ],
       "durationHintMs": 50,
@@ -265,7 +266,7 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 0,
       "relation": null,
-      "tupleCount": 12,
+      "tupleCount": 13,
       "chunkIndexRange": [
         0,
         14
@@ -315,9 +316,9 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 6,
       "relation": null,
-      "tupleCount": 3,
+      "tupleCount": 12,
       "chunkIndexRange": [
-        12,
+        0,
         13
       ],
       "durationHintMs": 50,
@@ -405,9 +406,9 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 3,
       "relation": null,
-      "tupleCount": 6,
+      "tupleCount": 15,
       "chunkIndexRange": [
-        4,
+        0,
         18
       ],
       "durationHintMs": 50,
@@ -451,9 +452,9 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 2,
       "relation": null,
-      "tupleCount": 5,
+      "tupleCount": 14,
       "chunkIndexRange": [
-        9,
+        0,
         19
       ],
       "durationHintMs": 50,
@@ -497,9 +498,9 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 5,
       "relation": null,
-      "tupleCount": 4,
+      "tupleCount": 13,
       "chunkIndexRange": [
-        9,
+        0,
         14
       ],
       "durationHintMs": 50,
@@ -541,9 +542,9 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 0,
       "relation": null,
-      "tupleCount": 3,
+      "tupleCount": 12,
       "chunkIndexRange": [
-        12,
+        0,
         13
       ],
       "durationHintMs": 50,
@@ -578,6 +579,50 @@
         255
       ],
       "framePath": "frames/225/11-g11-linked.png"
+    },
+    {
+      "groupIndex": 12,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 0,
+      "relation": null,
+      "tupleCount": 13,
+      "chunkIndexRange": [
+        0,
+        14
+      ],
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
+      "timingMarkers": [
+        "67ff000000",
+        "6605000000",
+        "6605000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        50,
+        50,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        50,
+        50,
+        255,
+        255
+      ],
+      "framePath": "frames/225/12-g12-linked.png"
     }
   ]
 }

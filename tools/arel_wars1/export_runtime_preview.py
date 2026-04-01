@@ -194,6 +194,10 @@ def main() -> None:
                         event_frame["playbackDonorStem"] = raw_event.get("playbackDonorStem")
                     if raw_event.get("playbackDonorScore") is not None:
                         event_frame["playbackDonorScore"] = raw_event.get("playbackDonorScore")
+                    if raw_event.get("playbackDonorGroupIndex") is not None:
+                        event_frame["playbackDonorGroupIndex"] = raw_event.get("playbackDonorGroupIndex")
+                    if raw_event.get("playbackDonorTimelineKind") is not None:
+                        event_frame["playbackDonorTimelineKind"] = raw_event.get("playbackDonorTimelineKind")
                     event_frames.append(event_frame)
 
         copy_file(Path(entry["timelineStripSourcePng"]), timeline_target_root / timeline_png_name)

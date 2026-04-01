@@ -10,6 +10,7 @@ import struct
 
 from formats import (
     find_zlib_streams,
+    get_pzx_meta_effective_tuples,
     read_pzx_frame_record_stream,
     read_pzx_first_stream,
     read_pzx_meta_sections,
@@ -260,7 +261,7 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
                         "y": item.y,
                         "flag": item.flag,
                     }
-                    for item in section.tuples[:6]
+                    for item in get_pzx_meta_effective_tuples(section)[:6]
                 ],
                 "extendedTuplePreview": [
                     {

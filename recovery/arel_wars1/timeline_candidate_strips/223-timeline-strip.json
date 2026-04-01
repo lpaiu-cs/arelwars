@@ -20,14 +20,14 @@
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
       "relation": "unanchored",
-      "tupleCount": 1,
+      "tupleCount": 7,
       "chunkIndexRange": [
-        41,
+        26,
         41
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 80,
+      "playbackSource": "event-donor",
       "timingMarkers": [
         "67ff000000"
       ],
@@ -37,7 +37,11 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/223/00-g00-overlay.png"
+      "framePath": "frames/223/00-g00-overlay.png",
+      "playbackDonorStem": "228",
+      "playbackDonorScore": 18,
+      "playbackDonorGroupIndex": 6,
+      "playbackDonorTimelineKind": "overlay-track-only"
     }
   ]
 }

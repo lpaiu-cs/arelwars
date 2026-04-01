@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw
 from formats import (
     decode_pzx_marker_timing_ms,
     find_zlib_streams,
+    get_pzx_meta_effective_tuples,
     read_pzx_first_stream,
     read_pzx_frame_record_stream,
     read_pzx_meta_sections,
@@ -38,6 +39,11 @@ def parse_args() -> argparse.Namespace:
 
 GLOBAL_RECORD_DEFAULT_DURATION_MS = 120
 MAX_DONOR_SCORE = 210
+MAX_EVENT_DONOR_SCORE_SAME_KIND = 24
+MAX_EVENT_DONOR_SCORE_CROSS_KIND = 12
+MAX_EVENT_CONSENSUS_SCORE_SAME_KIND = 36
+MAX_EVENT_CONSENSUS_SCORE_CROSS_KIND = 28
+STRONG_LOCAL_TIMING_SOURCES = {"tail-marker", "anchor-record", "zero-marker"}
 
 
 @dataclass
@@ -67,7 +73,7 @@ def _build_event_entries(
     for group, group_summary in zip(meta_groups, meta_group_summaries):
         group_index = int(group_summary["groupIndex"])
         link_type = str(group_summary["linkType"])
-        tail_items = [item for section in group for item in section.tuples]
+        tail_items = [item for section in group for item in get_pzx_meta_effective_tuples(section)]
         if not tail_items:
             continue
 
@@ -98,6 +104,15 @@ def _build_event_entries(
                 for value in (decode_pzx_marker_timing_ms(marker_hex) for marker_hex in anchor_record_markers)
                 if value is not None
             ]
+        sections_preview = group_summary.get("sectionsPreview", [])
+        primary_section = sections_preview[0] if sections_preview else {}
+        primary_prefix_hex = primary_section.get("extendedPrefixHex") if isinstance(primary_section, dict) else None
+        primary_prefix_len = len(bytes.fromhex(str(primary_prefix_hex))) if primary_prefix_hex else 0
+        raw_layout_counts = group_summary.get("layoutCounts", {})
+        layout_counts_signature = tuple(
+            (str(layout), int(count))
+            for layout, count in sorted(raw_layout_counts.items())
+        ) if isinstance(raw_layout_counts, dict) else ()
         events.append(
             {
                 "groupIndex": group_index,
@@ -114,6 +129,19 @@ def _build_event_entries(
                 "timingHasFfSentinel": timing["hasFfSentinel"],
                 "anchorRecordMarkers": anchor_record_markers,
                 "anchorRecordTimingValues": anchor_record_values,
+                "sectionCount": int(group_summary.get("sectionCount", 0)),
+                "layoutCountsSignature": layout_counts_signature,
+                "primarySectionLayout": (
+                    primary_section.get("extendedLayout") or primary_section.get("layout")
+                    if isinstance(primary_section, dict)
+                    else None
+                ),
+                "primarySectionPrefixLen": primary_prefix_len,
+                "primarySectionPayloadLen": (
+                    int(primary_section.get("payloadLen"))
+                    if isinstance(primary_section, dict) and primary_section.get("payloadLen") is not None
+                    else None
+                ),
                 "tailItems": tail_items,
             }
         )
@@ -194,6 +222,37 @@ def _event_has_explicit_local_timing(event: dict[str, object]) -> bool:
     if event["timingExplicitValues"]:
         return True
     return any(int(value) not in {0, 255} for value in event["anchorRecordTimingValues"])
+
+
+def _event_has_resolved_timing(event: dict[str, object]) -> bool:
+    return str(event["playbackSource"]) not in {"global-record-default", "stem-default", "donor-stem", "unresolved"}
+
+
+def _is_strong_local_timing_source(source: str | None) -> bool:
+    return str(source) in STRONG_LOCAL_TIMING_SOURCES
+
+
+def _event_structure_signature(event: dict[str, object]) -> tuple[object, ...] | None:
+    primary_layout = event.get("primarySectionLayout")
+    primary_payload_len = event.get("primarySectionPayloadLen")
+    if primary_layout is None or primary_payload_len is None:
+        return None
+
+    layout_counts_signature = tuple(
+        (str(layout), int(count)) for layout, count in (event.get("layoutCountsSignature") or ())
+    )
+    return (
+        str(event["eventType"]),
+        str(event["linkType"]),
+        event.get("relation"),
+        int(event.get("tupleCount") or 0),
+        len(event.get("timingMarkers") or []),
+        int(event.get("sectionCount") or 0),
+        layout_counts_signature,
+        str(primary_layout),
+        int(event.get("primarySectionPrefixLen") or 0),
+        int(primary_payload_len),
+    )
 
 
 def _dominant_duration(values: list[int]) -> int | None:
@@ -360,6 +419,44 @@ def _build_linked_prototypes(
     return (exact_prototypes, family_prototypes)
 
 
+def _build_strong_structure_prototypes(
+    candidates: list[StemRenderCandidate],
+) -> dict[tuple[object, ...], tuple[int, str, int, str, str]]:
+    buckets: dict[tuple[object, ...], list[tuple[int, str, int, str, str]]] = {}
+    for candidate in candidates:
+        timeline_kind = str(candidate.sequence_summary.get("timelineKind"))
+        for event in candidate.events:
+            if not _is_strong_local_timing_source(str(event.get("playbackSource"))):
+                continue
+            signature = _event_structure_signature(event)
+            if signature is None:
+                continue
+            buckets.setdefault(signature, []).append(
+                (
+                    int(event["playbackDurationMs"]),
+                    candidate.stem,
+                    int(event["groupIndex"]),
+                    timeline_kind,
+                    str(event["playbackSource"]),
+                )
+            )
+
+    prototypes: dict[tuple[object, ...], tuple[int, str, int, str, str]] = {}
+    for signature, refs in buckets.items():
+        durations = sorted({duration for duration, _, _, _, _ in refs})
+        if len(durations) != 1:
+            continue
+        duration = durations[0]
+        ref_stem, ref_group_index, ref_timeline_kind, ref_source = sorted(
+            (stem, group_index, timeline_kind, source)
+            for candidate_duration, stem, group_index, timeline_kind, source in refs
+            if candidate_duration == duration
+        )[0]
+        prototypes[signature] = (duration, ref_stem, ref_group_index, ref_timeline_kind, ref_source)
+
+    return prototypes
+
+
 def _apply_overlay_prototypes(candidates: list[StemRenderCandidate]) -> None:
     prototypes = _build_overlay_prototypes(candidates)
     for candidate in candidates:
@@ -421,6 +518,40 @@ def _apply_linked_prototypes(candidates: list[StemRenderCandidate]) -> None:
 
             event["playbackDurationMs"] = best_durations[0]
             event["playbackSource"] = "linked-family-prototype"
+
+
+def _apply_strong_structure_prototypes(candidates: list[StemRenderCandidate]) -> None:
+    prototypes = _build_strong_structure_prototypes(candidates)
+    if not prototypes:
+        return
+
+    prototype_sources = {
+        "global-record-default",
+        "stem-default",
+        "event-donor",
+        "event-consensus",
+        "terminal-hold",
+        "donor-stem",
+        "unresolved",
+    }
+    for candidate in candidates:
+        for event in candidate.events:
+            if str(event.get("playbackSource")) not in prototype_sources:
+                continue
+            signature = _event_structure_signature(event)
+            if signature is None:
+                continue
+            resolved = prototypes.get(signature)
+            if resolved is None:
+                continue
+
+            duration, ref_stem, ref_group_index, ref_timeline_kind, ref_source = resolved
+            event["playbackDurationMs"] = duration
+            event["playbackSource"] = "strong-structure-prototype"
+            event["playbackDonorStem"] = ref_stem
+            event["playbackDonorGroupIndex"] = ref_group_index
+            event["playbackDonorTimelineKind"] = ref_timeline_kind
+            event["playbackDonorSource"] = ref_source
 
 
 def _apply_opaque_timing_cues(candidates: list[StemRenderCandidate]) -> None:
@@ -493,10 +624,216 @@ def _apply_neighbor_group_cues(candidates: list[StemRenderCandidate]) -> None:
             event["playbackSource"] = "neighbor-group-cue"
 
 
-def _apply_donor_timings(candidates: list[StemRenderCandidate]) -> None:
-    donors = [candidate for candidate in candidates if _has_local_timing(candidate.events)]
+def _apply_event_donor_timings(candidates: list[StemRenderCandidate]) -> None:
+    for _ in range(4):
+        changed = False
+        resolved_events: list[tuple[str, str, dict[str, object]]] = []
+        for candidate in candidates:
+            timeline_kind = str(candidate.sequence_summary.get("timelineKind"))
+            for event in candidate.events:
+                if not _event_has_resolved_timing(event):
+                    continue
+                resolved_events.append((candidate.stem, timeline_kind, event))
+
+        for candidate in candidates:
+            target_kind = str(candidate.sequence_summary.get("timelineKind"))
+            for event in candidate.events:
+                if str(event["playbackSource"]) not in {"global-record-default", "stem-default"}:
+                    continue
+
+                scored: list[tuple[int, str, str, dict[str, object]]] = []
+                for donor_stem, donor_kind, donor_event in resolved_events:
+                    if donor_stem == candidate.stem or str(donor_event["eventType"]) != str(event["eventType"]):
+                        continue
+                    score = _event_signature_distance(event, donor_event)
+                    if donor_kind != target_kind:
+                        score += 18
+                    scored.append((score, donor_stem, donor_kind, donor_event))
+
+                if not scored:
+                    continue
+
+                scored.sort(key=lambda item: (item[0], item[1], int(item[3]["groupIndex"])))
+                best_score, _, best_kind, _ = scored[0]
+                same_kind = best_kind == target_kind
+                max_score = MAX_EVENT_DONOR_SCORE_SAME_KIND if same_kind else MAX_EVENT_DONOR_SCORE_CROSS_KIND
+                if best_score > max_score:
+                    continue
+
+                duration_window = [
+                    (
+                        int(donor_event["playbackDurationMs"]),
+                        donor_stem,
+                        int(donor_event["groupIndex"]),
+                        donor_kind,
+                    )
+                    for score, donor_stem, donor_kind, donor_event in scored
+                    if score <= best_score + 1 and ((donor_kind == target_kind) == same_kind)
+                ]
+                unique_durations = sorted({duration for duration, _, _, _ in duration_window})
+                if len(unique_durations) != 1:
+                    continue
+
+                duration = unique_durations[0]
+                best_duration_candidates = [
+                    (donor_stem, group_index, donor_kind)
+                    for candidate_duration, donor_stem, group_index, donor_kind in duration_window
+                    if candidate_duration == duration
+                ]
+                donor_stem, donor_group_index, donor_kind = sorted(best_duration_candidates)[0]
+                event["playbackDurationMs"] = duration
+                event["playbackSource"] = "event-donor"
+                event["playbackDonorStem"] = donor_stem
+                event["playbackDonorGroupIndex"] = donor_group_index
+                event["playbackDonorTimelineKind"] = donor_kind
+                event["playbackDonorScore"] = best_score
+                changed = True
+
+        if not changed:
+            break
+
+
+def _apply_event_consensus_timings(candidates: list[StemRenderCandidate]) -> None:
+    resolved_events: list[tuple[str, str, dict[str, object]]] = []
     for candidate in candidates:
-        if _has_local_timing(candidate.events):
+        timeline_kind = str(candidate.sequence_summary.get("timelineKind"))
+        for event in candidate.events:
+            if not _event_has_resolved_timing(event):
+                continue
+            resolved_events.append((candidate.stem, timeline_kind, event))
+
+    for candidate in candidates:
+        target_kind = str(candidate.sequence_summary.get("timelineKind"))
+        for event in candidate.events:
+            if str(event["playbackSource"]) not in {"global-record-default", "stem-default"}:
+                continue
+
+            scored: list[tuple[int, str, str, dict[str, object]]] = []
+            for donor_stem, donor_kind, donor_event in resolved_events:
+                if donor_stem == candidate.stem or str(donor_event["eventType"]) != str(event["eventType"]):
+                    continue
+                score = _event_signature_distance(event, donor_event)
+                if donor_kind != target_kind:
+                    score += 18
+                scored.append((score, donor_stem, donor_kind, donor_event))
+
+            if not scored:
+                continue
+
+            scored.sort(key=lambda item: (item[0], item[1], int(item[3]["groupIndex"])))
+            def choose_consensus(
+                usable: list[tuple[int, str, str, dict[str, object]]],
+                max_score: int,
+            ) -> tuple[int, str, int, str, int] | None:
+                best_score = usable[0][0]
+                if best_score > max_score:
+                    return None
+
+                window = [
+                    (
+                        int(donor_event["playbackDurationMs"]),
+                        donor_stem,
+                        int(donor_event["groupIndex"]),
+                        donor_kind,
+                    )
+                    for score, donor_stem, donor_kind, donor_event in usable
+                    if score <= best_score + 6
+                ]
+                if len(window) < 2:
+                    return None
+
+                duration_counts: dict[int, int] = {}
+                for duration, _, _, _ in window:
+                    duration_counts[duration] = duration_counts.get(duration, 0) + 1
+                ranked = sorted(duration_counts.items(), key=lambda item: (-item[1], item[0]))
+                if not ranked:
+                    return None
+
+                top_duration, top_count = ranked[0]
+                next_count = ranked[1][1] if len(ranked) > 1 else 0
+                if len(ranked) == 1:
+                    pass
+                elif top_count < 2 or top_count <= next_count or top_count * 3 < len(window) * 2:
+                    return None
+
+                donor_candidates = [
+                    (donor_stem, group_index, donor_kind)
+                    for duration, donor_stem, group_index, donor_kind in window
+                    if duration == top_duration
+                ]
+                donor_stem, donor_group_index, donor_kind = sorted(donor_candidates)[0]
+                return (top_duration, donor_stem, donor_group_index, donor_kind, best_score)
+
+            same_kind_scored = [item for item in scored if item[2] == target_kind]
+            consensus = None
+            if same_kind_scored:
+                consensus = choose_consensus(same_kind_scored, MAX_EVENT_CONSENSUS_SCORE_SAME_KIND)
+            if consensus is None:
+                consensus = choose_consensus(scored, MAX_EVENT_CONSENSUS_SCORE_CROSS_KIND)
+            if consensus is None:
+                continue
+
+            top_duration, donor_stem, donor_group_index, donor_kind, best_score = consensus
+            event["playbackDurationMs"] = top_duration
+            event["playbackSource"] = "event-consensus"
+            event["playbackDonorStem"] = donor_stem
+            event["playbackDonorGroupIndex"] = donor_group_index
+            event["playbackDonorTimelineKind"] = donor_kind
+            event["playbackDonorScore"] = best_score
+
+
+def _apply_terminal_hold_timings(candidates: list[StemRenderCandidate]) -> None:
+    for candidate in candidates:
+        if str(candidate.sequence_summary.get("timelineKind")) != "single-anchor-cadence":
+            continue
+
+        linked_events = [event for event in candidate.events if str(event["eventType"]) == "linked"]
+        if len(linked_events) < 2:
+            continue
+
+        anchor_indices = {int(event["anchorFrameIndex"]) for event in linked_events if event["anchorFrameIndex"] is not None}
+        if len(anchor_indices) != 1:
+            continue
+
+        unresolved_tail: list[dict[str, object]] = []
+        for event in reversed(linked_events):
+            if str(event["playbackSource"]) in {"global-record-default", "stem-default"}:
+                unresolved_tail.append(event)
+                continue
+            break
+        unresolved_tail.reverse()
+        if not unresolved_tail:
+            continue
+
+        resolved_prefix = [
+            event
+            for event in linked_events[: len(linked_events) - len(unresolved_tail)]
+            if _event_has_resolved_timing(event)
+        ]
+        if len(resolved_prefix) < 1:
+            continue
+
+        prefix_tuple_max = max(int(event.get("tupleCount") or 0) for event in resolved_prefix)
+        prefix_marker_max = max(len(event.get("timingMarkers") or []) for event in resolved_prefix)
+        hold_duration = max(_dominant_duration([int(event["playbackDurationMs"]) for event in resolved_prefix]) or 0, 120)
+
+        for event in unresolved_tail:
+            tuple_count = int(event.get("tupleCount") or 0)
+            marker_count = len(event.get("timingMarkers") or [])
+            min_tuple_count = max(prefix_tuple_max - 1, 1) if len(resolved_prefix) == 1 else prefix_tuple_max
+            if tuple_count < min_tuple_count and marker_count < prefix_marker_max:
+                continue
+
+            event["playbackDurationMs"] = hold_duration
+            event["playbackSource"] = "terminal-hold"
+            event["playbackDonorStem"] = candidate.stem
+            event["playbackDonorTimelineKind"] = str(candidate.sequence_summary.get("timelineKind"))
+
+
+def _apply_donor_timings(candidates: list[StemRenderCandidate]) -> None:
+    donors = [candidate for candidate in candidates if any(_event_has_resolved_timing(event) for event in candidate.events)]
+    for candidate in candidates:
+        if any(_event_has_resolved_timing(event) for event in candidate.events):
             continue
 
         scored_donors: list[tuple[int, StemRenderCandidate]] = []
@@ -517,17 +854,22 @@ def _apply_donor_timings(candidates: list[StemRenderCandidate]) -> None:
         donor_durations = [int(event["playbackDurationMs"]) for event in best_donor.events if event["playbackDurationMs"] is not None]
         proposed_durations = _resample_durations(donor_durations, len(candidate.events))
         current_durations = [int(event["playbackDurationMs"]) for event in candidate.events]
-        if not proposed_durations or proposed_durations == current_durations:
+        proposed_donations = proposed_durations
+        if not proposed_donations:
+            continue
+        if proposed_donations == current_durations and not all(
+            str(event["playbackSource"]) in {"global-record-default", "stem-default"} for event in candidate.events
+        ):
             continue
 
-        for event, duration in zip(candidate.events, proposed_durations):
+        for event, duration in zip(candidate.events, proposed_donations):
             event["playbackDurationMs"] = duration
             event["playbackSource"] = "donor-stem"
             event["playbackDonorStem"] = best_donor.stem
             event["playbackDonorScore"] = best_score
 
         if candidate.stem_default_duration_ms is None:
-            candidate.stem_default_duration_ms = best_donor.stem_default_duration_ms or _dominant_duration(proposed_durations)
+            candidate.stem_default_duration_ms = best_donor.stem_default_duration_ms or _dominant_duration(proposed_donations)
 
 
 def _build_frame_panel(image: Image.Image, label: str, sublabel: str, footer: str) -> Image.Image:
@@ -663,6 +1005,10 @@ def render_candidate(candidate: StemRenderCandidate, output_root: Path, scale: i
             summary["playbackDonorStem"] = event["playbackDonorStem"]
         if event.get("playbackDonorScore") is not None:
             summary["playbackDonorScore"] = event["playbackDonorScore"]
+        if event.get("playbackDonorGroupIndex") is not None:
+            summary["playbackDonorGroupIndex"] = event["playbackDonorGroupIndex"]
+        if event.get("playbackDonorTimelineKind") is not None:
+            summary["playbackDonorTimelineKind"] = event["playbackDonorTimelineKind"]
         event_summaries.append(summary)
 
     output_root.mkdir(parents=True, exist_ok=True)
@@ -714,6 +1060,10 @@ def main() -> None:
     _apply_opaque_timing_cues(candidates)
     _apply_linked_prototypes(candidates)
     _apply_neighbor_group_cues(candidates)
+    _apply_strong_structure_prototypes(candidates)
+    _apply_event_donor_timings(candidates)
+    _apply_event_consensus_timings(candidates)
+    _apply_terminal_hold_timings(candidates)
     _apply_donor_timings(candidates)
 
     rendered = 0

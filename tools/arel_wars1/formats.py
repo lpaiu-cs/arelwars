@@ -21,6 +21,8 @@ PZX_META_MARKERS: dict[bytes, str] = {
     bytes.fromhex("67c8000000"): "67c8000000",
     bytes.fromhex("6700000000"): "6700000000",
 }
+MAX_PZX_META_PREFIX_LEN = 20
+MAX_PZX_META_SUFFIX_LEN = 12
 
 
 def _is_text_char(char: str) -> bool:
@@ -482,8 +484,8 @@ def _find_extended_pzx_meta_candidate(
 ) -> tuple[str, str | None, str | None, int, int, tuple[PzxMetaTuple, ...]] | None:
     candidates: list[tuple[int, int, int, int, int, str, str | None, str | None, tuple[PzxMetaTuple, ...]]] = []
     for stride, layout_name in ((7, "flagged-tuples"), (6, "plain-tuples")):
-        for prefix_len in range(0, 8):
-            for suffix_len in range(0, 12):
+        for prefix_len in range(0, MAX_PZX_META_PREFIX_LEN + 1):
+            for suffix_len in range(0, MAX_PZX_META_SUFFIX_LEN + 1):
                 if len(payload) < prefix_len + suffix_len + stride:
                     continue
                 parsed = _parse_pzx_meta_tuples(
@@ -496,7 +498,7 @@ def _find_extended_pzx_meta_candidate(
                     continue
                 valid_count, tuples = parsed
                 tuple_count = len(tuples)
-                if tuple_count == 0:
+                if tuple_count == 0 or valid_count != tuple_count:
                     continue
                 covered = prefix_len + tuple_count * stride + suffix_len
                 if covered != len(payload):
@@ -525,11 +527,17 @@ def _find_extended_pzx_meta_candidate(
     if not candidates:
         return None
 
-    valid_count, tuple_count, _, _, _, layout, prefix_hex, suffix_hex, tuples = max(candidates)
-    if valid_count != tuple_count:
-        return None
+    valid_count, _, _, _, _, layout, prefix_hex, suffix_hex, tuples = max(candidates)
     stride = 7 if "flagged" in layout else 6
     return (layout, prefix_hex, suffix_hex, stride, valid_count, tuples)
+
+
+def get_pzx_meta_effective_tuples(section: PzxMetaSection) -> tuple[PzxMetaTuple, ...]:
+    if section.tuples:
+        return section.tuples
+    if section.extended_tuples and section.extended_valid_tuple_count == section.extended_tuple_count:
+        return section.extended_tuples
+    return ()
 
 
 def _iter_pzx_meta_markers(stream: bytes) -> tuple[tuple[int, str], ...]:

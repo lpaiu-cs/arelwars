@@ -11,42 +11,33 @@
     "confidence": "low"
   },
   "eventFramePaths": [
-    "frames/193/00-g07-linked.png"
+    "frames/193/00-g00-linked.png"
   ],
   "events": [
     {
-      "groupIndex": 7,
+      "groupIndex": 0,
       "eventType": "linked",
       "linkType": "chunk-linked-reuse",
-      "anchorFrameIndex": 1,
+      "anchorFrameIndex": 2,
       "relation": null,
-      "tupleCount": 1,
+      "tupleCount": 3,
       "chunkIndexRange": [
-        2,
-        2
+        1,
+        8
       ],
-      "durationHintMs": 100,
+      "durationHintMs": null,
       "playbackDurationMs": 100,
-      "playbackSource": "tail-marker",
-      "timingMarkers": [
-        "660a000000",
-        "6608000000"
-      ],
-      "timingValues": [
-        100,
-        80
-      ],
-      "timingExplicitValues": [
-        100,
-        80
-      ],
+      "playbackSource": "anchor-record",
+      "timingMarkers": [],
+      "timingValues": [],
+      "timingExplicitValues": [],
       "anchorRecordMarkers": [
         "660a000000"
       ],
       "anchorRecordTimingValues": [
         100
       ],
-      "framePath": "frames/193/00-g07-linked.png"
+      "framePath": "frames/193/00-g00-linked.png"
     }
   ]
 }

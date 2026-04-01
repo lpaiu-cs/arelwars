@@ -1,30 +1,72 @@
 {
   "stem": "215",
-  "timelineKind": "single-anchor-cadence",
-  "sequenceKind": "single-anchor-repeat",
-  "eventCount": 12,
+  "timelineKind": "mixed-anchor-overlay",
+  "sequenceKind": "multi-anchor-loop",
+  "eventCount": 21,
   "stemDefaultDurationMs": 70,
   "loopSummary": {
-    "startEventIndex": 0,
-    "endEventIndex": 11,
-    "reason": "single-anchor-cadence",
-    "confidence": "medium"
+    "startEventIndex": 1,
+    "endEventIndex": 20,
+    "reason": "first-linked-anchor",
+    "confidence": "low"
   },
   "eventFramePaths": [
-    "frames/215/00-g02-linked.png",
-    "frames/215/01-g03-overlay.png",
-    "frames/215/02-g06-linked.png",
-    "frames/215/03-g08-linked.png",
-    "frames/215/04-g12-linked.png",
-    "frames/215/05-g14-linked.png",
-    "frames/215/06-g18-linked.png",
-    "frames/215/07-g20-linked.png",
-    "frames/215/08-g23-linked.png",
-    "frames/215/09-g24-overlay.png",
-    "frames/215/10-g25-linked.png",
-    "frames/215/11-g26-overlay.png"
+    "frames/215/00-g01-overlay.png",
+    "frames/215/01-g02-linked.png",
+    "frames/215/02-g03-overlay.png",
+    "frames/215/03-g04-linked.png",
+    "frames/215/04-g06-linked.png",
+    "frames/215/05-g07-linked.png",
+    "frames/215/06-g08-linked.png",
+    "frames/215/07-g10-overlay.png",
+    "frames/215/08-g12-linked.png",
+    "frames/215/09-g13-linked.png",
+    "frames/215/10-g14-linked.png",
+    "frames/215/11-g16-linked.png",
+    "frames/215/12-g18-linked.png",
+    "frames/215/13-g19-overlay.png",
+    "frames/215/14-g20-linked.png",
+    "frames/215/15-g22-linked.png",
+    "frames/215/16-g23-linked.png",
+    "frames/215/17-g24-overlay.png",
+    "frames/215/18-g25-linked.png",
+    "frames/215/19-g26-overlay.png",
+    "frames/215/20-g27-overlay.png"
   ],
   "events": [
+    {
+      "groupIndex": 1,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 10,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        17,
+        24
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "back-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/215/00-g01-overlay.png"
+    },
     {
       "groupIndex": 2,
       "eventType": "linked",
@@ -61,7 +103,7 @@
         255,
         255
       ],
-      "framePath": "frames/215/00-g02-linked.png"
+      "framePath": "frames/215/01-g02-linked.png"
     },
     {
       "groupIndex": 3,
@@ -100,7 +142,40 @@
         255,
         255
       ],
-      "framePath": "frames/215/01-g03-overlay.png"
+      "framePath": "frames/215/02-g03-overlay.png"
+    },
+    {
+      "groupIndex": 4,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 9,
+      "relation": null,
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        0,
+        24
+      ],
+      "durationHintMs": 70,
+      "playbackDurationMs": 70,
+      "playbackSource": "tail-marker",
+      "timingMarkers": [
+        "6607000000"
+      ],
+      "timingValues": [
+        70
+      ],
+      "timingExplicitValues": [
+        70
+      ],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/215/03-g04-linked.png"
     },
     {
       "groupIndex": 6,
@@ -141,7 +216,40 @@
         255,
         255
       ],
-      "framePath": "frames/215/02-g06-linked.png"
+      "framePath": "frames/215/04-g06-linked.png"
+    },
+    {
+      "groupIndex": 7,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        16,
+        24
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/215/05-g07-linked.png"
     },
     {
       "groupIndex": 8,
@@ -176,7 +284,40 @@
         255,
         255
       ],
-      "framePath": "frames/215/03-g08-linked.png"
+      "framePath": "frames/215/06-g08-linked.png"
+    },
+    {
+      "groupIndex": 10,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 10,
+      "relation": "after-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        17,
+        24
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/215/07-g10-overlay.png"
     },
     {
       "groupIndex": 12,
@@ -217,7 +358,38 @@
         255,
         255
       ],
-      "framePath": "frames/215/04-g12-linked.png"
+      "framePath": "frames/215/08-g12-linked.png"
+    },
+    {
+      "groupIndex": 13,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 9,
+      "relation": null,
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        0,
+        24
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 80,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/215/09-g13-linked.png"
     },
     {
       "groupIndex": 14,
@@ -252,7 +424,40 @@
         255,
         255
       ],
-      "framePath": "frames/215/05-g14-linked.png"
+      "framePath": "frames/215/10-g14-linked.png"
+    },
+    {
+      "groupIndex": 16,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        16,
+        24
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 80,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/215/11-g16-linked.png"
     },
     {
       "groupIndex": 18,
@@ -293,7 +498,40 @@
         255,
         255
       ],
-      "framePath": "frames/215/06-g18-linked.png"
+      "framePath": "frames/215/12-g18-linked.png"
+    },
+    {
+      "groupIndex": 19,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 10,
+      "relation": "after-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        17,
+        24
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/215/13-g19-overlay.png"
     },
     {
       "groupIndex": 20,
@@ -328,7 +566,38 @@
         255,
         255
       ],
-      "framePath": "frames/215/07-g20-linked.png"
+      "framePath": "frames/215/14-g20-linked.png"
+    },
+    {
+      "groupIndex": 22,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 9,
+      "relation": null,
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        0,
+        24
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/215/15-g22-linked.png"
     },
     {
       "groupIndex": 23,
@@ -366,7 +635,7 @@
         255,
         255
       ],
-      "framePath": "frames/215/08-g23-linked.png"
+      "framePath": "frames/215/16-g23-linked.png"
     },
     {
       "groupIndex": 24,
@@ -408,7 +677,7 @@
         255,
         255
       ],
-      "framePath": "frames/215/09-g24-overlay.png"
+      "framePath": "frames/215/17-g24-overlay.png"
     },
     {
       "groupIndex": 25,
@@ -416,9 +685,9 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 10,
       "relation": null,
-      "tupleCount": 2,
+      "tupleCount": 4,
       "chunkIndexRange": [
-        21,
+        16,
         23
       ],
       "durationHintMs": 255,
@@ -445,7 +714,7 @@
         255,
         255
       ],
-      "framePath": "frames/215/10-g25-linked.png"
+      "framePath": "frames/215/18-g25-linked.png"
     },
     {
       "groupIndex": 26,
@@ -480,7 +749,40 @@
         255,
         255
       ],
-      "framePath": "frames/215/11-g26-overlay.png"
+      "framePath": "frames/215/19-g26-overlay.png"
+    },
+    {
+      "groupIndex": 27,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 10,
+      "relation": "after-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        17,
+        27
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "forward-fill",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/215/20-g27-overlay.png"
     }
   ]
 }

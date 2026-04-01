@@ -21,13 +21,13 @@
     {
       "groupIndex": 0,
       "eventType": "linked",
-      "linkType": "base-frame-delta",
+      "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 10,
       "relation": null,
-      "tupleCount": 1,
+      "tupleCount": 3,
       "chunkIndexRange": [
-        24,
-        24
+        20,
+        26
       ],
       "durationHintMs": 180,
       "playbackDurationMs": 180,
@@ -58,9 +58,9 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 10,
       "relation": null,
-      "tupleCount": 1,
+      "tupleCount": 3,
       "chunkIndexRange": [
-        26,
+        20,
         26
       ],
       "durationHintMs": 150,
@@ -124,10 +124,10 @@
       "linkType": "overlay-track",
       "anchorFrameIndex": 10,
       "relation": "after-linked",
-      "tupleCount": 1,
+      "tupleCount": 3,
       "chunkIndexRange": [
-        23,
-        23
+        22,
+        25
       ],
       "durationHintMs": 180,
       "playbackDurationMs": 180,
@@ -158,10 +158,10 @@
       "linkType": "overlay-track",
       "anchorFrameIndex": 10,
       "relation": "after-linked",
-      "tupleCount": 1,
+      "tupleCount": 3,
       "chunkIndexRange": [
-        23,
-        23
+        22,
+        25
       ],
       "durationHintMs": 120,
       "playbackDurationMs": 120,

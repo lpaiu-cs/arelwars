@@ -1,0 +1,167 @@
+{
+  "stem": "216",
+  "timelineKind": "overlay-track-only",
+  "sequenceKind": "overlay-only",
+  "eventCount": 5,
+  "stemDefaultDurationMs": null,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 4,
+    "reason": "overlay-track-only",
+    "confidence": "medium"
+  },
+  "eventFramePaths": [
+    "frames/216/00-g01-overlay.png",
+    "frames/216/01-g03-overlay.png",
+    "frames/216/02-g04-overlay.png",
+    "frames/216/03-g06-overlay.png",
+    "frames/216/04-g07-overlay.png"
+  ],
+  "events": [
+    {
+      "groupIndex": 1,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        20,
+        26
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/216/00-g01-overlay.png",
+      "playbackDonorStem": "235",
+      "playbackDonorScore": 9,
+      "playbackDonorGroupIndex": 0,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        20,
+        25
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/216/01-g03-overlay.png",
+      "playbackDonorStem": "235",
+      "playbackDonorScore": 6,
+      "playbackDonorGroupIndex": 0,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    },
+    {
+      "groupIndex": 4,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        20,
+        26
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/216/02-g04-overlay.png",
+      "playbackDonorStem": "235",
+      "playbackDonorScore": 9,
+      "playbackDonorGroupIndex": 0,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    },
+    {
+      "groupIndex": 6,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        20,
+        25
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/216/03-g06-overlay.png",
+      "playbackDonorStem": "235",
+      "playbackDonorScore": 6,
+      "playbackDonorGroupIndex": 0,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    },
+    {
+      "groupIndex": 7,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        20,
+        26
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/216/04-g07-overlay.png",
+      "playbackDonorStem": "235",
+      "playbackDonorScore": 9,
+      "playbackDonorGroupIndex": 0,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    }
+  ]
+}

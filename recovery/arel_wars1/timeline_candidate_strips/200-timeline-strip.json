@@ -1,0 +1,103 @@
+{
+  "stem": "200",
+  "timelineKind": "overlay-track-only",
+  "sequenceKind": "overlay-only",
+  "eventCount": 3,
+  "stemDefaultDurationMs": null,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 2,
+    "reason": "overlay-track-only",
+    "confidence": "medium"
+  },
+  "eventFramePaths": [
+    "frames/200/00-g00-overlay.png",
+    "frames/200/01-g01-overlay.png",
+    "frames/200/02-g02-overlay.png"
+  ],
+  "events": [
+    {
+      "groupIndex": 0,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        15,
+        16
+      ],
+      "durationHintMs": null,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [],
+      "timingValues": [],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/200/00-g00-overlay.png",
+      "playbackDonorStem": "228",
+      "playbackDonorScore": 13,
+      "playbackDonorGroupIndex": 1,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    },
+    {
+      "groupIndex": 1,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        15,
+        17
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/200/01-g01-overlay.png",
+      "playbackDonorStem": "228",
+      "playbackDonorScore": 16,
+      "playbackDonorGroupIndex": 1,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    },
+    {
+      "groupIndex": 2,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        15,
+        18
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/200/02-g02-overlay.png",
+      "playbackDonorStem": "228",
+      "playbackDonorScore": 19,
+      "playbackDonorGroupIndex": 1,
+      "playbackDonorTimelineKind": "overlay-track-only"
+    }
+  ]
+}

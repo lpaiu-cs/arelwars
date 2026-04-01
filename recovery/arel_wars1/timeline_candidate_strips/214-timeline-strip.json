@@ -1,33 +1,34 @@
 {
   "stem": "214",
-  "timelineKind": "linked-only-scatter",
-  "sequenceKind": "single-anchor-delta",
-  "eventCount": 1,
+  "timelineKind": "single-anchor-cadence",
+  "sequenceKind": "single-anchor-repeat",
+  "eventCount": 2,
   "stemDefaultDurationMs": null,
   "loopSummary": {
     "startEventIndex": 0,
-    "endEventIndex": 0,
-    "reason": "linked-scatter",
-    "confidence": "low"
+    "endEventIndex": 1,
+    "reason": "single-anchor-cadence",
+    "confidence": "medium"
   },
   "eventFramePaths": [
-    "frames/214/00-g00-linked.png"
+    "frames/214/00-g00-linked.png",
+    "frames/214/01-g01-linked.png"
   ],
   "events": [
     {
       "groupIndex": 0,
       "eventType": "linked",
       "linkType": "chunk-linked-reuse",
-      "anchorFrameIndex": 6,
+      "anchorFrameIndex": 5,
       "relation": null,
-      "tupleCount": 1,
+      "tupleCount": 13,
       "chunkIndexRange": [
-        20,
+        3,
         20
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 100,
-      "playbackSource": "linked-prototype",
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
       "timingMarkers": [
         "67ff000000",
         "67ff000000"
@@ -37,23 +38,42 @@
         255
       ],
       "timingExplicitValues": [],
-      "anchorRecordMarkers": [
-        "67ff000000",
-        "67ff000000",
-        "67ff000000",
-        "67ff000000",
-        "67ff000000",
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/214/00-g00-linked.png",
+      "playbackDonorStem": "211",
+      "playbackDonorScore": 13,
+      "playbackDonorGroupIndex": 1,
+      "playbackDonorTimelineKind": "single-anchor-cadence"
+    },
+    {
+      "groupIndex": 1,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 5,
+      "relation": null,
+      "tupleCount": 12,
+      "chunkIndexRange": [
+        3,
+        20
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 70,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
         "67ff000000"
       ],
-      "anchorRecordTimingValues": [
-        255,
-        255,
-        255,
-        255,
-        255,
+      "timingValues": [
         255
       ],
-      "framePath": "frames/214/00-g00-linked.png"
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/214/01-g01-linked.png",
+      "playbackDonorStem": "211",
+      "playbackDonorScore": 12,
+      "playbackDonorGroupIndex": 1,
+      "playbackDonorTimelineKind": "single-anchor-cadence"
     }
   ]
 }

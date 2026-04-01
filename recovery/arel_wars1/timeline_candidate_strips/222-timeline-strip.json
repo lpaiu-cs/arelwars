@@ -1,0 +1,47 @@
+{
+  "stem": "222",
+  "timelineKind": "linked-only-scatter",
+  "sequenceKind": "single-anchor-delta",
+  "eventCount": 1,
+  "stemDefaultDurationMs": null,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 0,
+    "reason": "linked-scatter",
+    "confidence": "low"
+  },
+  "eventFramePaths": [
+    "frames/222/00-g03-linked.png"
+  ],
+  "events": [
+    {
+      "groupIndex": 3,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 0,
+      "relation": null,
+      "tupleCount": 11,
+      "chunkIndexRange": [
+        0,
+        22
+      ],
+      "durationHintMs": 255,
+      "playbackDurationMs": 50,
+      "playbackSource": "event-donor",
+      "timingMarkers": [
+        "67ff000000"
+      ],
+      "timingValues": [
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
+      "framePath": "frames/222/00-g03-linked.png",
+      "playbackDonorStem": "225",
+      "playbackDonorScore": 12,
+      "playbackDonorGroupIndex": 9,
+      "playbackDonorTimelineKind": "linked-only-scatter"
+    }
+  ]
+}

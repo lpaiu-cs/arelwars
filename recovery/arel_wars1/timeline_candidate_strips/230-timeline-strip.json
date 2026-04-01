@@ -1,14 +1,14 @@
 {
   "stem": "230",
-  "timelineKind": "rising-anchor-run",
-  "sequenceKind": "has-contiguous-rise",
+  "timelineKind": "linked-only-scatter",
+  "sequenceKind": "multi-anchor-loop",
   "eventCount": 8,
   "stemDefaultDurationMs": 120,
   "loopSummary": {
-    "startEventIndex": 1,
-    "endEventIndex": 3,
-    "reason": "best-contiguous-run",
-    "confidence": "high"
+    "startEventIndex": 0,
+    "endEventIndex": 7,
+    "reason": "linked-scatter",
+    "confidence": "low"
   },
   "eventFramePaths": [
     "frames/230/00-g00-linked.png",
@@ -27,7 +27,7 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 15,
       "relation": null,
-      "tupleCount": 10,
+      "tupleCount": 13,
       "chunkIndexRange": [
         2,
         34
@@ -66,7 +66,7 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 13,
       "relation": null,
-      "tupleCount": 9,
+      "tupleCount": 13,
       "chunkIndexRange": [
         3,
         34
@@ -103,16 +103,16 @@
       "groupIndex": 2,
       "eventType": "linked",
       "linkType": "base-frame-delta",
-      "anchorFrameIndex": 14,
+      "anchorFrameIndex": 15,
       "relation": null,
-      "tupleCount": 10,
+      "tupleCount": 13,
       "chunkIndexRange": [
         0,
         34
       ],
       "durationHintMs": 255,
       "playbackDurationMs": 120,
-      "playbackSource": "anchor-record",
+      "playbackSource": "forward-fill",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -129,13 +129,11 @@
       "anchorRecordMarkers": [
         "67ff000000",
         "67ff000000",
-        "6778000000",
         "67ff000000"
       ],
       "anchorRecordTimingValues": [
         255,
         255,
-        120,
         255
       ],
       "framePath": "frames/230/02-g02-linked.png"
@@ -146,7 +144,7 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 15,
       "relation": null,
-      "tupleCount": 10,
+      "tupleCount": 13,
       "chunkIndexRange": [
         2,
         34
@@ -185,7 +183,7 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 13,
       "relation": null,
-      "tupleCount": 10,
+      "tupleCount": 13,
       "chunkIndexRange": [
         3,
         34
@@ -224,7 +222,7 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 14,
       "relation": null,
-      "tupleCount": 10,
+      "tupleCount": 13,
       "chunkIndexRange": [
         0,
         34
@@ -263,9 +261,9 @@
       "groupIndex": 6,
       "eventType": "linked",
       "linkType": "base-frame-delta",
-      "anchorFrameIndex": 13,
+      "anchorFrameIndex": 14,
       "relation": null,
-      "tupleCount": 10,
+      "tupleCount": 13,
       "chunkIndexRange": [
         3,
         34
@@ -291,12 +289,14 @@
       "anchorRecordMarkers": [
         "67ff000000",
         "67ff000000",
-        "6778000000"
+        "6778000000",
+        "67ff000000"
       ],
       "anchorRecordTimingValues": [
         255,
         255,
-        120
+        120,
+        255
       ],
       "framePath": "frames/230/06-g06-linked.png"
     },
@@ -306,7 +306,7 @@
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 14,
       "relation": null,
-      "tupleCount": 9,
+      "tupleCount": 12,
       "chunkIndexRange": [
         0,
         34
