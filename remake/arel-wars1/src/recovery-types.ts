@@ -30,3 +30,37 @@ export interface RecoveryCatalog {
   blockedFormats: RecoveryBlockedFormat[]
   webSafeAssets: string[]
 }
+
+export interface RecoveryTimelineRun {
+  groupIndices: number[]
+  anchorFrames?: number[]
+  anchorFrameIndex?: number
+  length: number
+}
+
+export interface RecoveryPreviewStem {
+  stem: string
+  sequenceKind: string
+  timelineKind: string
+  anchorFrameSequence: number[]
+  linkedGroupCount: number
+  overlayGroupCount: number
+  bestContiguousRun: RecoveryTimelineRun | null
+  timelineStrip: {
+    pngPath: string
+    jsonPath: string
+  }
+  sequenceSummaryPath: string
+  linkedSequencePngPath: string | null
+  overlaySequencePngPath: string | null
+}
+
+export interface RecoveryPreviewManifest {
+  generatedAt?: string | null
+  activeStemCount: number
+  sequenceKindCounts: Record<string, number>
+  timelineKindCounts: Record<string, number>
+  featuredStems: string[]
+  featuredEntries: RecoveryPreviewStem[]
+  stems: RecoveryPreviewStem[]
+}

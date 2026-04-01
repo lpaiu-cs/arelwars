@@ -94,6 +94,12 @@ python3 tools/arel_wars1/render_timeline_candidate_strips.py \
   --assets-root recovery/arel_wars1/apk_unzip/assets \
   --output recovery/arel_wars1/timeline_candidate_strips \
   --stems 209 215 226 228 230 084 240
+
+python3 tools/arel_wars1/export_runtime_preview.py \
+  --report recovery/arel_wars1/binary_asset_report.json \
+  --sequence-root recovery/arel_wars1/frame_sequence_candidates \
+  --timeline-root recovery/arel_wars1/timeline_candidate_strips \
+  --web-root remake/arel-wars1/public/recovery
 ```
 
 From `remake/arel-wars1/`:
@@ -114,6 +120,11 @@ npm run ios:sync
   Native Capacitor/Xcode project generated successfully.
   Local build is blocked until full Xcode is installed and selected.
   Current failure: `xcode-select: error: tool 'xcodebuild' requires Xcode`
+- Web Runtime
+  `sync:recovery` now exports `preview_manifest.json`, sequence summaries, and timeline strips into `remake/arel-wars1/public/recovery/analysis/`.
+  The Vite runtime reads those files to render:
+  - a Phaser-side rotating strip carousel for representative stems
+  - a DOM-side featured timeline gallery fed from the same manifest
 
 ## Immediate Next Targets
 
@@ -206,6 +217,9 @@ optional 5-byte control chunks may appear:
   - `215-timeline-strip.png` shows `single-anchor-cadence`: the same anchor frame `10` reused across a long sequence of tiny linked deltas before a final overlay event.
   - `226-timeline-strip.png` shows `mixed-anchor-overlay`: a long prefix of overlay-only events tied to frame `0`, then two linked anchor updates (`0`, then `5`).
   - `240-timeline-strip.png` confirms `overlay-track-only`: every event is unanchored and the chunk ranges expand from `46-47` to `49-51` without touching any base frame.
+- The runtime export now packages those results into `public/recovery/analysis/preview_manifest.json`.
+  - Current featured stems are `084`, `230`, `209`, `215`, `226`, `082`, and `203`.
+  - The manifest currently summarizes `21` active stems and `7` timeline classes for the web preview.
 - Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
   - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
   - `230-group00-base-frame-delta.png` confirms that one late-frame tail group is almost a direct frame delta, not a separate track.

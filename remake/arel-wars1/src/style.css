@@ -55,7 +55,8 @@ code {
 
 .hero-panel,
 .canvas-panel,
-.intel-panel {
+.intel-panel,
+.analysis-panel {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(220, 194, 135, 0.14);
@@ -72,7 +73,8 @@ code {
 }
 
 .hero-panel::after,
-.intel-panel::after {
+.intel-panel::after,
+.analysis-panel::after {
   content: '';
   position: absolute;
   inset: auto -5% -120px auto;
@@ -190,6 +192,11 @@ h2 {
   padding-bottom: 18px;
 }
 
+.analysis-panel {
+  margin-top: 18px;
+  padding-bottom: 20px;
+}
+
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -225,6 +232,87 @@ h2 {
   display: grid;
   gap: 12px;
   padding: 18px 22px 0;
+}
+
+.timeline-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px 22px 0;
+}
+
+.timeline-stat-card,
+.timeline-card {
+  border: 1px solid rgba(220, 194, 135, 0.14);
+  background: rgba(10, 14, 17, 0.52);
+}
+
+.timeline-stat-card {
+  padding: 14px 16px;
+}
+
+.timeline-stat-card span {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(231, 223, 204, 0.72);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.timeline-stat-card strong {
+  display: block;
+  margin-top: 8px;
+  color: #f3ecdf;
+  font-size: 1.25rem;
+}
+
+.timeline-gallery {
+  display: grid;
+  gap: 14px;
+  padding: 18px 22px 0;
+}
+
+.timeline-card {
+  padding: 16px;
+}
+
+.timeline-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timeline-card-header strong {
+  display: block;
+  color: #f4ead7;
+  font-size: 1.1rem;
+}
+
+.timeline-card-header p,
+.timeline-card-copy {
+  margin: 6px 0 0;
+  color: rgba(231, 223, 204, 0.78);
+}
+
+.timeline-card-copy {
+  margin-top: 12px;
+}
+
+.timeline-strip-frame {
+  margin-top: 14px;
+  overflow-x: auto;
+  border: 1px solid rgba(220, 194, 135, 0.14);
+  background: rgba(6, 9, 12, 0.86);
+  padding: 10px;
+}
+
+.timeline-strip-frame img {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: auto;
 }
 
 .script-card {
@@ -289,13 +377,16 @@ h2 {
   }
 
   .status-row,
-  .stat-grid {
+  .stat-grid,
+  .timeline-stats {
     grid-template-columns: 1fr;
   }
 
   .panel-header,
   .stat-grid,
-  .script-list {
+  .script-list,
+  .timeline-stats,
+  .timeline-gallery {
     padding-left: 18px;
     padding-right: 18px;
   }

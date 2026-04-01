@@ -1,14 +1,22 @@
 import Phaser from 'phaser'
+import type { RecoveryPreviewManifest, RecoveryPreviewStem } from '../recovery-types'
 
 const ICON_KEY = 'recovery-icon'
 
 export class RecoveryBootScene extends Phaser.Scene {
-  constructor() {
+  private readonly featuredEntries: RecoveryPreviewStem[]
+
+  constructor(previewManifest: RecoveryPreviewManifest | null = null) {
     super('RecoveryBootScene')
+    this.featuredEntries = previewManifest?.featuredEntries.slice(0, 3) ?? []
   }
 
   preload(): void {
     this.load.image(ICON_KEY, '/recovery/raw/res/drawable-hdpi/icon_normal.png')
+
+    this.featuredEntries.forEach((entry) => {
+      this.load.image(this.previewKey(entry.stem), entry.timelineStrip.pngPath)
+    })
   }
 
   create(): void {
@@ -40,7 +48,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       .text(
         80,
         148,
-        'Confirmed recoveries: ZT1 decompression, dialogue previews, PNG and OGG extraction.',
+        'Confirmed recoveries: PZX tail timelines, sequence candidates, and runtime strip previews.',
         {
           fontFamily: 'Trebuchet MS, sans-serif',
           fontSize: '16px',
@@ -49,34 +57,38 @@ export class RecoveryBootScene extends Phaser.Scene {
       )
       .setAlpha(0.9)
 
-    const frame = this.add.rectangle(width * 0.72, height * 0.58, 280, 280, 0x131d22, 0.9)
+    const frame = this.add.rectangle(width * 0.72, height * 0.58, 356, 286, 0x131d22, 0.9)
     frame.setStrokeStyle(2, 0xc09a5a, 0.3)
 
-    const icon = this.add.image(frame.x, frame.y - 18, ICON_KEY)
-    icon.setScale(3.2)
-    this.tweens.add({
-      targets: icon,
-      y: icon.y - 10,
-      duration: 2200,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.InOut',
-    })
-
-    this.add
-      .text(frame.x, frame.y + 104, 'Native sprite archives (.pzx)\nremain the main reverse-engineering target.', {
-        align: 'center',
-        fontFamily: 'Trebuchet MS, sans-serif',
-        fontSize: '16px',
-        color: '#cab892',
+    if (this.featuredEntries.length > 0) {
+      this.createPreviewCarousel(frame)
+    } else {
+      const icon = this.add.image(frame.x, frame.y - 18, ICON_KEY)
+      icon.setScale(3.2)
+      this.tweens.add({
+        targets: icon,
+        y: icon.y - 10,
+        duration: 2200,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.InOut',
       })
-      .setOrigin(0.5)
+
+      this.add
+        .text(frame.x, frame.y + 104, 'Native sprite archives (.pzx)\nremain the main reverse-engineering target.', {
+          align: 'center',
+          fontFamily: 'Trebuchet MS, sans-serif',
+          fontSize: '16px',
+          color: '#cab892',
+        })
+        .setOrigin(0.5)
+    }
 
     const milestones = [
-      '1. Recover PZX image decode',
-      '2. Recover MPL animation metadata',
-      '3. Map script events to scene actions',
-      '4. Replace placeholder board with recovered assets',
+      '1. Export runtime timeline manifests',
+      '2. Resolve packed pixel semantics in 179',
+      '3. Decode MPL bank switching and frame timing',
+      '4. Promote strip candidates into real sprite playback',
     ]
 
     milestones.forEach((line, index) => {
@@ -98,6 +110,73 @@ export class RecoveryBootScene extends Phaser.Scene {
       .setAlpha(0.94)
   }
 
+  private createPreviewCarousel(frame: Phaser.GameObjects.Rectangle): void {
+    const previewImage = this.add.image(frame.x, frame.y - 14, this.previewKey(this.featuredEntries[0].stem))
+    this.fitImageToBox(previewImage, 316, 176)
+
+    const label = this.add
+      .text(frame.x - 148, frame.y + 96, '', {
+        fontFamily: 'Georgia, serif',
+        fontSize: '18px',
+        color: '#f0dfc0',
+      })
+      .setAlpha(0.98)
+
+    const detail = this.add
+      .text(frame.x - 148, frame.y + 124, '', {
+        fontFamily: 'Trebuchet MS, sans-serif',
+        fontSize: '14px',
+        color: '#cab892',
+        wordWrap: { width: 300 },
+      })
+      .setAlpha(0.94)
+
+    const footer = this.add
+      .text(frame.x - 148, frame.y + 166, '', {
+        fontFamily: 'Trebuchet MS, sans-serif',
+        fontSize: '13px',
+        color: '#92a09d',
+      })
+      .setAlpha(0.9)
+
+    const applyEntry = (entry: RecoveryPreviewStem): void => {
+      previewImage.setTexture(this.previewKey(entry.stem))
+      this.fitImageToBox(previewImage, 316, 176)
+      label.setText(`Stem ${entry.stem}`)
+      detail.setText(`${this.formatKind(entry.timelineKind)} / anchors ${this.describeAnchors(entry)}`)
+      footer.setText(`${entry.linkedGroupCount} linked groups, ${entry.overlayGroupCount} overlays`)
+    }
+
+    applyEntry(this.featuredEntries[0])
+
+    if (this.featuredEntries.length < 2) {
+      return
+    }
+
+    let currentIndex = 0
+    this.time.addEvent({
+      delay: 2600,
+      loop: true,
+      callback: () => {
+        currentIndex = (currentIndex + 1) % this.featuredEntries.length
+        this.tweens.add({
+          targets: [previewImage, label, detail, footer],
+          alpha: 0.08,
+          duration: 180,
+          yoyo: false,
+          onComplete: () => {
+            applyEntry(this.featuredEntries[currentIndex])
+            this.tweens.add({
+              targets: [previewImage, label, detail, footer],
+              alpha: 1,
+              duration: 220,
+            })
+          },
+        })
+      },
+    })
+  }
+
   private drawGrid(width: number, height: number): void {
     const graphics = this.add.graphics()
     graphics.lineStyle(1, 0x243138, 0.48)
@@ -109,5 +188,29 @@ export class RecoveryBootScene extends Phaser.Scene {
     for (let y = 0; y <= height; y += 48) {
       graphics.lineBetween(0, y, width, y)
     }
+  }
+
+  private previewKey(stem: string): string {
+    return `timeline-preview-${stem}`
+  }
+
+  private fitImageToBox(image: Phaser.GameObjects.Image, maxWidth: number, maxHeight: number): void {
+    const width = image.width || 1
+    const height = image.height || 1
+    const scale = Math.min(maxWidth / width, maxHeight / height)
+    image.setScale(scale)
+  }
+
+  private formatKind(value: string): string {
+    return value.replaceAll('-', ' ')
+  }
+
+  private describeAnchors(entry: RecoveryPreviewStem): string {
+    if (entry.anchorFrameSequence.length === 0) {
+      return 'overlay only'
+    }
+
+    const preview = entry.anchorFrameSequence.slice(0, 4).join(' / ')
+    return entry.anchorFrameSequence.length > 4 ? `${preview} ...` : preview
   }
 }

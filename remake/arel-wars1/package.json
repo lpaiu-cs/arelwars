@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "sync:recovery": "python3 ../../tools/arel_wars1/extract_assets.py --apk ../../arel_wars1/arel_wars_1.apk --output ../../recovery/arel_wars1 --web-root public/recovery",
+    "sync:recovery": "python3 ../../tools/arel_wars1/extract_assets.py --apk ../../arel_wars1/arel_wars_1.apk --output ../../recovery/arel_wars1 --web-root public/recovery && python3 ../../tools/arel_wars1/export_runtime_preview.py --report ../../recovery/arel_wars1/binary_asset_report.json --sequence-root ../../recovery/arel_wars1/frame_sequence_candidates --timeline-root ../../recovery/arel_wars1/timeline_candidate_strips --web-root public/recovery",
     "dev": "npm run sync:recovery && vite",
     "build": "npm run sync:recovery && tsc && vite build",
     "preview": "vite preview",

@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import './style.css'
 import { RecoveryBootScene } from './scenes/RecoveryBootScene'
-import type { RecoveryCatalog } from './recovery-types'
+import type { RecoveryCatalog, RecoveryPreviewManifest, RecoveryPreviewStem } from './recovery-types'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 
@@ -56,48 +56,56 @@ app.innerHTML = `
         <div id="scripts" class="script-list"></div>
       </aside>
     </section>
+
+    <section class="analysis-panel">
+      <div class="panel-header">
+        <h2>Timeline Candidates</h2>
+        <p id="timeline-summary">Runtime preview manifest not loaded yet.</p>
+      </div>
+      <div id="timeline-stats" class="timeline-stats"></div>
+      <div id="timeline-gallery" class="timeline-gallery"></div>
+    </section>
   </div>
 `
 
-const game = new Phaser.Game({
-  type: Phaser.AUTO,
-  parent: 'game-root',
-  width: 960,
-  height: 540,
-  backgroundColor: '#0e1418',
-  scene: [RecoveryBootScene],
-  scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-  },
-})
+let game: Phaser.Game | null = null
 
-void loadCatalog()
+void bootstrap()
 
-async function loadCatalog(): Promise<void> {
+async function bootstrap(): Promise<void> {
   const stage = document.querySelector<HTMLElement>('#current-stage')
   const summary = document.querySelector<HTMLElement>('#catalog-summary')
   const inventory = document.querySelector<HTMLElement>('#inventory')
   const scripts = document.querySelector<HTMLElement>('#scripts')
+  const timelineSummary = document.querySelector<HTMLElement>('#timeline-summary')
+  const timelineStats = document.querySelector<HTMLElement>('#timeline-stats')
+  const timelineGallery = document.querySelector<HTMLElement>('#timeline-gallery')
 
-  if (!stage || !summary || !inventory || !scripts) {
+  if (!stage || !summary || !inventory || !scripts || !timelineSummary || !timelineStats || !timelineGallery) {
     return
   }
 
-  try {
-    const response = await fetch('/recovery/catalog.json')
-    if (!response.ok) {
-      throw new Error(`Catalog request failed with ${response.status}`)
-    }
+  const [catalogResult, previewResult] = await Promise.allSettled([
+    fetchJson<RecoveryCatalog>('/recovery/catalog.json'),
+    fetchJson<RecoveryPreviewManifest>('/recovery/analysis/preview_manifest.json'),
+  ])
 
-    const catalog = (await response.json()) as RecoveryCatalog
-    stage.textContent = 'ZT1 decoded, runtime shell online'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.`
+  const previewManifest = previewResult.status === 'fulfilled' ? previewResult.value : null
+  game = createGame(previewManifest)
+
+  if (catalogResult.status === 'fulfilled') {
+    const catalog = catalogResult.value
+    stage.textContent = previewManifest
+      ? `Timeline candidates indexed (${previewManifest.activeStemCount} stems)`
+      : 'ZT1 decoded, runtime shell online'
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
       statCard('ZT1 Total', String(catalog.inventory.zt1Total)),
       statCard('Web-safe', String(catalog.inventory.webSafeAssetCount)),
+      statCard('Timeline Stems', String(previewManifest?.activeStemCount ?? 0)),
+      statCard('Timeline Kinds', String(Object.keys(previewManifest?.timelineKindCounts ?? {}).length)),
       statCard('Asset Roots', String(Object.keys(catalog.inventory.assetDirectories).length)),
     ].join('')
 
@@ -115,13 +123,62 @@ async function loadCatalog(): Promise<void> {
         `,
       )
       .join('')
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
+  } else {
+    const message = catalogResult.reason instanceof Error ? catalogResult.reason.message : 'Unknown error'
     stage.textContent = 'Catalog load failed'
     summary.textContent = message
     inventory.innerHTML = statCard('Status', 'Failed')
     scripts.innerHTML = `<article class="script-card error-card"><p>${escapeHtml(message)}</p></article>`
   }
+
+  renderTimelinePreview(previewManifest, timelineSummary, timelineStats, timelineGallery)
+}
+
+function createGame(previewManifest: RecoveryPreviewManifest | null): Phaser.Game {
+  return new Phaser.Game({
+    type: Phaser.AUTO,
+    parent: 'game-root',
+    width: 960,
+    height: 540,
+    backgroundColor: '#0e1418',
+    scene: [new RecoveryBootScene(previewManifest)],
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+  })
+}
+
+function renderTimelinePreview(
+  previewManifest: RecoveryPreviewManifest | null,
+  summary: HTMLElement,
+  stats: HTMLElement,
+  gallery: HTMLElement,
+): void {
+  if (!previewManifest) {
+    summary.textContent = 'Timeline preview manifest is not available yet.'
+    stats.innerHTML = statCard('Timeline', 'Unavailable')
+    gallery.innerHTML = `<article class="timeline-card error-card"><p>Run \`npm run sync:recovery\` after regenerating timeline strips.</p></article>`
+    return
+  }
+
+  summary.textContent = `${previewManifest.activeStemCount} active stems, ${Object.keys(previewManifest.timelineKindCounts).length} timeline classes, featured runtime strips ready.`
+  stats.innerHTML = [
+    timelineStatCard('Active Stems', String(previewManifest.activeStemCount)),
+    timelineStatCard('Timeline Kinds', String(Object.keys(previewManifest.timelineKindCounts).length)),
+    timelineStatCard('Featured', String(previewManifest.featuredEntries.length)),
+    timelineStatCard('Overlay Only', String(previewManifest.timelineKindCounts['overlay-track-only'] ?? 0)),
+  ].join('')
+
+  gallery.innerHTML = previewManifest.featuredEntries.map((entry) => timelineCard(entry)).join('')
+}
+
+async function fetchJson<T>(path: string): Promise<T> {
+  const response = await fetch(path)
+  if (!response.ok) {
+    throw new Error(`${path} request failed with ${response.status}`)
+  }
+  return (await response.json()) as T
 }
 
 function statCard(label: string, value: string): string {
@@ -131,6 +188,48 @@ function statCard(label: string, value: string): string {
       <strong>${value}</strong>
     </article>
   `
+}
+
+function timelineStatCard(label: string, value: string): string {
+  return `
+    <article class="timeline-stat-card">
+      <span>${label}</span>
+      <strong>${value}</strong>
+    </article>
+  `
+}
+
+function timelineCard(entry: RecoveryPreviewStem): string {
+  return `
+    <article class="timeline-card">
+      <header class="timeline-card-header">
+        <div>
+          <strong>Stem ${entry.stem}</strong>
+          <p>${escapeHtml(formatKind(entry.timelineKind))}</p>
+        </div>
+        <span class="pill">${escapeHtml(formatKind(entry.sequenceKind))}</span>
+      </header>
+      <p class="timeline-card-copy">
+        Anchors ${escapeHtml(describeAnchors(entry))}. Linked ${entry.linkedGroupCount}, overlays ${entry.overlayGroupCount}.
+      </p>
+      <div class="timeline-strip-frame">
+        <img src="${entry.timelineStrip.pngPath}" alt="Timeline strip for stem ${entry.stem}" loading="lazy" />
+      </div>
+    </article>
+  `
+}
+
+function formatKind(value: string): string {
+  return value.replaceAll('-', ' ')
+}
+
+function describeAnchors(entry: RecoveryPreviewStem): string {
+  if (entry.anchorFrameSequence.length === 0) {
+    return 'overlay only'
+  }
+
+  const preview = entry.anchorFrameSequence.slice(0, 5).join(' / ')
+  return entry.anchorFrameSequence.length > 5 ? `${preview} ...` : preview
 }
 
 function escapeHtml(value: string): string {
@@ -143,5 +242,5 @@ function escapeHtml(value: string): string {
 }
 
 window.addEventListener('beforeunload', () => {
-  game.destroy(true)
+  game?.destroy(true)
 })
