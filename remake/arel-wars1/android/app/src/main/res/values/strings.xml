@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Arel Wars Recovery</string>
+    <string name="title_activity_main">Arel Wars Recovery</string>
+    <string name="package_name">com.arelwars.recovery</string>
+    <string name="custom_url_scheme">com.arelwars.recovery</string>
+</resources>
