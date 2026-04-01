@@ -167,6 +167,7 @@
   - `CGxPZxEffectExFrame::__Draw`는 plain draw path에서 바로 이 `selector + parameter`를 소비한다.
   - exact translation table은 `0x65->1(Blend)`, `0x66->1(Blend)`, `0x67->2(Add)`, `0x68->3(Sub)`, `0x69->6(Lighten)`, `0x6a->7(Darken)`, `0x6b->8(Different)`, `0x6c->9(Negative)`, `0x6d->10(Gray)`, `0x6e->11(RGB)`, `0x6f->12(RGBHalf)`, `0x70->13(RGBAdd)`, `0x71..0x74->19(Fx)`, `0x7f->4(Void)`다.
   - `SetBlendFunc`와 `DrawNative`가 이 drawOp 번호를 같은 `g_func*` slot(`Blend/Add/Void/Lighten/Darken/RGBAdd/Fx`)으로 묶는 것도 확인했다.
+  - `SetZeroBlendFunc`도 같은 op 번호를 `g_funcZero* / g_funcClipZero*` pair(`ZeroBlend/ZeroAdd/ZeroVoid/ZeroLighten/ZeroDarken/ZeroRGBAdd/ZeroFx`)로 내린다.
   - `0x71..0x74`는 전부 `drawOp 19`로 합쳐지고, 이때 trailing `u32` 대신 `selector - 0x71`이 runtime parameter로 들어가므로 module selector `0..3`으로 읽는 편이 맞다.
   - `CGxZeroEffectExPZFMgr::ChangeModule`는 실제로 그 module slot별 bitmap pointer array를 갈아끼운다.
   - 따라서 `66/67/70/71/7f`는 `EffectEx` family에서는 executable opcode가 아니라 draw/module selector다.
