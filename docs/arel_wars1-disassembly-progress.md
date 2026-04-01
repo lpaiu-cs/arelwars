@@ -106,6 +106,16 @@
 - `CGxEffectPZDMgr::LoadImage*`
   - `extraLen == 1`이고 그 1-byte 값이 `0x65..0x74`이면 effected-bitmap 경로 대신 normal image load로 빠진다.
   - longer payload는 `FindEffectedImage -> AddNewEFFECTED_BITMAP` 경로로 들어가고, 그 과정에서 subframe의 `extraPayload`가 그대로 복제된다.
+- `PZD`
+  - `field4`가 native `PZD` subresource라는 점을 자산측 parser로 완전히 닫았다.
+  - `type 8` (`header[0] = 0x08`)은 `205/205` stems에서 `PZD` 구간 내부 zlib stream이 정확히 하나만 나오고, 그 decoded payload는 `first-stream`이며 chunk count가 `contentCount`와 항상 같다.
+  - `type 7` (`header[0] = 0x07`)은 `48/48` stems에서 `PZD` 구간 내부 zlib stream이 정확히 `contentCount`개 나오고, 각 decoded payload는 standalone `row-stream`이다.
+  - 즉 runtime-equivalent 기준으로 `subFrameIndex -> PZD image` 연결은 정리됐다.
+    - `type 8`: `subFrameIndex == first-stream chunk index`
+    - `type 7`: `subFrameIndex == file-order row-stream index`
+- `PZF`
+  - `PZD image count`를 raw `PZF` parser의 `max_subframe_index` bound로 다시 넣으면 outlier가 사라진다.
+  - 현재 집계는 `exact-max-plus-one = 244`, `in-range = 7`, `empty = 2`, `out-of-range = 0`이다.
 
 ### Asset-side Validation
 
@@ -116,19 +126,23 @@
 - 즉 현재 `PZF extraPayload`는 두 층으로 읽는 게 맞다.
   - outer marker / module selector (`66/67...`, single-byte `0x65..0x74`)
   - inner effect opcode sequence (`<= 4` bytes)
+- report 쪽에도 `embeddedPzd*` summary를 추가했다.
+  - `embeddedPzdTypeCounts = {7: 48, 8: 205}`
+  - `embeddedPzdLayoutCounts = {row-stream-list: 48, first-stream-sheet: 205}`
+  - `embeddedPzdPzfRelationCounts = {exact-max-plus-one: 244, in-range: 7, empty: 2}`
 
 ### Open
 
-- `PZD` 쪽은 아직 완전히 닫히지 않았다.
-  - `header=07` 계열 (`180.pzx`)은 palette block 뒤 table entry를 `entry >> 8`로 읽으면 file 내부의 image-like block 위치가 나오는 흔적이 있다.
-  - 하지만 `header=08` 계열 (`010/082/208`)은 같은 규칙으로 바로 닫히지 않는다.
-  - 즉 `PZD` resource는 variant별 index encoding이나 stream-wrapper semantics 차이가 남아 있다.
+- raw `PZD` index table entry encoding은 아직 완전히 닫히지 않았다.
+  - `type 7`의 일부 샘플은 palette block 뒤 `u32 >> 8`이 plausible offset처럼 보인다.
+  - 하지만 `type 8`은 같은 방식으로 안 닫힌다.
+  - 즉 native runtime-equivalent decode는 끝났지만, `SeekIndexTable`가 읽는 raw table 자체는 variant별 encoding 차이가 남아 있다.
 
 ### Next Focus
 
-1. `header=07` vs `header=08` `PZD` resource를 분리해서 index table encoding을 고정한다.
-2. `subFrameIndex -> PZD image -> first-stream chunk` 연결을 variant별로 닫는다.
-3. `66/67 + u32` marker family가 effect opcode envelope인지 module selector인지, `ChangeModule` / effect loaders를 기준으로 더 정리한다.
+1. `type 7` vs `type 8` raw `PZD` index table encoding을 고정한다.
+2. `66/67 + u32` marker family가 effect opcode envelope인지 module selector인지, `ChangeModule` / effect loaders를 기준으로 더 정리한다.
+3. `PZDParser::Open / DecodeImageData`의 palette branch(`bit0/bit4/bit6`)를 실제 raw byte layout과 다시 맞춘다.
 
 ### Refresh Commands
 

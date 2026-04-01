@@ -17,6 +17,7 @@ from formats import (
     read_pzx_indexed_animation_clip_stream,
     read_pzx_indexed_pzf_frame_stream,
     read_pzx_meta_sections,
+    read_pzx_pzd_resource,
     read_pzx_row_stream,
     read_pzx_root_resource_offsets,
     read_pzx_simple_placement_stream,
@@ -218,6 +219,83 @@ def summarize_embedded_resource(resource) -> dict[str, object]:
     }
 
 
+def summarize_embedded_pzd_resource(resource) -> dict[str, object]:
+    summary = {
+        "kind": "pzd",
+        "offset": resource.offset,
+        "endOffset": resource.end_offset,
+        "typeCode": resource.type_code,
+        "flags": resource.flags,
+        "contentCount": resource.content_count,
+        "layout": resource.layout,
+        "paletteProbe": resource.palette_probe,
+        "zlibCount": len(resource.zlib_streams),
+        "zlibOffsetsPreview": [stream.offset for stream in resource.zlib_streams[:12]],
+        "zlibOffsetsTail": [stream.offset for stream in resource.zlib_streams[-6:]],
+        "zlibDecodedLenRange": (
+            [
+                min(stream.decoded_len for stream in resource.zlib_streams),
+                max(stream.decoded_len for stream in resource.zlib_streams),
+            ]
+            if resource.zlib_streams
+            else None
+        ),
+    }
+
+    if resource.type_code == 7:
+        widths = [row.width for row in resource.row_streams if row.width is not None]
+        heights = [row.height for row in resource.row_streams]
+        max_index = max(
+            max(max(row.decoded) for row in stream.rows if row.decoded)
+            for stream in resource.row_streams
+        )
+        summary.update(
+            {
+                "imageCount": len(resource.row_streams),
+                "rowWidthRange": [min(widths), max(widths)] if widths else None,
+                "rowHeightRange": [min(heights), max(heights)] if heights else None,
+                "maxDecodedIndex": max_index,
+                "rowPreview": [
+                    {
+                        "index": index,
+                        "offset": resource.zlib_streams[index].offset,
+                        "width": row.width,
+                        "height": row.height,
+                        "decodedPixelTotal": row.decoded_pixel_count,
+                    }
+                    for index, row in enumerate(resource.row_streams[:10])
+                ],
+            }
+        )
+    elif resource.type_code == 8 and resource.first_stream is not None:
+        first_stream = resource.first_stream
+        widths = [chunk.width for chunk in first_stream.chunks]
+        heights = [chunk.height for chunk in first_stream.chunks]
+        max_index = max(max(row.decoded) for chunk in first_stream.chunks for row in chunk.rows)
+        summary.update(
+            {
+                "imageCount": len(first_stream.chunks),
+                "firstStreamOffset": resource.zlib_streams[0].offset if resource.zlib_streams else None,
+                "firstStreamTableSpan": first_stream.table_span,
+                "chunkWidthRange": [min(widths), max(widths)],
+                "chunkHeightRange": [min(heights), max(heights)],
+                "maxDecodedIndex": max_index,
+                "chunkOffsetsPreview": list(first_stream.offsets[:12]),
+                "chunkPreview": [
+                    {
+                        "index": chunk.index,
+                        "width": chunk.width,
+                        "height": chunk.height,
+                        "declaredPayloadLen": chunk.declared_payload_len,
+                    }
+                    for chunk in first_stream.chunks[:10]
+                ],
+            }
+        )
+
+    return summary
+
+
 def summarize_embedded_pza_resource(resource, streams: list) -> dict[str, object] | None:
     decoded = read_pzx_indexed_animation_clip_stream(resource.payload, resource.index_offsets)
     if decoded is None:
@@ -309,7 +387,12 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
     }
 
 
-def summarize_embedded_pzf_resource(resource, streams: list) -> dict[str, object]:
+def summarize_embedded_pzf_resource(
+    resource,
+    streams: list,
+    *,
+    max_subframe_index: int | None = None,
+) -> dict[str, object]:
     matched_stream_indices = [
         index for index, stream in enumerate(streams[:12]) if stream.decoded == resource.payload
     ]
@@ -319,7 +402,12 @@ def summarize_embedded_pzf_resource(resource, streams: list) -> dict[str, object
         "matchedZlibStreamIndices": matched_stream_indices,
     }
 
-    decoded = read_pzx_indexed_pzf_frame_stream(resource.payload, resource.index_offsets, resource.format_variant)
+    decoded = read_pzx_indexed_pzf_frame_stream(
+        resource.payload,
+        resource.index_offsets,
+        resource.format_variant,
+        max_subframe_index=max_subframe_index,
+    )
     if decoded is None:
         return {
             **summary,
@@ -550,8 +638,10 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     animation_clip_summary: dict[str, object] | None = None
     animation_clip_summaries: list[dict[str, object]] = []
     embedded_resource_summaries: list[dict[str, object]] = []
+    embedded_pzd_summary: dict[str, object] | None = None
     embedded_pzf_summary: dict[str, object] | None = None
     embedded_pza_summary: dict[str, object] | None = None
+    embedded_pzf_pzd_relation: dict[str, object] | None = None
     embedded_pzf_animation_relation: dict[str, object] | None = None
     embedded_pzf_frame_record_relation: dict[str, object] | None = None
 
@@ -617,9 +707,21 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
 
     root_resource_offsets = read_pzx_root_resource_offsets(data)
     if root_resource_offsets is not None:
+        embedded_pzd = read_pzx_pzd_resource(data, root_resource_offsets[0], root_resource_offsets[1])
+        if embedded_pzd is not None:
+            embedded_pzd_summary = summarize_embedded_pzd_resource(embedded_pzd)
+            embedded_resource_summaries.append(embedded_pzd_summary)
+
         embedded_pzf = read_pzx_embedded_resource(data, root_resource_offsets[1], "pzf")
         if embedded_pzf is not None:
-            embedded_pzf_summary = summarize_embedded_pzf_resource(embedded_pzf, streams)
+            max_subframe_index = None
+            if embedded_pzd_summary is not None:
+                max_subframe_index = int(embedded_pzd_summary["contentCount"]) - 1
+            embedded_pzf_summary = summarize_embedded_pzf_resource(
+                embedded_pzf,
+                streams,
+                max_subframe_index=max_subframe_index,
+            )
             embedded_resource_summaries.append(embedded_pzf_summary)
 
         embedded_pza = read_pzx_embedded_resource(data, root_resource_offsets[2], "pza")
@@ -627,6 +729,26 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             embedded_pza_summary = summarize_embedded_pza_resource(embedded_pza, streams)
             if embedded_pza_summary is not None:
                 embedded_resource_summaries.append(embedded_pza_summary)
+
+        if embedded_pzd_summary is not None and embedded_pzf_summary is not None:
+            subframe_index_range = embedded_pzf_summary.get("subFrameIndexRange")
+            image_count = int(embedded_pzd_summary["contentCount"])
+            if subframe_index_range is None:
+                relation = "empty"
+                max_subframe_index = None
+            else:
+                max_subframe_index = int(subframe_index_range[1])
+                if max_subframe_index + 1 == image_count:
+                    relation = "exact-max-plus-one"
+                elif max_subframe_index < image_count:
+                    relation = "in-range"
+                else:
+                    relation = "out-of-range"
+            embedded_pzf_pzd_relation = {
+                "relation": relation,
+                "pzdImageCount": image_count,
+                "maxSubFrameIndex": max_subframe_index,
+            }
 
         if embedded_pzf_summary is not None and embedded_pza_summary is not None:
             max_frame_index = int(embedded_pza_summary["frameIndexRange"][1])
@@ -688,8 +810,10 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
         "animationClipStream": animation_clip_summary,
         "animationClipStreams": animation_clip_summaries,
         "embeddedResources": embedded_resource_summaries,
+        "embeddedPzd": embedded_pzd_summary,
         "embeddedPzf": embedded_pzf_summary,
         "embeddedPza": embedded_pza_summary,
+        "embeddedPzfPzdRelation": embedded_pzf_pzd_relation,
         "embeddedPzfAnimationRelation": embedded_pzf_animation_relation,
         "embeddedPzfFrameRecordRelation": embedded_pzf_frame_record_relation,
     }
@@ -998,6 +1122,45 @@ def main() -> None:
         for entry in embedded_pzf_parsed_entries
         if entry["bboxFrameCount"] is not None
     )
+    embedded_pzd_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "offset": entry["embeddedPzd"]["offset"],
+            "endOffset": entry["embeddedPzd"]["endOffset"],
+            "typeCode": entry["embeddedPzd"]["typeCode"],
+            "flags": entry["embeddedPzd"]["flags"],
+            "contentCount": entry["embeddedPzd"]["contentCount"],
+            "layout": entry["embeddedPzd"]["layout"],
+            "paletteProbe": entry["embeddedPzd"]["paletteProbe"],
+            "zlibCount": entry["embeddedPzd"]["zlibCount"],
+            "imageCount": entry["embeddedPzd"]["imageCount"],
+            "maxDecodedIndex": entry["embeddedPzd"]["maxDecodedIndex"],
+        }
+        for entry in pzx_entries
+        if entry.get("embeddedPzd") is not None
+    ]
+    embedded_pzd_type_counts = Counter(int(entry["typeCode"]) for entry in embedded_pzd_entries)
+    embedded_pzd_layout_counts = Counter(str(entry["layout"]) for entry in embedded_pzd_entries)
+    embedded_pzd_zlib_count_distribution = Counter(int(entry["zlibCount"]) for entry in embedded_pzd_entries)
+    embedded_pzd_content_count_range = (
+        [
+            min(int(entry["contentCount"]) for entry in embedded_pzd_entries),
+            max(int(entry["contentCount"]) for entry in embedded_pzd_entries),
+        ]
+        if embedded_pzd_entries
+        else None
+    )
+    embedded_pzd_relation_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "relation": entry["embeddedPzfPzdRelation"]["relation"],
+            "pzdImageCount": entry["embeddedPzfPzdRelation"]["pzdImageCount"],
+            "maxSubFrameIndex": entry["embeddedPzfPzdRelation"]["maxSubFrameIndex"],
+        }
+        for entry in pzx_entries
+        if entry.get("embeddedPzfPzdRelation") is not None
+    ]
+    embedded_pzd_relation_counts = Counter(entry["relation"] for entry in embedded_pzd_relation_entries)
     embedded_pza_entries = [
         {
             "stem": Path(str(entry["path"])).stem,
@@ -1201,6 +1364,14 @@ def main() -> None:
             "animationClipYRange": animation_y_range,
             "animationClipNonzeroControlCount": animation_nonzero_control_count,
             "animationClipPreview": animation_entries[:12],
+            "embeddedPzdPzxCount": len(embedded_pzd_entries),
+            "embeddedPzdPreview": embedded_pzd_entries[:12],
+            "embeddedPzdTypeCounts": dict(sorted(embedded_pzd_type_counts.items())),
+            "embeddedPzdLayoutCounts": dict(sorted(embedded_pzd_layout_counts.items())),
+            "embeddedPzdZlibCountDistribution": dict(sorted(embedded_pzd_zlib_count_distribution.items())),
+            "embeddedPzdContentCountRange": embedded_pzd_content_count_range,
+            "embeddedPzdPzfRelationCounts": dict(sorted(embedded_pzd_relation_counts.items())),
+            "embeddedPzdPzfRelationPreview": embedded_pzd_relation_entries[:12],
             "embeddedPzfPzxCount": len(embedded_pzf_entries),
             "embeddedPzfPreview": embedded_pzf_entries[:12],
             "embeddedPzfParsedPzxCount": len(embedded_pzf_parsed_entries),
@@ -1248,11 +1419,14 @@ def main() -> None:
         "findings": [
             "All PZX files start with magic 50 5a 58 01 ('PZX\\x01').",
             "Many PZX files contain one or more embedded zlib streams.",
-            "For 205 PZX files, the first decoded zlib stream is a table of 32-bit chunk offsets followed by chunk payloads.",
+            f"Root field4 now resolves cleanly as the native PZD subresource for all {len(embedded_pzd_entries)} PZX files.",
+            f"PZD splits into two native layouts with no leftovers: type 7 = {embedded_pzd_type_counts.get(7, 0)} stems and type 8 = {embedded_pzd_type_counts.get(8, 0)} stems.",
+            f"Every type 8 PZD region contains exactly one zlib stream, and its decoded first-stream chunk count always equals contentCount ({embedded_pzd_type_counts.get(8, 0)} / {embedded_pzd_type_counts.get(8, 0)} stems).",
+            f"Every type 7 PZD region contains exactly contentCount standalone rowstreams in file order ({embedded_pzd_type_counts.get(7, 0)} / {embedded_pzd_type_counts.get(7, 0)} stems).",
             "Decoded variant=8 chunk records start with width(u16), height(u16), a CD-CD-CD tagged mode word (usually 02 or 04), declared payload length(u32), and reserved zero(u32).",
             "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using skip(u16), literal(opcode 0x80nn + nn bytes), and repeat(opcode 0xC0nn + one value byte repeated nn times).",
             "Some chunks start with FD FF before the first row. Rows are separated by FE FF, and chunks end with a trailing FFFF sentinel after the final FE FF.",
-            "Variant=7 assets such as 180.pzx expose the same row-oriented RLE directly as standalone zlib streams without the outer chunk header.",
+            "Type 7 PZD assets such as 180.pzx expose the same row-oriented RLE directly as standalone zlib streams without the outer chunk header.",
             "179.pzx stream 1 is a simple 30-record placement table: each 10-byte record selects one chunk and places it at signed x/y coordinates, covering all 30 decoded chunks exactly once.",
             "For 61 paired MPL files, actualWordCount equals 2 * (maxDecodedIndex + 1) + 6, consistent with a 6-word header plus two palette banks.",
             "229.pzx uses only indices 0..38 while its MPL carries 148 colors per bank, so at least one asset family keeps oversized palette banks instead of trimming them to the exact max index.",
@@ -1266,6 +1440,7 @@ def main() -> None:
             f"Disassembly now matches those PZF extras to native frame fields: EndDecodeFrame stores extraLen + extraPtr per subframe, effect loaders compare only opcode bytes <= 4, and the parsed opcode histogram is {dict(sorted(embedded_pzf_effect_opcode_counts.items()))}.",
             f"Single-byte PZF extras in the 0x65..0x74 range also occur as their own family ({dict(sorted(embedded_pzf_single_byte_module_counts.items()))}); native effect loaders treat len=1 values in that range as a separate fast path from the longer effect-payload path.",
             f"Bounding-box metadata is native PZF frame-local data rather than a separate tail track: parsed bbox totals range {embedded_pzf_bbox_total_range[0] if embedded_pzf_bbox_total_range else 'n/a'}..{embedded_pzf_bbox_total_range[1] if embedded_pzf_bbox_total_range else 'n/a'} and appear in {embedded_pzf_total_bbox_frame_count} frames overall.",
+            f"Once PZD image-count bounds are applied back into the raw PZF parser, subFrameIndex stays inside the native PZD image pool for every parsed stem: exact max+1 match={embedded_pzd_relation_counts.get('exact-max-plus-one', 0)}, in-range={embedded_pzd_relation_counts.get('in-range', 0)}, empty={embedded_pzd_relation_counts.get('empty', 0)}, out-of-range={embedded_pzd_relation_counts.get('out-of-range', 0)}.",
             f"The previous frame-record heuristic overlaps the native PZF index table directly: {len(embedded_pzf_offset_prefix_stems)} stems already have frame-record offset previews that prefix-match the raw PZF frame offsets.",
             f"The trailing tails now split into {frame_meta_section_count} marker-delimited sections. {frame_meta_marker_counts.get('67ff000000', 0)} use 67 FF 00 00 00 and {frame_meta_marker_counts.get('6778000000', 0)} use 67 78 00 00 00.",
             f"{len(frame_meta_exact_stems)} stems already expose exact-fit tail subsections that decode as 7-byte flagged tuples or simple 6-byte tuples, so at least part of the secondary metadata is structured placement data rather than opaque blobs.",

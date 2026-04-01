@@ -328,6 +328,41 @@ class PzxEmbeddedResource:
     payload: bytes
 
 
+@dataclass(frozen=True)
+class PzxPzdZlibStream:
+    index: int
+    offset: int
+    consumed: int
+    decoded_len: int
+
+
+@dataclass(frozen=True)
+class PzxPzdResource:
+    offset: int
+    end_offset: int
+    type_code: int
+    content_count: int
+    flags: int
+    palette_probe: int | None
+    zlib_streams: tuple[PzxPzdZlibStream, ...]
+    row_streams: tuple[PzxRowStream, ...]
+    first_stream: PzxFirstStream | None
+
+    @property
+    def layout(self) -> str:
+        if self.type_code == 7:
+            return "row-stream-list"
+        if self.type_code == 8:
+            return "first-stream-sheet"
+        return "unknown"
+
+    @property
+    def image_count(self) -> int:
+        if self.first_stream is not None:
+            return len(self.first_stream.chunks)
+        return len(self.row_streams)
+
+
 def read_zt1(data: bytes) -> Zt1File:
     if len(data) < 8:
         raise ValueError("ZT1 payload is too short")
@@ -859,6 +894,7 @@ def _read_pzx_pzf_frame_exact(
     start: int,
     end: int,
     format_variant: int,
+    max_subframe_index: int | None = None,
 ) -> PzxPzfFrame | None:
     if not (0 <= start < end <= len(payload)):
         return None
@@ -904,6 +940,8 @@ def _read_pzx_pzf_frame_exact(
             return None
 
         subframe_index = struct.unpack("<H", payload[position : position + 2])[0]
+        if max_subframe_index is not None and subframe_index > max_subframe_index:
+            return None
         x = struct.unpack("<h", payload[position + 2 : position + 4])[0]
         y = struct.unpack("<h", payload[position + 4 : position + 6])[0]
         extra_flag = payload[position + 6]
@@ -1034,6 +1072,8 @@ def read_pzx_indexed_pzf_frame_stream(
     payload: bytes,
     frame_offsets: tuple[int, ...] | list[int],
     format_variant: int,
+    *,
+    max_subframe_index: int | None = None,
 ) -> PzxPzfFrameStream | None:
     if not frame_offsets:
         return None
@@ -1047,7 +1087,13 @@ def read_pzx_indexed_pzf_frame_stream(
     frames: list[PzxPzfFrame] = []
     for index, start in enumerate(offsets):
         end = offsets[index + 1] if index + 1 < len(offsets) else len(payload)
-        frame = _read_pzx_pzf_frame_exact(payload, start, end, format_variant)
+        frame = _read_pzx_pzf_frame_exact(
+            payload,
+            start,
+            end,
+            format_variant,
+            max_subframe_index=max_subframe_index,
+        )
         if frame is None:
             return None
         frames.append(frame)
@@ -1064,6 +1110,75 @@ def read_pzx_root_resource_offsets(data: bytes) -> tuple[int, int, int] | None:
         struct.unpack("<I", data[8:12])[0],
         struct.unpack("<I", data[12:16])[0],
     )
+
+
+def read_pzx_pzd_resource(data: bytes, offset: int, end_offset: int) -> PzxPzdResource | None:
+    if offset < 0 or offset + 4 > len(data) or end_offset > len(data) or offset >= end_offset:
+        return None
+
+    type_code = data[offset]
+    content_count = struct.unpack("<H", data[offset + 1 : offset + 3])[0]
+    flags = data[offset + 3]
+    if content_count <= 0:
+        return None
+
+    region = data[offset:end_offset]
+    hits = find_zlib_streams(region, min_out=1)
+    zlib_streams = tuple(
+        PzxPzdZlibStream(
+            index=index,
+            offset=offset + hit.offset,
+            consumed=hit.consumed,
+            decoded_len=len(hit.decoded),
+        )
+        for index, hit in enumerate(hits)
+    )
+    palette_probe = data[offset + 4] if offset + 4 < end_offset else None
+
+    if type_code == 7:
+        if len(hits) != content_count:
+            return None
+        row_streams: list[PzxRowStream] = []
+        for hit in hits:
+            row_stream = read_pzx_row_stream(hit.decoded)
+            if row_stream is None:
+                return None
+            row_streams.append(row_stream)
+        return PzxPzdResource(
+            offset=offset,
+            end_offset=end_offset,
+            type_code=type_code,
+            content_count=content_count,
+            flags=flags,
+            palette_probe=palette_probe,
+            zlib_streams=zlib_streams,
+            row_streams=tuple(row_streams),
+            first_stream=None,
+        )
+
+    if type_code == 8:
+        if len(hits) != 1:
+            return None
+        hit = hits[0]
+        if len(hit.decoded) < 4:
+            return None
+        table_span = struct.unpack("<I", hit.decoded[:4])[0]
+        first_stream = read_pzx_first_stream(hit.decoded, table_span)
+        if first_stream is None or len(first_stream.chunks) != content_count:
+            return None
+        return PzxPzdResource(
+            offset=offset,
+            end_offset=end_offset,
+            type_code=type_code,
+            content_count=content_count,
+            flags=flags,
+            palette_probe=palette_probe,
+            zlib_streams=zlib_streams,
+            row_streams=(),
+            first_stream=first_stream,
+        )
+
+    return None
 
 
 def read_pzx_embedded_resource(data: bytes, offset: int, kind: str) -> PzxEmbeddedResource | None:

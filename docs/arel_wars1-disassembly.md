@@ -200,6 +200,15 @@ animation:
   - `field8`의 `PZF` segment는 `header:u8`, `frameCount:u16`, `u32 frameOffset[frameCount]`를 가진다.
   - `field12`의 `PZA` segment는 `header:u8`, `clipCount:u16`, `u32 clipOffset[clipCount]`를 가진다.
   - compressed mode일 때는 index table 뒤에 `unpackedSize:u32`, `packedSize:u32`, 그리고 하나의 zlib blob이 붙는다.
+- `field4`의 `PZD` segment는 `PZF/PZA`처럼 하나의 generic reader로 닫히지 않고, 실제로 두 가지 native layout으로 갈린다.
+  - `type 8` (`header[0] = 0x08`): `205/205` stems에서 `PZD` 구간 내부 zlib stream이 정확히 하나만 나오고, 그 decoded payload는 `first-stream`이며 chunk count가 항상 `contentCount`와 같다.
+  - `type 7` (`header[0] = 0x07`): `48/48` stems에서 `PZD` 구간 내부 zlib stream이 정확히 `contentCount`개 나오고, 각 decoded payload는 standalone `row-stream`이다.
+  - 즉 asset-side runtime equivalence 기준으로는 `PZD` image pool이 이제 닫힌다.
+    - `type 8`: `subFrameIndex == first-stream chunk index`
+    - `type 7`: `subFrameIndex == PZD region 안의 N번째 row-stream`
+  - sample:
+    - `010/082/208/004.pzx`: `type 8`
+    - `000/020/030/041/107/180.pzx`: `type 7`
 - 즉 later zlib stream 일부는 독립 포맷이 아니라, raw `PZF/PZA` subresource payload가 다시 노출된 결과일 가능성이 높다.
 - 실제로 raw `PZF` frame parser를 자산측에 내리면:
   - `253/253` stems에서 raw embedded `PZF`가 frame 단위로 exact-parse 된다.
@@ -230,6 +239,10 @@ frame:
   - caller가 넘긴 별도 `u16 subFrameIndex[]` 배열에 image index를 저장
   - frame-local `subframe[0x10]` record에 `bitmap*=0`, `x:s16`, `y:s16`, `extraPtr`, `extraLen`를 채움
   - 즉 `extraPayload`는 parser artifact가 아니라, native runtime이 보존하는 정식 per-subframe field다.
+- `PZD` image count를 `PZF` parser의 subframe bound로 다시 넣으면 asset-side ambiguity도 줄어든다.
+  - raw `PZF` parser에 `max_subframe_index = PZD.contentCount - 1` 제약을 주면 `253/253` stems 모두 parse를 유지한다.
+  - relation 집계는 `exact-max-plus-one = 244`, `in-range = 7`, `empty = 2`, `out-of-range = 0`이다.
+  - 이전 `255/511/65296`류 outlier는 native `extraPayload` backtracking이 너무 느슨해서 생긴 잘못된 분기였다.
 - `CGxPZxFrame::Draw`와 `GsPZxSubFrame`는 이 `0x10-byte` record의 앞쪽만 쓴다.
   - `+0x00` bitmap pointer
   - `+0x04/+0x06` local x/y
@@ -292,7 +305,7 @@ frame:
   - raw `PZF frameCount`가 `frameIndex` 풀 범위를 설명하고
   - raw `PZF` stream 자체가 frame/subframe/extraPayload 계층으로 exact-fit 된다.
 - 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라:
-  - `PZF subFrameIndex -> PZD image` 연결
+  - raw `PZD` index table entry가 native `SeekIndexTable` 기준으로 어떤 encoding인지
   - `PZF extraPayload(66/67...)`의 envelope semantics
   - bbox group 의미(att/dam/reference point)를 어떻게 런타임과 대응시키느냐
   로 더 좁혀졌다.
@@ -300,7 +313,7 @@ frame:
 
 ## Next Reverse Steps
 
-1. `CGxPZDPackage / CGxPZDMgr::LoadImage*`를 더 깨서 `PZF subFrameIndex[]`가 raw `PZD` / first-stream chunk 어느 단위로 내려가는지 확정한다.
+1. `CGxPZDPackage / CGxPZDMgr::LoadImage*`를 더 깨서 `type 7/8`별 raw `PZD` index table entry encoding을 확정한다.
 2. `CGxPZxFrame::Draw`와 `CGxPZxFrameBB::*` consumer를 더 따라가서 `extraPayload(66/67...)`와 bbox group이 렌더/충돌에서 어떤 의미를 가지는지 붙인다.
 3. `082/083/084.pzx`와 `198/208/240.pzx`를 기준 샘플로 삼아, old frame-record/tail heuristic이 native `PZF`의 어느 subset을 잘못 읽은 것인지 정리한다.
 4. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, `PZA` 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
