@@ -8,6 +8,25 @@ import zlib
 
 ZLIB_HEADERS = {0x01, 0x5E, 0x9C, 0xDA}
 PZX_RESOURCE_KINDS = ("pzd", "pzf", "pza")
+PZX_EFFECTEX_SELECTOR_DRAW_OPS = {
+    0x65: 1,
+    0x66: 1,
+    0x67: 2,
+    0x68: 3,
+    0x69: 6,
+    0x6A: 7,
+    0x6B: 8,
+    0x6C: 9,
+    0x6D: 10,
+    0x6E: 11,
+    0x6F: 12,
+    0x70: 13,
+    0x71: 19,
+    0x72: 19,
+    0x73: 19,
+    0x74: 19,
+    0x7F: 4,
+}
 PZX_META_MARKERS: dict[bytes, str] = {
     bytes.fromhex("67ff000000"): "67ff000000",
     bytes.fromhex("6778000000"): "6778000000",
@@ -225,6 +244,10 @@ class PzxPzfSubFrame:
     y: int
     extra_flag: int
     extra: bytes
+    effectex_selector: int | None = None
+    effectex_parameter: int | None = None
+    effectex_draw_op: int | None = None
+    effectex_module: int | None = None
 
 
 @dataclass(frozen=True)
@@ -243,6 +266,7 @@ class PzxPzfFrame:
 class PzxPzfFrameStream:
     format_variant: int
     frames: tuple[PzxPzfFrame, ...]
+    subframe_layout: str = "base"
 
     @property
     def frame_count(self) -> int:
@@ -311,6 +335,12 @@ class PzxPzfFrameStream:
         if not lengths:
             return 0
         return max(lengths)
+
+    @property
+    def subframe_stride(self) -> int:
+        if self.subframe_layout == "effectex":
+            return 0x18
+        return 0x10
 
 
 @dataclass(frozen=True)
@@ -913,11 +943,45 @@ def _read_pzx_pzf_bbox_record(
     return None
 
 
+def _is_pzx_effectex_selector(value: int) -> bool:
+    return value in PZX_EFFECTEX_SELECTOR_DRAW_OPS
+
+
+def _read_pzx_effectex_extra(
+    payload: bytes,
+    body_start: int,
+    end: int,
+    extra_flag: int,
+) -> tuple[bytes, int, int | None, int | None] | None:
+    cursor = body_start
+    extra = bytearray()
+    last_selector: int | None = None
+    last_parameter: int | None = None
+
+    for _ in range(extra_flag):
+        if cursor >= end:
+            return None
+        value = payload[cursor]
+        cursor += 1
+        extra.append(value)
+        if not _is_pzx_effectex_selector(value):
+            continue
+        if cursor + 4 > end:
+            return None
+        last_selector = value
+        last_parameter = struct.unpack("<I", payload[cursor : cursor + 4])[0]
+        cursor += 4
+
+    return (bytes(extra), cursor, last_selector, last_parameter)
+
+
 def _read_pzx_pzf_frame_exact(
     payload: bytes,
     start: int,
     end: int,
     format_variant: int,
+    *,
+    subframe_layout: str = "base",
     max_subframe_index: int | None = None,
 ) -> PzxPzfFrame | None:
     if not (0 <= start < end <= len(payload)):
@@ -970,6 +1034,35 @@ def _read_pzx_pzf_frame_exact(
         y = struct.unpack("<h", payload[position + 4 : position + 6])[0]
         extra_flag = payload[position + 6]
         body_start = position + 7
+
+        if subframe_layout == "effectex":
+            parsed_extra = _read_pzx_effectex_extra(payload, body_start, end, extra_flag)
+            if parsed_extra is None:
+                return None
+            extra, next_position, effectex_selector, effectex_parameter = parsed_extra
+            tail = parse_subframes(index + 1, next_position)
+            if tail is None:
+                return None
+            effectex_draw_op = None
+            effectex_module = None
+            if effectex_selector is not None:
+                effectex_draw_op = PZX_EFFECTEX_SELECTOR_DRAW_OPS[effectex_selector]
+                if 0x71 <= effectex_selector <= 0x74:
+                    effectex_module = effectex_selector - 0x71
+            return (
+                PzxPzfSubFrame(
+                    subframe_index=subframe_index,
+                    x=x,
+                    y=y,
+                    extra_flag=extra_flag,
+                    extra=extra,
+                    effectex_selector=effectex_selector,
+                    effectex_parameter=effectex_parameter,
+                    effectex_draw_op=effectex_draw_op,
+                    effectex_module=effectex_module,
+                ),
+                *tail,
+            )
 
         extra_len_candidates = (0,) if extra_flag == 0 else tuple(
             sorted(
@@ -1097,10 +1190,14 @@ def read_pzx_indexed_pzf_frame_stream(
     frame_offsets: tuple[int, ...] | list[int],
     format_variant: int,
     *,
+    subframe_layout: str = "base",
     max_subframe_index: int | None = None,
 ) -> PzxPzfFrameStream | None:
     if not frame_offsets:
         return None
+
+    if subframe_layout not in {"base", "effectex"}:
+        raise ValueError(f"Unsupported PZF subframe layout: {subframe_layout}")
 
     offsets = tuple(int(offset) for offset in frame_offsets)
     if any(offset < 0 or offset > len(payload) for offset in offsets):
@@ -1116,13 +1213,34 @@ def read_pzx_indexed_pzf_frame_stream(
             start,
             end,
             format_variant,
+            subframe_layout=subframe_layout,
             max_subframe_index=max_subframe_index,
         )
         if frame is None:
             return None
         frames.append(frame)
 
-    return PzxPzfFrameStream(format_variant=format_variant, frames=tuple(frames))
+    return PzxPzfFrameStream(
+        format_variant=format_variant,
+        frames=tuple(frames),
+        subframe_layout=subframe_layout,
+    )
+
+
+def read_pzx_indexed_effectex_pzf_frame_stream(
+    payload: bytes,
+    frame_offsets: tuple[int, ...] | list[int],
+    format_variant: int,
+    *,
+    max_subframe_index: int | None = None,
+) -> PzxPzfFrameStream | None:
+    return read_pzx_indexed_pzf_frame_stream(
+        payload,
+        frame_offsets,
+        format_variant,
+        subframe_layout="effectex",
+        max_subframe_index=max_subframe_index,
+    )
 
 
 def read_pzx_root_resource_offsets(data: bytes) -> tuple[int, int, int] | None:

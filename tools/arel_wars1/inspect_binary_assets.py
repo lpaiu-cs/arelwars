@@ -10,6 +10,7 @@ import struct
 
 from formats import (
     find_zlib_streams,
+    PZX_EFFECTEX_SELECTOR_DRAW_OPS,
     read_pzx_animation_clip_stream,
     read_pzx_embedded_resource,
     read_pzx_frame_record_stream,
@@ -22,27 +23,6 @@ from formats import (
     read_pzx_root_resource_offsets,
     read_pzx_simple_placement_stream,
 )
-
-EFFECTEX_SELECTOR_DRAW_OPS = {
-    0x65: 1,
-    0x66: 1,
-    0x67: 2,
-    0x68: 3,
-    0x69: 6,
-    0x6A: 7,
-    0x6B: 8,
-    0x6C: 9,
-    0x6D: 10,
-    0x6E: 11,
-    0x6F: 12,
-    0x70: 13,
-    0x71: 19,
-    0x72: 19,
-    0x73: 19,
-    0x74: 19,
-    # Native __Draw special-cases 0x7F and lands on a sparse rodata entry that maps to drawOp 4.
-    0x7F: 4,
-}
 
 DRAW_OP_NAMES = {
     0: "Copy",
@@ -406,6 +386,10 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
     selector_last_draw_op_counts = Counter()
     selector_last_draw_op_name_counts = Counter()
     selector_last_module_counts = Counter()
+    effectex_selector_counts = Counter()
+    effectex_draw_op_counts = Counter()
+    effectex_draw_op_name_counts = Counter()
+    effectex_module_counts = Counter()
     single_byte_module_counts = Counter()
     bbox_att_total = 0
     bbox_dam_total = 0
@@ -436,18 +420,25 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
                     effect_opcode_counts[str(value)] += 1
                 if 0x65 <= value <= 0x74 or value == 0x7F:
                     selector_byte_counts[f"{value:02x}"] += 1
-                    draw_op = EFFECTEX_SELECTOR_DRAW_OPS[value]
+                    draw_op = PZX_EFFECTEX_SELECTOR_DRAW_OPS[value]
                     selector_byte_draw_op_counts[str(draw_op)] += 1
                     selector_byte_draw_op_name_counts[DRAW_OP_NAMES[draw_op]] += 1
             selector_matches = [value for value in subframe.extra if 0x65 <= value <= 0x74 or value == 0x7F]
             if selector_matches:
                 last_selector = selector_matches[-1]
-                draw_op = EFFECTEX_SELECTOR_DRAW_OPS[last_selector]
+                draw_op = PZX_EFFECTEX_SELECTOR_DRAW_OPS[last_selector]
                 selector_last_byte_counts[f"{last_selector:02x}"] += 1
                 selector_last_draw_op_counts[str(draw_op)] += 1
                 selector_last_draw_op_name_counts[DRAW_OP_NAMES[draw_op]] += 1
                 if 0x71 <= last_selector <= 0x74:
                     selector_last_module_counts[str(last_selector - 0x71)] += 1
+            if subframe.effectex_selector is not None:
+                effectex_selector_counts[f"{subframe.effectex_selector:02x}"] += 1
+                if subframe.effectex_draw_op is not None:
+                    effectex_draw_op_counts[str(subframe.effectex_draw_op)] += 1
+                    effectex_draw_op_name_counts[DRAW_OP_NAMES[subframe.effectex_draw_op]] += 1
+                if subframe.effectex_module is not None:
+                    effectex_module_counts[str(subframe.effectex_module)] += 1
             if len(subframe.extra) == 1 and 0x65 <= subframe.extra[0] <= 0x74:
                 single_byte_module_counts[f"{subframe.extra[0]:02x}"] += 1
             if subframe.extra.startswith(b"\x66") and subframe.extra[-3:] == b"\x00\x00\x00":
@@ -463,6 +454,8 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
         "frameParseOk": True,
         "frameCount": decoded.frame_count,
         "totalSubFrameCount": decoded.total_subframe_count,
+        "subFrameLayout": decoded.subframe_layout,
+        "subFrameStride": decoded.subframe_stride,
         "frameLengthRange": list(decoded.frame_length_range),
         "subFrameCountRange": list(decoded.subframe_count_range),
         "bboxTotalRange": list(decoded.bbox_total_range),
@@ -489,6 +482,10 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
         "selectorLastDrawOpCounts": dict(sorted(selector_last_draw_op_counts.items(), key=lambda item: int(item[0]))),
         "selectorLastDrawOpNameCounts": dict(sorted(selector_last_draw_op_name_counts.items())),
         "selectorLastModuleCounts": dict(sorted(selector_last_module_counts.items(), key=lambda item: int(item[0]))),
+        "effectExResolvedSelectorCounts": dict(sorted(effectex_selector_counts.items())),
+        "effectExResolvedDrawOpCounts": dict(sorted(effectex_draw_op_counts.items(), key=lambda item: int(item[0]))),
+        "effectExResolvedDrawOpNameCounts": dict(sorted(effectex_draw_op_name_counts.items())),
+        "effectExResolvedModuleCounts": dict(sorted(effectex_module_counts.items(), key=lambda item: int(item[0]))),
         "runtimeEffectCounts": dict(sorted(runtime_effect_counts.items(), key=lambda item: int(item[0]))),
         "runtimeEffectSequenceCounts": dict(
             sorted(
@@ -524,6 +521,15 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
                         "y": subframe.y,
                         "extraFlag": subframe.extra_flag,
                         "extraHex": subframe.extra.hex(),
+                        "effectExSelector": f"{subframe.effectex_selector:02x}" if subframe.effectex_selector is not None else None,
+                        "effectExParameter": subframe.effectex_parameter,
+                        "effectExDrawOp": subframe.effectex_draw_op,
+                        "effectExDrawOpName": (
+                            DRAW_OP_NAMES[subframe.effectex_draw_op]
+                            if subframe.effectex_draw_op is not None
+                            else None
+                        ),
+                        "effectExModule": subframe.effectex_module,
                     }
                     for subframe in frame.subframes[:8]
                 ],
@@ -1156,6 +1162,8 @@ def main() -> None:
             "matchedZlibStreamIndices": entry["embeddedPzf"].get("matchedZlibStreamIndices", []),
             "frameParseOk": entry["embeddedPzf"].get("frameParseOk", False),
             "totalSubFrameCount": entry["embeddedPzf"].get("totalSubFrameCount"),
+            "subFrameLayout": entry["embeddedPzf"].get("subFrameLayout"),
+            "subFrameStride": entry["embeddedPzf"].get("subFrameStride"),
             "subFrameCountRange": entry["embeddedPzf"].get("subFrameCountRange"),
             "subFrameIndexRange": entry["embeddedPzf"].get("subFrameIndexRange"),
             "xRange": entry["embeddedPzf"].get("xRange"),
@@ -1172,6 +1180,10 @@ def main() -> None:
             "selectorLastDrawOpCounts": entry["embeddedPzf"].get("selectorLastDrawOpCounts", {}),
             "selectorLastDrawOpNameCounts": entry["embeddedPzf"].get("selectorLastDrawOpNameCounts", {}),
             "selectorLastModuleCounts": entry["embeddedPzf"].get("selectorLastModuleCounts", {}),
+            "effectExResolvedSelectorCounts": entry["embeddedPzf"].get("effectExResolvedSelectorCounts", {}),
+            "effectExResolvedDrawOpCounts": entry["embeddedPzf"].get("effectExResolvedDrawOpCounts", {}),
+            "effectExResolvedDrawOpNameCounts": entry["embeddedPzf"].get("effectExResolvedDrawOpNameCounts", {}),
+            "effectExResolvedModuleCounts": entry["embeddedPzf"].get("effectExResolvedModuleCounts", {}),
             "runtimeEffectCounts": entry["embeddedPzf"].get("runtimeEffectCounts", {}),
             "runtimeEffectSequenceCounts": entry["embeddedPzf"].get("runtimeEffectSequenceCounts", {}),
             "singleByteModuleCounts": entry["embeddedPzf"].get("singleByteModuleCounts", {}),
@@ -1256,6 +1268,18 @@ def main() -> None:
     embedded_pzf_selector_last_module_counts = Counter()
     for entry in embedded_pzf_parsed_entries:
         embedded_pzf_selector_last_module_counts.update(entry["selectorLastModuleCounts"])
+    embedded_pzf_effectex_resolved_selector_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_effectex_resolved_selector_counts.update(entry["effectExResolvedSelectorCounts"])
+    embedded_pzf_effectex_resolved_draw_op_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_effectex_resolved_draw_op_counts.update(entry["effectExResolvedDrawOpCounts"])
+    embedded_pzf_effectex_resolved_draw_op_name_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_effectex_resolved_draw_op_name_counts.update(entry["effectExResolvedDrawOpNameCounts"])
+    embedded_pzf_effectex_resolved_module_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_effectex_resolved_module_counts.update(entry["effectExResolvedModuleCounts"])
     embedded_pzf_runtime_effect_counts = Counter()
     for entry in embedded_pzf_parsed_entries:
         embedded_pzf_runtime_effect_counts.update(entry["runtimeEffectCounts"])
@@ -1617,6 +1641,18 @@ def main() -> None:
             ),
             "embeddedPzfSelectorLastModuleCounts": dict(
                 sorted(embedded_pzf_selector_last_module_counts.items(), key=lambda item: int(item[0]))
+            ),
+            "embeddedPzfEffectExResolvedSelectorCounts": dict(
+                sorted(embedded_pzf_effectex_resolved_selector_counts.items())
+            ),
+            "embeddedPzfEffectExResolvedDrawOpCounts": dict(
+                sorted(embedded_pzf_effectex_resolved_draw_op_counts.items(), key=lambda item: int(item[0]))
+            ),
+            "embeddedPzfEffectExResolvedDrawOpNameCounts": dict(
+                sorted(embedded_pzf_effectex_resolved_draw_op_name_counts.items())
+            ),
+            "embeddedPzfEffectExResolvedModuleCounts": dict(
+                sorted(embedded_pzf_effectex_resolved_module_counts.items(), key=lambda item: int(item[0]))
             ),
             "embeddedPzfRuntimeEffectCounts": dict(
                 sorted(embedded_pzf_runtime_effect_counts.items(), key=lambda item: int(item[0]))

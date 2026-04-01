@@ -362,6 +362,13 @@ frame:
 - 현재 APK의 extracted asset table에는 standalone `.pzf/.pzd` 파일이 없다.
   - 그리고 embedded `.pzx` set은 `253/253`이 base `PZF`의 `0x10-byte` subframe layout으로 exact-fit 된다.
   - 그래서 이번 브랜치에서 이미 닫은 current-game path는 `CGxPZxMgr -> CGxPZFMgr/PZAMgr` base family이고, `EffectEx/ZeroEffectEx`는 parallel native family로 정리하는 편이 맞다.
+  - call-edge scan에서도 `_Z9GsLoadPzfPKcS0_S0_biiii`와 `_Z13GsLoadPzfPartP9CGxPZAMgrPiPKcS3_S3_biiii` inbound edge가 `0`개다.
+  - `libgameDSO.so` raw string scan도 `.pzx`만 잡히고 `.pzf/.pzd/.pza` extension literal은 잡히지 않는다.
+  - 즉 current APK 기준 standalone `EffectEx/ZeroEffectEx` path는 구현은 남아 있지만, 실제 asset graph와 call graph에서는 unreferenced dormant branch로 보는 편이 맞다.
+  - tool 쪽도 이제 `read_pzx_indexed_effectex_pzf_frame_stream(...)`로 standalone `EffectEx/ZeroEffectEx` raw `PZF` payload를 해석할 수 있다.
+    - parser는 raw stream에서 `extraFlag` logical byte 수만큼 `extra`를 읽되, `0x65..0x74/0x7f` selector를 만나면 뒤의 trailing `u32`를 별도로 소비한다.
+    - 결과 객체에는 runtime-equivalent `extra` byte array와 함께 `last selector`, `selector parameter`, `drawOp`, `module(0..3)`를 보존한다.
+    - current APK에는 real standalone sample이 없어서 exact-fit asset regression은 synthetic frame blob으로만 검증했다.
 - asset-side 교차검증도 이 해석을 지지한다.
   - runtime sequence `(3)`은 실제 raw payload `19`종에서 나온다. 대표형은 `03`, `0367ff000000`, `6603000000`, `67ff00000003`, `037100000000`이다.
   - runtime sequence `(4,3)`도 `8`종 payload(`0403`, `040367ff000000`, `660400000003`, `67eb0000000403`, ...)에서 공통으로 나온다.
@@ -419,6 +426,7 @@ frame:
 - root `PZX\x01` header는 `PZD/PZF/PZA` subresource offset table이다.
 - `PZD`는 `type 7` row-stream list와 `type 8` whole-stream-compressed first-stream sheet로 닫혔다.
 - `PZF`는 frame pool / bbox / subframe / `extraLen + extraPtr`까지 base family layout이 닫혔다.
+- tool 쪽 standalone `EffectEx/ZeroEffectEx` raw `PZF` parser도 구현돼서, real sample만 있으면 같은 runtime-equivalent object로 바로 내려볼 수 있다.
 - `PZA`는 clip offset table, per-frame `frameIndex/delay/x/y/control`, 그리고 `CGxPZxAni::DoPlay` state machine까지 닫혔다.
 - bbox API selector와 collision return/filter도 런타임 의미가 정리됐다.
 - `globalDelayBias(+3)`는 현재 build 기준 dormant signed bias field다.
@@ -428,4 +436,5 @@ frame:
 
 1. `bbox variant 2` reference-point mode는 code path는 남아 있지만, current asset set에 샘플이 없고 `GetReferencePointCount/GetReferencePoint` 정적 caller도 보이지 않는다.
    - current APK 기준으로는 dormant feature 쪽에 가깝다.
-2. standalone `EffectEx/ZeroEffectEx` raw parser는 native semantics가 정리됐지만, 현재 APK에는 `.pzf/.pzd` 샘플이 없어서 asset-side exact-fit parser까지는 아직 구현하지 않았다.
+2. standalone `EffectEx/ZeroEffectEx` raw parser는 구현됐지만, 현재 APK에는 `.pzf/.pzd` 실샘플이 없어서 real-asset regression은 아직 못 돌렸다.
+   - 다만 current APK asset graph에는 이 경로로 들어오는 caller나 file reference가 없으므로, 현재 게임 decode 관점에서 blocker는 아니다.

@@ -171,6 +171,14 @@
   - `0x71..0x74`는 전부 `drawOp 19`로 합쳐지고, 이때 trailing `u32` 대신 `selector - 0x71`이 runtime parameter로 들어가므로 module selector `0..3`으로 읽는 편이 맞다.
   - `CGxZeroEffectExPZFMgr::ChangeModule`는 실제로 그 module slot별 bitmap pointer array를 갈아끼운다.
   - 따라서 `66/67/70/71/7f`는 `EffectEx` family에서는 executable opcode가 아니라 draw/module selector다.
+  - tool-side parser도 추가했다.
+    - `tools/arel_wars1/formats.py`
+    - `read_pzx_indexed_effectex_pzf_frame_stream(...)`
+  - 이 parser는 logical `extra` byte array와 selector-associated trailing `u32`를 분리해서 runtime-equivalent subframe object를 만든다.
+  - synthetic validation 기준 `0x71 + trailing u32` case는 `extra=[0x03,0x71,0x04]`, `selector=0x71`, `parameter=0x11223344`, `drawOp=19`, `module=0`으로 기대대로 읽힌다.
+  - current APK 쪽 연결도 더 약해졌다.
+    - `GsLoadPzf` / `GsLoadPzfPart` inbound call edge는 `0`
+    - `libgameDSO.so` string scan은 `.pzx` literal만 잡히고 `.pzf/.pzd/.pza` extension literal은 없다
   - 현재 APK asset table에는 standalone `.pzf/.pzd` 샘플이 없고, embedded `.pzx` set은 전부 base `PZF` layout으로 exact-fit 된다.
 
 ### Asset-side Validation
@@ -196,12 +204,12 @@
 ### Open
 
 - reference-point mode(`bbox variant 2`)는 current APK 기준 dormant feature로 보인다.
-  - parsed asset set에서 sample이 `0`이고, `GetReferencePointCount/GetReferencePoint` 정적 caller도 잡히지 않았다.
-- `EffectEx / ZeroEffectEx` raw parser는 native semantics가 닫혔지만, 현재 APK에는 standalone `.pzf/.pzd` 샘플이 없어서 tool-side parser 구현까지는 아직 안 했다.
+  - parsed asset set에서 sample이 `0`이고, `GetReferencePointCount/GetReferencePoint` 정적 caller도 `0`개다.
+- `EffectEx / ZeroEffectEx` raw parser 구현은 끝났지만, 현재 APK에는 standalone `.pzf/.pzd` 실샘플이 없어서 남은 건 real standalone sample regression뿐이다.
 
 ### Next Focus
 
-1. standalone `EffectEx / ZeroEffectEx` sample을 확보할 수 있으면 `selector + trailing u32` layout까지 tool-side exact parser로 내린다.
+1. standalone `EffectEx / ZeroEffectEx` sample을 확보하면 새 parser를 real asset에 걸어 synthetic 검증을 actual regression으로 바꾼다.
 
 ### Refresh Commands
 
