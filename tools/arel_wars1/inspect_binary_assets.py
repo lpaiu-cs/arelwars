@@ -23,6 +23,27 @@ from formats import (
     read_pzx_simple_placement_stream,
 )
 
+EFFECTEX_SELECTOR_DRAW_OPS = {
+    0x65: 1,
+    0x66: 1,
+    0x67: 2,
+    0x68: 3,
+    0x69: 6,
+    0x6A: 7,
+    0x6B: 8,
+    0x6C: 9,
+    0x6D: 10,
+    0x6E: 11,
+    0x6F: 12,
+    0x70: 13,
+    0x71: 19,
+    0x72: 19,
+    0x73: 19,
+    0x74: 19,
+    # Native __Draw special-cases 0x7F and lands on a sparse rodata entry that maps to drawOp 4.
+    0x7F: 4,
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Inspect opaque PZX/MPL/PTC binary assets")
@@ -357,7 +378,10 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
     runtime_effect_counts = Counter()
     runtime_effect_sequence_counts = Counter()
     selector_byte_counts = Counter()
+    selector_byte_draw_op_counts = Counter()
     selector_last_byte_counts = Counter()
+    selector_last_draw_op_counts = Counter()
+    selector_last_module_counts = Counter()
     single_byte_module_counts = Counter()
     bbox_att_total = 0
     bbox_dam_total = 0
@@ -388,9 +412,14 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
                     effect_opcode_counts[str(value)] += 1
                 if 0x65 <= value <= 0x74 or value == 0x7F:
                     selector_byte_counts[f"{value:02x}"] += 1
+                    selector_byte_draw_op_counts[str(EFFECTEX_SELECTOR_DRAW_OPS[value])] += 1
             selector_matches = [value for value in subframe.extra if 0x65 <= value <= 0x74 or value == 0x7F]
             if selector_matches:
-                selector_last_byte_counts[f"{selector_matches[-1]:02x}"] += 1
+                last_selector = selector_matches[-1]
+                selector_last_byte_counts[f"{last_selector:02x}"] += 1
+                selector_last_draw_op_counts[str(EFFECTEX_SELECTOR_DRAW_OPS[last_selector])] += 1
+                if 0x71 <= last_selector <= 0x74:
+                    selector_last_module_counts[str(last_selector - 0x71)] += 1
             if len(subframe.extra) == 1 and 0x65 <= subframe.extra[0] <= 0x74:
                 single_byte_module_counts[f"{subframe.extra[0]:02x}"] += 1
             if subframe.extra.startswith(b"\x66") and subframe.extra[-3:] == b"\x00\x00\x00":
@@ -426,7 +455,10 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
         "extraMarkerCounts": dict(sorted(extra_marker_counts.items())),
         "effectOpcodeCounts": dict(sorted(effect_opcode_counts.items())),
         "selectorByteCounts": dict(sorted(selector_byte_counts.items())),
+        "selectorByteDrawOpCounts": dict(sorted(selector_byte_draw_op_counts.items(), key=lambda item: int(item[0]))),
         "selectorLastByteCounts": dict(sorted(selector_last_byte_counts.items())),
+        "selectorLastDrawOpCounts": dict(sorted(selector_last_draw_op_counts.items(), key=lambda item: int(item[0]))),
+        "selectorLastModuleCounts": dict(sorted(selector_last_module_counts.items(), key=lambda item: int(item[0]))),
         "runtimeEffectCounts": dict(sorted(runtime_effect_counts.items(), key=lambda item: int(item[0]))),
         "runtimeEffectSequenceCounts": dict(
             sorted(
@@ -1104,7 +1136,10 @@ def main() -> None:
             "extraMarkerCounts": entry["embeddedPzf"].get("extraMarkerCounts", {}),
             "effectOpcodeCounts": entry["embeddedPzf"].get("effectOpcodeCounts", {}),
             "selectorByteCounts": entry["embeddedPzf"].get("selectorByteCounts", {}),
+            "selectorByteDrawOpCounts": entry["embeddedPzf"].get("selectorByteDrawOpCounts", {}),
             "selectorLastByteCounts": entry["embeddedPzf"].get("selectorLastByteCounts", {}),
+            "selectorLastDrawOpCounts": entry["embeddedPzf"].get("selectorLastDrawOpCounts", {}),
+            "selectorLastModuleCounts": entry["embeddedPzf"].get("selectorLastModuleCounts", {}),
             "runtimeEffectCounts": entry["embeddedPzf"].get("runtimeEffectCounts", {}),
             "runtimeEffectSequenceCounts": entry["embeddedPzf"].get("runtimeEffectSequenceCounts", {}),
             "singleByteModuleCounts": entry["embeddedPzf"].get("singleByteModuleCounts", {}),
@@ -1171,9 +1206,18 @@ def main() -> None:
     embedded_pzf_selector_byte_counts = Counter()
     for entry in embedded_pzf_parsed_entries:
         embedded_pzf_selector_byte_counts.update(entry["selectorByteCounts"])
+    embedded_pzf_selector_byte_draw_op_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_selector_byte_draw_op_counts.update(entry["selectorByteDrawOpCounts"])
     embedded_pzf_selector_last_byte_counts = Counter()
     for entry in embedded_pzf_parsed_entries:
         embedded_pzf_selector_last_byte_counts.update(entry["selectorLastByteCounts"])
+    embedded_pzf_selector_last_draw_op_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_selector_last_draw_op_counts.update(entry["selectorLastDrawOpCounts"])
+    embedded_pzf_selector_last_module_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_selector_last_module_counts.update(entry["selectorLastModuleCounts"])
     embedded_pzf_runtime_effect_counts = Counter()
     for entry in embedded_pzf_parsed_entries:
         embedded_pzf_runtime_effect_counts.update(entry["runtimeEffectCounts"])
@@ -1520,7 +1564,16 @@ def main() -> None:
             "embeddedPzfExtraMarkerCounts": dict(sorted(embedded_pzf_extra_marker_counts.items())),
             "embeddedPzfEffectOpcodeCounts": dict(sorted(embedded_pzf_effect_opcode_counts.items())),
             "embeddedPzfSelectorByteCounts": dict(sorted(embedded_pzf_selector_byte_counts.items())),
+            "embeddedPzfSelectorByteDrawOpCounts": dict(
+                sorted(embedded_pzf_selector_byte_draw_op_counts.items(), key=lambda item: int(item[0]))
+            ),
             "embeddedPzfSelectorLastByteCounts": dict(sorted(embedded_pzf_selector_last_byte_counts.items())),
+            "embeddedPzfSelectorLastDrawOpCounts": dict(
+                sorted(embedded_pzf_selector_last_draw_op_counts.items(), key=lambda item: int(item[0]))
+            ),
+            "embeddedPzfSelectorLastModuleCounts": dict(
+                sorted(embedded_pzf_selector_last_module_counts.items(), key=lambda item: int(item[0]))
+            ),
             "embeddedPzfRuntimeEffectCounts": dict(
                 sorted(embedded_pzf_runtime_effect_counts.items(), key=lambda item: int(item[0]))
             ),
@@ -1588,7 +1641,7 @@ def main() -> None:
             f"Each raw PZF frame reads as subFrameCount(u8), bbox count byte(s), a variant-dependent bbox block, then repeated subFrameIndex(u16), x(i16), y(i16), extraFlag(u8), extraPayload. Across the parsed set, subFrameCount ranges {embedded_pzf_subframe_count_range[0] if embedded_pzf_subframe_count_range else 'n/a'}..{embedded_pzf_subframe_count_range[1] if embedded_pzf_subframe_count_range else 'n/a'}.",
             f"Nonzero PZF extraPayloads are common ({embedded_pzf_nonzero_extra_count} subframes total). Observed extraFlag values are {embedded_pzf_extra_flag_values[:20]}, max extra length is {embedded_pzf_max_extra_len}, and the dominant payload families are {dict(sorted(embedded_pzf_extra_marker_counts.items()))}.",
             f"Disassembly now matches those PZF extras to native frame fields: EndDecodeFrame stores extraLen + extraPtr per subframe, effect-cache lookup only compares bytes <= 4 ({dict(sorted(embedded_pzf_effect_opcode_counts.items()))}), but CGxEffectPZD::ApplyEffect actually executes every byte in the range 1..100 ({dict(sorted(embedded_pzf_runtime_effect_counts.items(), key=lambda item: int(item[0])))}).",
-            f"That runtime dispatch splits into rotate opcodes 1/2, flip-class opcodes 3/4, and palette-change program ids 5..100. Bounded parsing no longer leaves any real single-byte 0x65..0x74 extras ({dict(sorted(embedded_pzf_single_byte_module_counts.items()))}); the earlier family was a parse artifact. But selector-class bytes still appear inside longer extras: raw selector-byte counts are {dict(sorted(embedded_pzf_selector_byte_counts.items()))} and last-selector counts per subframe are {dict(sorted(embedded_pzf_selector_last_byte_counts.items()))}.",
+            f"That runtime dispatch splits into rotate opcodes 1/2, flip-class opcodes 3/4, and palette-change program ids 5..100. Bounded parsing no longer leaves any real single-byte 0x65..0x74 extras ({dict(sorted(embedded_pzf_single_byte_module_counts.items()))}); the earlier family was a parse artifact. But selector-class bytes still appear inside longer extras: raw selector-byte counts are {dict(sorted(embedded_pzf_selector_byte_counts.items()))}, last-selector counts per subframe are {dict(sorted(embedded_pzf_selector_last_byte_counts.items()))}, translated drawOp counts are {dict(sorted(embedded_pzf_selector_last_draw_op_counts.items(), key=lambda item: int(item[0])))} and the `0x71..0x74 -> drawOp 19` family splits into module selectors {dict(sorted(embedded_pzf_selector_last_module_counts.items(), key=lambda item: int(item[0])))}.",
             f"Bounding-box metadata is native PZF frame-local data rather than a separate tail track: parsed bbox totals range {embedded_pzf_bbox_total_range[0] if embedded_pzf_bbox_total_range else 'n/a'}..{embedded_pzf_bbox_total_range[1] if embedded_pzf_bbox_total_range else 'n/a'} and appear in {embedded_pzf_total_bbox_frame_count} frames overall. Mode counts are {dict(sorted(embedded_pzf_bbox_mode_counts.items()))}, with attack={embedded_pzf_bbox_attack_total}, damage={embedded_pzf_bbox_damage_total}, reference={embedded_pzf_bbox_reference_total}, generic={embedded_pzf_bbox_generic_total}.",
             f"Once PZD image-count bounds are applied back into the raw PZF parser, subFrameIndex stays inside the native PZD image pool for every parsed stem: exact max+1 match={embedded_pzd_relation_counts.get('exact-max-plus-one', 0)}, in-range={embedded_pzd_relation_counts.get('in-range', 0)}, empty={embedded_pzd_relation_counts.get('empty', 0)}, out-of-range={embedded_pzd_relation_counts.get('out-of-range', 0)}.",
             f"The previous frame-record heuristic overlaps the native PZF index table directly: {len(embedded_pzf_offset_prefix_stems)} stems already have frame-record offset previews that prefix-match the raw PZF frame offsets.",
