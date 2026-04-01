@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import struct
 
-from formats import find_zlib_streams, read_pzx_first_stream
+from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_row_stream
 
 
 def parse_args() -> argparse.Namespace:
@@ -85,6 +85,38 @@ def summarize_pzx_first_stream(table_span: int, stream: bytes) -> dict[str, obje
     }
 
 
+def summarize_pzx_row_stream(stream: bytes) -> dict[str, object] | None:
+    decoded = read_pzx_row_stream(stream)
+    if decoded is None:
+        return None
+
+    width_min, width_max = decoded.width_range
+    max_decoded_index = max(max(row.decoded) for row in decoded.rows if row.decoded)
+    row_previews = [
+        {
+            "index": row_index,
+            "width": len(row.decoded),
+            "skips": list(row.skips),
+            "runLengths": list(row.run_lengths),
+            "runKinds": list(row.run_kinds),
+            "decodedHeadHex": row.decoded[:24].hex(),
+        }
+        for row_index, row in enumerate(decoded.rows[:6])
+    ]
+
+    return {
+        "width": decoded.width,
+        "height": decoded.height,
+        "widthRange": [width_min, width_max],
+        "maxDecodedIndex": max_decoded_index,
+        "decodedPixelTotal": decoded.decoded_pixel_count,
+        "prefixMarkerHex": decoded.prefix_marker_hex,
+        "rowSeparatorCount": len(decoded.row_separator_hexes),
+        "trailingSentinelHex": decoded.trailing_sentinel_hex,
+        "rowPreview": row_previews,
+    }
+
+
 def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     data = path.read_bytes()
     streams = find_zlib_streams(data)
@@ -112,6 +144,12 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             else:
                 if summary is not None:
                     first_stream_summary = summary
+        try:
+            row_stream_summary = summarize_pzx_row_stream(item.decoded)
+        except ValueError:
+            row_stream_summary = None
+        if row_stream_summary is not None:
+            entry["rowStream"] = row_stream_summary
         parsed_streams.append(entry)
 
     return {
@@ -179,20 +217,103 @@ def main() -> None:
     shared_pairs = sorted({Path(entry["path"]).stem for entry in pzx_entries if entry["hasMplPair"]})
     first_stream_ready = [entry for entry in pzx_entries if entry["firstStream"] is not None]
     first_stream_failed = [entry for entry in pzx_entries if entry["firstStreamError"] is not None]
+    raw_row_stream_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "variant": entry["header"]["field16Low6"],
+            "streamIndices": [stream["index"] for stream in entry["streams"] if stream.get("rowStream") is not None],
+            "maxDecodedIndex": max(
+                stream["rowStream"]["maxDecodedIndex"]
+                for stream in entry["streams"]
+                if stream.get("rowStream") is not None
+            ),
+            "dimensions": [
+                {
+                    "index": stream["index"],
+                    "width": stream["rowStream"]["width"],
+                    "height": stream["rowStream"]["height"],
+                }
+                for stream in entry["streams"]
+                if stream.get("rowStream") is not None
+            ][:6],
+        }
+        for entry in pzx_entries
+        if any(stream.get("rowStream") is not None for stream in entry["streams"])
+    ]
     regular_mpl_palette_stems: list[str] = []
     regular_mpl_palette_set: set[str] = set()
+    row_stream_regular_mpl_palette_stems: list[str] = []
+    row_stream_regular_mpl_palette_set: set[str] = set()
+    palette_capacity_fit_stems: list[str] = []
+    palette_capacity_fit_set: set[str] = set()
+    row_stream_palette_capacity_fit_stems: list[str] = []
+    row_stream_palette_capacity_fit_set: set[str] = set()
+
+    mpl_palette_capacity_by_stem: dict[str, int] = {}
+    for stem, mpl in mpl_by_stem.items():
+        word_count = int(mpl["actualWordCount"])
+        if word_count >= 8 and (word_count - 6) % 2 == 0:
+            mpl_palette_capacity_by_stem[stem] = (word_count - 6) // 2
+
+    for entry in pzx_entries:
+        row_stream_maxes = [
+            stream["rowStream"]["maxDecodedIndex"] for stream in entry["streams"] if stream.get("rowStream") is not None
+        ]
+        if row_stream_maxes:
+            entry["rowStreamMaxDecodedIndex"] = max(row_stream_maxes)
+
     for entry in first_stream_ready:
         stem = Path(entry["path"]).stem
         mpl = mpl_by_stem.get(stem)
         if mpl is None or not entry["hasMplPair"]:
             continue
         color_count = int(entry["firstStream"]["maxDecodedIndex"]) + 1
+        palette_capacity = mpl_palette_capacity_by_stem.get(stem)
         if mpl["actualWordCount"] == 2 * color_count + 6:
             regular_mpl_palette_stems.append(stem)
             regular_mpl_palette_set.add(stem)
+        if palette_capacity is not None and color_count <= palette_capacity:
+            palette_capacity_fit_stems.append(stem)
+            palette_capacity_fit_set.add(stem)
+    for entry in pzx_entries:
+        stem = Path(entry["path"]).stem
+        mpl = mpl_by_stem.get(stem)
+        row_stream_max = entry.get("rowStreamMaxDecodedIndex")
+        if mpl is None or not entry["hasMplPair"] or row_stream_max is None:
+            continue
+        color_count = int(row_stream_max) + 1
+        palette_capacity = mpl_palette_capacity_by_stem.get(stem)
+        if mpl["actualWordCount"] == 2 * color_count + 6:
+            row_stream_regular_mpl_palette_stems.append(stem)
+            row_stream_regular_mpl_palette_set.add(stem)
+        if palette_capacity is not None and color_count <= palette_capacity:
+            row_stream_palette_capacity_fit_stems.append(stem)
+            row_stream_palette_capacity_fit_set.add(stem)
+
+    effective_regular_sources: dict[str, list[str]] = {}
+    effective_regular_stems: set[str] = set(palette_capacity_fit_set | row_stream_palette_capacity_fit_set)
+    for stem in effective_regular_stems:
+        effective_regular_sources[stem] = [stem]
+    for stems in shared_mpl_groups.values():
+        donors = sorted(stem for stem in stems if stem in effective_regular_stems)
+        if not donors:
+            continue
+        for stem in stems:
+            effective_regular_stems.add(stem)
+            effective_regular_sources[stem] = donors
+
+    for entry in pzx_entries:
+        stem = Path(entry["path"]).stem
+        mpl = mpl_by_stem.get(stem)
         if mpl is not None:
+            entry["mplPaletteColorCapacity"] = mpl_palette_capacity_by_stem.get(stem)
             entry["sharedMplWith"] = mpl.get("sharedWith", [])
             entry["mplRegularPaletteMatch"] = stem in regular_mpl_palette_set
+            entry["mplPaletteCapacityFit"] = stem in palette_capacity_fit_set
+            entry["rowStreamRegularPaletteMatch"] = stem in row_stream_regular_mpl_palette_set
+            entry["rowStreamPaletteCapacityFit"] = stem in row_stream_palette_capacity_fit_set
+            entry["effectiveMplPaletteMatch"] = stem in effective_regular_stems
+            entry["effectiveMplPaletteSources"] = effective_regular_sources.get(stem, [])
 
     shared_mpl_group_entries: list[dict[str, object]] = []
     for sha1, stems in sorted(shared_mpl_groups.items(), key=lambda item: item[1]):
@@ -201,6 +322,13 @@ def main() -> None:
                 "sha1": sha1,
                 "stems": stems,
                 "regularPaletteStems": [stem for stem in stems if stem in regular_mpl_palette_set],
+                "paletteCapacityFitStems": [stem for stem in stems if stem in palette_capacity_fit_set],
+                "rowStreamRegularPaletteStems": [stem for stem in stems if stem in row_stream_regular_mpl_palette_set],
+                "rowStreamPaletteCapacityFitStems": [
+                    stem for stem in stems if stem in row_stream_palette_capacity_fit_set
+                ],
+                "effectiveRegularStems": [stem for stem in stems if stem in effective_regular_stems],
+                "resolvedSources": sorted({source for stem in stems for source in effective_regular_sources.get(stem, [])}),
             }
         )
 
@@ -219,8 +347,18 @@ def main() -> None:
             "firstStreamDecodedCount": len(first_stream_ready),
             "firstStreamDecodeFailedCount": len(first_stream_failed),
             "firstStreamTableSpanCounts": dict(sorted(table_span_counts.items())),
+            "rawRowStreamPzxCount": len(raw_row_stream_entries),
+            "rawRowStreamPreview": raw_row_stream_entries[:12],
             "regularMplPaletteCount": len(regular_mpl_palette_stems),
             "regularMplPalettePreview": regular_mpl_palette_stems[:20],
+            "paletteCapacityFitCount": len(palette_capacity_fit_stems),
+            "paletteCapacityFitPreview": palette_capacity_fit_stems[:20],
+            "rowStreamRegularMplPaletteCount": len(row_stream_regular_mpl_palette_stems),
+            "rowStreamRegularMplPalettePreview": row_stream_regular_mpl_palette_stems[:20],
+            "rowStreamPaletteCapacityFitCount": len(row_stream_palette_capacity_fit_stems),
+            "rowStreamPaletteCapacityFitPreview": row_stream_palette_capacity_fit_stems[:20],
+            "effectiveRegularMplPaletteCount": len(effective_regular_stems),
+            "effectiveRegularMplPalettePreview": sorted(effective_regular_stems)[:20],
             "sharedMplGroupCount": len(shared_mpl_group_entries),
             "sharedMplGroupPreview": shared_mpl_group_entries[:8],
         },
@@ -228,11 +366,15 @@ def main() -> None:
             "All PZX files start with magic 50 5a 58 01 ('PZX\\x01').",
             "Many PZX files contain one or more embedded zlib streams.",
             "For 205 PZX files, the first decoded zlib stream is a table of 32-bit chunk offsets followed by chunk payloads.",
-            "Each chunk starts with width(u16), height(u16), 02 CD CD CD, declared payload length(u32), and reserved zero(u32).",
+            "Decoded variant=8 chunk records start with width(u16), height(u16), a CD-CD-CD tagged mode word (usually 02 or 04), declared payload length(u32), and reserved zero(u32).",
             "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using skip(u16), literal(opcode 0x80nn + nn bytes), and repeat(opcode 0xC0nn + one value byte repeated nn times).",
             "Some chunks start with FD FF before the first row. Rows are separated by FE FF, and chunks end with a trailing FFFF sentinel after the final FE FF.",
+            "Variant=7 assets such as 180.pzx expose the same row-oriented RLE directly as standalone zlib streams without the outer chunk header.",
             "For 61 paired MPL files, actualWordCount equals 2 * (maxDecodedIndex + 1) + 6, consistent with a 6-word header plus two palette banks.",
+            "229.pzx uses only indices 0..38 while its MPL carries 148 colors per bank, so at least one asset family keeps oversized palette banks instead of trimming them to the exact max index.",
+            "180.pzx raw row streams top out at palette index 46, which exactly fits the shared 179/180 MPL payload as a 47-color two-bank palette.",
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
+            "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",
         ],
         "pzx": pzx_entries,

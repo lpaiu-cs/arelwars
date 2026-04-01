@@ -8,7 +8,7 @@ import struct
 
 from PIL import Image, ImageDraw
 
-from formats import find_zlib_streams, read_pzx_first_stream
+from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_row_stream
 
 
 def parse_args() -> argparse.Namespace:
@@ -28,22 +28,25 @@ def rgb565(word: int) -> tuple[int, int, int, int]:
     return (r, g, b, 0 if word == 0 else 255)
 
 
-def render_chunk(chunk, palette_words: list[int], scale: int) -> Image.Image:
-    image = Image.new("RGBA", (chunk.width, chunk.height), (0, 0, 0, 0))
+def render_rows(rows, width: int, height: int, palette_words: list[int], scale: int) -> Image.Image:
+    image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     pixels = image.load()
-    for y, row in enumerate(chunk.rows):
+    for y, row in enumerate(rows):
         for x, value in enumerate(row.decoded):
             pixels[x, y] = rgb565(palette_words[value])
     if scale > 1:
-        image = image.resize((chunk.width * scale, chunk.height * scale), Image.Resampling.NEAREST)
+        image = image.resize((width * scale, height * scale), Image.Resampling.NEAREST)
     return image
 
 
-def build_sheet(stem: str, chunks, palette_label: str, scale: int) -> Image.Image:
+def build_sheet(stem: str, frames, palette_label: str, scale: int) -> Image.Image:
     margin = 8
     label_band = 18
-    columns = max(1, math.ceil(math.sqrt(len(chunks))))
-    rendered = [render_chunk(chunk, palette_words, scale) for chunk, palette_words in chunks]
+    columns = max(1, math.ceil(math.sqrt(len(frames))))
+    rendered = [
+        render_rows(frame["rows"], frame["width"], frame["height"], palette_words, scale)
+        for frame, palette_words in frames
+    ]
     cell_width = max(image.width for image in rendered) + margin
     cell_height = max(image.height for image in rendered) + margin + label_band
     rows = math.ceil(len(rendered) / columns)
@@ -52,27 +55,30 @@ def build_sheet(stem: str, chunks, palette_label: str, scale: int) -> Image.Imag
     draw = ImageDraw.Draw(sheet)
     draw.text((margin, 2), f"{stem} palette {palette_label} (RGB565 heuristic)", fill=(232, 236, 240, 255))
 
-    for index, ((chunk, _palette_words), image) in enumerate(zip(chunks, rendered, strict=True)):
+    for index, ((frame, _palette_words), image) in enumerate(zip(frames, rendered, strict=True)):
         col = index % columns
         row = index // columns
         x = margin + col * cell_width
         y = margin + 16 + row * cell_height
         sheet.alpha_composite(image, (x, y))
-        draw.text((x, y + image.height + 2), f"{chunk.index:02d} {chunk.width}x{chunk.height}", fill=(230, 230, 230, 255))
+        draw.text((x, y + image.height + 2), frame["label"], fill=(230, 230, 230, 255))
 
     return sheet
 
 
-def regular_mpl_palettes(path: Path, color_count: int) -> dict[str, list[int]] | None:
+def read_mpl_palettes(path: Path) -> tuple[int, dict[str, list[int]]] | None:
     words = [struct.unpack("<H", path.read_bytes()[index : index + 2])[0] for index in range(0, path.stat().st_size, 2)]
-    expected_words = 2 * color_count + 6
-    if len(words) != expected_words:
+    if len(words) < 8 or (len(words) - 6) % 2 != 0:
         return None
+    color_count = (len(words) - 6) // 2
 
-    return {
-        "a": words[6 : 6 + color_count],
-        "b": words[6 + color_count : 6 + 2 * color_count],
-    }
+    return (
+        color_count,
+        {
+            "a": words[6 : 6 + color_count],
+            "b": words[6 + color_count : 6 + 2 * color_count],
+        },
+    )
 
 
 def render_pair(stem: str, assets_root: Path, output_root: Path, scale: int) -> list[Path]:
@@ -88,18 +94,56 @@ def render_pair(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
 
     table_span = struct.unpack("<H", pzx_data[16:18])[0] >> 6 if len(pzx_data) >= 18 else 0
     first_stream = read_pzx_first_stream(streams[0].decoded, table_span)
-    if first_stream is None:
+    frames: list[dict[str, object]] = []
+    used_max_index: int | None = None
+
+    if first_stream is not None:
+        used_max_index = max(max(row.decoded) for chunk in first_stream.chunks for row in chunk.rows)
+        frames = [
+            {
+                "label": f"{chunk.index:02d} {chunk.width}x{chunk.height}",
+                "width": chunk.width,
+                "height": chunk.height,
+                "rows": chunk.rows,
+            }
+            for chunk in first_stream.chunks
+        ]
+    else:
+        raw_row_streams = []
+        for index, item in enumerate(streams):
+            try:
+                row_stream = read_pzx_row_stream(item.decoded)
+            except ValueError:
+                continue
+            if row_stream is None or row_stream.width is None:
+                continue
+            raw_row_streams.append(
+                {
+                    "label": f"s{index:02d} {row_stream.width}x{row_stream.height}",
+                    "width": row_stream.width,
+                    "height": row_stream.height,
+                    "rows": row_stream.rows,
+                    "maxDecodedIndex": max(max(row.decoded) for row in row_stream.rows if row.decoded),
+                }
+            )
+        if raw_row_streams:
+            frames = raw_row_streams
+            used_max_index = max(int(frame["maxDecodedIndex"]) for frame in raw_row_streams)
+
+    if not frames or used_max_index is None:
         return []
 
-    color_count = max(max(row.decoded) for chunk in first_stream.chunks for row in chunk.rows) + 1
-    palettes = regular_mpl_palettes(mpl_path, color_count)
-    if palettes is None:
+    palette_info = read_mpl_palettes(mpl_path)
+    if palette_info is None:
+        return []
+    color_count, palettes = palette_info
+    if used_max_index >= color_count:
         return []
 
     output_paths: list[Path] = []
     for label, palette_words in palettes.items():
-        chunk_inputs = [(chunk, palette_words) for chunk in first_stream.chunks]
-        sheet = build_sheet(stem, chunk_inputs, label, scale)
+        frame_inputs = [(frame, palette_words) for frame in frames]
+        sheet = build_sheet(stem, frame_inputs, label, scale)
         output_path = output_root / f"{stem}-{label}-rgb565.png"
         output_path.parent.mkdir(parents=True, exist_ok=True)
         sheet.save(output_path)

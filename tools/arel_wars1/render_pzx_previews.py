@@ -8,7 +8,7 @@ import struct
 
 from PIL import Image, ImageDraw
 
-from formats import find_zlib_streams, read_pzx_first_stream
+from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_row_stream
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,20 +38,34 @@ def render_chunk(chunk, scale: int) -> Image.Image:
     return image
 
 
-def build_sheet(chunks, scale: int) -> Image.Image:
+def render_row_stream(row_stream, scale: int) -> Image.Image:
+    width = row_stream.width
+    if width is None:
+        raise ValueError("Cannot render row stream with inconsistent row widths")
+
+    image = Image.new("RGB", (width, row_stream.height), color_for_index(0))
+    pixels = image.load()
+    for y, row in enumerate(row_stream.rows):
+        for x, value in enumerate(row.decoded):
+            pixels[x, y] = color_for_index(value)
+    if scale > 1:
+        image = image.resize((width * scale, row_stream.height * scale), Image.Resampling.NEAREST)
+    return image
+
+
+def build_sheet(items: list[tuple[str, Image.Image]]) -> Image.Image:
     margin = 12
     label_band = 20
-    columns = max(1, math.ceil(math.sqrt(len(chunks))))
+    columns = max(1, math.ceil(math.sqrt(len(items))))
 
-    rendered = [render_chunk(chunk, scale) for chunk in chunks]
-    cell_width = max(image.width for image in rendered) + margin
-    cell_height = max(image.height for image in rendered) + margin + label_band
-    rows = math.ceil(len(rendered) / columns)
+    cell_width = max(image.width for _, image in items) + margin
+    cell_height = max(image.height for _, image in items) + margin + label_band
+    rows = math.ceil(len(items) / columns)
 
     sheet = Image.new("RGB", (columns * cell_width + margin, rows * cell_height + margin), (10, 12, 16))
     draw = ImageDraw.Draw(sheet)
 
-    for index, (chunk, image) in enumerate(zip(chunks, rendered, strict=True)):
+    for index, (label, image) in enumerate(items):
         col = index % columns
         row = index // columns
         x = margin + col * cell_width
@@ -59,7 +73,6 @@ def build_sheet(chunks, scale: int) -> Image.Image:
 
         draw.rectangle((x - 1, y - 1, x + image.width, y + image.height), outline=(44, 52, 68))
         sheet.paste(image, (x, y))
-        label = f"{chunk.index:02d} {chunk.width}x{chunk.height}"
         draw.text((x, y + image.height + 4), label, fill=(220, 224, 232))
 
     return sheet
@@ -73,10 +86,36 @@ def render_preview(path: Path, output_root: Path, scale: int) -> Path | None:
 
     table_span = struct.unpack("<H", data[16:18])[0] >> 6 if len(data) >= 18 else 0
     first_stream = read_pzx_first_stream(streams[0].decoded, table_span)
-    if first_stream is None:
+    if first_stream is not None:
+        items = [
+            (f"{chunk.index:02d} {chunk.width}x{chunk.height}", render_chunk(chunk, scale))
+            for chunk in first_stream.chunks
+        ]
+        sheet = build_sheet(items)
+        output_path = output_root / f"{path.stem}.png"
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        sheet.save(output_path)
+        return output_path
+
+    row_stream_items: list[tuple[str, Image.Image]] = []
+    for item in streams[:32]:
+        try:
+            row_stream = read_pzx_row_stream(item.decoded)
+        except ValueError:
+            continue
+        if row_stream is None or row_stream.width is None:
+            continue
+        row_stream_items.append(
+            (
+                f"s{item.offset:04d} {row_stream.width}x{row_stream.height}",
+                render_row_stream(row_stream, scale),
+            )
+        )
+
+    if not row_stream_items:
         return None
 
-    sheet = build_sheet(first_stream.chunks, scale)
+    sheet = build_sheet(row_stream_items)
     output_path = output_root / f"{path.stem}.png"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(output_path)

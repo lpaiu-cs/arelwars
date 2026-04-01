@@ -28,15 +28,20 @@
 - `.pzx`
   Partially decoded. The first zlib stream in 205 files is now readable as:
   - a 32-bit chunk offset table whose byte span is `field16 >> 6`
-  - chunk records with `width(u16)`, `height(u16)`, `02 CD CD CD`, `declaredPayloadLen(u32)`, `reserved(u32)`
-  - row-oriented RLE bodies where each row expands to exactly `width` bytes via alternating `skip(u16)` and `literal(0x80nn + nn bytes)` commands
+  - chunk records with `width(u16)`, `height(u16)`, a `?? CD CD CD` mode tag, `declaredPayloadLen(u32)`, `reserved(u32)`
+  - row-oriented RLE bodies where each row expands to exactly `width` bytes via `skip(u16)`, `literal(0x80nn + nn bytes)`, and `repeat(0xC0nn + one value byte)` commands
   - `FE FF` row separators and an optional trailing `FF FF` sentinel after the last row
+  - `variant=7` assets such as `180.pzx` appear to reuse the same row grammar directly in each zlib stream, without the outer chunk table/header layer
 - `.mpl`
-  Partially decoded by pattern. For 63 paired stems, 61 files match a strong regular form:
-  - `actualWordCount = 2 * (maxPzxIndex + 1) + 6`
+  Partially decoded by pattern. For all 65 paired stems, the current best model is:
+  - the file layout is a 6-word header followed by two palette banks
+  - in 61 stems, `actualWordCount = 2 * (maxPzxIndex + 1) + 6` exactly
+  - `180.pzx` reaches the same exact fit through raw row-stream decoding rather than the chunk-table path
+  - `145.pzx` and `229.pzx` only use a subset of their available palette entries, so their banks are larger than the observed max index requires
+  - `179/180` and `145/146` also show explicit shared-`MPL` reuse across stems
   - this strongly suggests a 6-word header followed by two palette banks sized to the indexed colors used by the paired `.pzx`
   - heuristic `RGB565` renders from those two banks already produce sprite-like chunk previews
-  - known outliers so far: `145.mpl`, `179.mpl`
+  - there are no remaining paired-stem blockers at the file-format level; the open work is now palette-bank selection and whole-sprite assembly
 - `.ptc`
   Still opaque. Likely particle or effect definitions.
 
@@ -87,7 +92,7 @@ npm run ios:sync
 ## Immediate Next Targets
 
 1. Use the now-complete first-stream `.pzx` decode to recover chunk placement and the role of later zlib streams.
-2. Firm up `.mpl` into a real palette parser, including the two known outliers and any bank-selection metadata.
+2. Firm up `.mpl` into a real palette parser, including bank-selection metadata and oversized-bank handling.
 3. Turn extracted script data into structured event commands instead of raw string previews.
 4. Stand up a Phaser-side asset preview that can swap from synthetic placeholders to decoded `.pzx` and heuristic `.mpl` colors.
 
@@ -104,6 +109,7 @@ npm run ios:sync
   - `208.pzx` chunk `0`: `24 x 23`
 - Some chunk bodies begin with `FD FF` before row `0`.
 - Most chunks end with `FE FF FF FF`.
+- `variant=7` files can skip the chunk-table wrapper entirely and expose standalone row-RLE images as individual zlib streams.
 - The row grammar currently held by the tools is:
 
 ```text
@@ -121,8 +127,11 @@ then consume FE FF as the row separator
 
 ## MPL Findings
 
-- For 61 of 63 paired stems, `mplActualWords = 2 * (maxPzxIndex + 1) + 6`.
-- That regularity strongly suggests:
-  - `PZX` first-stream output is palette-indexed image data
-  - `MPL` carries two palette banks after a 6-word header
-- Heuristic RGB565 probes already produce sprite-like colored chunk sheets for stems such as `198`, `208`, and `240`.
+- For 61 paired stems, `mplActualWords = 2 * (maxPzxIndex + 1) + 6` exactly.
+- `180.pzx` adds one more exact match once its raw row streams are considered instead of only chunk-table assets.
+- `145.pzx` and `229.pzx` fit the same two-bank layout, but their observed indices only use a subset of the available palette entries.
+- Shared-file reuse is explicit in two places:
+  - `145.mpl == 146.mpl`
+  - `179.mpl == 180.mpl`
+- With exact matches, oversized-bank fits, and shared-file reuse combined, all 65 paired stems now fit the current two-bank palette hypothesis.
+- Heuristic RGB565 probes already produce sprite-like colored sheets for stems such as `198`, `208`, `229`, and `240`, plus `180` on the raw row-stream path.
