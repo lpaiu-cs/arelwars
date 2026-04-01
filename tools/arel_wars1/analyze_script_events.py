@@ -29,6 +29,10 @@ def event_path_for(catalog_root: Path, decoded_path: str) -> Path:
     return catalog_root / decoded_path.replace(".bin", ".events.json")
 
 
+def top_counter_items(counter: Counter[object], limit: int) -> list[dict[str, object]]:
+    return [{"value": key, "count": count} for key, count in counter.most_common(limit)]
+
+
 def main() -> None:
     args = parse_args()
     catalog_path = args.catalog.resolve()
@@ -47,8 +51,17 @@ def main() -> None:
     prefix_samples: dict[str, list[dict[str, object]]] = defaultdict(list)
     command_opcode_counts: Counter[str] = Counter()
     command_mnemonic_counts: Counter[str] = Counter()
+    unknown_opcode_counts: Counter[str] = Counter()
     portrait_slot_usage: dict[str, Counter[int]] = defaultdict(Counter)
     portrait_slot_speakers: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_command_args: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_command_sequences: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_command_prev: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_command_next: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_command_speakers: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_command_speaker_tags: dict[str, Counter[int]] = defaultdict(Counter)
+    unknown_command_scripts: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_command_samples: dict[str, list[dict[str, object]]] = defaultdict(list)
     per_script: list[dict[str, object]] = []
 
     for entry in zt1_entries:
@@ -95,6 +108,7 @@ def main() -> None:
                         }
                     )
                 prefix_parse = parse_script_prefix(prefix_hex)
+                sequence = " > ".join(command.mnemonic for command in prefix_parse.commands)
                 for command in prefix_parse.commands:
                     opcode_hex = f"{command.opcode:02x}"
                     command_opcode_counts.update([opcode_hex])
@@ -103,6 +117,44 @@ def main() -> None:
                         portrait_slot_usage[command.mnemonic].update([command.args[0]])
                         if isinstance(speaker, str):
                             portrait_slot_speakers[command.mnemonic].update([f"{command.args[0]}:{speaker}"])
+                for index, command in enumerate(prefix_parse.commands):
+                    if not command.mnemonic.startswith("cmd-"):
+                        continue
+                    unknown_opcode_counts.update([command.mnemonic])
+                    unknown_command_args[command.mnemonic].update(
+                        [",".join(f"{value:02x}" for value in command.args) or "-"]
+                    )
+                    unknown_command_sequences[command.mnemonic].update([sequence])
+                    unknown_command_prev[command.mnemonic].update(
+                        [prefix_parse.commands[index - 1].mnemonic if index > 0 else "<start>"]
+                    )
+                    unknown_command_next[command.mnemonic].update(
+                        [
+                            prefix_parse.commands[index + 1].mnemonic
+                            if index + 1 < len(prefix_parse.commands)
+                            else "<end>"
+                        ]
+                    )
+                    if isinstance(speaker, str):
+                        unknown_command_speakers[command.mnemonic].update([speaker])
+                    if isinstance(speaker_tag, int):
+                        unknown_command_speaker_tags[command.mnemonic].update([speaker_tag])
+                    entry_path = str(entry.get("path") or "")
+                    if entry_path:
+                        unknown_command_scripts[command.mnemonic].update([entry_path])
+                    samples = unknown_command_samples[command.mnemonic]
+                    if len(samples) < 8:
+                        samples.append(
+                            {
+                                "path": entry.get("path"),
+                                "speaker": speaker,
+                                "speakerTag": speaker_tag,
+                                "text": raw_event.get("text"),
+                                "prefixHex": prefix_hex,
+                                "sequence": sequence,
+                                "args": list(command.args),
+                            }
+                        )
 
         per_script.append(
             {
@@ -154,6 +206,21 @@ def main() -> None:
             }
             for slot, counter in sorted(portrait_slot_usage.items())
         },
+        "unknownCommandProfiles": [
+            {
+                "mnemonic": mnemonic,
+                "count": count,
+                "topArgs": top_counter_items(unknown_command_args[mnemonic], 8),
+                "topSequences": top_counter_items(unknown_command_sequences[mnemonic], 8),
+                "previousCommands": top_counter_items(unknown_command_prev[mnemonic], 8),
+                "nextCommands": top_counter_items(unknown_command_next[mnemonic], 8),
+                "topSpeakers": top_counter_items(unknown_command_speakers[mnemonic], 8),
+                "topSpeakerTags": top_counter_items(unknown_command_speaker_tags[mnemonic], 8),
+                "topScripts": top_counter_items(unknown_command_scripts[mnemonic], 8),
+                "samples": unknown_command_samples[mnemonic],
+            }
+            for mnemonic, count in unknown_opcode_counts.most_common()
+        ],
         "topScripts": sorted(per_script, key=lambda item: int(item["eventCount"]), reverse=True)[:32],
     }
 
