@@ -140,6 +140,13 @@
     - `3`: explicit attack/token0 + damage/token1 + full 8-byte box
   - 현재 parsed set 기준 mode 분포는 `explicit-att-dam = 251`, `compact-box-list = 2`, `reference-point-list = 0`이다.
   - 집계 총량은 attack `1468`, damage `1260`, generic `11`, reference `0`이다.
+- `CGxPZxAni` playback state
+  - clip state `4-byte`는 `currentFrame`, `delayPos`, `flags`, `signed globalDelayBias`다.
+  - `Play(loop)`는 `bit1=playing`을 세우고, loop 요청이면 `bit4`도 세운다.
+  - `Pause`는 `bit3`, `Stop`은 `bit0`을 토글한다.
+  - `DoPlay`는 frame-local `delay + globalDelayBias`를 effective delay로 쓰고, `delayPos = (delayPos + 1) % effectiveDelay`가 `0`일 때만 frame advance한다.
+  - wrap 시 `bit2`를 세우고, loop가 아니면 current frame을 마지막 frame에 고정한 뒤 `Stop(false)`로 멈춘다.
+  - `GetCurrentDelayFrameCount`는 current frame 이전 누적 delay + 현재 `delayPos`, `GetTotalDelayFrameCount`는 `delay==0` frame만 `1` tick으로 보정한 총합을 돌려준다.
 - `PZF`
   - `PZD image count`를 raw `PZF` parser의 `max_subframe_index` bound로 다시 넣으면 outlier가 사라진다.
   - 현재 집계는 `exact-max-plus-one = 244`, `in-range = 7`, `empty = 2`, `out-of-range = 0`이다.
@@ -166,13 +173,14 @@
 - `PZF extraPayload`의 non-executed envelope byte(`66/67/70...`)가 정확히 어디서 추가 의미를 갖는지는 아직 남아 있다.
   - 현재까지는 `FindEffectedImage`의 primary cache-hit key는 아니고, raw payload family를 나누는 secondary metadata 쪽으로 기운다.
 - bbox mode 자체는 닫혔지만, `CollisionDetect` filter 비트와 attack/damage/reference point의 실제 gameplay 의미는 더 따라갈 여지가 있다.
-- `PZA -> CGxPZxAni -> CSpriteIns::DoAnimate` 소비축을 더 따라가야 시간축 해독을 “재생기 기준”으로 끝낼 수 있다.
+- `globalDelayBias(+3)`가 실제 게임 코드 어디서 세팅되는지는 아직 못 찾았다.
+  - parser가 직접 채우지 않고, runtime helper가 서명값으로 더해 쓰는 것까지만 확인됐다.
 
 ### Next Focus
 
 1. `66/67/70...` envelope byte가 effect cache selector인지 module selector인지, `ChangeModule*` / effect loaders를 기준으로 더 정리한다.
 2. `CGxPZxFrameBB::*`와 `CollisionDetect` consumer를 더 따라가서 bbox group의 gameplay 의미를 붙인다.
-3. `CGxPZxAni::DoPlay` / `GetCurrentDelayFrameCount`와 `CSpriteIns` 소비축을 따라 실제 시간축 반영을 끝낸다.
+3. `globalDelayBias(+3)` setter를 찾아 PZA 외부 시간축 보정이 있는지 확인한다.
 
 ### Refresh Commands
 

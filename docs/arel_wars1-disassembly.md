@@ -137,6 +137,20 @@ clip state (size 4)
   +3  signed global delay bias
 ```
 
+- `CreateAniClip`는 이 4-byte state를 `00 00 01 00`으로 초기화한다.
+  - `flags bit0 = stopped`
+  - `flags bit1 = playing`
+  - `flags bit2 = wrapped/end-reached`
+  - `flags bit3 = paused`
+  - `flags bit4 = loop-on-wrap`
+- `Play(loop)`는 `bit0/bit4`를 정리하고 `bit1`을 세운다.
+  - `Play(false)`는 non-loop play
+  - `Play(true)`는 `bit4`까지 세워 wrap 시 0번 frame으로 계속 돈다.
+- `Pause(true/false)`는 `bit3`만 토글한다.
+- `Stop(reset)`는 `bit1/bit3`를 내리고 `bit0`을 세운다.
+  - `Stop(true)`는 current frame index도 `0`으로 돌린다.
+  - `Stop(false)`는 current frame을 유지한 채 멈춘다.
+
 `DecodeAnimationData`가 채우는 per-frame record는 `12-byte` 구조다.
 
 ```text
@@ -165,6 +179,16 @@ animation:
 - 대신 별도 `u16[]`로 빠져서 `CGxPZAMgr::LoadAni*`가 `PZF` frame 로딩에 사용한다.
 - `control:u8`는 `CGxPZxAni`에 저장되지 않는다.
 - 대신 0이 아닐 때 stream callback을 한 번 더 치는 구조라서, runtime 재생 플래그보다는 container / separator 계층일 가능성이 높다.
+- `DoPlay`가 실제로 소비하는 시간축은 간단하다.
+  - effective per-frame delay = `frame.localDelay + clipState.globalDelayBias`
+  - effective delay가 `0`이면 그 tick에서 바로 다음 frame으로 넘어간다.
+  - effective delay가 양수면 `delayPos = (delayPos + 1) % effectiveDelay`를 수행하고, remainder가 `0`일 때만 다음 frame으로 진행한다.
+  - frame advance 자체는 `currentFrame = (currentFrame + 1) % frameCount`다.
+  - wrap가 발생하면 `bit2`를 세우고, `bit4(loop)`가 꺼져 있으면 current frame을 `frameCount - 1`로 되돌린 뒤 `Stop(false)`로 멈춘다.
+- helper도 이 state machine과 맞물린다.
+  - `GetCurrentDelayFrameCount`는 current frame 직전까지의 누적 delay + 현재 `delayPos`를 돌려준다.
+  - `GetTotalDelayFrameCount`는 전체 frame을 순회하면서 `delay == 0`인 frame만 `1` tick으로 보정한 합을 돌려준다.
+  - 즉 runtime advance는 zero-delay frame을 즉시 소모하지만, total-count helper는 zero-delay frame을 최소 `1` tick으로 세는 비대칭이 있다.
 - `DecodeAnimationData` 내부의 두 갈래는 서로 다른 animation 포맷이 아니라 `CGxStream` backend 차이로 보인다.
   - direct memory buffer path
   - callback-based stream path
