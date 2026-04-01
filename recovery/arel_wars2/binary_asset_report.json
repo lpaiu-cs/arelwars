@@ -60,6 +60,85 @@
       "139": 1,
       "141": 1,
       "453": 1
+    },
+    "pzfMarkerLeadWordHistogram": {
+      "0000": 107,
+      "0001": 2,
+      "0100": 196,
+      "0101": 8,
+      "0200": 270,
+      "0201": 10,
+      "0210": 1,
+      "0300": 20,
+      "0301": 2,
+      "0304": 2,
+      "0310": 1,
+      "0323": 6,
+      "0327": 1,
+      "032a": 1,
+      "0337": 3,
+      "0400": 23,
+      "0401": 7,
+      "0402": 7,
+      "0403": 12,
+      "0404": 1,
+      "0423": 6,
+      "0426": 1,
+      "0429": 1,
+      "0437": 3,
+      "0500": 10,
+      "0600": 16,
+      "0700": 4,
+      "0701": 1,
+      "0800": 1,
+      "0900": 2,
+      "0a00": 3,
+      "0b00": 5,
+      "0c00": 5,
+      "0d00": 2,
+      "0e00": 14,
+      "0f00": 8,
+      "1000": 7,
+      "1100": 12,
+      "1200": 6,
+      "1300": 10,
+      "1400": 22,
+      "1500": 7,
+      "1600": 1,
+      "1700": 4,
+      "1900": 2,
+      "1b00": 8,
+      "1c00": 2,
+      "2000": 55,
+      "2100": 14,
+      "2200": 27,
+      "2300": 9,
+      "2400": 13,
+      "2500": 5,
+      "2600": 6,
+      "2700": 6,
+      "2800": 5,
+      "2a00": 1,
+      "2b00": 10,
+      "2c00": 1,
+      "2d00": 6,
+      "2e00": 2,
+      "3500": 6,
+      "3600": 54,
+      "3700": 3,
+      "3800": 54,
+      "3900": 11,
+      "3a00": 4,
+      "3b00": 10,
+      "3c00": 15
+    },
+    "pzfMarkerLayoutHistogram": {
+      "control+int16": 317,
+      "control+int16+u8-tail1": 737,
+      "control+nested-marker": 35,
+      "control+u8-skip1+int16": 66,
+      "control+u8-skip1+int16+u8-tail1": 5,
+      "raw": 1
     }
   },
   "findings": [
@@ -70,6 +149,7 @@
     "Sampled armor/head/weapon/effect PZF files expose category-specific common strides of 53, 25, 30, and 11 bytes, and those same strides decode repeated anchor-box records from the zlib stream.",
     "Decoded PZF metadata streams also carry dense 67ff000000-delimited sections, so PZF now looks like offset table + anchor boxes + timing/state markers rather than an opaque blob.",
     "Current PZF samples already separate into anchor-only, anchor+marker, and marker-only variants, so the AW2 body-part sidecar parser should branch by variant instead of assuming one universal record layout.",
+    "Inside 67ff sections, the payloads already cluster into repeatable control-word families such as 0100, 0200, and 0401, and many of those payloads reduce cleanly to int16 fields plus an optional trailing byte.",
     "AW2 img/menu PZX files still use magic 'PZX\\x01', but many now decode directly as row streams instead of the AW1 chunk-offset-table first stream.",
     "Sampled AW2 MPL files under assets/pc are tiny sidecars rather than AW1-style two-bank palette blobs, so AW1 MPL logic must not be reused blindly.",
     "AW2 PTC remains structurally similar to AW1 compact parameter blocks and can already be summarized into angle, ratio, signed-delta, and timing fields."
@@ -39875,6 +39955,9 @@
         "sectionLengthPreview": [],
         "leadByteHistogram": {},
         "leadWordHistogram": {},
+        "layoutHistogram": {},
+        "signatureHistogram": {},
+        "signaturePreview": [],
         "sectionPrototypePreview": []
       },
       "anchorBoxes": {
@@ -40206,6 +40289,9 @@
         "sectionLengthPreview": [],
         "leadByteHistogram": {},
         "leadWordHistogram": {},
+        "layoutHistogram": {},
+        "signatureHistogram": {},
+        "signaturePreview": [],
         "sectionPrototypePreview": []
       },
       "anchorBoxes": {
@@ -41030,6 +41116,559 @@
           "3b00": 10,
           "3c00": 15
         },
+        "layoutHistogram": {
+          "control+int16": 121,
+          "control+int16+u8-tail1": 317,
+          "control+u8-skip1+int16": 10,
+          "control+u8-skip1+int16+u8-tail1": 4,
+          "raw": 1
+        },
+        "signatureHistogram": {
+          "none:1": 1,
+          "0000:13": 2,
+          "0000:21": 1,
+          "0000:29": 1,
+          "0000:32": 1,
+          "0000:41": 1,
+          "0000:43": 1,
+          "0100:10": 1,
+          "0100:18": 6,
+          "0100:86": 1,
+          "0101:26": 1,
+          "0200:10": 6,
+          "0200:18": 2,
+          "0300:10": 3,
+          "0300:18": 1,
+          "0300:31": 1,
+          "0301:26": 1,
+          "0323:8": 6,
+          "0327:8": 1,
+          "032a:8": 1,
+          "0337:8": 3,
+          "0400:10": 3,
+          "0400:18": 1,
+          "0401:27": 1,
+          "0403:9": 11,
+          "0403:12": 1,
+          "0404:11": 1,
+          "0423:8": 6,
+          "0426:8": 1,
+          "0429:8": 1,
+          "0437:8": 3,
+          "0500:18": 5,
+          "0500:19": 1,
+          "0500:31": 1,
+          "0600:10": 5,
+          "0600:18": 2,
+          "0700:18": 1,
+          "0700:19": 1,
+          "0700:30": 1,
+          "0700:162": 1,
+          "0701:26": 1,
+          "0900:7": 1,
+          "0900:19": 1,
+          "0a00:7": 1,
+          "0b00:7": 2,
+          "0b00:10": 2,
+          "0c00:7": 1,
+          "0d00:7": 2,
+          "0e00:7": 1,
+          "0e00:10": 12,
+          "0f00:7": 6,
+          "1000:7": 3,
+          "1100:7": 7,
+          "1200:7": 3,
+          "1300:7": 2,
+          "1300:8": 4,
+          "1400:7": 1,
+          "1400:8": 4,
+          "1500:7": 1,
+          "1500:19": 1,
+          "1500:30": 2,
+          "1500:52": 1,
+          "1900:7": 1,
+          "1b00:7": 1,
+          "1c00:7": 1,
+          "2000:7": 51,
+          "2000:19": 2,
+          "2000:30": 2,
+          "2100:7": 12,
+          "2100:42": 1,
+          "2200:7": 25,
+          "2200:8": 1,
+          "2300:7": 7,
+          "2300:8": 1,
+          "2400:7": 6,
+          "2400:8": 6,
+          "2500:7": 4,
+          "2600:7": 2,
+          "2700:7": 3,
+          "2800:7": 2,
+          "2a00:7": 1,
+          "2b00:7": 4,
+          "2b00:8": 5,
+          "2b00:68": 1,
+          "2c00:30": 1,
+          "2d00:7": 2,
+          "2d00:8": 2,
+          "2d00:44": 2,
+          "2e00:7": 2,
+          "3500:7": 6,
+          "3600:7": 54,
+          "3700:7": 3,
+          "3800:7": 54,
+          "3900:7": 5,
+          "3900:8": 5,
+          "3900:35": 1,
+          "3a00:7": 2,
+          "3a00:8": 2,
+          "3b00:7": 5,
+          "3b00:8": 5,
+          "3c00:7": 13,
+          "3c00:47": 2
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "3600",
+            "payloadLen": 7,
+            "count": 54,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "3600",
+              "payloadHex": "36000e00f0fe01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  14,
+                  -272
+                ],
+                "int16Range": [
+                  -272,
+                  14
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "3800",
+            "payloadLen": 7,
+            "count": 54,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "3800",
+              "payloadHex": "38000600f0fe01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  6,
+                  -272
+                ],
+                "int16Range": [
+                  -272,
+                  6
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "2000",
+            "payloadLen": 7,
+            "count": 51,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2000",
+              "payloadHex": "2000d9ff60ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -39,
+                  -160
+                ],
+                "int16Range": [
+                  -160,
+                  -39
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "2200",
+            "payloadLen": 7,
+            "count": 25,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2200",
+              "payloadHex": "2200d1ff40ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -47,
+                  -192
+                ],
+                "int16Range": [
+                  -192,
+                  -47
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "3c00",
+            "payloadLen": 7,
+            "count": 13,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "3c00",
+              "payloadHex": "3c00e9ff5cff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -23,
+                  -164
+                ],
+                "int16Range": [
+                  -164,
+                  -23
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0e00",
+            "payloadLen": 10,
+            "count": 12,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0e00",
+              "payloadHex": "0e00001f00e4ff53ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  31,
+                  228,
+                  -173,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  228
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "2100",
+            "payloadLen": 7,
+            "count": 12,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2100",
+              "payloadHex": "2100caff37ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -54,
+                  -201
+                ],
+                "int16Range": [
+                  -201,
+                  -54
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0403",
+            "payloadLen": 9,
+            "count": 11,
+            "structure": {
+              "payloadLen": 9,
+              "leadWordHex": "0403",
+              "payloadHex": "04032600f0fffafd01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  38,
+                  -16,
+                  -518
+                ],
+                "int16Range": [
+                  -518,
+                  38
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1100",
+            "payloadLen": 7,
+            "count": 7,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "1100",
+              "payloadHex": "1100ecff8bff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -20,
+                  -117
+                ],
+                "int16Range": [
+                  -117,
+                  -20
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "2300",
+            "payloadLen": 7,
+            "count": 7,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2300",
+              "payloadHex": "2300d9ff44ff02",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -39,
+                  -188
+                ],
+                "int16Range": [
+                  -188,
+                  -39
+                ],
+                "tailByteHex": "02"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 18,
+            "count": 6,
+            "structure": {
+              "payloadLen": 18,
+              "leadWordHex": "0100",
+              "payloadHex": "010001faffcaff1b00250001001e00a8ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 8,
+                "int16Preview": [
+                  506,
+                  -54,
+                  -229,
+                  37,
+                  1,
+                  30,
+                  168,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  506
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 10,
+            "count": 6,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0200",
+              "payloadHex": "0200001f00e4ff54ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  31,
+                  228,
+                  -172,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  228
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0323",
+            "payloadLen": 8,
+            "count": 6,
+            "structure": {
+              "payloadLen": 8,
+              "leadWordHex": "0323",
+              "payloadHex": "032300daff44ff03",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 3,
+                "int16Preview": [
+                  218,
+                  -188,
+                  -253
+                ],
+                "int16Range": [
+                  -253,
+                  218
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0423",
+            "payloadLen": 8,
+            "count": 6,
+            "structure": {
+              "payloadLen": 8,
+              "leadWordHex": "0423",
+              "payloadHex": "042300d8ff49ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 3,
+                "int16Preview": [
+                  216,
+                  -183,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  216
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0f00",
+            "payloadLen": 7,
+            "count": 6,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0f00",
+              "payloadHex": "0f007200ebff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  114,
+                  -21
+                ],
+                "int16Range": [
+                  -21,
+                  114
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "2400",
+            "payloadLen": 7,
+            "count": 6,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2400",
+              "payloadHex": "2400ddff4eff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -35,
+                  -178
+                ],
+                "int16Range": [
+                  -178,
+                  -35
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 18,
@@ -41509,6 +42148,588 @@
           "2700": 3,
           "2800": 3
         },
+        "layoutHistogram": {
+          "control+int16": 1,
+          "control+int16+u8-tail1": 46,
+          "control+nested-marker": 3,
+          "control+u8-skip1+int16": 6
+        },
+        "signatureHistogram": {
+          "0000:4": 1,
+          "0000:31": 1,
+          "0100:7": 1,
+          "0100:9": 16,
+          "0100:27": 1,
+          "0100:33": 1,
+          "0101:79": 1,
+          "0200:7": 1,
+          "0200:9": 5,
+          "0210:13": 1,
+          "0300:9": 3,
+          "0310:13": 1,
+          "0400:7": 1,
+          "0401:49": 2,
+          "0401:83": 1,
+          "0401:89": 1,
+          "0500:7": 1,
+          "0600:7": 1,
+          "0800:7": 1,
+          "2100:7": 1,
+          "2200:7": 1,
+          "2300:7": 1,
+          "2400:7": 1,
+          "2500:7": 1,
+          "2600:7": 4,
+          "2700:7": 3,
+          "2800:7": 3
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 9,
+            "count": 16,
+            "structure": {
+              "payloadLen": 9,
+              "leadWordHex": "0100",
+              "payloadHex": "01000e00bdff84ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  14,
+                  -67,
+                  -124
+                ],
+                "int16Range": [
+                  -124,
+                  14
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 9,
+            "count": 5,
+            "structure": {
+              "payloadLen": 9,
+              "leadWordHex": "0200",
+              "payloadHex": "02002000eaff82ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  32,
+                  -22,
+                  -126
+                ],
+                "int16Range": [
+                  -126,
+                  32
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "2600",
+            "payloadLen": 7,
+            "count": 4,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2600",
+              "payloadHex": "26004a00cbff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  74,
+                  -53
+                ],
+                "int16Range": [
+                  -53,
+                  74
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0300",
+            "payloadLen": 9,
+            "count": 3,
+            "structure": {
+              "payloadLen": 9,
+              "leadWordHex": "0300",
+              "payloadHex": "03001f00eaff8aff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  31,
+                  -22,
+                  -118
+                ],
+                "int16Range": [
+                  -118,
+                  31
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "2700",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2700",
+              "payloadHex": "27004000c0ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  64,
+                  -64
+                ],
+                "int16Range": [
+                  -64,
+                  64
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "2800",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "2800",
+              "payloadHex": "28003700b7ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  55,
+                  -73
+                ],
+                "int16Range": [
+                  -73,
+                  55
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0401",
+            "payloadLen": 49,
+            "count": 2,
+            "structure": {
+              "payloadLen": 49,
+              "leadWordHex": "0401",
+              "payloadHex": "040104d01d24000005009eff0172000000000100120096ff0172000000000200",
+              "layoutKind": "control+u8-skip1+int16",
+              "valueLayout": {
+                "kind": "u8-skip1+int16",
+                "endianness": "be",
+                "prefixSkipBytes": 1,
+                "trimSuffixBytes": 0,
+                "int16Count": 23,
+                "int16Preview": [
+                  -12259,
+                  9216,
+                  5,
+                  158,
+                  -255,
+                  29184,
+                  0,
+                  1,
+                  18,
+                  150,
+                  -255,
+                  29184
+                ],
+                "int16Range": [
+                  -12259,
+                  29184
+                ],
+                "prefixByteHex": "04"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 4,
+            "count": 1,
+            "structure": {
+              "payloadLen": 4,
+              "leadWordHex": "0000",
+              "payloadHex": "00000000",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 1,
+                "int16Preview": [
+                  0
+                ],
+                "int16Range": [
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 31,
+            "count": 1,
+            "structure": {
+              "payloadLen": 31,
+              "leadWordHex": "0000",
+              "payloadHex": "000000000000000001001500d6ff4eff01677800000001001500d6ff4eff01",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 17,
+                  "markerHex": "6778000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  21,
+                  -42,
+                  -178
+                ],
+                "int16Range": [
+                  -178,
+                  21
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 4,
+                "int16Preview": [
+                  1,
+                  21,
+                  -42,
+                  -178
+                ],
+                "int16Range": [
+                  -178,
+                  21
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 7,
+            "count": 1,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0100",
+              "payloadHex": "0100100093ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  16,
+                  -109
+                ],
+                "int16Range": [
+                  -109,
+                  16
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 27,
+            "count": 1,
+            "structure": {
+              "payloadLen": 27,
+              "leadWordHex": "0100",
+              "payloadHex": "01001900bdff25ff0167780000000000000001001a00e4ff96ff01",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 9,
+                  "markerHex": "6778000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  25,
+                  -67,
+                  -219
+                ],
+                "int16Range": [
+                  -219,
+                  25
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 6,
+                "int16Preview": [
+                  0,
+                  0,
+                  1,
+                  26,
+                  -28,
+                  -106
+                ],
+                "int16Range": [
+                  -106,
+                  26
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 33,
+            "count": 1,
+            "structure": {
+              "payloadLen": 33,
+              "leadWordHex": "0100",
+              "payloadHex": "01001e00d6ff7cff0167780000000000000000000000000002001f00baff5aff",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 9,
+                  "markerHex": "6778000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  30,
+                  -42,
+                  -132
+                ],
+                "int16Range": [
+                  -132,
+                  30
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 9,
+                "int16Preview": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  2,
+                  31,
+                  -70,
+                  -166
+                ],
+                "int16Range": [
+                  -166,
+                  31
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0101",
+            "payloadLen": 79,
+            "count": 1,
+            "structure": {
+              "payloadLen": 79,
+              "leadWordHex": "0101",
+              "payloadHex": "0101fccd1d240b00b7ff8dff0172000000000101fdcd1d240c00b7ff73ff0169",
+              "layoutKind": "control+u8-skip1+int16",
+              "valueLayout": {
+                "kind": "u8-skip1+int16",
+                "endianness": "be",
+                "prefixSkipBytes": 1,
+                "trimSuffixBytes": 0,
+                "int16Count": 38,
+                "int16Preview": [
+                  -13027,
+                  9227,
+                  183,
+                  -115,
+                  -255,
+                  29184,
+                  0,
+                  1,
+                  509,
+                  -13027,
+                  9228,
+                  183
+                ],
+                "int16Range": [
+                  -13027,
+                  29184
+                ],
+                "prefixByteHex": "fc"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 7,
+            "count": 1,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0200",
+              "payloadHex": "02001b008dff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  27,
+                  -115
+                ],
+                "int16Range": [
+                  -115,
+                  27
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0210",
+            "payloadLen": 13,
+            "count": 1,
+            "structure": {
+              "payloadLen": 13,
+              "leadWordHex": "0210",
+              "payloadHex": "021011a667661f00efff8fff01",
+              "layoutKind": "control+u8-skip1+int16",
+              "valueLayout": {
+                "kind": "u8-skip1+int16",
+                "endianness": "be",
+                "prefixSkipBytes": 1,
+                "trimSuffixBytes": 0,
+                "int16Count": 5,
+                "int16Preview": [
+                  -22937,
+                  26143,
+                  239,
+                  -113,
+                  -255
+                ],
+                "int16Range": [
+                  -22937,
+                  26143
+                ],
+                "prefixByteHex": "11"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0310",
+            "payloadLen": 13,
+            "count": 1,
+            "structure": {
+              "payloadLen": 13,
+              "leadWordHex": "0310",
+              "payloadHex": "031011a667661f00eaff8aff01",
+              "layoutKind": "control+u8-skip1+int16",
+              "valueLayout": {
+                "kind": "u8-skip1+int16",
+                "endianness": "be",
+                "prefixSkipBytes": 1,
+                "trimSuffixBytes": 0,
+                "int16Count": 5,
+                "int16Preview": [
+                  -22937,
+                  26143,
+                  234,
+                  -118,
+                  -255
+                ],
+                "int16Range": [
+                  -22937,
+                  26143
+                ],
+                "prefixByteHex": "11"
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 7,
@@ -41918,6 +43139,504 @@
           "1b00": 7,
           "1c00": 1
         },
+        "layoutHistogram": {
+          "control+int16": 32,
+          "control+int16+u8-tail1": 34,
+          "control+nested-marker": 12,
+          "control+u8-skip1+int16": 1
+        },
+        "signatureHistogram": {
+          "0000:22": 1,
+          "0000:25": 1,
+          "0100:97": 1,
+          "0100:108": 1,
+          "0101:26": 2,
+          "0200:10": 3,
+          "0200:33": 1,
+          "0200:53": 1,
+          "0200:78": 1,
+          "0200:119": 1,
+          "0201:26": 1,
+          "0300:10": 5,
+          "0300:22": 1,
+          "0400:10": 4,
+          "0400:22": 1,
+          "0400:34": 1,
+          "0400:62": 1,
+          "0500:10": 2,
+          "0600:7": 1,
+          "0600:10": 1,
+          "0b00:7": 1,
+          "0e00:7": 1,
+          "0f00:7": 2,
+          "1000:7": 2,
+          "1100:7": 2,
+          "1100:8": 2,
+          "1200:7": 1,
+          "1200:8": 2,
+          "1300:7": 2,
+          "1300:8": 2,
+          "1400:7": 12,
+          "1400:19": 1,
+          "1400:22": 2,
+          "1400:31": 1,
+          "1500:7": 1,
+          "1600:7": 1,
+          "1700:7": 3,
+          "1700:22": 1,
+          "1900:8": 1,
+          "1b00:7": 3,
+          "1b00:8": 3,
+          "1b00:35": 1,
+          "1c00:8": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "1400",
+            "payloadLen": 7,
+            "count": 12,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "1400",
+              "payloadHex": "1400c9ffb9ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -55,
+                  -71
+                ],
+                "int16Range": [
+                  -71,
+                  -55
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0300",
+            "payloadLen": 10,
+            "count": 5,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0300",
+              "payloadHex": "0300001400c9ffc6ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  20,
+                  201,
+                  -58,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  201
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0400",
+            "payloadLen": 10,
+            "count": 4,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0400",
+              "payloadHex": "040000150088ff5aff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  21,
+                  136,
+                  -166,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  136
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 10,
+            "count": 3,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0200",
+              "payloadHex": "0200001400c9ffd0ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  20,
+                  201,
+                  -48,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  201
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "1700",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "1700",
+              "payloadHex": "1700e2ff58ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -30,
+                  -168
+                ],
+                "int16Range": [
+                  -168,
+                  -30
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1b00",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "1b00",
+              "payloadHex": "1b00e4ff61ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -28,
+                  -159
+                ],
+                "int16Range": [
+                  -159,
+                  -28
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1b00",
+            "payloadLen": 8,
+            "count": 3,
+            "structure": {
+              "payloadLen": 8,
+              "leadWordHex": "1b00",
+              "payloadHex": "1b00e0ff61ff0203",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 3,
+                "int16Preview": [
+                  -32,
+                  -159,
+                  770
+                ],
+                "int16Range": [
+                  -159,
+                  770
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0101",
+            "payloadLen": 26,
+            "count": 2,
+            "structure": {
+              "payloadLen": 26,
+              "leadWordHex": "0101",
+              "payloadHex": "010101170098ff68008100eaffbfff2c0035000200100062ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 12,
+                "int16Preview": [
+                  279,
+                  152,
+                  -152,
+                  129,
+                  234,
+                  -65,
+                  -212,
+                  53,
+                  2,
+                  16,
+                  98,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  279
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0500",
+            "payloadLen": 10,
+            "count": 2,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0500",
+              "payloadHex": "05000016008cff5bff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  22,
+                  140,
+                  -165,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  140
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0f00",
+            "payloadLen": 7,
+            "count": 2,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0f00",
+              "payloadHex": "0f00b9ff7fff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -71,
+                  -129
+                ],
+                "int16Range": [
+                  -129,
+                  -71
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1000",
+            "payloadLen": 7,
+            "count": 2,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "1000",
+              "payloadHex": "100094ff68ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -108,
+                  -152
+                ],
+                "int16Range": [
+                  -152,
+                  -108
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1100",
+            "payloadLen": 7,
+            "count": 2,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "1100",
+              "payloadHex": "11007fff55ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -129,
+                  -171
+                ],
+                "int16Range": [
+                  -171,
+                  -129
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1100",
+            "payloadLen": 8,
+            "count": 2,
+            "structure": {
+              "payloadLen": 8,
+              "leadWordHex": "1100",
+              "payloadHex": "1100feff55ff0203",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 3,
+                "int16Preview": [
+                  -2,
+                  -171,
+                  770
+                ],
+                "int16Range": [
+                  -171,
+                  770
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "1200",
+            "payloadLen": 8,
+            "count": 2,
+            "structure": {
+              "payloadLen": 8,
+              "leadWordHex": "1200",
+              "payloadHex": "1200fdff48ff0203",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 3,
+                "int16Preview": [
+                  -3,
+                  -184,
+                  770
+                ],
+                "int16Range": [
+                  -184,
+                  770
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "1300",
+            "payloadLen": 7,
+            "count": 2,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "1300",
+              "payloadHex": "130059ff23ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -167,
+                  -221
+                ],
+                "int16Range": [
+                  -221,
+                  -167
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1300",
+            "payloadLen": 8,
+            "count": 2,
+            "structure": {
+              "payloadLen": 8,
+              "leadWordHex": "1300",
+              "payloadHex": "1300010023ff0203",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 3,
+                "int16Preview": [
+                  1,
+                  -221,
+                  770
+                ],
+                "int16Range": [
+                  -221,
+                  770
+                ]
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 26,
@@ -42304,6 +44023,9 @@
         "sectionLengthPreview": [],
         "leadByteHistogram": {},
         "leadWordHistogram": {},
+        "layoutHistogram": {},
+        "signatureHistogram": {},
+        "signaturePreview": [],
         "sectionPrototypePreview": []
       },
       "anchorBoxes": {
@@ -42605,6 +44327,9 @@
         "sectionLengthPreview": [],
         "leadByteHistogram": {},
         "leadWordHistogram": {},
+        "layoutHistogram": {},
+        "signatureHistogram": {},
+        "signaturePreview": [],
         "sectionPrototypePreview": []
       },
       "anchorBoxes": {
@@ -42900,6 +44625,9 @@
         "sectionLengthPreview": [],
         "leadByteHistogram": {},
         "leadWordHistogram": {},
+        "layoutHistogram": {},
+        "signatureHistogram": {},
+        "signaturePreview": [],
         "sectionPrototypePreview": []
       },
       "anchorBoxes": {
@@ -43240,6 +44968,492 @@
           "0201": 5,
           "0402": 1
         },
+        "layoutHistogram": {
+          "control+int16": 12,
+          "control+int16+u8-tail1": 57,
+          "control+u8-skip1+int16": 39
+        },
+        "signatureHistogram": {
+          "0000:20": 4,
+          "0000:22": 1,
+          "0000:28": 4,
+          "0000:36": 1,
+          "0000:49": 1,
+          "0200:17": 39,
+          "0200:25": 38,
+          "0200:26": 1,
+          "0200:27": 10,
+          "0200:29": 3,
+          "0201:33": 3,
+          "0201:35": 2,
+          "0402:28": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 17,
+            "count": 39,
+            "structure": {
+              "payloadLen": 17,
+              "leadWordHex": "0200",
+              "payloadHex": "0200000100aaffbaff000400abffb9ff01",
+              "layoutKind": "control+u8-skip1+int16",
+              "valueLayout": {
+                "kind": "u8-skip1+int16",
+                "endianness": "be",
+                "prefixSkipBytes": 1,
+                "trimSuffixBytes": 0,
+                "int16Count": 7,
+                "int16Preview": [
+                  256,
+                  -21761,
+                  -17665,
+                  4,
+                  171,
+                  -71,
+                  -255
+                ],
+                "int16Range": [
+                  -21761,
+                  256
+                ],
+                "prefixByteHex": "00"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 25,
+            "count": 38,
+            "structure": {
+              "payloadLen": 25,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f3ffc4ff1f002800000091ffb4ff00030092ffb3ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 11,
+                "int16Preview": [
+                  499,
+                  -60,
+                  -225,
+                  40,
+                  0,
+                  145,
+                  -76,
+                  -256,
+                  768,
+                  -27905,
+                  -19457
+                ],
+                "int16Range": [
+                  -27905,
+                  768
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 27,
+            "count": 10,
+            "structure": {
+              "payloadLen": 27,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f0ffc9ff230022000000f3ffb7ff01030300f2ffb6ff0203",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 12,
+                "int16Preview": [
+                  496,
+                  -55,
+                  -221,
+                  34,
+                  0,
+                  243,
+                  -73,
+                  -255,
+                  771,
+                  242,
+                  -74,
+                  -254
+                ],
+                "int16Range": [
+                  -255,
+                  771
+                ],
+                "tailByteHex": "03"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 20,
+            "count": 4,
+            "structure": {
+              "payloadLen": 20,
+              "leadWordHex": "0000",
+              "payloadHex": "000000020000000091ffa6ff00030092ffa5ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 9,
+                "int16Preview": [
+                  2,
+                  0,
+                  0,
+                  -28161,
+                  -22785,
+                  3,
+                  146,
+                  -91,
+                  -255
+                ],
+                "int16Range": [
+                  -28161,
+                  146
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 28,
+            "count": 4,
+            "structure": {
+              "payloadLen": 28,
+              "leadWordHex": "0000",
+              "payloadHex": "000000020001e6ffccff2700200000008fffb8ff00030090ffb7ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 13,
+                "int16Preview": [
+                  512,
+                  256,
+                  -26,
+                  -52,
+                  39,
+                  32,
+                  0,
+                  -113,
+                  -72,
+                  768,
+                  -28672,
+                  -18433
+                ],
+                "int16Range": [
+                  -28672,
+                  768
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 29,
+            "count": 3,
+            "structure": {
+              "payloadLen": 29,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f3ffcbff2b0020000000080085ff0203040300070086ff030304",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 13,
+                "int16Preview": [
+                  499,
+                  -53,
+                  -213,
+                  32,
+                  0,
+                  8,
+                  133,
+                  -254,
+                  772,
+                  768,
+                  1792,
+                  -30977
+                ],
+                "int16Range": [
+                  -30977,
+                  1792
+                ],
+                "tailByteHex": "04"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0201",
+            "payloadLen": 33,
+            "count": 3,
+            "structure": {
+              "payloadLen": 33,
+              "leadWordHex": "0201",
+              "payloadHex": "0201012000ccff1f002100f7ffc9ff1d00240000008fffaeff00030090ffadff",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 15,
+                "int16Preview": [
+                  288,
+                  204,
+                  -225,
+                  33,
+                  247,
+                  -55,
+                  -227,
+                  36,
+                  0,
+                  143,
+                  -82,
+                  -256
+                ],
+                "int16Range": [
+                  -28417,
+                  768
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0201",
+            "payloadLen": 35,
+            "count": 2,
+            "structure": {
+              "payloadLen": 35,
+              "leadWordHex": "0201",
+              "payloadHex": "020101f8ff96ff76006200ffffc5ff140021000100ddff6cff01040400deff6d",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 16,
+                "int16Preview": [
+                  504,
+                  -106,
+                  -138,
+                  98,
+                  255,
+                  -59,
+                  -236,
+                  33,
+                  1,
+                  221,
+                  -148,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  1028
+                ],
+                "tailByteHex": "04"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 22,
+            "count": 1,
+            "structure": {
+              "payloadLen": 22,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000200000000f3ffb6ff01030300f2ffb5ff0203",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 10,
+                "int16Preview": [
+                  512,
+                  0,
+                  0,
+                  -13,
+                  -74,
+                  769,
+                  3,
+                  -14,
+                  -75,
+                  770
+                ],
+                "int16Range": [
+                  -75,
+                  770
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 36,
+            "count": 1,
+            "structure": {
+              "payloadLen": 36,
+              "leadWordHex": "0000",
+              "payloadHex": "000000020101ce00afff2d002700daff89ff3a005e000100a7ffb2ff000400a8",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 17,
+                "int16Preview": [
+                  512,
+                  257,
+                  206,
+                  -81,
+                  45,
+                  39,
+                  -38,
+                  -119,
+                  58,
+                  94,
+                  1,
+                  -89
+                ],
+                "int16Range": [
+                  -22528,
+                  1024
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 49,
+            "count": 1,
+            "structure": {
+              "payloadLen": 49,
+              "leadWordHex": "0000",
+              "payloadHex": "000000000000000000000000000000000000000000000000020001e7ffc2ff21",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 23,
+                "int16Preview": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  512
+                ],
+                "int16Range": [
+                  -28417,
+                  768
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 26,
+            "count": 1,
+            "structure": {
+              "payloadLen": 26,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f5ffc1ff1c0022000100d0ff65ff01040400d1ff66ff02",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 12,
+                "int16Preview": [
+                  501,
+                  -63,
+                  -228,
+                  34,
+                  1,
+                  208,
+                  -155,
+                  -255,
+                  1028,
+                  209,
+                  -154,
+                  -254
+                ],
+                "int16Range": [
+                  -255,
+                  1028
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0402",
+            "payloadLen": 28,
+            "count": 1,
+            "structure": {
+              "payloadLen": 28,
+              "leadWordHex": "0402",
+              "payloadHex": "04020001ecffbcff1c0025000000a8ff77ff01040300a9ff78ff0204",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 13,
+                "int16Preview": [
+                  256,
+                  -20,
+                  -68,
+                  28,
+                  37,
+                  0,
+                  -88,
+                  -137,
+                  1025,
+                  3,
+                  -87,
+                  -136
+                ],
+                "int16Range": [
+                  -137,
+                  1026
+                ]
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 25,
@@ -43703,6 +45917,590 @@
           "1000": 2,
           "1400": 1
         },
+        "layoutHistogram": {
+          "control+int16": 21,
+          "control+int16+u8-tail1": 52,
+          "control+u8-skip1+int16": 1,
+          "control+u8-skip1+int16+u8-tail1": 1
+        },
+        "signatureHistogram": {
+          "0000:20": 5,
+          "0000:28": 3,
+          "0000:30": 1,
+          "0000:41": 1,
+          "0001:70": 1,
+          "0200:17": 27,
+          "0200:18": 1,
+          "0200:25": 12,
+          "0200:26": 2,
+          "0200:29": 1,
+          "0201:33": 2,
+          "0400:17": 3,
+          "0400:19": 1,
+          "0400:25": 3,
+          "0400:29": 1,
+          "0402:18": 1,
+          "0402:27": 2,
+          "0402:28": 1,
+          "0c00:14": 4,
+          "1000:14": 2,
+          "1400:14": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 17,
+            "count": 27,
+            "structure": {
+              "payloadLen": 17,
+              "leadWordHex": "0200",
+              "payloadHex": "0200001400a2ffb3ff001500a2ffb3ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  20,
+                  162,
+                  -77,
+                  -256,
+                  5376,
+                  -23809,
+                  -19457
+                ],
+                "int16Range": [
+                  -23809,
+                  5376
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 25,
+            "count": 12,
+            "structure": {
+              "payloadLen": 25,
+              "leadWordHex": "0200",
+              "payloadHex": "020001eeffd1ff250024000000a0ffa7ff000100a0ffa7ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 11,
+                "int16Preview": [
+                  494,
+                  -47,
+                  -219,
+                  36,
+                  0,
+                  160,
+                  -89,
+                  -256,
+                  256,
+                  -24321,
+                  -22529
+                ],
+                "int16Range": [
+                  -24321,
+                  494
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 20,
+            "count": 5,
+            "structure": {
+              "payloadLen": 20,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000200001400a0ffbbff001500a0ffbbff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 9,
+                "int16Preview": [
+                  2,
+                  0,
+                  5120,
+                  -24321,
+                  -17409,
+                  21,
+                  160,
+                  -69,
+                  -255
+                ],
+                "int16Range": [
+                  -24321,
+                  5120
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0c00",
+            "payloadLen": 14,
+            "count": 4,
+            "structure": {
+              "payloadLen": 14,
+              "leadWordHex": "0c00",
+              "payloadHex": "0c00d8ffa9ff000d00d8ffa9ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 6,
+                "int16Preview": [
+                  -9985,
+                  -22017,
+                  13,
+                  216,
+                  -87,
+                  -255
+                ],
+                "int16Range": [
+                  -22017,
+                  216
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 28,
+            "count": 3,
+            "structure": {
+              "payloadLen": 28,
+              "leadWordHex": "0000",
+              "payloadHex": "000000020001f1ffd1ff1d00240002009cffaeff0003009cffaeff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 13,
+                "int16Preview": [
+                  512,
+                  256,
+                  -15,
+                  -47,
+                  29,
+                  36,
+                  2,
+                  -100,
+                  -82,
+                  768,
+                  -25600,
+                  -20737
+                ],
+                "int16Range": [
+                  -25600,
+                  768
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0400",
+            "payloadLen": 17,
+            "count": 3,
+            "structure": {
+              "payloadLen": 17,
+              "leadWordHex": "0400",
+              "payloadHex": "0400000a00c3ffabff000b00c3ffabff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  2560,
+                  -15616,
+                  -21505,
+                  255,
+                  11,
+                  -61,
+                  -85
+                ],
+                "int16Range": [
+                  -21505,
+                  2560
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0400",
+            "payloadLen": 25,
+            "count": 3,
+            "structure": {
+              "payloadLen": 25,
+              "leadWordHex": "0400",
+              "payloadHex": "040001edffc9ff1d0024000a00b1ff9dff000b00b1ff9dff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 11,
+                "int16Preview": [
+                  493,
+                  -55,
+                  -227,
+                  36,
+                  10,
+                  177,
+                  -99,
+                  -256,
+                  2816,
+                  -19969,
+                  -25089
+                ],
+                "int16Range": [
+                  -25089,
+                  2816
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 26,
+            "count": 2,
+            "structure": {
+              "payloadLen": 26,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f5ffc8ff250024000400a2ffacff01040500a2ffacff02",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 12,
+                "int16Preview": [
+                  501,
+                  -56,
+                  -219,
+                  36,
+                  4,
+                  162,
+                  -84,
+                  -255,
+                  1029,
+                  162,
+                  -84,
+                  -254
+                ],
+                "int16Range": [
+                  -255,
+                  1029
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0201",
+            "payloadLen": 33,
+            "count": 2,
+            "structure": {
+              "payloadLen": 33,
+              "leadWordHex": "0201",
+              "payloadHex": "0201010900a8ff63006800fdffd5ff1d0024000800c9ffd4ff000900c9ffd4ff",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 15,
+                "int16Preview": [
+                  265,
+                  168,
+                  -157,
+                  104,
+                  253,
+                  -43,
+                  -227,
+                  36,
+                  8,
+                  201,
+                  -44,
+                  -256
+                ],
+                "int16Range": [
+                  -13825,
+                  2304
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0402",
+            "payloadLen": 27,
+            "count": 2,
+            "structure": {
+              "payloadLen": 27,
+              "leadWordHex": "0402",
+              "payloadHex": "04020001f5ffc8ff250024000000a1ffbbff01040100a1ffbbff02",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 12,
+                "int16Preview": [
+                  256,
+                  -11,
+                  -56,
+                  37,
+                  36,
+                  0,
+                  -95,
+                  -69,
+                  1025,
+                  1,
+                  -95,
+                  -69
+                ],
+                "int16Range": [
+                  -95,
+                  1025
+                ],
+                "tailByteHex": "02"
+              }
+            }
+          },
+          {
+            "leadWordHex": "1000",
+            "payloadLen": 14,
+            "count": 2,
+            "structure": {
+              "payloadLen": 14,
+              "leadWordHex": "1000",
+              "payloadHex": "1000e7ff89ff001100e7ff89ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 6,
+                "int16Preview": [
+                  -6145,
+                  -30209,
+                  17,
+                  231,
+                  -119,
+                  -255
+                ],
+                "int16Range": [
+                  -30209,
+                  231
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 30,
+            "count": 1,
+            "structure": {
+              "payloadLen": 30,
+              "leadWordHex": "0000",
+              "payloadHex": "000000020001f5ffc4ff2500240002009effb4ff010403009effb4ff0204",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 14,
+                "int16Preview": [
+                  512,
+                  256,
+                  -11,
+                  -60,
+                  37,
+                  36,
+                  2,
+                  -98,
+                  -76,
+                  1025,
+                  3,
+                  -98
+                ],
+                "int16Range": [
+                  -98,
+                  1026
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 41,
+            "count": 1,
+            "structure": {
+              "payloadLen": 41,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000000000000000000000000000000000000000000000200001400a0ffbb",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 19,
+                "int16Preview": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  512
+                ],
+                "int16Range": [
+                  -24321,
+                  5376
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0001",
+            "payloadLen": 70,
+            "count": 1,
+            "structure": {
+              "payloadLen": 70,
+              "leadWordHex": "0001",
+              "payloadHex": "0001010900a5ff66006b000400d0ff1d0024000000010400d0ff1d0024000000",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 34,
+                "int16Preview": [
+                  265,
+                  165,
+                  -154,
+                  107,
+                  4,
+                  208,
+                  -227,
+                  36,
+                  0,
+                  1,
+                  1024,
+                  -12033
+                ],
+                "int16Range": [
+                  -16129,
+                  9216
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 18,
+            "count": 1,
+            "structure": {
+              "payloadLen": 18,
+              "leadWordHex": "0200",
+              "payloadHex": "020000000060ff45ff0104010060ff45ff02",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 8,
+                "int16Preview": [
+                  0,
+                  96,
+                  -187,
+                  -255,
+                  1025,
+                  96,
+                  -187,
+                  -254
+                ],
+                "int16Range": [
+                  -255,
+                  1025
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 29,
+            "count": 1,
+            "structure": {
+              "payloadLen": 29,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f1ffcdff1d0024000400f0ffb7ff0203040500f0ffb7ff030403",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 13,
+                "int16Preview": [
+                  497,
+                  -51,
+                  -227,
+                  36,
+                  4,
+                  240,
+                  -73,
+                  -254,
+                  772,
+                  1280,
+                  -3841,
+                  -18433
+                ],
+                "int16Range": [
+                  -18433,
+                  1280
+                ],
+                "tailByteHex": "03"
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 25,
@@ -44119,6 +46917,267 @@
           "0100": 3,
           "0200": 10
         },
+        "layoutHistogram": {
+          "control+int16": 2,
+          "control+int16+u8-tail1": 3,
+          "control+nested-marker": 2,
+          "control+u8-skip1+int16": 7
+        },
+        "signatureHistogram": {
+          "0000:103": 1,
+          "0100:80": 2,
+          "0100:113": 1,
+          "0200:17": 9,
+          "0200:111": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 17,
+            "count": 9,
+            "structure": {
+              "payloadLen": 17,
+              "leadWordHex": "0200",
+              "payloadHex": "0200000500a8ff17ff000800a8ff17ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  5,
+                  168,
+                  -233,
+                  -256,
+                  2048,
+                  -22273,
+                  6143
+                ],
+                "int16Range": [
+                  -22273,
+                  6143
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 80,
+            "count": 2,
+            "structure": {
+              "payloadLen": 80,
+              "leadWordHex": "0100",
+              "payloadHex": "0100000500a8ff17ff000100000500a8ff17ff000000000100000000bcff72ff",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 39,
+                "int16Preview": [
+                  1280,
+                  -22528,
+                  6143,
+                  255,
+                  1,
+                  1280,
+                  -22528,
+                  6143,
+                  255,
+                  0,
+                  256,
+                  0
+                ],
+                "int16Range": [
+                  -22528,
+                  6143
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 103,
+            "count": 1,
+            "structure": {
+              "payloadLen": 103,
+              "leadWordHex": "0000",
+              "payloadHex": "000000000000000000000000000000000000000000000100000200bcff40ff00",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 59,
+                  "markerHex": "6778000000"
+                },
+                {
+                  "offset": 81,
+                  "markerHex": "67b4000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 28,
+                "int16Preview": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  256,
+                  2
+                ],
+                "int16Range": [
+                  -19969,
+                  7167
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 19,
+                "int16Preview": [
+                  512,
+                  5,
+                  177,
+                  -229,
+                  -256,
+                  1536,
+                  -19969,
+                  7167,
+                  359,
+                  -19456,
+                  0,
+                  512
+                ],
+                "int16Range": [
+                  -19969,
+                  7167
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 113,
+            "count": 1,
+            "structure": {
+              "payloadLen": 113,
+              "leadWordHex": "0100",
+              "payloadHex": "0100000500a8ff17ff000100000500a8ff17ff0000000001000001006eff32ff",
+              "layoutKind": "control+u8-skip1+int16",
+              "valueLayout": {
+                "kind": "u8-skip1+int16",
+                "endianness": "be",
+                "prefixSkipBytes": 1,
+                "trimSuffixBytes": 0,
+                "int16Count": 55,
+                "int16Preview": [
+                  1280,
+                  -22273,
+                  6143,
+                  1,
+                  0,
+                  1280,
+                  -22273,
+                  6143,
+                  0,
+                  0,
+                  256,
+                  1
+                ],
+                "int16Range": [
+                  -22273,
+                  6143
+                ],
+                "prefixByteHex": "00"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 111,
+            "count": 1,
+            "structure": {
+              "payloadLen": 111,
+              "leadWordHex": "0200",
+              "payloadHex": "0200000500b1ff1bff000600b1ff1bff0167b40000000200000500b1ff1bff00",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 17,
+                  "markerHex": "67b4000000"
+                },
+                {
+                  "offset": 39,
+                  "markerHex": "6778000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  5,
+                  177,
+                  -229,
+                  -256,
+                  1536,
+                  -19969,
+                  7167
+                ],
+                "int16Range": [
+                  -19969,
+                  7167
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 44,
+                "int16Preview": [
+                  512,
+                  5,
+                  177,
+                  -229,
+                  -256,
+                  1536,
+                  -19969,
+                  7167,
+                  359,
+                  30720,
+                  0,
+                  256
+                ],
+                "int16Range": [
+                  -22273,
+                  30720
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 103,
@@ -44555,6 +47614,601 @@
           "0600": 3,
           "0a00": 1
         },
+        "layoutHistogram": {
+          "control+int16": 94,
+          "control+int16+u8-tail1": 37,
+          "control+nested-marker": 8,
+          "control+u8-skip1+int16": 1
+        },
+        "signatureHistogram": {
+          "0000:7": 16,
+          "0000:13": 3,
+          "0000:21": 3,
+          "0000:25": 1,
+          "0000:29": 1,
+          "0000:36": 1,
+          "0000:54": 1,
+          "0100:7": 8,
+          "0100:10": 34,
+          "0100:18": 29,
+          "0100:71": 1,
+          "0101:26": 3,
+          "0200:7": 3,
+          "0200:10": 10,
+          "0200:18": 13,
+          "0200:22": 1,
+          "0200:30": 4,
+          "0201:26": 1,
+          "0300:18": 2,
+          "0301:26": 1,
+          "0600:7": 3,
+          "0a00:7": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 10,
+            "count": 34,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0100",
+              "payloadHex": "0100000200daff88ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  2,
+                  218,
+                  -120,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  218
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 18,
+            "count": 29,
+            "structure": {
+              "payloadLen": 18,
+              "leadWordHex": "0100",
+              "payloadHex": "010001f3ffc4ff1f0028000000ebff91ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 8,
+                "int16Preview": [
+                  499,
+                  -60,
+                  -225,
+                  40,
+                  0,
+                  235,
+                  -111,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  499
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 7,
+            "count": 16,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0000",
+              "payloadHex": "0000d0ff6aff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -48,
+                  -150
+                ],
+                "int16Range": [
+                  -150,
+                  -48
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 18,
+            "count": 13,
+            "structure": {
+              "payloadLen": 18,
+              "leadWordHex": "0200",
+              "payloadHex": "020001e5ffbfff1f0026000b009bffb8ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 8,
+                "int16Preview": [
+                  485,
+                  -65,
+                  -225,
+                  38,
+                  11,
+                  155,
+                  -72,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  485
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 10,
+            "count": 10,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0200",
+              "payloadHex": "0200000900a0ffb0ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  9,
+                  160,
+                  -80,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  160
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 7,
+            "count": 8,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0100",
+              "payloadHex": "0100e3ff55ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -29,
+                  -171
+                ],
+                "int16Range": [
+                  -171,
+                  -29
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 30,
+            "count": 4,
+            "structure": {
+              "payloadLen": 30,
+              "leadWordHex": "0200",
+              "payloadHex": "020001e2ffbeff250026000a009bffb0ff0167780000000000d0ff6aff01",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 18,
+                  "markerHex": "6778000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 8,
+                "int16Preview": [
+                  482,
+                  -66,
+                  -219,
+                  38,
+                  10,
+                  155,
+                  -80,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  482
+                ]
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  0,
+                  -48,
+                  -150
+                ],
+                "int16Range": [
+                  -150,
+                  0
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 13,
+            "count": 3,
+            "structure": {
+              "payloadLen": 13,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000100000a009bffb0ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 5,
+                "int16Preview": [
+                  256,
+                  0,
+                  10,
+                  -101,
+                  -80
+                ],
+                "int16Range": [
+                  -101,
+                  256
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 21,
+            "count": 3,
+            "structure": {
+              "payloadLen": 21,
+              "leadWordHex": "0000",
+              "payloadHex": "000000010001e6ffccff270020000000ddff8bff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 9,
+                "int16Preview": [
+                  256,
+                  256,
+                  -26,
+                  -52,
+                  39,
+                  32,
+                  0,
+                  -35,
+                  -117
+                ],
+                "int16Range": [
+                  -117,
+                  256
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0101",
+            "payloadLen": 26,
+            "count": 3,
+            "structure": {
+              "payloadLen": 26,
+              "leadWordHex": "0101",
+              "payloadHex": "0101012000ccff1f002100f7ffc9ff1d0024000000faff9cff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 12,
+                "int16Preview": [
+                  288,
+                  204,
+                  -225,
+                  33,
+                  247,
+                  -55,
+                  -227,
+                  36,
+                  0,
+                  250,
+                  -100,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  288
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0200",
+              "payloadHex": "0200e3ff54ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -29,
+                  -172
+                ],
+                "int16Range": [
+                  -172,
+                  -29
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0600",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0600",
+              "payloadHex": "0600c1004eff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  193,
+                  -178
+                ],
+                "int16Range": [
+                  -178,
+                  193
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0300",
+            "payloadLen": 18,
+            "count": 2,
+            "structure": {
+              "payloadLen": 18,
+              "leadWordHex": "0300",
+              "payloadHex": "030001fdffb6ff32003d000900a0ffb0ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 8,
+                "int16Preview": [
+                  509,
+                  -74,
+                  -206,
+                  61,
+                  9,
+                  160,
+                  -80,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  509
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 25,
+            "count": 1,
+            "structure": {
+              "payloadLen": 25,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000200000a009bffb0ff01673c0000000000eeff7fff01",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 13,
+                  "markerHex": "673c000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 5,
+                "int16Preview": [
+                  512,
+                  0,
+                  10,
+                  -101,
+                  -80
+                ],
+                "int16Range": [
+                  -101,
+                  512
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  0,
+                  -18,
+                  -129
+                ],
+                "int16Range": [
+                  -129,
+                  0
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 29,
+            "count": 1,
+            "structure": {
+              "payloadLen": 29,
+              "leadWordHex": "0000",
+              "payloadHex": "000000010101ce00afff2d002700daff89ff3a005e000a009bffb0ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 13,
+                "int16Preview": [
+                  256,
+                  257,
+                  206,
+                  -81,
+                  45,
+                  39,
+                  -38,
+                  -119,
+                  58,
+                  94,
+                  10,
+                  -101
+                ],
+                "int16Range": [
+                  -119,
+                  257
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 36,
+            "count": 1,
+            "structure": {
+              "payloadLen": 36,
+              "leadWordHex": "0000",
+              "payloadHex": "000000000000020001e7ffc2ff210024000900a0ffb0ff01673c0000000000e2",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 24,
+                  "markerHex": "673c000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 11,
+                "int16Preview": [
+                  0,
+                  0,
+                  512,
+                  487,
+                  -62,
+                  -223,
+                  36,
+                  9,
+                  160,
+                  -80,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  512
+                ]
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  0,
+                  -30,
+                  -144
+                ],
+                "int16Range": [
+                  -144,
+                  0
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 18,
@@ -45027,6 +48681,593 @@
           "1100": 1,
           "1500": 1
         },
+        "layoutHistogram": {
+          "control+int16": 24,
+          "control+int16+u8-tail1": 48
+        },
+        "signatureHistogram": {
+          "0000:20": 5,
+          "0000:26": 1,
+          "0000:30": 1,
+          "0000:123": 1,
+          "0001:28": 1,
+          "0100:10": 6,
+          "0100:35": 1,
+          "0101:40": 1,
+          "0200:17": 26,
+          "0200:18": 1,
+          "0200:25": 11,
+          "0200:26": 2,
+          "0200:27": 2,
+          "0201:33": 1,
+          "0300:17": 1,
+          "0304:16": 2,
+          "0400:27": 2,
+          "0400:30": 1,
+          "0401:11": 1,
+          "0401:37": 1,
+          "0402:28": 2,
+          "1100:7": 1,
+          "1500:14": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 17,
+            "count": 26,
+            "structure": {
+              "payloadLen": 17,
+              "leadWordHex": "0200",
+              "payloadHex": "0200001300eeffa2ff001400eeffa2ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  4864,
+                  -4608,
+                  -23809,
+                  255,
+                  20,
+                  -18,
+                  -94
+                ],
+                "int16Range": [
+                  -23809,
+                  4864
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 25,
+            "count": 11,
+            "structure": {
+              "payloadLen": 25,
+              "leadWordHex": "0200",
+              "payloadHex": "020001eeffd1ff250024000000efff9eff000100efff9eff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 11,
+                "int16Preview": [
+                  494,
+                  -47,
+                  -219,
+                  36,
+                  0,
+                  239,
+                  -98,
+                  -256,
+                  256,
+                  -4097,
+                  -24833
+                ],
+                "int16Range": [
+                  -24833,
+                  494
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 10,
+            "count": 6,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0100",
+              "payloadHex": "0100000c00d8ff6cff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  12,
+                  216,
+                  -148,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  216
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 20,
+            "count": 5,
+            "structure": {
+              "payloadLen": 20,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000200001300ecffaaff001400ecffaaff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 9,
+                "int16Preview": [
+                  512,
+                  0,
+                  19,
+                  -20,
+                  -86,
+                  5120,
+                  -5120,
+                  -21761,
+                  511
+                ],
+                "int16Range": [
+                  -21761,
+                  5120
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 26,
+            "count": 2,
+            "structure": {
+              "payloadLen": 26,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f5ffc8ff250024000000d2ffadff01040100d2ffadff02",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 12,
+                "int16Preview": [
+                  501,
+                  -56,
+                  -219,
+                  36,
+                  0,
+                  210,
+                  -83,
+                  -255,
+                  1025,
+                  210,
+                  -83,
+                  -254
+                ],
+                "int16Range": [
+                  -255,
+                  1025
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 27,
+            "count": 2,
+            "structure": {
+              "payloadLen": 27,
+              "leadWordHex": "0200",
+              "payloadHex": "020001f5ffc8ff250024000400d5ffa7ff01040500d5ffa7ff0204",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 12,
+                "int16Preview": [
+                  501,
+                  -56,
+                  -219,
+                  36,
+                  4,
+                  213,
+                  -89,
+                  -255,
+                  1029,
+                  213,
+                  -89,
+                  -254
+                ],
+                "int16Range": [
+                  -255,
+                  1029
+                ],
+                "tailByteHex": "04"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0304",
+            "payloadLen": 16,
+            "count": 2,
+            "structure": {
+              "payloadLen": 16,
+              "leadWordHex": "0304",
+              "payloadHex": "030415000800c3ff0016000800c3ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 7,
+                "int16Preview": [
+                  5376,
+                  2048,
+                  -15361,
+                  22,
+                  8,
+                  195,
+                  -255
+                ],
+                "int16Range": [
+                  -15361,
+                  5376
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0400",
+            "payloadLen": 27,
+            "count": 2,
+            "structure": {
+              "payloadLen": 27,
+              "leadWordHex": "0400",
+              "payloadHex": "0400010400d0ff1d0024000400bbffadff0203040500bbffadff03",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 12,
+                "int16Preview": [
+                  260,
+                  208,
+                  -227,
+                  36,
+                  4,
+                  187,
+                  -83,
+                  -254,
+                  772,
+                  1280,
+                  -17409,
+                  -20993
+                ],
+                "int16Range": [
+                  -20993,
+                  1280
+                ],
+                "tailByteHex": "03"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0402",
+            "payloadLen": 28,
+            "count": 2,
+            "structure": {
+              "payloadLen": 28,
+              "leadWordHex": "0402",
+              "payloadHex": "04020001f5ffc8ff250024000200d3ffa8ff01040300d3ffa8ff0204",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 13,
+                "int16Preview": [
+                  256,
+                  -11,
+                  -56,
+                  37,
+                  36,
+                  2,
+                  -45,
+                  -88,
+                  1025,
+                  3,
+                  -45,
+                  -88
+                ],
+                "int16Range": [
+                  -88,
+                  1026
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 26,
+            "count": 1,
+            "structure": {
+              "payloadLen": 26,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000000000000000200001300ecffaaff001400ecffaaff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 12,
+                "int16Preview": [
+                  0,
+                  0,
+                  0,
+                  512,
+                  0,
+                  19,
+                  -20,
+                  -86,
+                  5120,
+                  -5120,
+                  -21761,
+                  511
+                ],
+                "int16Range": [
+                  -21761,
+                  5120
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 30,
+            "count": 1,
+            "structure": {
+              "payloadLen": 30,
+              "leadWordHex": "0000",
+              "payloadHex": "000000020001f5ffc4ff250024000200d3ffa8ff01040300d3ffa8ff0204",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 14,
+                "int16Preview": [
+                  512,
+                  256,
+                  -11,
+                  -60,
+                  37,
+                  36,
+                  2,
+                  -45,
+                  -88,
+                  1025,
+                  3,
+                  -45
+                ],
+                "int16Range": [
+                  -88,
+                  1026
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 123,
+            "count": 1,
+            "structure": {
+              "payloadLen": 123,
+              "leadWordHex": "0000",
+              "payloadHex": "000001edffc9ff1d002400000001e7ffc9ff1d002400000001f3ffc4ff1d0024",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 60,
+                "int16Preview": [
+                  -4863,
+                  -13825,
+                  7679,
+                  9216,
+                  0,
+                  256,
+                  -25,
+                  -55,
+                  29,
+                  36,
+                  0,
+                  -3327
+                ],
+                "int16Range": [
+                  -23041,
+                  9216
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0001",
+            "payloadLen": 28,
+            "count": 1,
+            "structure": {
+              "payloadLen": 28,
+              "leadWordHex": "0001",
+              "payloadHex": "0001001100a6ff670066000200000a001e00adff000b001e00adff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 13,
+                "int16Preview": [
+                  17,
+                  166,
+                  -153,
+                  102,
+                  2,
+                  0,
+                  2560,
+                  7680,
+                  -20993,
+                  11,
+                  30,
+                  173
+                ],
+                "int16Range": [
+                  -20993,
+                  7680
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 35,
+            "count": 1,
+            "structure": {
+              "payloadLen": 35,
+              "leadWordHex": "0100",
+              "payloadHex": "0100001200d1ff8eff0169000000000000000200001300ecffaaff001400ecff",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 16,
+                "int16Preview": [
+                  18,
+                  209,
+                  -114,
+                  -255,
+                  26880,
+                  0,
+                  0,
+                  0,
+                  512,
+                  19,
+                  236,
+                  -86
+                ],
+                "int16Range": [
+                  -21761,
+                  26880
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0101",
+            "payloadLen": 40,
+            "count": 1,
+            "structure": {
+              "payloadLen": 40,
+              "leadWordHex": "0101",
+              "payloadHex": "0101001100a6ff670066001200a6ff3fff0169000000000200000a001e00adff",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 19,
+                "int16Preview": [
+                  17,
+                  166,
+                  -153,
+                  102,
+                  18,
+                  166,
+                  -193,
+                  -255,
+                  26880,
+                  0,
+                  2,
+                  0
+                ],
+                "int16Range": [
+                  -20993,
+                  26880
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 18,
+            "count": 1,
+            "structure": {
+              "payloadLen": 18,
+              "leadWordHex": "0200",
+              "payloadHex": "020000000091ff37ff0104010091ff37ff02",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 8,
+                "int16Preview": [
+                  0,
+                  145,
+                  -201,
+                  -255,
+                  1025,
+                  145,
+                  -201,
+                  -254
+                ],
+                "int16Range": [
+                  -255,
+                  1025
+                ]
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 25,
@@ -45456,6 +49697,312 @@
           "0100": 11,
           "0200": 1
         },
+        "layoutHistogram": {
+          "control+int16": 10,
+          "control+int16+u8-tail1": 13,
+          "control+nested-marker": 3
+        },
+        "signatureHistogram": {
+          "0000:17": 13,
+          "0000:242": 1,
+          "0100:10": 9,
+          "0100:40": 1,
+          "0100:72": 1,
+          "0200:10": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 17,
+            "count": 13,
+            "structure": {
+              "payloadLen": 17,
+              "leadWordHex": "0000",
+              "payloadHex": "0000f3ffc1ff000200000700b1ffd8ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  -13,
+                  -63,
+                  512,
+                  0,
+                  7,
+                  -79,
+                  -40
+                ],
+                "int16Range": [
+                  -79,
+                  512
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 10,
+            "count": 9,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0100",
+              "payloadHex": "0100000200daff67ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  2,
+                  218,
+                  -153,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  218
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 242,
+            "count": 1,
+            "structure": {
+              "payloadLen": 242,
+              "leadWordHex": "0000",
+              "payloadHex": "0000ecffbfff000200000800b1ffd8ff0167b40000000000ecffbfff00020000",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 17,
+                  "markerHex": "67b4000000"
+                },
+                {
+                  "offset": 39,
+                  "markerHex": "673c000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  -20,
+                  -65,
+                  512,
+                  0,
+                  8,
+                  -79,
+                  -40
+                ],
+                "int16Range": [
+                  -79,
+                  512
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 110,
+                "int16Preview": [
+                  0,
+                  -20,
+                  -65,
+                  512,
+                  0,
+                  9,
+                  -79,
+                  -40,
+                  26369,
+                  60,
+                  0,
+                  0
+                ],
+                "int16Range": [
+                  -20224,
+                  26369
+                ]
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 40,
+            "count": 1,
+            "structure": {
+              "payloadLen": 40,
+              "leadWordHex": "0100",
+              "payloadHex": "0100000800b1ffd8ff0167b40000000100000900b1ffd8ff01673c0000000100",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 10,
+                  "markerHex": "67b4000000"
+                },
+                {
+                  "offset": 25,
+                  "markerHex": "673c000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  8,
+                  177,
+                  -40,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  177
+                ]
+              },
+              "suffixLayout": {
+                "kind": "u8-skip1+int16",
+                "endianness": "le",
+                "prefixSkipBytes": 1,
+                "trimSuffixBytes": 0,
+                "int16Count": 12,
+                "int16Preview": [
+                  0,
+                  9,
+                  -79,
+                  -40,
+                  26369,
+                  60,
+                  0,
+                  1,
+                  0,
+                  -3328,
+                  -15361,
+                  255
+                ],
+                "int16Range": [
+                  -15361,
+                  26369
+                ],
+                "prefixByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 72,
+            "count": 1,
+            "structure": {
+              "payloadLen": 72,
+              "leadWordHex": "0100",
+              "payloadHex": "0100000a00d3ff8eff0169000000000000000200000700b1ffd8ff01673c0000",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 28,
+                  "markerHex": "673c000000"
+                },
+                {
+                  "offset": 50,
+                  "markerHex": "67b4000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 13,
+                "int16Preview": [
+                  10,
+                  211,
+                  -114,
+                  -255,
+                  26880,
+                  0,
+                  0,
+                  0,
+                  512,
+                  7,
+                  177,
+                  -40
+                ],
+                "int16Range": [
+                  -255,
+                  26880
+                ]
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 19,
+                "int16Preview": [
+                  0,
+                  -13,
+                  -62,
+                  512,
+                  0,
+                  8,
+                  -79,
+                  -40,
+                  26369,
+                  180,
+                  0,
+                  0
+                ],
+                "int16Range": [
+                  -79,
+                  26369
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 10,
+            "count": 1,
+            "structure": {
+              "payloadLen": 10,
+              "leadWordHex": "0200",
+              "payloadHex": "0200000800b1ffd8ff01",
+              "layoutKind": "control+int16",
+              "valueLayout": {
+                "kind": "int16",
+                "endianness": "be",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 0,
+                "int16Count": 4,
+                "int16Preview": [
+                  8,
+                  177,
+                  -40,
+                  -255
+                ],
+                "int16Range": [
+                  -255,
+                  177
+                ]
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 10,
@@ -45893,6 +50440,533 @@
           "0600": 3,
           "0a00": 1
         },
+        "layoutHistogram": {
+          "control+int16+u8-tail1": 130,
+          "control+nested-marker": 7,
+          "control+u8-skip1+int16": 1
+        },
+        "signatureHistogram": {
+          "0000:7": 16,
+          "0000:11": 7,
+          "0000:17": 1,
+          "0000:23": 1,
+          "0000:25": 1,
+          "0100:7": 8,
+          "0100:9": 65,
+          "0100:51": 1,
+          "0200:7": 3,
+          "0200:9": 24,
+          "0200:21": 4,
+          "0300:9": 3,
+          "0600:7": 3,
+          "0a00:7": 1
+        },
+        "signaturePreview": [
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 9,
+            "count": 65,
+            "structure": {
+              "payloadLen": 9,
+              "leadWordHex": "0100",
+              "payloadHex": "01000000f1ffa3ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  0,
+                  -15,
+                  -93
+                ],
+                "int16Range": [
+                  -93,
+                  0
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 9,
+            "count": 24,
+            "structure": {
+              "payloadLen": 9,
+              "leadWordHex": "0200",
+              "payloadHex": "02000b00acffc4ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  11,
+                  -84,
+                  -60
+                ],
+                "int16Range": [
+                  -84,
+                  11
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 7,
+            "count": 16,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0000",
+              "payloadHex": "0000d8ff83ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -40,
+                  -125
+                ],
+                "int16Range": [
+                  -125,
+                  -40
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 7,
+            "count": 8,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0100",
+              "payloadHex": "0100e8ff72ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -24,
+                  -142
+                ],
+                "int16Range": [
+                  -142,
+                  -24
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 11,
+            "count": 7,
+            "structure": {
+              "payloadLen": 11,
+              "leadWordHex": "0000",
+              "payloadHex": "000001000000e3ff9fff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 4,
+                "int16Preview": [
+                  1,
+                  0,
+                  -29,
+                  -97
+                ],
+                "int16Range": [
+                  -97,
+                  1
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 21,
+            "count": 4,
+            "structure": {
+              "payloadLen": 21,
+              "leadWordHex": "0200",
+              "payloadHex": "02000a00acffbeff0167780000000000d8ff83ff01",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 9,
+                  "markerHex": "6778000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  10,
+                  -84,
+                  -66
+                ],
+                "int16Range": [
+                  -84,
+                  10
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  0,
+                  -40,
+                  -125
+                ],
+                "int16Range": [
+                  -125,
+                  0
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0200",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0200",
+              "payloadHex": "0200e8ff71ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -24,
+                  -143
+                ],
+                "int16Range": [
+                  -143,
+                  -24
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0300",
+            "payloadLen": 9,
+            "count": 3,
+            "structure": {
+              "payloadLen": 9,
+              "leadWordHex": "0300",
+              "payloadHex": "03000b00acffc4ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  11,
+                  -84,
+                  -60
+                ],
+                "int16Range": [
+                  -84,
+                  11
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0600",
+            "payloadLen": 7,
+            "count": 3,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0600",
+              "payloadHex": "0600a1006cff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  161,
+                  -148
+                ],
+                "int16Range": [
+                  -148,
+                  161
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 17,
+            "count": 1,
+            "structure": {
+              "payloadLen": 17,
+              "leadWordHex": "0000",
+              "payloadHex": "000000000000000001000000eaffa6ff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 7,
+                "int16Preview": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -22,
+                  -90
+                ],
+                "int16Range": [
+                  -90,
+                  1
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 23,
+            "count": 1,
+            "structure": {
+              "payloadLen": 23,
+              "leadWordHex": "0000",
+              "payloadHex": "000002000a00acffbeff01673c0000000000f1ff95ff01",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 11,
+                  "markerHex": "673c000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 4,
+                "int16Preview": [
+                  2,
+                  10,
+                  -84,
+                  -66
+                ],
+                "int16Range": [
+                  -84,
+                  10
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  0,
+                  -15,
+                  -107
+                ],
+                "int16Range": [
+                  -107,
+                  0
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0000",
+            "payloadLen": 25,
+            "count": 1,
+            "structure": {
+              "payloadLen": 25,
+              "leadWordHex": "0000",
+              "payloadHex": "0000000002000900b0ffbeff01673c0000000000e7ff88ff01",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 13,
+                  "markerHex": "673c000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 5,
+                "int16Preview": [
+                  0,
+                  2,
+                  9,
+                  -80,
+                  -66
+                ],
+                "int16Range": [
+                  -80,
+                  9
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  0,
+                  -25,
+                  -120
+                ],
+                "int16Range": [
+                  -120,
+                  0
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0100",
+            "payloadLen": 51,
+            "count": 1,
+            "structure": {
+              "payloadLen": 51,
+              "leadWordHex": "0100",
+              "payloadHex": "01000a00acffbeff01677800000001000b00acffc4ff01673c00000000000200",
+              "layoutKind": "control+nested-marker",
+              "embeddedMarkers": [
+                {
+                  "offset": 9,
+                  "markerHex": "6778000000"
+                },
+                {
+                  "offset": 23,
+                  "markerHex": "673c000000"
+                },
+                {
+                  "offset": 39,
+                  "markerHex": "673c000000"
+                }
+              ],
+              "prefixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 3,
+                "int16Preview": [
+                  10,
+                  -84,
+                  -66
+                ],
+                "int16Range": [
+                  -84,
+                  10
+                ],
+                "tailByteHex": "01"
+              },
+              "suffixLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 18,
+                "int16Preview": [
+                  1,
+                  11,
+                  -84,
+                  -60,
+                  26369,
+                  60,
+                  0,
+                  0,
+                  2,
+                  10,
+                  -84,
+                  -66
+                ],
+                "int16Range": [
+                  -107,
+                  26369
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          },
+          {
+            "leadWordHex": "0a00",
+            "payloadLen": 7,
+            "count": 1,
+            "structure": {
+              "payloadLen": 7,
+              "leadWordHex": "0a00",
+              "payloadHex": "0a00acffbeff01",
+              "layoutKind": "control+int16+u8-tail1",
+              "valueLayout": {
+                "kind": "int16+u8-tail1",
+                "endianness": "le",
+                "prefixSkipBytes": 0,
+                "trimSuffixBytes": 1,
+                "int16Count": 2,
+                "int16Preview": [
+                  -84,
+                  -66
+                ],
+                "int16Range": [
+                  -84,
+                  -66
+                ],
+                "tailByteHex": "01"
+              }
+            }
+          }
+        ],
         "sectionPrototypePreview": [
           {
             "payloadLen": 9,

@@ -140,6 +140,9 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
     lead_byte_histogram = Counter()
     lead_word_histogram = Counter()
     section_prototypes = []
+    signature_counts = Counter()
+    signature_samples: dict[tuple[str | None, int], bytes] = {}
+    layout_histogram = Counter()
     for index, offset in enumerate(offsets):
         next_offset = offsets[index + 1] if index + 1 < len(offsets) else len(decoded)
         payload = decoded[offset + len(marker) : next_offset]
@@ -157,6 +160,10 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
                         "payloadHex": payload[:32].hex(),
                     }
                 )
+            signature = (payload[:2].hex() if len(payload) >= 2 else None, len(payload))
+            signature_counts[signature] += 1
+            signature_samples.setdefault(signature, payload)
+            layout_histogram[describe_pzf_section_payload(payload)["layoutKind"]] += 1
     histogram = Counter(section_lengths)
     return {
         "markerCounts": {"67ff000000": len(offsets)},
@@ -167,8 +174,118 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
         "sectionLengthPreview": section_lengths[:24],
         "leadByteHistogram": {str(key): value for key, value in sorted(lead_byte_histogram.items())},
         "leadWordHistogram": dict(sorted(lead_word_histogram.items())),
+        "layoutHistogram": dict(sorted(layout_histogram.items())),
+        "signatureHistogram": {
+            f"{lead_word or 'none'}:{payload_len}": count
+            for (lead_word, payload_len), count in sorted(
+                signature_counts.items(),
+                key=lambda item: (item[0][0] or "", item[0][1]),
+            )
+        },
+        "signaturePreview": [
+            {
+                "leadWordHex": lead_word,
+                "payloadLen": payload_len,
+                "count": count,
+                "structure": describe_pzf_section_payload(signature_samples[(lead_word, payload_len)]),
+            }
+            for (lead_word, payload_len), count in sorted(
+                signature_counts.items(),
+                key=lambda item: (-item[1], item[0][0] or "", item[0][1]),
+            )[:16]
+        ],
         "sectionPrototypePreview": section_prototypes,
     }
+
+
+def summarize_numeric_blob(blob: bytes) -> dict[str, object]:
+    if not blob:
+        return {"kind": "empty"}
+
+    candidates = []
+    for endian in ("<", ">"):
+        for prefix_skip_bytes in (0, 1):
+            for trim_suffix_bytes in (0, 1):
+                sliced = blob[prefix_skip_bytes : len(blob) - trim_suffix_bytes if trim_suffix_bytes else len(blob)]
+                if len(sliced) < 2 or len(sliced) % 2 != 0:
+                    continue
+                values = list(struct.unpack(endian + "h" * (len(sliced) // 2), sliced))
+                score = (
+                    sum(-512 <= value <= 512 for value in values),
+                    sum(-2048 <= value <= 2048 for value in values),
+                    -max(abs(value) for value in values),
+                    -prefix_skip_bytes,
+                    -trim_suffix_bytes,
+                    1 if endian == "<" else 0,
+                )
+                candidates.append((score, endian, prefix_skip_bytes, trim_suffix_bytes, values))
+
+    if candidates:
+        _score, endian, prefix_skip_bytes, trim_suffix_bytes, values = max(candidates, key=lambda item: item[0])
+        kind = []
+        if prefix_skip_bytes:
+            kind.append(f"u8-skip{prefix_skip_bytes}")
+        kind.append("int16")
+        if trim_suffix_bytes:
+            kind.append(f"u8-tail{trim_suffix_bytes}")
+        result: dict[str, object] = {
+            "kind": "+".join(kind),
+            "endianness": "le" if endian == "<" else "be",
+            "prefixSkipBytes": prefix_skip_bytes,
+            "trimSuffixBytes": trim_suffix_bytes,
+            "int16Count": len(values),
+            "int16Preview": values[:12],
+            "int16Range": [min(values), max(values)],
+        }
+        if prefix_skip_bytes:
+            result["prefixByteHex"] = blob[:prefix_skip_bytes].hex()
+        if trim_suffix_bytes:
+            result["tailByteHex"] = blob[-trim_suffix_bytes:].hex()
+        return result
+
+    return {
+        "kind": "raw",
+        "payloadHex": blob[:32].hex(),
+    }
+
+
+def describe_pzf_section_payload(payload: bytes) -> dict[str, object]:
+    lead_word_hex = payload[:2].hex() if len(payload) >= 2 else None
+    structure: dict[str, object] = {
+        "payloadLen": len(payload),
+        "leadWordHex": lead_word_hex,
+        "payloadHex": payload[:32].hex(),
+    }
+    if len(payload) < 2:
+        structure["layoutKind"] = "raw"
+        return structure
+
+    embedded_markers = []
+    for index in range(2, len(payload) - 4):
+        if payload[index] == 0x67 and payload[index + 2 : index + 5] == b"\x00\x00\x00":
+            embedded_markers.append(
+                {
+                    "offset": index,
+                    "markerHex": payload[index : index + 5].hex(),
+                }
+            )
+
+    if embedded_markers:
+        first_offset = embedded_markers[0]["offset"]
+        structure["layoutKind"] = "control+nested-marker"
+        structure["embeddedMarkers"] = embedded_markers[:8]
+        prefix = payload[2:first_offset]
+        suffix = payload[first_offset + 5 :]
+        if prefix:
+            structure["prefixLayout"] = summarize_numeric_blob(prefix)
+        if suffix:
+            structure["suffixLayout"] = summarize_numeric_blob(suffix)
+        return structure
+
+    value_layout = summarize_numeric_blob(payload[2:])
+    structure["layoutKind"] = f"control+{value_layout['kind']}"
+    structure["valueLayout"] = value_layout
+    return structure
 
 
 def summarize_pzf_anchor_boxes(decoded: bytes, stride: int | None) -> dict[str, object] | None:
@@ -357,6 +474,14 @@ def main() -> None:
         for entry in pzf_entries
         if entry.get("metaSections") is not None and entry["metaSections"].get("sectionCount") is not None
     )
+    pzf_lead_word_counts = Counter()
+    pzf_layout_counts = Counter()
+    for entry in pzf_entries:
+        meta_sections = entry.get("metaSections") or {}
+        for lead_word, count in (meta_sections.get("leadWordHistogram") or {}).items():
+            pzf_lead_word_counts[str(lead_word)] += int(count)
+        for layout_kind, count in (meta_sections.get("layoutHistogram") or {}).items():
+            pzf_layout_counts[str(layout_kind)] += int(count)
     pzx_row_ready = [entry for entry in pzx_entries if entry["rowStreams"]]
     pzx_chunk_table_ready = [entry for entry in pzx_entries if entry["firstStreamChunkTable"] is not None]
 
@@ -374,6 +499,8 @@ def main() -> None:
             "pzfVariantHistogram": dict(sorted(pzf_variant_counts.items())),
             "pzfAnchorStrideHistogram": dict(sorted(pzf_stride_counts.items())),
             "pzfMetaSectionHistogram": dict(sorted(pzf_marker_section_counts.items())),
+            "pzfMarkerLeadWordHistogram": dict(sorted(pzf_lead_word_counts.items())),
+            "pzfMarkerLayoutHistogram": dict(sorted(pzf_layout_counts.items())),
         },
         "findings": [
             "AW2 keeps ZT1 as the same zlib-wrapped text container used by AW1, and the recovered script parser works on sampled EN/KO/JA script files.",
@@ -383,6 +510,7 @@ def main() -> None:
             "Sampled armor/head/weapon/effect PZF files expose category-specific common strides of 53, 25, 30, and 11 bytes, and those same strides decode repeated anchor-box records from the zlib stream.",
             "Decoded PZF metadata streams also carry dense 67ff000000-delimited sections, so PZF now looks like offset table + anchor boxes + timing/state markers rather than an opaque blob.",
             "Current PZF samples already separate into anchor-only, anchor+marker, and marker-only variants, so the AW2 body-part sidecar parser should branch by variant instead of assuming one universal record layout.",
+            "Inside 67ff sections, the payloads already cluster into repeatable control-word families such as 0100, 0200, and 0401, and many of those payloads reduce cleanly to int16 fields plus an optional trailing byte.",
             "AW2 img/menu PZX files still use magic 'PZX\\x01', but many now decode directly as row streams instead of the AW1 chunk-offset-table first stream.",
             "Sampled AW2 MPL files under assets/pc are tiny sidecars rather than AW1-style two-bank palette blobs, so AW1 MPL logic must not be reused blindly.",
             "AW2 PTC remains structurally similar to AW1 compact parameter blocks and can already be summarized into angle, ratio, signed-delta, and timing fields.",

@@ -70,6 +70,10 @@ High-level layout differences from Arel Wars 1:
     - several families expose repeated `11-byte` anchor-box records
     - some families also expose dense `67ff000000`-delimited timing/state sections
     - those marker payloads are themselves patterned; common leading control words include `0100` and `0200`
+    - current numeric recovery shows many marker payloads reduce to:
+      - `control + int16 fields`
+      - `control + int16 fields + tail byte`
+      - `control + nested secondary marker`
   - current variant split is:
     - `anchor-only`: armor `000/001`, head `000/001/002`
     - `anchor+marker`: effect `000/002`, weapon `000/001/002`, weapon2 `000/001/002`
@@ -84,6 +88,8 @@ High-level layout differences from Arel Wars 1:
   - this strongly suggests `PZF` is the animation/state sidecar for `PZD` body-part sprites, with family-specific record layouts
   - immediate next parse target:
     - branch `67ff` payload grammar by leading control word and section length, not just by file family
+  - highest-confidence current subcase:
+    - `marker-only` families such as `effect/001.pzf` and `weapon2/003.pzf` already look like small point-like control tuples
 - `plasma/`
   - large Samsung/Android UI asset subtree; likely not core gameplay data
 

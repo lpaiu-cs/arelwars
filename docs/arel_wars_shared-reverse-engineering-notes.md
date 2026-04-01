@@ -99,3 +99,9 @@ This document captures the parts of the recovery work that are likely to stay us
   - `0000`
   - `0401`
   These should be treated as candidate control words before attempting a single universal tuple parser.
+- Many AW2 `67ff` payloads are now structurally recoverable without naming every field yet.
+  The most reusable generic shapes are:
+  - `control + int16*`
+  - `control + int16* + tail byte`
+  - `control + nested 67xx000000 marker`
+- `marker-only` AW2 families are the cleanest next target because their payloads often collapse directly into small point-like signed-coordinate tuples.
