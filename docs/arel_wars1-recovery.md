@@ -36,6 +36,8 @@
     - a simple fixed `10-byte` placement table used by `022`-`027`, `078`, and `179`
     - frame-record streams used by stems such as `198`, `208`, and `240`, where each record starts with `itemCount`, `frameType`, `x`, `y`, `width`, `height`, then a list of chunk placements
   - some frame-record assets interleave `5-byte` control chunks (`66 0c 00 00 00`, `67 ff 00 00 00`, and relatives) both inside and after records, so later streams still carry a second layer of animation metadata beyond pure chunk placement
+  - the frame-record tails can now be split into marker-delimited secondary blocks using `67 ff 00 00 00`, `67 78 00 00 00`, `66 05 00 00 00`, `66 0a 00 00 00`, and `66 0c 00 00 00`
+  - many of those secondary blocks decode exactly as `7-byte` flagged tuples: `chunkIndex(u16), x(i16), y(i16), flag(u8)`
 - `.mpl`
   Partially decoded by pattern. For all 65 paired stems, the current best model is:
   - the file layout is a 6-word header followed by two palette banks
@@ -151,6 +153,15 @@ optional 5-byte control chunks may appear:
 ```
 
 - `208`, `240`, and `084` all leave a non-empty tail after the frame-record prefix. Those tails repeatedly contain `67 ff 00 00 00`, which is now the strongest candidate marker for a second animation/timeline metadata layer.
+- The tail parser now splits those post-frame sections into `773` marker-delimited blocks across all recognized frame-record assets.
+  - Marker usage is dominated by `67 ff 00 00 00` (`671` blocks), followed by `66 05 00 00 00`, `67 78 00 00 00`, `66 0a 00 00 00`, and `66 0c 00 00 00`.
+  - `329` blocks already decode exactly as `flagged-tuples`, and another `14` fit `3-byte header + flagged-tuples`.
+  - At least `21` stems expose exact-fit tail blocks, including `082`, `083`, `084`, `208`, `225`, `226`, and `240`.
+- Concrete examples:
+  - `084.pzx` has `67 ff` blocks that decode directly into `3`-tuple and `10`-tuple flagged placement groups.
+  - `208.pzx` has `66 0c` blocks that decode into `8`-tuple flagged placement groups, even though the surrounding tail remains only partially decoded.
+  - `240.pzx` has many short `67 ff` singleton blocks such as `2e 00 02 00 e6 ff 01`, which fits `chunk=46, x=2, y=-26, flag=1`.
+- This means the tail is not one monolithic blob. It is a stream of smaller metadata blocks, some of which are already structured enough to drive placement/state transitions once the block-to-frame relationship is recovered.
 - The row grammar currently held by the tools is:
 
 ```text

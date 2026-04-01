@@ -12,6 +12,7 @@ from formats import (
     find_zlib_streams,
     read_pzx_frame_record_stream,
     read_pzx_first_stream,
+    read_pzx_meta_sections,
     read_pzx_row_stream,
     read_pzx_simple_placement_stream,
 )
@@ -160,6 +161,9 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
 
     all_items = [item for record in decoded.records for item in record.items]
     all_control_chunks = [chunk for record in decoded.records for chunk in record.control_chunks]
+    meta_sections = read_pzx_meta_sections(decoded.trailing, chunk_count) if decoded.trailing else ()
+    meta_marker_counts = Counter(section.marker_hex or "prefix" for section in meta_sections)
+    meta_layout_counts = Counter(section.layout for section in meta_sections)
     min_item_x = min(item.x for item in all_items)
     min_item_y = min(item.y for item in all_items)
     max_item_x = max(item.x + chunk_sizes[item.chunk_index][0] for item in all_items)
@@ -187,6 +191,9 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
         "flagValues": sorted({item.flag for item in all_items}),
         "controlChunkCount": len(all_control_chunks),
         "controlChunkLengths": sorted({len(chunk) for chunk in all_control_chunks}),
+        "metaSectionCount": len(meta_sections),
+        "metaMarkerCounts": dict(sorted(meta_marker_counts.items())),
+        "metaLayoutCounts": dict(sorted(meta_layout_counts.items())),
         "recordOffsetsPreview": [record.offset for record in decoded.records[:12]],
         "recordPreview": [
             {
@@ -209,6 +216,28 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
                 ],
             }
             for record in decoded.records[:4]
+        ],
+        "metaSectionsPreview": [
+            {
+                "offset": section.offset,
+                "markerHex": section.marker_hex,
+                "payloadLen": len(section.payload),
+                "layout": section.layout,
+                "headerHex": section.header_hex,
+                "tupleCount": section.tuple_count,
+                "validTupleCount": section.valid_tuple_count,
+                "payloadHeadHex": section.payload[:24].hex(),
+                "tuplePreview": [
+                    {
+                        "chunkIndex": item.chunk_index,
+                        "x": item.x,
+                        "y": item.y,
+                        "flag": item.flag,
+                    }
+                    for item in section.tuples[:6]
+                ],
+            }
+            for section in meta_sections[:8]
         ],
     }
 
@@ -391,6 +420,9 @@ def main() -> None:
             "flagValues": stream["flagValues"],
             "controlChunkCount": stream["controlChunkCount"],
             "controlChunkLengths": stream["controlChunkLengths"],
+            "metaSectionCount": stream["metaSectionCount"],
+            "metaLayoutCounts": stream["metaLayoutCounts"],
+            "metaMarkerCounts": stream["metaMarkerCounts"],
         }
         for entry in pzx_entries
         for stream in entry.get("frameRecordStreams", [])
@@ -398,6 +430,19 @@ def main() -> None:
     frame_record_stems = sorted({entry["stem"] for entry in frame_record_entries})
     frame_record_control_stems = sorted(
         {entry["stem"] for entry in frame_record_entries if int(entry["controlChunkCount"]) > 0}
+    )
+    frame_meta_section_count = sum(int(entry["metaSectionCount"]) for entry in frame_record_entries)
+    frame_meta_layout_counts = Counter()
+    frame_meta_marker_counts = Counter()
+    for entry in frame_record_entries:
+        frame_meta_layout_counts.update(entry["metaLayoutCounts"])
+        frame_meta_marker_counts.update(entry["metaMarkerCounts"])
+    frame_meta_exact_stems = sorted(
+        {
+            entry["stem"]
+            for entry in frame_record_entries
+            if any(layout != "opaque" for layout in entry["metaLayoutCounts"])
+        }
     )
     regular_mpl_palette_stems: list[str] = []
     regular_mpl_palette_set: set[str] = set()
@@ -514,6 +559,11 @@ def main() -> None:
             "frameRecordStreamCount": len(frame_record_entries),
             "frameRecordControlPzxCount": len(frame_record_control_stems),
             "frameRecordControlPreview": frame_record_control_stems[:20],
+            "frameMetaSectionCount": frame_meta_section_count,
+            "frameMetaMarkerCounts": dict(sorted(frame_meta_marker_counts.items())),
+            "frameMetaLayoutCounts": dict(sorted(frame_meta_layout_counts.items())),
+            "frameMetaExactPzxCount": len(frame_meta_exact_stems),
+            "frameMetaExactPreview": frame_meta_exact_stems[:20],
             "frameRecordPreview": frame_record_entries[:12],
             "regularMplPaletteCount": len(regular_mpl_palette_stems),
             "regularMplPalettePreview": regular_mpl_palette_stems[:20],
@@ -545,6 +595,8 @@ def main() -> None:
             f"{len(frame_record_control_stems)} of those stems also carry embedded 5-byte control chunks inside or between frame records; observed markers include 66 05 00 00 00, 66 0A 00 00 00, 66 0C 00 00 00, 67 78 00 00 00, and 67 FF 00 00 00.",
             "198.pzx parses as a clean frame-record prefix, while 208.pzx and 240.pzx both continue into a second metadata tail after the frame-record section. 208 also inserts 66 0C 00 00 00 inside individual records.",
             "084.pzx, 208.pzx, and 240.pzx all leave trailing sections beginning with 67 FF 00 00 00, which is the current best candidate separator for a secondary animation or timeline metadata layer.",
+            f"The trailing tails now split into {frame_meta_section_count} marker-delimited sections. {frame_meta_marker_counts.get('67ff000000', 0)} use 67 FF 00 00 00 and {frame_meta_marker_counts.get('6778000000', 0)} use 67 78 00 00 00.",
+            f"{len(frame_meta_exact_stems)} stems already expose exact-fit tail subsections that decode as 7-byte flagged tuples or simple 6-byte tuples, so at least part of the secondary metadata is structured placement data rather than opaque blobs.",
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",

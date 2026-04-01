@@ -6,6 +6,13 @@ import zlib
 
 
 ZLIB_HEADERS = {0x01, 0x5E, 0x9C, 0xDA}
+PZX_META_MARKERS: dict[bytes, str] = {
+    bytes.fromhex("67ff000000"): "67ff000000",
+    bytes.fromhex("6778000000"): "6778000000",
+    bytes.fromhex("6605000000"): "6605000000",
+    bytes.fromhex("660a000000"): "660a000000",
+    bytes.fromhex("660c000000"): "660c000000",
+}
 
 
 def _is_text_char(char: str) -> bool:
@@ -124,6 +131,26 @@ class PzxFrameRecordStream:
     records: tuple[PzxFrameRecord, ...]
     consumed: int
     trailing: bytes
+
+
+@dataclass(frozen=True)
+class PzxMetaTuple:
+    chunk_index: int
+    x: int
+    y: int
+    flag: int | None
+
+
+@dataclass(frozen=True)
+class PzxMetaSection:
+    offset: int
+    marker_hex: str | None
+    payload: bytes
+    layout: str
+    header_hex: str | None
+    tuple_count: int
+    valid_tuple_count: int
+    tuples: tuple[PzxMetaTuple, ...]
 
 
 def read_zt1(data: bytes) -> Zt1File:
@@ -387,6 +414,115 @@ def _looks_like_pzx_frame_item(stream: bytes, offset: int, chunk_count: int) -> 
         and -128 <= y <= 64
         and flag <= 4
     )
+
+
+def _is_reasonable_pzx_meta_tuple(chunk_index: int, x: int, y: int, chunk_count: int) -> bool:
+    return 0 <= chunk_index < chunk_count and -256 <= x <= 256 and -256 <= y <= 256
+
+
+def _parse_pzx_meta_tuples(
+    payload: bytes,
+    chunk_count: int,
+    *,
+    start: int,
+    stride: int,
+) -> tuple[int, tuple[PzxMetaTuple, ...]] | None:
+    if len(payload) < start or (len(payload) - start) % stride != 0:
+        return None
+
+    tuples: list[PzxMetaTuple] = []
+    valid_count = 0
+
+    for cursor in range(start, len(payload), stride):
+        chunk_index = struct.unpack("<H", payload[cursor : cursor + 2])[0]
+        x = struct.unpack("<h", payload[cursor + 2 : cursor + 4])[0]
+        y = struct.unpack("<h", payload[cursor + 4 : cursor + 6])[0]
+        flag = payload[cursor + 6] if stride == 7 else None
+
+        tuples.append(PzxMetaTuple(chunk_index=chunk_index, x=x, y=y, flag=flag))
+        if _is_reasonable_pzx_meta_tuple(chunk_index, x, y, chunk_count) and (flag is None or flag <= 4):
+            valid_count += 1
+
+    return (valid_count, tuple(tuples))
+
+
+def _iter_pzx_meta_markers(stream: bytes) -> tuple[tuple[int, str], ...]:
+    hits: list[tuple[int, str]] = []
+    offset = 0
+    while offset + 5 <= len(stream):
+        marker_hex = PZX_META_MARKERS.get(stream[offset : offset + 5])
+        if marker_hex is not None:
+            hits.append((offset, marker_hex))
+            offset += 5
+            continue
+        offset += 1
+    return tuple(hits)
+
+
+def read_pzx_meta_sections(stream: bytes, chunk_count: int) -> tuple[PzxMetaSection, ...]:
+    markers = _iter_pzx_meta_markers(stream)
+    boundaries: list[tuple[int, str | None, int]] = []
+
+    if not markers:
+        boundaries.append((0, None, 0))
+    else:
+        first_offset = markers[0][0]
+        if first_offset > 0:
+            boundaries.append((0, None, 0))
+        for offset, marker_hex in markers:
+            boundaries.append((offset, marker_hex, 5))
+
+    sections: list[PzxMetaSection] = []
+    for index, (offset, marker_hex, marker_size) in enumerate(boundaries):
+        start = offset + marker_size
+        end = boundaries[index + 1][0] if index + 1 < len(boundaries) else len(stream)
+        payload = stream[start:end]
+        if not payload:
+            continue
+
+        best_layout = "opaque"
+        best_header_hex: str | None = None
+        best_tuple_count = 0
+        best_valid_tuple_count = 0
+        best_tuples: tuple[PzxMetaTuple, ...] = ()
+
+        candidates: list[tuple[int, int, int, str, str | None, tuple[PzxMetaTuple, ...]]] = []
+        for start_offset, stride, layout in (
+            (0, 7, "flagged-tuples"),
+            (3, 7, "header3+flagged-tuples"),
+            (0, 6, "plain-tuples"),
+            (3, 6, "header3+plain-tuples"),
+        ):
+            parsed = _parse_pzx_meta_tuples(payload, chunk_count, start=start_offset, stride=stride)
+            if parsed is None:
+                continue
+            valid_count, tuples = parsed
+            header_hex = payload[:3].hex() if start_offset == 3 and len(payload) >= 3 else None
+            candidates.append((valid_count, len(tuples), -start_offset, layout, header_hex, tuples))
+
+        if candidates:
+            valid_count, tuple_count, _, layout, header_hex, tuples = max(candidates)
+            if tuple_count > 0 and valid_count == tuple_count:
+                best_layout = layout
+                best_header_hex = header_hex
+                best_tuple_count = tuple_count
+                best_valid_tuple_count = valid_count
+                best_tuples = tuples
+
+        sections.append(
+            PzxMetaSection(
+                offset=offset,
+                marker_hex=marker_hex,
+                payload=payload,
+                layout=best_layout,
+                header_hex=best_header_hex,
+                tuple_count=best_tuple_count,
+                valid_tuple_count=best_valid_tuple_count,
+                tuples=best_tuples,
+            )
+        )
+
+    return tuple(sections)
 
 
 def read_pzx_frame_record_stream(stream: bytes, chunk_count: int) -> PzxFrameRecordStream | None:
