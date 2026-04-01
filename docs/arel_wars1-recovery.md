@@ -68,6 +68,11 @@ python3 tools/arel_wars1/render_mpl_palette_probes.py \
   --assets-root recovery/arel_wars1/apk_unzip/assets \
   --output recovery/arel_wars1/mpl_palette_probes \
   --stems 198 208 240
+
+python3 tools/arel_wars1/render_composite_probes.py \
+  --assets-root recovery/arel_wars1/apk_unzip/assets \
+  --output recovery/arel_wars1/analysis_preview2 \
+  --stems 179
 ```
 
 From `remake/arel-wars1/`:
@@ -110,6 +115,9 @@ npm run ios:sync
 - Some chunk bodies begin with `FD FF` before row `0`.
 - Most chunks end with `FE FF FF FF`.
 - `variant=7` files can skip the chunk-table wrapper entirely and expose standalone row-RLE images as individual zlib streams.
+- `179.pzx` has a second zlib stream that parses cleanly as `30` fixed `10-byte` placement records, one per decoded chunk.
+- The same simple placement pattern also appears in a small portrait/single-frame group: `022`, `023`, `024`, `025`, `026`, `027`, and `078`.
+- Those placement records are enough to build a first whole-sprite composite probe for `179`, although the chunk pixel bytes still appear to carry packed shading/effect bits above the final color index.
 - The row grammar currently held by the tools is:
 
 ```text
@@ -133,5 +141,8 @@ then consume FE FF as the row separator
 - Shared-file reuse is explicit in two places:
   - `145.mpl == 146.mpl`
   - `179.mpl == 180.mpl`
+- `179` remains special inside that shared-palette pair:
+  - `180` fits the palette directly with raw row-stream indices `0..46`
+  - `179` can now be spatially assembled from its placement stream, but its chunk bytes range up to `199`, so some upper bits likely encode shading or effect state instead of direct palette slots
 - With exact matches, oversized-bank fits, and shared-file reuse combined, all 65 paired stems now fit the current two-bank palette hypothesis.
 - Heuristic RGB565 probes already produce sprite-like colored sheets for stems such as `198`, `208`, `229`, and `240`, plus `180` on the raw row-stream path.

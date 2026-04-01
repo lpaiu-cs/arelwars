@@ -8,7 +8,12 @@ import json
 from pathlib import Path
 import struct
 
-from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_row_stream
+from formats import (
+    find_zlib_streams,
+    read_pzx_first_stream,
+    read_pzx_row_stream,
+    read_pzx_simple_placement_stream,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -69,6 +74,7 @@ def summarize_pzx_first_stream(table_span: int, stream: bytes) -> dict[str, obje
     return {
         "tableSpan": decoded.table_span,
         "chunkCount": len(decoded.chunks),
+        "chunkDimensions": [{"index": chunk.index, "width": chunk.width, "height": chunk.height} for chunk in decoded.chunks],
         "offsetsPreview": list(decoded.offsets[:12]),
         "offsetsTail": list(decoded.offsets[-6:]),
         "chunkWidthRange": [min(widths), max(widths)],
@@ -117,6 +123,35 @@ def summarize_pzx_row_stream(stream: bytes) -> dict[str, object] | None:
     }
 
 
+def summarize_simple_placement_stream(stream: bytes, chunk_count: int, chunk_sizes: dict[int, tuple[int, int]]) -> dict[str, object] | None:
+    placements = read_pzx_simple_placement_stream(stream, chunk_count)
+    if placements is None:
+        return None
+
+    min_x = min(placement.x for placement in placements)
+    min_y = min(placement.y for placement in placements)
+    max_x = max(placement.x + chunk_sizes[placement.chunk_index][0] for placement in placements)
+    max_y = max(placement.y + chunk_sizes[placement.chunk_index][1] for placement in placements)
+
+    return {
+        "recordCount": len(placements),
+        "modeValues": sorted({placement.mode for placement in placements}),
+        "chunkIndexRange": [min(placement.chunk_index for placement in placements), max(placement.chunk_index for placement in placements)],
+        "bbox": {"minX": min_x, "minY": min_y, "maxX": max_x, "maxY": max_y},
+        "placementsPreview": [
+            {
+                "chunkIndex": placement.chunk_index,
+                "mode": placement.mode,
+                "x": placement.x,
+                "y": placement.y,
+                "chunkWidth": chunk_sizes[placement.chunk_index][0],
+                "chunkHeight": chunk_sizes[placement.chunk_index][1],
+            }
+            for placement in placements[:8]
+        ],
+    }
+
+
 def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     data = path.read_bytes()
     streams = find_zlib_streams(data)
@@ -126,6 +161,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     parsed_streams: list[dict[str, object]] = []
     first_stream_summary: dict[str, object] | None = None
     first_stream_error: str | None = None
+    simple_placement_summary: dict[str, object] | None = None
 
     for index, item in enumerate(streams[:12]):
         entry = {
@@ -144,6 +180,23 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             else:
                 if summary is not None:
                     first_stream_summary = summary
+        if index > 0 and first_stream_summary is not None:
+            chunk_sizes = {
+                item["index"]: (item["width"], item["height"]) for item in first_stream_summary["chunkDimensions"]
+            }
+            if chunk_sizes:
+                try:
+                    placement_summary = summarize_simple_placement_stream(
+                        item.decoded,
+                        int(first_stream_summary["chunkCount"]),
+                        chunk_sizes,
+                    )
+                except ValueError:
+                    placement_summary = None
+                if placement_summary is not None:
+                    entry["simplePlacement"] = placement_summary
+                    if simple_placement_summary is None:
+                        simple_placement_summary = {"streamIndex": index, **placement_summary}
         try:
             row_stream_summary = summarize_pzx_row_stream(item.decoded)
         except ValueError:
@@ -170,6 +223,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
         "streams": parsed_streams,
         "firstStream": first_stream_summary,
         "firstStreamError": first_stream_error,
+        "simplePlacementStream": simple_placement_summary,
     }
 
 
@@ -239,6 +293,17 @@ def main() -> None:
         }
         for entry in pzx_entries
         if any(stream.get("rowStream") is not None for stream in entry["streams"])
+    ]
+    simple_placement_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "variant": entry["header"]["field16Low6"],
+            "streamIndex": entry["simplePlacementStream"]["streamIndex"],
+            "recordCount": entry["simplePlacementStream"]["recordCount"],
+            "bbox": entry["simplePlacementStream"]["bbox"],
+        }
+        for entry in pzx_entries
+        if entry.get("simplePlacementStream") is not None
     ]
     regular_mpl_palette_stems: list[str] = []
     regular_mpl_palette_set: set[str] = set()
@@ -349,6 +414,8 @@ def main() -> None:
             "firstStreamTableSpanCounts": dict(sorted(table_span_counts.items())),
             "rawRowStreamPzxCount": len(raw_row_stream_entries),
             "rawRowStreamPreview": raw_row_stream_entries[:12],
+            "simplePlacementPzxCount": len(simple_placement_entries),
+            "simplePlacementPreview": simple_placement_entries[:12],
             "regularMplPaletteCount": len(regular_mpl_palette_stems),
             "regularMplPalettePreview": regular_mpl_palette_stems[:20],
             "paletteCapacityFitCount": len(palette_capacity_fit_stems),
@@ -370,9 +437,11 @@ def main() -> None:
             "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using skip(u16), literal(opcode 0x80nn + nn bytes), and repeat(opcode 0xC0nn + one value byte repeated nn times).",
             "Some chunks start with FD FF before the first row. Rows are separated by FE FF, and chunks end with a trailing FFFF sentinel after the final FE FF.",
             "Variant=7 assets such as 180.pzx expose the same row-oriented RLE directly as standalone zlib streams without the outer chunk header.",
+            "179.pzx stream 1 is a simple 30-record placement table: each 10-byte record selects one chunk and places it at signed x/y coordinates, covering all 30 decoded chunks exactly once.",
             "For 61 paired MPL files, actualWordCount equals 2 * (maxDecodedIndex + 1) + 6, consistent with a 6-word header plus two palette banks.",
             "229.pzx uses only indices 0..38 while its MPL carries 148 colors per bank, so at least one asset family keeps oversized palette banks instead of trimming them to the exact max index.",
             "180.pzx raw row streams top out at palette index 46, which exactly fits the shared 179/180 MPL payload as a 47-color two-bank palette.",
+            "179.pzx still does not map directly to the 47-color shared palette, which suggests its byte values pack extra shading or effect bits above the base color index.",
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",

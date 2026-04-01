@@ -90,6 +90,14 @@ class PzxRowStream:
         return sum(len(row.decoded) for row in self.rows)
 
 
+@dataclass(frozen=True)
+class PzxSimplePlacement:
+    mode: int
+    chunk_index: int
+    x: int
+    y: int
+
+
 def read_zt1(data: bytes) -> Zt1File:
     if len(data) < 8:
         raise ValueError("ZT1 payload is too short")
@@ -281,6 +289,38 @@ def read_pzx_row_stream(body: bytes) -> PzxRowStream | None:
         row_separator_hexes=tuple(row_separator_hexes),
         trailing_sentinel_hex=trailing_sentinel_hex,
     )
+
+
+def read_pzx_simple_placement_stream(stream: bytes, chunk_count: int) -> tuple[PzxSimplePlacement, ...] | None:
+    if chunk_count <= 0 or len(stream) != chunk_count * 10:
+        return None
+
+    placements: list[PzxSimplePlacement] = []
+    seen_indices: set[int] = set()
+
+    for cursor in range(0, len(stream), 10):
+        record = stream[cursor : cursor + 10]
+        if record[1] != 0 or record[2] != 0 or record[4] != 0 or record[9] != 0:
+            return None
+
+        chunk_index = record[3]
+        if chunk_index >= chunk_count or chunk_index in seen_indices:
+            return None
+
+        placements.append(
+            PzxSimplePlacement(
+                mode=record[0],
+                chunk_index=chunk_index,
+                x=struct.unpack("<h", record[5:7])[0],
+                y=struct.unpack("<h", record[7:9])[0],
+            )
+        )
+        seen_indices.add(chunk_index)
+
+    if len(placements) != chunk_count:
+        return None
+
+    return tuple(placements)
 
 
 def read_pzx_first_stream(stream: bytes, table_span: int) -> PzxFirstStream | None:
