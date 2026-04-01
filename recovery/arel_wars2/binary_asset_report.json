@@ -32,13 +32,44 @@
       "19": 1,
       "20": 2,
       "23": 1
+    },
+    "pzfVariantHistogram": {
+      "anchor+marker": 8,
+      "anchor-only": 5,
+      "marker-only": 2,
+      "opaque": 1
+    },
+    "pzfAnchorStrideHistogram": {
+      "11": 2,
+      "18": 3,
+      "23": 1,
+      "25": 2,
+      "30": 3,
+      "53": 1,
+      "60": 1
+    },
+    "pzfMetaSectionHistogram": {
+      "0": 5,
+      "14": 1,
+      "26": 1,
+      "56": 1,
+      "73": 1,
+      "76": 1,
+      "79": 1,
+      "109": 1,
+      "139": 1,
+      "141": 1,
+      "453": 1
     }
   },
   "findings": [
     "AW2 keeps ZT1 as the same zlib-wrapped text container used by AW1, and the recovered script parser works on sampled EN/KO/JA script files.",
     "AW2 PZD files start with magic 50 5A 44 02 ('PZD\\x02') and contain many embedded zlib streams whose decoded payloads are row-oriented RLE images compatible with the AW1 row-stream decoder.",
     "AW2 PZF files start with magic 50 5A 46 01 ('PZF\\x01'), carry a big-endian offset table in the plain header, and then switch to one large metadata zlib stream.",
-    "Sampled armor/head/weapon PZF files expose regular big-endian block strides of 53, 25, and 30 bytes respectively, which strongly suggests PZF is the AW2 animation/state sidecar for PZD body-part sprites.",
+    "The plain-header PZF table is not just monotonic offsets: after the initial big-endian offset run, later 32-bit words split cleanly into a high-byte group id plus a low-24-bit local offset, which looks like cross-group placement references.",
+    "Sampled armor/head/weapon/effect PZF files expose category-specific common strides of 53, 25, 30, and 11 bytes, and those same strides decode repeated anchor-box records from the zlib stream.",
+    "Decoded PZF metadata streams also carry dense 67ff000000-delimited sections, so PZF now looks like offset table + anchor boxes + timing/state markers rather than an opaque blob.",
+    "Current PZF samples already separate into anchor-only, anchor+marker, and marker-only variants, so the AW2 body-part sidecar parser should branch by variant instead of assuming one universal record layout.",
     "AW2 img/menu PZX files still use magic 'PZX\\x01', but many now decode directly as row streams instead of the AW1 chunk-offset-table first stream.",
     "Sampled AW2 MPL files under assets/pc are tiny sidecars rather than AW1-style two-bank palette blobs, so AW1 MPL logic must not be reused blindly.",
     "AW2 PTC remains structurally similar to AW1 compact parameter blocks and can already be summarized into angle, ratio, signed-delta, and timing fields."
@@ -39598,6 +39629,7 @@
   "pzf": [
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/armor/000.pzf",
+      "family": "armor",
       "size": 1986,
       "signatureHex": "505a4601",
       "field4LE": 32561,
@@ -39620,9 +39652,329 @@
         "diffCounts": {
           "53": 3
         },
-        "candidateBlockCount": 5
+        "commonDiff": 53,
+        "candidateBlockCount": 5,
+        "packedRefCount": 124,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 9
+          },
+          {
+            "group": 1,
+            "offset": 62
+          },
+          {
+            "group": 1,
+            "offset": 115
+          },
+          {
+            "group": 1,
+            "offset": 168
+          },
+          {
+            "group": 1,
+            "offset": 221
+          },
+          {
+            "group": 1,
+            "offset": 224
+          },
+          {
+            "group": 1,
+            "offset": 21
+          },
+          {
+            "group": 2,
+            "offset": 74
+          },
+          {
+            "group": 2,
+            "offset": 135
+          },
+          {
+            "group": 2,
+            "offset": 188
+          },
+          {
+            "group": 2,
+            "offset": 241
+          },
+          {
+            "group": 2,
+            "offset": 38
+          },
+          {
+            "group": 3,
+            "offset": 91
+          },
+          {
+            "group": 3,
+            "offset": 94
+          },
+          {
+            "group": 3,
+            "offset": 147
+          },
+          {
+            "group": 3,
+            "offset": 200
+          },
+          {
+            "group": 3,
+            "offset": 247
+          },
+          {
+            "group": 3,
+            "offset": 45
+          },
+          {
+            "group": 4,
+            "offset": 91
+          },
+          {
+            "group": 4,
+            "offset": 137
+          },
+          {
+            "group": 4,
+            "offset": 183
+          },
+          {
+            "group": 4,
+            "offset": 229
+          },
+          {
+            "group": 4,
+            "offset": 12
+          },
+          {
+            "group": 5,
+            "offset": 58
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 6,
+          "2": 5,
+          "3": 6,
+          "4": 5,
+          "5": 6,
+          "6": 14,
+          "7": 4,
+          "8": 6,
+          "9": 6,
+          "10": 6,
+          "11": 7,
+          "12": 5,
+          "13": 6,
+          "14": 6,
+          "15": 6,
+          "16": 6,
+          "17": 6,
+          "18": 6,
+          "19": 8,
+          "20": 3
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            9,
+            9
+          ],
+          "1": [
+            21,
+            224
+          ],
+          "2": [
+            38,
+            241
+          ],
+          "3": [
+            45,
+            247
+          ],
+          "4": [
+            12,
+            229
+          ],
+          "5": [
+            12,
+            222
+          ],
+          "6": [
+            15,
+            243
+          ],
+          "7": [
+            4,
+            207
+          ],
+          "8": [
+            7,
+            211
+          ],
+          "9": [
+            21,
+            232
+          ],
+          "10": [
+            1,
+            204
+          ],
+          "11": [
+            34,
+            229
+          ],
+          "12": [
+            43,
+            246
+          ],
+          "13": [
+            15,
+            226
+          ],
+          "14": [
+            29,
+            240
+          ],
+          "15": [
+            43,
+            254
+          ],
+          "16": [
+            12,
+            222
+          ],
+          "17": [
+            34,
+            242
+          ],
+          "18": [
+            18,
+            234
+          ],
+          "19": [
+            39,
+            250
+          ],
+          "20": [
+            84,
+            183
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 0
+        },
+        "firstMarkerOffset": null,
+        "prefixLen": 5249,
+        "sectionCount": 0,
+        "sectionLengthHistogram": {},
+        "sectionLengthPreview": []
+      },
+      "anchorBoxes": {
+        "stride": 53,
+        "recordCount": 9,
+        "familyCodes": [
+          6
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -42,
+          -11
+        ],
+        "yRange": [
+          -97,
+          -54
+        ],
+        "widthRange": [
+          28,
+          64
+        ],
+        "heightRange": [
+          33,
+          98
+        ],
+        "preview": [
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -42,
+            "y": -97,
+            "width": 64,
+            "height": 98
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -13,
+            "y": -60,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -14,
+            "y": -54,
+            "width": 31,
+            "height": 38
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -17,
+            "y": -58,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -11,
+            "y": -61,
+            "width": 28,
+            "height": 40
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -15,
+            "y": -58,
+            "width": 29,
+            "height": 36
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -14,
+            "y": -61,
+            "width": 30,
+            "height": 33
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -18,
+            "y": -61,
+            "width": 28,
+            "height": 36
+          },
+          {
+            "familyCode": 6,
+            "group": 256,
+            "x": -17,
+            "y": -60,
+            "width": 32,
+            "height": 38
+          }
+        ]
+      },
+      "variant": "anchor-only",
       "metaStreamPreview": [
         {
           "offset": 523,
@@ -39635,6 +39987,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/armor/001.pzf",
+      "family": "armor",
       "size": 1681,
       "signatureHex": "505a4601",
       "field4LE": 23089,
@@ -39657,9 +40010,283 @@
         "diffCounts": {
           "60": 3
         },
-        "candidateBlockCount": 5
+        "commonDiff": 60,
+        "candidateBlockCount": 5,
+        "packedRefCount": 87,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 44
+          },
+          {
+            "group": 1,
+            "offset": 104
+          },
+          {
+            "group": 1,
+            "offset": 164
+          },
+          {
+            "group": 1,
+            "offset": 167
+          },
+          {
+            "group": 1,
+            "offset": 227
+          },
+          {
+            "group": 1,
+            "offset": 31
+          },
+          {
+            "group": 2,
+            "offset": 91
+          },
+          {
+            "group": 2,
+            "offset": 151
+          },
+          {
+            "group": 2,
+            "offset": 211
+          },
+          {
+            "group": 2,
+            "offset": 15
+          },
+          {
+            "group": 3,
+            "offset": 18
+          },
+          {
+            "group": 3,
+            "offset": 80
+          },
+          {
+            "group": 3,
+            "offset": 135
+          },
+          {
+            "group": 3,
+            "offset": 183
+          },
+          {
+            "group": 3,
+            "offset": 223
+          },
+          {
+            "group": 3,
+            "offset": 7
+          },
+          {
+            "group": 4,
+            "offset": 47
+          },
+          {
+            "group": 4,
+            "offset": 87
+          },
+          {
+            "group": 4,
+            "offset": 152
+          },
+          {
+            "group": 4,
+            "offset": 209
+          },
+          {
+            "group": 4,
+            "offset": 10
+          },
+          {
+            "group": 5,
+            "offset": 63
+          },
+          {
+            "group": 5,
+            "offset": 116
+          },
+          {
+            "group": 5,
+            "offset": 169
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 5,
+          "2": 4,
+          "3": 6,
+          "4": 5,
+          "5": 5,
+          "6": 5,
+          "7": 13,
+          "8": 4,
+          "9": 6,
+          "10": 5,
+          "11": 6,
+          "12": 5,
+          "13": 14,
+          "14": 3
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            44,
+            44
+          ],
+          "1": [
+            31,
+            227
+          ],
+          "2": [
+            15,
+            211
+          ],
+          "3": [
+            7,
+            223
+          ],
+          "4": [
+            10,
+            209
+          ],
+          "5": [
+            41,
+            237
+          ],
+          "6": [
+            20,
+            224
+          ],
+          "7": [
+            23,
+            252
+          ],
+          "8": [
+            0,
+            204
+          ],
+          "9": [
+            35,
+            239
+          ],
+          "10": [
+            39,
+            243
+          ],
+          "11": [
+            42,
+            250
+          ],
+          "12": [
+            1,
+            205
+          ],
+          "13": [
+            27,
+            231
+          ],
+          "14": [
+            26,
+            131
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 0
+        },
+        "firstMarkerOffset": null,
+        "prefixLen": 3715,
+        "sectionCount": 0,
+        "sectionLengthHistogram": {},
+        "sectionLengthPreview": []
+      },
+      "anchorBoxes": {
+        "stride": 60,
+        "recordCount": 7,
+        "familyCodes": [
+          7
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -36,
+          -18
+        ],
+        "yRange": [
+          -84,
+          -47
+        ],
+        "widthRange": [
+          35,
+          77
+        ],
+        "heightRange": [
+          36,
+          90
+        ],
+        "preview": [
+          {
+            "familyCode": 7,
+            "group": 256,
+            "x": -36,
+            "y": -84,
+            "width": 77,
+            "height": 90
+          },
+          {
+            "familyCode": 7,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 7,
+            "group": 256,
+            "x": -20,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 7,
+            "group": 256,
+            "x": -21,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 7,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          },
+          {
+            "familyCode": 7,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 7,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          }
+        ]
+      },
+      "variant": "anchor-only",
       "metaStreamPreview": [
         {
           "offset": 375,
@@ -39672,6 +40299,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/armor/002.pzf",
+      "family": "armor",
       "size": 1358,
       "signatureHex": "505a4601",
       "field4LE": 24369,
@@ -39692,9 +40320,231 @@
         "diffCounts": {
           "74": 2
         },
-        "candidateBlockCount": 4
+        "commonDiff": 74,
+        "candidateBlockCount": 4,
+        "packedRefCount": 93,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 40
+          },
+          {
+            "group": 1,
+            "offset": 114
+          },
+          {
+            "group": 1,
+            "offset": 117
+          },
+          {
+            "group": 1,
+            "offset": 191
+          },
+          {
+            "group": 1,
+            "offset": 9
+          },
+          {
+            "group": 2,
+            "offset": 83
+          },
+          {
+            "group": 2,
+            "offset": 157
+          },
+          {
+            "group": 2,
+            "offset": 231
+          },
+          {
+            "group": 2,
+            "offset": 234
+          },
+          {
+            "group": 2,
+            "offset": 52
+          },
+          {
+            "group": 3,
+            "offset": 126
+          },
+          {
+            "group": 3,
+            "offset": 201
+          },
+          {
+            "group": 3,
+            "offset": 28
+          },
+          {
+            "group": 4,
+            "offset": 103
+          },
+          {
+            "group": 4,
+            "offset": 178
+          },
+          {
+            "group": 4,
+            "offset": 252
+          },
+          {
+            "group": 4,
+            "offset": 70
+          },
+          {
+            "group": 5,
+            "offset": 144
+          },
+          {
+            "group": 5,
+            "offset": 219
+          },
+          {
+            "group": 5,
+            "offset": 46
+          },
+          {
+            "group": 6,
+            "offset": 121
+          },
+          {
+            "group": 6,
+            "offset": 196
+          },
+          {
+            "group": 6,
+            "offset": 14
+          },
+          {
+            "group": 7,
+            "offset": 88
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 4,
+          "2": 5,
+          "3": 3,
+          "4": 4,
+          "5": 3,
+          "6": 3,
+          "7": 4,
+          "8": 3,
+          "9": 4,
+          "10": 12,
+          "11": 4,
+          "12": 4,
+          "13": 4,
+          "14": 4,
+          "15": 4,
+          "16": 4,
+          "17": 5,
+          "18": 4,
+          "19": 5,
+          "20": 4,
+          "21": 3,
+          "22": 2
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            40,
+            40
+          ],
+          "1": [
+            9,
+            191
+          ],
+          "2": [
+            52,
+            234
+          ],
+          "3": [
+            28,
+            201
+          ],
+          "4": [
+            70,
+            252
+          ],
+          "5": [
+            46,
+            219
+          ],
+          "6": [
+            14,
+            196
+          ],
+          "7": [
+            55,
+            236
+          ],
+          "8": [
+            32,
+            213
+          ],
+          "9": [
+            1,
+            183
+          ],
+          "10": [
+            4,
+            223
+          ],
+          "11": [
+            41,
+            231
+          ],
+          "12": [
+            49,
+            239
+          ],
+          "13": [
+            57,
+            247
+          ],
+          "14": [
+            2,
+            192
+          ],
+          "15": [
+            10,
+            200
+          ],
+          "16": [
+            18,
+            208
+          ],
+          "17": [
+            29,
+            219
+          ],
+          "18": [
+            37,
+            227
+          ],
+          "19": [
+            48,
+            238
+          ],
+          "20": [
+            58,
+            247
+          ],
+          "21": [
+            3,
+            192
+          ],
+          "22": [
+            69,
+            195
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": null,
+      "anchorBoxes": null,
+      "variant": "opaque",
       "metaStreamPreview": [
         {
           "offset": 395,
@@ -39707,6 +40557,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/effect/000.pzf",
+      "family": "effect",
       "size": 2327,
       "signatureHex": "505a4601",
       "field4LE": 32561,
@@ -39754,9 +40605,417 @@
           "23": 4,
           "31": 1
         },
-        "candidateBlockCount": 19
+        "commonDiff": 11,
+        "candidateBlockCount": 19,
+        "packedRefCount": 110,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 5
+          },
+          {
+            "group": 1,
+            "offset": 16
+          },
+          {
+            "group": 1,
+            "offset": 39
+          },
+          {
+            "group": 1,
+            "offset": 70
+          },
+          {
+            "group": 1,
+            "offset": 93
+          },
+          {
+            "group": 1,
+            "offset": 116
+          },
+          {
+            "group": 1,
+            "offset": 139
+          },
+          {
+            "group": 1,
+            "offset": 150
+          },
+          {
+            "group": 1,
+            "offset": 161
+          },
+          {
+            "group": 1,
+            "offset": 184
+          },
+          {
+            "group": 1,
+            "offset": 31
+          },
+          {
+            "group": 2,
+            "offset": 126
+          },
+          {
+            "group": 2,
+            "offset": 221
+          },
+          {
+            "group": 2,
+            "offset": 60
+          },
+          {
+            "group": 3,
+            "offset": 71
+          },
+          {
+            "group": 3,
+            "offset": 74
+          },
+          {
+            "group": 3,
+            "offset": 85
+          },
+          {
+            "group": 3,
+            "offset": 96
+          },
+          {
+            "group": 3,
+            "offset": 99
+          },
+          {
+            "group": 3,
+            "offset": 102
+          },
+          {
+            "group": 3,
+            "offset": 105
+          },
+          {
+            "group": 3,
+            "offset": 108
+          },
+          {
+            "group": 3,
+            "offset": 111
+          },
+          {
+            "group": 3,
+            "offset": 114
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 10,
+          "2": 3,
+          "3": 15,
+          "4": 6,
+          "5": 8,
+          "6": 9,
+          "7": 3,
+          "8": 4,
+          "9": 4,
+          "10": 3,
+          "11": 1,
+          "12": 2,
+          "13": 1,
+          "14": 2,
+          "15": 1,
+          "16": 2,
+          "17": 1,
+          "18": 1,
+          "19": 2,
+          "20": 2,
+          "21": 2,
+          "22": 5,
+          "23": 4,
+          "24": 3,
+          "25": 4,
+          "26": 9,
+          "27": 2
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            5,
+            5
+          ],
+          "1": [
+            16,
+            184
+          ],
+          "2": [
+            60,
+            221
+          ],
+          "3": [
+            9,
+            230
+          ],
+          "4": [
+            33,
+            254
+          ],
+          "5": [
+            1,
+            218
+          ],
+          "6": [
+            28,
+            250
+          ],
+          "7": [
+            43,
+            221
+          ],
+          "8": [
+            20,
+            204
+          ],
+          "9": [
+            55,
+            237
+          ],
+          "10": [
+            58,
+            231
+          ],
+          "11": [
+            65,
+            65
+          ],
+          "12": [
+            156,
+            237
+          ],
+          "13": [
+            75,
+            75
+          ],
+          "14": [
+            165,
+            248
+          ],
+          "15": [
+            82,
+            82
+          ],
+          "16": [
+            173,
+            254
+          ],
+          "17": [
+            92,
+            92
+          ],
+          "18": [
+            9,
+            9
+          ],
+          "19": [
+            99,
+            182
+          ],
+          "20": [
+            116,
+            234
+          ],
+          "21": [
+            1,
+            254
+          ],
+          "22": [
+            28,
+            245
+          ],
+          "23": [
+            21,
+            254
+          ],
+          "24": [
+            5,
+            163
+          ],
+          "25": [
+            6,
+            251
+          ],
+          "26": [
+            17,
+            233
+          ],
+          "27": [
+            12,
+            85
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 453
+        },
+        "firstMarkerOffset": 150,
+        "prefixLen": 150,
+        "sectionCount": 453,
+        "sectionLengthHistogram": {
+          "1": 1,
+          "7": 297,
+          "8": 57,
+          "9": 11,
+          "10": 32,
+          "11": 1,
+          "12": 1,
+          "13": 2,
+          "18": 18,
+          "19": 6,
+          "21": 1,
+          "26": 3,
+          "27": 1,
+          "29": 1,
+          "30": 6,
+          "31": 2,
+          "32": 1,
+          "35": 1,
+          "41": 1,
+          "42": 1,
+          "43": 1,
+          "44": 2,
+          "47": 2,
+          "52": 1,
+          "68": 1,
+          "86": 1,
+          "162": 1
+        },
+        "sectionLengthPreview": [
+          18,
+          18,
+          18,
+          18,
+          43,
+          26,
+          18,
+          86,
+          26,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          18,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          30,
+          7
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 11,
+        "recordCount": 9,
+        "familyCodes": [
+          0
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -42,
+          -11
+        ],
+        "yRange": [
+          -97,
+          -54
+        ],
+        "widthRange": [
+          28,
+          64
+        ],
+        "heightRange": [
+          33,
+          98
+        ],
+        "preview": [
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -42,
+            "y": -97,
+            "width": 64,
+            "height": 98
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -13,
+            "y": -60,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -14,
+            "y": -54,
+            "width": 31,
+            "height": 38
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -17,
+            "y": -58,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -11,
+            "y": -61,
+            "width": 28,
+            "height": 40
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -15,
+            "y": -58,
+            "width": 29,
+            "height": 36
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -14,
+            "y": -61,
+            "width": 30,
+            "height": 33
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -18,
+            "y": -61,
+            "width": 28,
+            "height": 36
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -17,
+            "y": -60,
+            "width": 32,
+            "height": 38
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 523,
@@ -39769,6 +41028,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/effect/001.pzf",
+      "family": "effect",
       "size": 927,
       "signatureHex": "505a4601",
       "field4LE": 23041,
@@ -39817,9 +41077,187 @@
           "54": 1,
           "58": 1
         },
-        "candidateBlockCount": 20
+        "commonDiff": 6,
+        "candidateBlockCount": 20,
+        "packedRefCount": 72,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 4
+          },
+          {
+            "group": 1,
+            "offset": 10
+          },
+          {
+            "group": 1,
+            "offset": 16
+          },
+          {
+            "group": 1,
+            "offset": 74
+          },
+          {
+            "group": 1,
+            "offset": 128
+          },
+          {
+            "group": 1,
+            "offset": 182
+          },
+          {
+            "group": 1,
+            "offset": 188
+          },
+          {
+            "group": 1,
+            "offset": 194
+          },
+          {
+            "group": 1,
+            "offset": 200
+          },
+          {
+            "group": 1,
+            "offset": 222
+          },
+          {
+            "group": 1,
+            "offset": 240
+          },
+          {
+            "group": 1,
+            "offset": 2
+          },
+          {
+            "group": 2,
+            "offset": 4
+          },
+          {
+            "group": 2,
+            "offset": 10
+          },
+          {
+            "group": 2,
+            "offset": 16
+          },
+          {
+            "group": 2,
+            "offset": 18
+          },
+          {
+            "group": 2,
+            "offset": 20
+          },
+          {
+            "group": 2,
+            "offset": 22
+          },
+          {
+            "group": 2,
+            "offset": 24
+          },
+          {
+            "group": 2,
+            "offset": 26
+          },
+          {
+            "group": 2,
+            "offset": 28
+          },
+          {
+            "group": 2,
+            "offset": 30
+          },
+          {
+            "group": 2,
+            "offset": 32
+          },
+          {
+            "group": 2,
+            "offset": 34
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 11,
+          "2": 33,
+          "3": 18,
+          "4": 9
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            4,
+            4
+          ],
+          "1": [
+            2,
+            240
+          ],
+          "2": [
+            0,
+            254
+          ],
+          "3": [
+            2,
+            242
+          ],
+          "4": [
+            40,
+            200
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 56
+        },
+        "firstMarkerOffset": 111,
+        "prefixLen": 111,
+        "sectionCount": 56,
+        "sectionLengthHistogram": {
+          "4": 1,
+          "7": 21,
+          "9": 24,
+          "13": 2,
+          "27": 1,
+          "31": 1,
+          "33": 1,
+          "49": 2,
+          "79": 1,
+          "83": 1,
+          "89": 1
+        },
+        "sectionLengthPreview": [
+          7,
+          7,
+          7,
+          49,
+          83,
+          7,
+          7,
+          7,
+          49,
+          89,
+          79,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          31,
+          9,
+          9,
+          9,
+          9,
+          27
+        ]
+      },
+      "anchorBoxes": null,
+      "variant": "marker-only",
       "metaStreamPreview": [
         {
           "offset": 375,
@@ -39832,6 +41270,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/effect/002.pzf",
+      "family": "effect",
       "size": 1061,
       "signatureHex": "505a4601",
       "field4LE": 24369,
@@ -39880,9 +41319,275 @@
           "23": 3,
           "31": 1
         },
-        "candidateBlockCount": 20
+        "commonDiff": 11,
+        "candidateBlockCount": 20,
+        "packedRefCount": 77,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 4
+          },
+          {
+            "group": 1,
+            "offset": 15
+          },
+          {
+            "group": 1,
+            "offset": 38
+          },
+          {
+            "group": 1,
+            "offset": 69
+          },
+          {
+            "group": 1,
+            "offset": 92
+          },
+          {
+            "group": 1,
+            "offset": 115
+          },
+          {
+            "group": 1,
+            "offset": 126
+          },
+          {
+            "group": 1,
+            "offset": 137
+          },
+          {
+            "group": 1,
+            "offset": 148
+          },
+          {
+            "group": 1,
+            "offset": 159
+          },
+          {
+            "group": 1,
+            "offset": 182
+          },
+          {
+            "group": 1,
+            "offset": 225
+          },
+          {
+            "group": 1,
+            "offset": 4
+          },
+          {
+            "group": 2,
+            "offset": 15
+          },
+          {
+            "group": 2,
+            "offset": 18
+          },
+          {
+            "group": 2,
+            "offset": 29
+          },
+          {
+            "group": 2,
+            "offset": 40
+          },
+          {
+            "group": 2,
+            "offset": 51
+          },
+          {
+            "group": 2,
+            "offset": 54
+          },
+          {
+            "group": 2,
+            "offset": 57
+          },
+          {
+            "group": 2,
+            "offset": 60
+          },
+          {
+            "group": 2,
+            "offset": 63
+          },
+          {
+            "group": 2,
+            "offset": 66
+          },
+          {
+            "group": 2,
+            "offset": 69
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 12,
+          "2": 20,
+          "3": 9,
+          "4": 10,
+          "5": 11,
+          "6": 9,
+          "7": 5
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            4,
+            4
+          ],
+          "1": [
+            4,
+            225
+          ],
+          "2": [
+            8,
+            249
+          ],
+          "3": [
+            11,
+            213
+          ],
+          "4": [
+            4,
+            183
+          ],
+          "5": [
+            0,
+            205
+          ],
+          "6": [
+            40,
+            244
+          ],
+          "7": [
+            92,
+            154
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 79
+        },
+        "firstMarkerOffset": 156,
+        "prefixLen": 156,
+        "sectionCount": 79,
+        "sectionLengthHistogram": {
+          "7": 32,
+          "8": 11,
+          "10": 15,
+          "19": 1,
+          "22": 6,
+          "25": 1,
+          "26": 3,
+          "31": 1,
+          "33": 1,
+          "34": 1,
+          "35": 1,
+          "53": 1,
+          "62": 1,
+          "78": 1,
+          "97": 1,
+          "108": 1,
+          "119": 1
+        },
+        "sectionLengthPreview": [
+          26,
+          97,
+          26,
+          108,
+          26,
+          7,
+          119,
+          22,
+          7,
+          10,
+          19,
+          22,
+          7,
+          10,
+          7,
+          22,
+          22,
+          7,
+          7,
+          10,
+          7,
+          7,
+          10,
+          7
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 11,
+        "recordCount": 5,
+        "familyCodes": [
+          0
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -34,
+          -25
+        ],
+        "yRange": [
+          -94,
+          -69
+        ],
+        "widthRange": [
+          44,
+          72
+        ],
+        "heightRange": [
+          59,
+          96
+        ],
+        "preview": [
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -34,
+            "y": -94,
+            "width": 72,
+            "height": 96
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 0,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 395,
@@ -39895,6 +41600,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/head/000.pzf",
+      "family": "head",
       "size": 1450,
       "signatureHex": "505a4601",
       "field4LE": 32561,
@@ -39932,9 +41638,274 @@
           "3": 1,
           "25": 9
         },
-        "candidateBlockCount": 12
+        "commonDiff": 25,
+        "candidateBlockCount": 12,
+        "packedRefCount": 117,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 22
+          },
+          {
+            "group": 1,
+            "offset": 62
+          },
+          {
+            "group": 1,
+            "offset": 94
+          },
+          {
+            "group": 1,
+            "offset": 131
+          },
+          {
+            "group": 1,
+            "offset": 156
+          },
+          {
+            "group": 1,
+            "offset": 181
+          },
+          {
+            "group": 1,
+            "offset": 184
+          },
+          {
+            "group": 1,
+            "offset": 209
+          },
+          {
+            "group": 1,
+            "offset": 234
+          },
+          {
+            "group": 1,
+            "offset": 3
+          },
+          {
+            "group": 2,
+            "offset": 36
+          },
+          {
+            "group": 2,
+            "offset": 61
+          },
+          {
+            "group": 2,
+            "offset": 86
+          },
+          {
+            "group": 2,
+            "offset": 111
+          },
+          {
+            "group": 2,
+            "offset": 136
+          },
+          {
+            "group": 2,
+            "offset": 161
+          },
+          {
+            "group": 2,
+            "offset": 186
+          },
+          {
+            "group": 2,
+            "offset": 226
+          },
+          {
+            "group": 2,
+            "offset": 2
+          },
+          {
+            "group": 3,
+            "offset": 34
+          },
+          {
+            "group": 3,
+            "offset": 66
+          },
+          {
+            "group": 3,
+            "offset": 103
+          },
+          {
+            "group": 3,
+            "offset": 106
+          },
+          {
+            "group": 3,
+            "offset": 131
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 9,
+          "2": 9,
+          "3": 18,
+          "4": 11,
+          "5": 18,
+          "6": 22,
+          "7": 12,
+          "8": 9,
+          "9": 8
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            22,
+            22
+          ],
+          "1": [
+            3,
+            234
+          ],
+          "2": [
+            2,
+            226
+          ],
+          "3": [
+            16,
+            247
+          ],
+          "4": [
+            15,
+            254
+          ],
+          "5": [
+            13,
+            251
+          ],
+          "6": [
+            2,
+            248
+          ],
+          "7": [
+            12,
+            232
+          ],
+          "8": [
+            9,
+            248
+          ],
+          "9": [
+            12,
+            159
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 0
+        },
+        "firstMarkerOffset": null,
+        "prefixLen": 2376,
+        "sectionCount": 0,
+        "sectionLengthHistogram": {},
+        "sectionLengthPreview": []
+      },
+      "anchorBoxes": {
+        "stride": 25,
+        "recordCount": 9,
+        "familyCodes": [
+          2
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -42,
+          -11
+        ],
+        "yRange": [
+          -97,
+          -54
+        ],
+        "widthRange": [
+          28,
+          64
+        ],
+        "heightRange": [
+          33,
+          98
+        ],
+        "preview": [
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -42,
+            "y": -97,
+            "width": 64,
+            "height": 98
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -13,
+            "y": -60,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -14,
+            "y": -54,
+            "width": 31,
+            "height": 38
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -17,
+            "y": -58,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -11,
+            "y": -61,
+            "width": 28,
+            "height": 40
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -15,
+            "y": -58,
+            "width": 29,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -14,
+            "y": -61,
+            "width": 30,
+            "height": 33
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -61,
+            "width": 28,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -17,
+            "y": -60,
+            "width": 32,
+            "height": 38
+          }
+        ]
+      },
+      "variant": "anchor-only",
       "metaStreamPreview": [
         {
           "offset": 523,
@@ -39947,6 +41918,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/head/001.pzf",
+      "family": "head",
       "size": 826,
       "signatureHex": "505a4601",
       "field4LE": 23089,
@@ -39989,9 +41961,233 @@
           "3": 2,
           "18": 12
         },
-        "candidateBlockCount": 16
+        "commonDiff": 18,
+        "candidateBlockCount": 16,
+        "packedRefCount": 76,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 2
+          },
+          {
+            "group": 1,
+            "offset": 20
+          },
+          {
+            "group": 1,
+            "offset": 46
+          },
+          {
+            "group": 1,
+            "offset": 64
+          },
+          {
+            "group": 1,
+            "offset": 82
+          },
+          {
+            "group": 1,
+            "offset": 100
+          },
+          {
+            "group": 1,
+            "offset": 118
+          },
+          {
+            "group": 1,
+            "offset": 144
+          },
+          {
+            "group": 1,
+            "offset": 162
+          },
+          {
+            "group": 1,
+            "offset": 180
+          },
+          {
+            "group": 1,
+            "offset": 198
+          },
+          {
+            "group": 1,
+            "offset": 216
+          },
+          {
+            "group": 1,
+            "offset": 234
+          },
+          {
+            "group": 1,
+            "offset": 11
+          },
+          {
+            "group": 2,
+            "offset": 36
+          },
+          {
+            "group": 2,
+            "offset": 61
+          },
+          {
+            "group": 2,
+            "offset": 64
+          },
+          {
+            "group": 2,
+            "offset": 82
+          },
+          {
+            "group": 2,
+            "offset": 100
+          },
+          {
+            "group": 2,
+            "offset": 110
+          },
+          {
+            "group": 2,
+            "offset": 113
+          },
+          {
+            "group": 2,
+            "offset": 116
+          },
+          {
+            "group": 2,
+            "offset": 119
+          },
+          {
+            "group": 2,
+            "offset": 122
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 13,
+          "2": 27,
+          "3": 26,
+          "4": 9
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            2,
+            2
+          ],
+          "1": [
+            11,
+            234
+          ],
+          "2": [
+            8,
+            254
+          ],
+          "3": [
+            6,
+            252
+          ],
+          "4": [
+            16,
+            195
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 0
+        },
+        "firstMarkerOffset": null,
+        "prefixLen": 1118,
+        "sectionCount": 0,
+        "sectionLengthHistogram": {},
+        "sectionLengthPreview": []
+      },
+      "anchorBoxes": {
+        "stride": 18,
+        "recordCount": 7,
+        "familyCodes": [
+          1
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -36,
+          -18
+        ],
+        "yRange": [
+          -84,
+          -47
+        ],
+        "widthRange": [
+          35,
+          77
+        ],
+        "heightRange": [
+          36,
+          90
+        ],
+        "preview": [
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -36,
+            "y": -84,
+            "width": 77,
+            "height": 90
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -20,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -21,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          }
+        ]
+      },
+      "variant": "anchor-only",
       "metaStreamPreview": [
         {
           "offset": 375,
@@ -40004,6 +42200,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/head/002.pzf",
+      "family": "head",
       "size": 948,
       "signatureHex": "505a4601",
       "field4LE": 24369,
@@ -40041,9 +42238,232 @@
           "3": 1,
           "25": 9
         },
-        "candidateBlockCount": 12
+        "commonDiff": 25,
+        "candidateBlockCount": 12,
+        "packedRefCount": 85,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 0
+          },
+          {
+            "group": 1,
+            "offset": 25
+          },
+          {
+            "group": 1,
+            "offset": 50
+          },
+          {
+            "group": 1,
+            "offset": 75
+          },
+          {
+            "group": 1,
+            "offset": 108
+          },
+          {
+            "group": 1,
+            "offset": 133
+          },
+          {
+            "group": 1,
+            "offset": 158
+          },
+          {
+            "group": 1,
+            "offset": 183
+          },
+          {
+            "group": 1,
+            "offset": 208
+          },
+          {
+            "group": 1,
+            "offset": 233
+          },
+          {
+            "group": 1,
+            "offset": 2
+          },
+          {
+            "group": 2,
+            "offset": 35
+          },
+          {
+            "group": 2,
+            "offset": 60
+          },
+          {
+            "group": 2,
+            "offset": 85
+          },
+          {
+            "group": 2,
+            "offset": 110
+          },
+          {
+            "group": 2,
+            "offset": 135
+          },
+          {
+            "group": 2,
+            "offset": 160
+          },
+          {
+            "group": 2,
+            "offset": 185
+          },
+          {
+            "group": 2,
+            "offset": 210
+          },
+          {
+            "group": 2,
+            "offset": 243
+          },
+          {
+            "group": 2,
+            "offset": 12
+          },
+          {
+            "group": 3,
+            "offset": 37
+          },
+          {
+            "group": 3,
+            "offset": 40
+          },
+          {
+            "group": 3,
+            "offset": 65
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 10,
+          "2": 10,
+          "3": 20,
+          "4": 15,
+          "5": 11,
+          "6": 13,
+          "7": 5
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            0,
+            0
+          ],
+          "1": [
+            2,
+            233
+          ],
+          "2": [
+            12,
+            243
+          ],
+          "3": [
+            2,
+            241
+          ],
+          "4": [
+            12,
+            226
+          ],
+          "5": [
+            1,
+            228
+          ],
+          "6": [
+            11,
+            250
+          ],
+          "7": [
+            28,
+            79
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 0
+        },
+        "firstMarkerOffset": null,
+        "prefixLen": 1871,
+        "sectionCount": 0,
+        "sectionLengthHistogram": {},
+        "sectionLengthPreview": []
+      },
+      "anchorBoxes": {
+        "stride": 25,
+        "recordCount": 5,
+        "familyCodes": [
+          2
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -34,
+          -25
+        ],
+        "yRange": [
+          -94,
+          -69
+        ],
+        "widthRange": [
+          44,
+          72
+        ],
+        "heightRange": [
+          59,
+          96
+        ],
+        "preview": [
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -34,
+            "y": -94,
+            "width": 72,
+            "height": 96
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          }
+        ]
+      },
+      "variant": "anchor-only",
       "metaStreamPreview": [
         {
           "offset": 395,
@@ -40056,6 +42476,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon/000.pzf",
+      "family": "weapon",
       "size": 1426,
       "signatureHex": "505a4601",
       "field4LE": 32561,
@@ -40086,9 +42507,323 @@
         "diffCounts": {
           "30": 7
         },
-        "candidateBlockCount": 9
+        "commonDiff": 30,
+        "candidateBlockCount": 9,
+        "packedRefCount": 120,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 14
+          },
+          {
+            "group": 1,
+            "offset": 17
+          },
+          {
+            "group": 1,
+            "offset": 47
+          },
+          {
+            "group": 1,
+            "offset": 77
+          },
+          {
+            "group": 1,
+            "offset": 115
+          },
+          {
+            "group": 1,
+            "offset": 145
+          },
+          {
+            "group": 1,
+            "offset": 175
+          },
+          {
+            "group": 1,
+            "offset": 205
+          },
+          {
+            "group": 1,
+            "offset": 235
+          },
+          {
+            "group": 1,
+            "offset": 238
+          },
+          {
+            "group": 1,
+            "offset": 12
+          },
+          {
+            "group": 2,
+            "offset": 42
+          },
+          {
+            "group": 2,
+            "offset": 74
+          },
+          {
+            "group": 2,
+            "offset": 114
+          },
+          {
+            "group": 2,
+            "offset": 146
+          },
+          {
+            "group": 2,
+            "offset": 178
+          },
+          {
+            "group": 2,
+            "offset": 210
+          },
+          {
+            "group": 2,
+            "offset": 242
+          },
+          {
+            "group": 2,
+            "offset": 18
+          },
+          {
+            "group": 3,
+            "offset": 52
+          },
+          {
+            "group": 3,
+            "offset": 90
+          },
+          {
+            "group": 3,
+            "offset": 120
+          },
+          {
+            "group": 3,
+            "offset": 150
+          },
+          {
+            "group": 3,
+            "offset": 180
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 10,
+          "2": 8,
+          "3": 9,
+          "4": 16,
+          "5": 11,
+          "6": 13,
+          "7": 10,
+          "8": 12,
+          "9": 10,
+          "10": 8,
+          "11": 12
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            14,
+            14
+          ],
+          "1": [
+            12,
+            238
+          ],
+          "2": [
+            18,
+            242
+          ],
+          "3": [
+            17,
+            243
+          ],
+          "4": [
+            25,
+            251
+          ],
+          "5": [
+            8,
+            242
+          ],
+          "6": [
+            24,
+            242
+          ],
+          "7": [
+            9,
+            243
+          ],
+          "8": [
+            17,
+            251
+          ],
+          "9": [
+            16,
+            242
+          ],
+          "10": [
+            24,
+            248
+          ],
+          "11": [
+            56,
+            246
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 109
+        },
+        "firstMarkerOffset": 25,
+        "prefixLen": 25,
+        "sectionCount": 109,
+        "sectionLengthHistogram": {
+          "0": 1,
+          "17": 39,
+          "20": 4,
+          "22": 1,
+          "25": 38,
+          "26": 1,
+          "27": 10,
+          "28": 5,
+          "29": 3,
+          "33": 3,
+          "35": 2,
+          "36": 1,
+          "49": 1
+        },
+        "sectionLengthPreview": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          28,
+          25,
+          33,
+          25,
+          25,
+          25,
+          25,
+          28,
+          25,
+          27,
+          35,
+          27,
+          27,
+          27,
+          26,
+          28
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 30,
+        "recordCount": 9,
+        "familyCodes": [
+          2
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -42,
+          -11
+        ],
+        "yRange": [
+          -97,
+          -54
+        ],
+        "widthRange": [
+          28,
+          64
+        ],
+        "heightRange": [
+          33,
+          98
+        ],
+        "preview": [
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -42,
+            "y": -97,
+            "width": 64,
+            "height": 98
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -13,
+            "y": -60,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -14,
+            "y": -54,
+            "width": 31,
+            "height": 38
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -17,
+            "y": -58,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -11,
+            "y": -61,
+            "width": 28,
+            "height": 40
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -15,
+            "y": -58,
+            "width": 29,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -14,
+            "y": -61,
+            "width": 30,
+            "height": 33
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -61,
+            "width": 28,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -17,
+            "y": -60,
+            "width": 32,
+            "height": 38
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 523,
@@ -40101,6 +42836,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon/001.pzf",
+      "family": "weapon",
       "size": 981,
       "signatureHex": "505a4601",
       "field4LE": 23089,
@@ -40135,9 +42871,289 @@
           "30": 6,
           "32": 1
         },
-        "candidateBlockCount": 10
+        "commonDiff": 30,
+        "candidateBlockCount": 10,
+        "packedRefCount": 82,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 21
+          },
+          {
+            "group": 1,
+            "offset": 53
+          },
+          {
+            "group": 1,
+            "offset": 85
+          },
+          {
+            "group": 1,
+            "offset": 117
+          },
+          {
+            "group": 1,
+            "offset": 149
+          },
+          {
+            "group": 1,
+            "offset": 152
+          },
+          {
+            "group": 1,
+            "offset": 182
+          },
+          {
+            "group": 1,
+            "offset": 212
+          },
+          {
+            "group": 1,
+            "offset": 231
+          },
+          {
+            "group": 1,
+            "offset": 242
+          },
+          {
+            "group": 1,
+            "offset": 253
+          },
+          {
+            "group": 1,
+            "offset": 31
+          },
+          {
+            "group": 2,
+            "offset": 65
+          },
+          {
+            "group": 2,
+            "offset": 103
+          },
+          {
+            "group": 2,
+            "offset": 133
+          },
+          {
+            "group": 2,
+            "offset": 163
+          },
+          {
+            "group": 2,
+            "offset": 212
+          },
+          {
+            "group": 2,
+            "offset": 5
+          },
+          {
+            "group": 3,
+            "offset": 54
+          },
+          {
+            "group": 3,
+            "offset": 92
+          },
+          {
+            "group": 3,
+            "offset": 122
+          },
+          {
+            "group": 3,
+            "offset": 152
+          },
+          {
+            "group": 3,
+            "offset": 155
+          },
+          {
+            "group": 3,
+            "offset": 185
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 11,
+          "2": 6,
+          "3": 15,
+          "4": 12,
+          "5": 9,
+          "6": 13,
+          "7": 15
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            21,
+            21
+          ],
+          "1": [
+            31,
+            253
+          ],
+          "2": [
+            5,
+            212
+          ],
+          "3": [
+            2,
+            255
+          ],
+          "4": [
+            5,
+            244
+          ],
+          "5": [
+            11,
+            245
+          ],
+          "6": [
+            5,
+            237
+          ],
+          "7": [
+            27,
+            234
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 76
+        },
+        "firstMarkerOffset": 25,
+        "prefixLen": 25,
+        "sectionCount": 76,
+        "sectionLengthHistogram": {
+          "0": 1,
+          "14": 7,
+          "17": 30,
+          "18": 2,
+          "19": 1,
+          "20": 5,
+          "25": 15,
+          "26": 2,
+          "27": 2,
+          "28": 4,
+          "29": 2,
+          "30": 1,
+          "33": 2,
+          "41": 1,
+          "70": 1
+        },
+        "sectionLengthPreview": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          30,
+          26,
+          27,
+          28,
+          26,
+          27,
+          29,
+          25,
+          70,
+          29,
+          33,
+          25,
+          25,
+          25,
+          14,
+          25,
+          14,
+          25
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 30,
+        "recordCount": 7,
+        "familyCodes": [
+          2
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -36,
+          -18
+        ],
+        "yRange": [
+          -84,
+          -47
+        ],
+        "widthRange": [
+          35,
+          77
+        ],
+        "heightRange": [
+          36,
+          90
+        ],
+        "preview": [
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -36,
+            "y": -84,
+            "width": 77,
+            "height": 90
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -20,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -21,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 375,
@@ -40150,6 +43166,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon/002.pzf",
+      "family": "weapon",
       "size": 788,
       "signatureHex": "505a4601",
       "field4LE": 24369,
@@ -40192,9 +43209,243 @@
           "3": 2,
           "18": 12
         },
-        "candidateBlockCount": 16
+        "commonDiff": 18,
+        "candidateBlockCount": 16,
+        "packedRefCount": 81,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 10
+          },
+          {
+            "group": 1,
+            "offset": 28
+          },
+          {
+            "group": 1,
+            "offset": 46
+          },
+          {
+            "group": 1,
+            "offset": 65
+          },
+          {
+            "group": 1,
+            "offset": 84
+          },
+          {
+            "group": 1,
+            "offset": 103
+          },
+          {
+            "group": 1,
+            "offset": 122
+          },
+          {
+            "group": 1,
+            "offset": 149
+          },
+          {
+            "group": 1,
+            "offset": 168
+          },
+          {
+            "group": 1,
+            "offset": 187
+          },
+          {
+            "group": 1,
+            "offset": 205
+          },
+          {
+            "group": 1,
+            "offset": 223
+          },
+          {
+            "group": 1,
+            "offset": 241
+          },
+          {
+            "group": 1,
+            "offset": 3
+          },
+          {
+            "group": 2,
+            "offset": 21
+          },
+          {
+            "group": 2,
+            "offset": 47
+          },
+          {
+            "group": 2,
+            "offset": 65
+          },
+          {
+            "group": 2,
+            "offset": 83
+          },
+          {
+            "group": 2,
+            "offset": 86
+          },
+          {
+            "group": 2,
+            "offset": 104
+          },
+          {
+            "group": 2,
+            "offset": 122
+          },
+          {
+            "group": 2,
+            "offset": 140
+          },
+          {
+            "group": 2,
+            "offset": 143
+          },
+          {
+            "group": 2,
+            "offset": 146
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 13,
+          "2": 22,
+          "3": 18,
+          "4": 19,
+          "5": 8
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            10,
+            10
+          ],
+          "1": [
+            3,
+            241
+          ],
+          "2": [
+            16,
+            250
+          ],
+          "3": [
+            5,
+            239
+          ],
+          "4": [
+            9,
+            255
+          ],
+          "5": [
+            19,
+            137
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 14
+        },
+        "firstMarkerOffset": 649,
+        "prefixLen": 649,
+        "sectionCount": 14,
+        "sectionLengthHistogram": {
+          "17": 9,
+          "80": 2,
+          "103": 1,
+          "111": 1,
+          "113": 1
+        },
+        "sectionLengthPreview": [
+          103,
+          111,
+          17,
+          17,
+          17,
+          80,
+          17,
+          17,
+          17,
+          80,
+          17,
+          17,
+          17,
+          113
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 18,
+        "recordCount": 5,
+        "familyCodes": [
+          1
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -34,
+          -25
+        ],
+        "yRange": [
+          -94,
+          -69
+        ],
+        "widthRange": [
+          44,
+          72
+        ],
+        "heightRange": [
+          59,
+          96
+        ],
+        "preview": [
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -34,
+            "y": -94,
+            "width": 72,
+            "height": 96
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 395,
@@ -40207,6 +43458,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon2/000.pzf",
+      "family": "weapon2",
       "size": 1367,
       "signatureHex": "505a4601",
       "field4LE": 32561,
@@ -40244,9 +43496,319 @@
           "3": 1,
           "23": 9
         },
-        "candidateBlockCount": 12
+        "commonDiff": 23,
+        "candidateBlockCount": 12,
+        "packedRefCount": 117,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 0
+          },
+          {
+            "group": 1,
+            "offset": 31
+          },
+          {
+            "group": 1,
+            "offset": 54
+          },
+          {
+            "group": 1,
+            "offset": 65
+          },
+          {
+            "group": 1,
+            "offset": 76
+          },
+          {
+            "group": 1,
+            "offset": 87
+          },
+          {
+            "group": 1,
+            "offset": 90
+          },
+          {
+            "group": 1,
+            "offset": 113
+          },
+          {
+            "group": 1,
+            "offset": 136
+          },
+          {
+            "group": 1,
+            "offset": 159
+          },
+          {
+            "group": 1,
+            "offset": 190
+          },
+          {
+            "group": 1,
+            "offset": 213
+          },
+          {
+            "group": 1,
+            "offset": 236
+          },
+          {
+            "group": 1,
+            "offset": 3
+          },
+          {
+            "group": 2,
+            "offset": 26
+          },
+          {
+            "group": 2,
+            "offset": 49
+          },
+          {
+            "group": 2,
+            "offset": 72
+          },
+          {
+            "group": 2,
+            "offset": 103
+          },
+          {
+            "group": 2,
+            "offset": 126
+          },
+          {
+            "group": 2,
+            "offset": 149
+          },
+          {
+            "group": 2,
+            "offset": 172
+          },
+          {
+            "group": 2,
+            "offset": 195
+          },
+          {
+            "group": 2,
+            "offset": 198
+          },
+          {
+            "group": 2,
+            "offset": 221
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 13,
+          "2": 12,
+          "3": 13,
+          "4": 10,
+          "5": 11,
+          "6": 15,
+          "7": 17,
+          "8": 7,
+          "9": 6,
+          "10": 12
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            0,
+            0
+          ],
+          "1": [
+            3,
+            236
+          ],
+          "2": [
+            3,
+            244
+          ],
+          "3": [
+            18,
+            239
+          ],
+          "4": [
+            12,
+            241
+          ],
+          "5": [
+            1,
+            242
+          ],
+          "6": [
+            2,
+            243
+          ],
+          "7": [
+            17,
+            242
+          ],
+          "8": [
+            10,
+            231
+          ],
+          "9": [
+            8,
+            229
+          ],
+          "10": [
+            43,
+            201
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 141
+        },
+        "firstMarkerOffset": 18,
+        "prefixLen": 18,
+        "sectionCount": 141,
+        "sectionLengthHistogram": {
+          "0": 1,
+          "7": 31,
+          "10": 44,
+          "13": 3,
+          "18": 44,
+          "21": 3,
+          "22": 1,
+          "25": 1,
+          "26": 5,
+          "29": 1,
+          "30": 4,
+          "36": 1,
+          "54": 1,
+          "71": 1
+        },
+        "sectionLengthPreview": [
+          18,
+          18,
+          18,
+          18,
+          18,
+          18,
+          18,
+          18,
+          21,
+          18,
+          26,
+          18,
+          54,
+          18,
+          18,
+          26,
+          18,
+          18,
+          18,
+          18,
+          18,
+          18,
+          26,
+          18
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 23,
+        "recordCount": 9,
+        "familyCodes": [
+          1
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -42,
+          -11
+        ],
+        "yRange": [
+          -97,
+          -54
+        ],
+        "widthRange": [
+          28,
+          64
+        ],
+        "heightRange": [
+          33,
+          98
+        ],
+        "preview": [
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -42,
+            "y": -97,
+            "width": 64,
+            "height": 98
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -13,
+            "y": -60,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -14,
+            "y": -54,
+            "width": 31,
+            "height": 38
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -17,
+            "y": -58,
+            "width": 31,
+            "height": 40
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -11,
+            "y": -61,
+            "width": 28,
+            "height": 40
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -15,
+            "y": -58,
+            "width": 29,
+            "height": 36
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -14,
+            "y": -61,
+            "width": 30,
+            "height": 33
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -18,
+            "y": -61,
+            "width": 28,
+            "height": 36
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -17,
+            "y": -60,
+            "width": 32,
+            "height": 38
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 523,
@@ -40259,6 +43821,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon2/001.pzf",
+      "family": "weapon2",
       "size": 974,
       "signatureHex": "505a4601",
       "field4LE": 23089,
@@ -40293,9 +43856,293 @@
           "30": 6,
           "32": 1
         },
-        "candidateBlockCount": 10
+        "commonDiff": 30,
+        "candidateBlockCount": 10,
+        "packedRefCount": 82,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 21
+          },
+          {
+            "group": 1,
+            "offset": 53
+          },
+          {
+            "group": 1,
+            "offset": 85
+          },
+          {
+            "group": 1,
+            "offset": 117
+          },
+          {
+            "group": 1,
+            "offset": 149
+          },
+          {
+            "group": 1,
+            "offset": 152
+          },
+          {
+            "group": 1,
+            "offset": 184
+          },
+          {
+            "group": 1,
+            "offset": 216
+          },
+          {
+            "group": 1,
+            "offset": 21
+          },
+          {
+            "group": 2,
+            "offset": 74
+          },
+          {
+            "group": 2,
+            "offset": 127
+          },
+          {
+            "group": 2,
+            "offset": 157
+          },
+          {
+            "group": 2,
+            "offset": 187
+          },
+          {
+            "group": 2,
+            "offset": 225
+          },
+          {
+            "group": 2,
+            "offset": 255
+          },
+          {
+            "group": 2,
+            "offset": 29
+          },
+          {
+            "group": 3,
+            "offset": 40
+          },
+          {
+            "group": 3,
+            "offset": 51
+          },
+          {
+            "group": 3,
+            "offset": 62
+          },
+          {
+            "group": 3,
+            "offset": 88
+          },
+          {
+            "group": 3,
+            "offset": 106
+          },
+          {
+            "group": 3,
+            "offset": 124
+          },
+          {
+            "group": 3,
+            "offset": 127
+          },
+          {
+            "group": 3,
+            "offset": 157
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 8,
+          "2": 7,
+          "3": 14,
+          "4": 13,
+          "5": 15,
+          "6": 13,
+          "7": 11
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            21,
+            21
+          ],
+          "1": [
+            21,
+            216
+          ],
+          "2": [
+            29,
+            255
+          ],
+          "3": [
+            13,
+            254
+          ],
+          "4": [
+            3,
+            237
+          ],
+          "5": [
+            1,
+            235
+          ],
+          "6": [
+            20,
+            254
+          ],
+          "7": [
+            23,
+            172
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 73
+        },
+        "firstMarkerOffset": 25,
+        "prefixLen": 25,
+        "sectionCount": 73,
+        "sectionLengthHistogram": {
+          "0": 1,
+          "7": 1,
+          "10": 6,
+          "11": 1,
+          "14": 1,
+          "16": 2,
+          "17": 27,
+          "18": 1,
+          "20": 5,
+          "25": 11,
+          "26": 3,
+          "27": 4,
+          "28": 3,
+          "30": 2,
+          "33": 1,
+          "35": 1,
+          "37": 1,
+          "40": 1,
+          "123": 1
+        },
+        "sectionLengthPreview": [
+          25,
+          25,
+          25,
+          25,
+          25,
+          25,
+          30,
+          27,
+          26,
+          28,
+          27,
+          26,
+          30,
+          28,
+          37,
+          14,
+          27,
+          16,
+          27,
+          16,
+          25,
+          25,
+          33,
+          25
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 30,
+        "recordCount": 7,
+        "familyCodes": [
+          2
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -36,
+          -18
+        ],
+        "yRange": [
+          -84,
+          -47
+        ],
+        "widthRange": [
+          35,
+          77
+        ],
+        "heightRange": [
+          36,
+          90
+        ],
+        "preview": [
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -36,
+            "y": -84,
+            "width": 77,
+            "height": 90
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -20,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -21,
+            "y": -47,
+            "width": 36,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 37,
+            "height": 36
+          },
+          {
+            "familyCode": 2,
+            "group": 256,
+            "x": -18,
+            "y": -47,
+            "width": 35,
+            "height": 36
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 375,
@@ -40308,6 +44155,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon2/002.pzf",
+      "family": "weapon2",
       "size": 784,
       "signatureHex": "505a4601",
       "field4LE": 24369,
@@ -40353,9 +44201,253 @@
           "18": 11,
           "19": 1
         },
-        "candidateBlockCount": 17
+        "commonDiff": 18,
+        "candidateBlockCount": 17,
+        "packedRefCount": 80,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 7
+          },
+          {
+            "group": 1,
+            "offset": 18
+          },
+          {
+            "group": 1,
+            "offset": 29
+          },
+          {
+            "group": 1,
+            "offset": 47
+          },
+          {
+            "group": 1,
+            "offset": 65
+          },
+          {
+            "group": 1,
+            "offset": 76
+          },
+          {
+            "group": 1,
+            "offset": 95
+          },
+          {
+            "group": 1,
+            "offset": 106
+          },
+          {
+            "group": 1,
+            "offset": 117
+          },
+          {
+            "group": 1,
+            "offset": 135
+          },
+          {
+            "group": 1,
+            "offset": 153
+          },
+          {
+            "group": 1,
+            "offset": 171
+          },
+          {
+            "group": 1,
+            "offset": 182
+          },
+          {
+            "group": 1,
+            "offset": 193
+          },
+          {
+            "group": 1,
+            "offset": 212
+          },
+          {
+            "group": 1,
+            "offset": 223
+          },
+          {
+            "group": 1,
+            "offset": 234
+          },
+          {
+            "group": 1,
+            "offset": 237
+          },
+          {
+            "group": 1,
+            "offset": 248
+          },
+          {
+            "group": 1,
+            "offset": 3
+          },
+          {
+            "group": 2,
+            "offset": 21
+          },
+          {
+            "group": 2,
+            "offset": 36
+          },
+          {
+            "group": 2,
+            "offset": 51
+          },
+          {
+            "group": 2,
+            "offset": 66
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 19,
+          "2": 15,
+          "3": 15,
+          "4": 25,
+          "5": 5
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            7,
+            7
+          ],
+          "1": [
+            3,
+            248
+          ],
+          "2": [
+            5,
+            239
+          ],
+          "3": [
+            1,
+            254
+          ],
+          "4": [
+            11,
+            254
+          ],
+          "5": [
+            28,
+            133
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 26
+        },
+        "firstMarkerOffset": 543,
+        "prefixLen": 543,
+        "sectionCount": 26,
+        "sectionLengthHistogram": {
+          "10": 10,
+          "17": 13,
+          "40": 1,
+          "72": 1,
+          "242": 1
+        },
+        "sectionLengthPreview": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          72,
+          17,
+          17,
+          17,
+          17,
+          17,
+          10,
+          10,
+          10,
+          17,
+          17,
+          17,
+          17,
+          17,
+          242,
+          17,
+          17,
+          17,
+          10
+        ]
+      },
+      "anchorBoxes": {
+        "stride": 18,
+        "recordCount": 5,
+        "familyCodes": [
+          1
+        ],
+        "groupValues": [
+          256
+        ],
+        "xRange": [
+          -34,
+          -25
+        ],
+        "yRange": [
+          -94,
+          -69
+        ],
+        "widthRange": [
+          44,
+          72
+        ],
+        "heightRange": [
+          59,
+          96
+        ],
+        "preview": [
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -34,
+            "y": -94,
+            "width": 72,
+            "height": 96
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          },
+          {
+            "familyCode": 1,
+            "group": 256,
+            "x": -25,
+            "y": -69,
+            "width": 44,
+            "height": 59
+          }
+        ]
+      },
+      "variant": "anchor+marker",
       "metaStreamPreview": [
         {
           "offset": 395,
@@ -40368,6 +44460,7 @@
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon2/003.pzf",
+      "family": "weapon2",
       "size": 923,
       "signatureHex": "505a4601",
       "field4LE": 32017,
@@ -40417,9 +44510,200 @@
           "2": 5,
           "14": 16
         },
-        "candidateBlockCount": 23
+        "commonDiff": 14,
+        "candidateBlockCount": 23,
+        "packedRefCount": 104,
+        "packedRefPreview": [
+          {
+            "group": 0,
+            "offset": 6
+          },
+          {
+            "group": 1,
+            "offset": 20
+          },
+          {
+            "group": 1,
+            "offset": 34
+          },
+          {
+            "group": 1,
+            "offset": 48
+          },
+          {
+            "group": 1,
+            "offset": 62
+          },
+          {
+            "group": 1,
+            "offset": 76
+          },
+          {
+            "group": 1,
+            "offset": 90
+          },
+          {
+            "group": 1,
+            "offset": 104
+          },
+          {
+            "group": 1,
+            "offset": 118
+          },
+          {
+            "group": 1,
+            "offset": 132
+          },
+          {
+            "group": 1,
+            "offset": 134
+          },
+          {
+            "group": 1,
+            "offset": 148
+          },
+          {
+            "group": 1,
+            "offset": 162
+          },
+          {
+            "group": 1,
+            "offset": 176
+          },
+          {
+            "group": 1,
+            "offset": 190
+          },
+          {
+            "group": 1,
+            "offset": 204
+          },
+          {
+            "group": 1,
+            "offset": 218
+          },
+          {
+            "group": 1,
+            "offset": 232
+          },
+          {
+            "group": 1,
+            "offset": 246
+          },
+          {
+            "group": 1,
+            "offset": 4
+          },
+          {
+            "group": 2,
+            "offset": 6
+          },
+          {
+            "group": 2,
+            "offset": 8
+          },
+          {
+            "group": 2,
+            "offset": 34
+          },
+          {
+            "group": 2,
+            "offset": 60
+          }
+        ],
+        "packedRefGroupCounts": {
+          "0": 1,
+          "1": 19,
+          "2": 14,
+          "3": 10,
+          "4": 21,
+          "5": 16,
+          "6": 9,
+          "7": 14
+        },
+        "packedRefGroupRanges": {
+          "0": [
+            6,
+            6
+          ],
+          "1": [
+            4,
+            246
+          ],
+          "2": [
+            4,
+            234
+          ],
+          "3": [
+            8,
+            238
+          ],
+          "4": [
+            10,
+            252
+          ],
+          "5": [
+            2,
+            232
+          ],
+          "6": [
+            16,
+            234
+          ],
+          "7": [
+            42,
+            234
+          ]
+        }
       },
       "zlibStreamCount": 1,
+      "metaSections": {
+        "markerCounts": {
+          "67ff000000": 139
+        },
+        "firstMarkerOffset": 9,
+        "prefixLen": 9,
+        "sectionCount": 139,
+        "sectionLengthHistogram": {
+          "0": 1,
+          "7": 31,
+          "9": 92,
+          "11": 7,
+          "17": 1,
+          "21": 4,
+          "23": 1,
+          "25": 1,
+          "51": 1
+        },
+        "sectionLengthPreview": [
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          11,
+          9,
+          9,
+          9,
+          17,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9
+        ]
+      },
+      "anchorBoxes": null,
+      "variant": "marker-only",
       "metaStreamPreview": [
         {
           "offset": 515,

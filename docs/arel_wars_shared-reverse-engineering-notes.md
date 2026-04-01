@@ -78,3 +78,17 @@ This document captures the parts of the recovery work that are likely to stay us
 - `PTC` is structurally parsed but semantically heuristic.
 - `ZT1` parsing is strong on dialogue flow and prefix-command structure, but some non-dialogue/map-state opcode names are still provisional.
 - AW2 `PZF` uses a big-endian plain-header offset table before its zlib metadata stream; that header rule is likely reusable across more than one AW2 body-part asset family.
+- The AW2 `PZF` plain header is two-stage:
+  - first a monotonic big-endian offset run
+  - then packed references that split into `groupId(high byte) + localOffset(low 24 bits)`
+- AW2 `PZF` zlib metadata is already recoverable enough to branch by variant:
+  - `anchor-only`
+  - `anchor+marker`
+  - `marker-only`
+  - `opaque`
+- Repeated `11-byte` anchor-box records have now been observed with family-specific strides:
+  - effect: `11`
+  - head: `18`, `25`
+  - weapon / weapon2: `18`, `23`, `30`
+  - armor: `53`, `60`
+- Dense `67ff000000` sections in AW2 `PZF` are a strong timing/state clue, analogous in spirit to AW1 late-stream tail markers even though the exact record layout is different.

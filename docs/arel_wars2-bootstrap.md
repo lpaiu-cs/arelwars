@@ -63,12 +63,24 @@ High-level layout differences from Arel Wars 1:
   - now partially inspected
   - magic: `PZF\x01`
   - uses a plain-header big-endian offset table before a large zlib metadata stream
-  - sampled block-size families include:
-    - armor: `53`, `60`, `74`
-    - head: `25`
-    - weapon: `30`
-    - effect: mixed `11`, `23`, `31`, `58`
-  - this strongly suggests `PZF` is the animation/state sidecar for `PZD` body-part sprites
+  - after the initial monotonic offset run, later `u32` words split cleanly into:
+    - `groupId = high byte`
+    - `localOffset = low 24 bits`
+  - decoded zlib metadata is no longer opaque:
+    - several families expose repeated `11-byte` anchor-box records
+    - some families also expose dense `67ff000000`-delimited timing/state sections
+  - current variant split is:
+    - `anchor-only`: armor `000/001`, head `000/001/002`
+    - `anchor+marker`: effect `000/002`, weapon `000/001/002`, weapon2 `000/001/002`
+    - `marker-only`: effect `001`, weapon2 `003`
+    - `opaque`: armor `002`
+  - current common anchor strides include:
+    - armor: `53`, `60`
+    - head: `18`, `25`
+    - weapon: `18`, `30`
+    - weapon2: `18`, `23`, `30`
+    - effect: `11`
+  - this strongly suggests `PZF` is the animation/state sidecar for `PZD` body-part sprites, with family-specific record layouts
 - `plasma/`
   - large Samsung/Android UI asset subtree; likely not core gameplay data
 
@@ -95,7 +107,15 @@ These steps are now complete:
 3. Use `PZD` as the main image source for AW2 `pc/*`.
    - `PZD` already gives you row-RLE image frames.
 4. Use `PZF` as the state/timeline sidecar.
-   - The plain-header big-endian offset table is now the first thing to parse before diving into the zlib metadata stream.
+   - Parse it in this order:
+     - initial monotonic big-endian offset run
+     - packed `group:offset24` references that follow it
+     - zlib metadata stream
+   - Then branch by variant:
+     - `anchor-only`
+     - `anchor+marker`
+     - `marker-only`
+     - `opaque`
 5. Only after `PZD/PZF` are in hand should you revisit AW2 `img/*.pzx`.
    - AW2 `img/*.pzx` still decode partly, but they are no longer the cleanest entry point for character content.
 
