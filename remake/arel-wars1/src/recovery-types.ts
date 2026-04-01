@@ -11,8 +11,16 @@ export interface RecoveryScriptEntry {
   packedSize: number
   decodedSize: number
   encoding: string | null
+  scriptEncoding?: string | null
   stringCount: number
   stringsPreview: string[]
+  eventCount?: number
+  eventPreview?: Array<{
+    kind: string
+    speaker: string | null
+    speakerTag: number | null
+    text: string
+  }>
   decodedPath: string
 }
 
@@ -24,6 +32,7 @@ export interface RecoveryCatalog {
     extensions: Record<string, number>
     assetDirectories: Record<string, number>
     zt1Total: number
+    scriptEventTotal?: number
     webSafeAssetCount: number
   }
   featuredScripts: RecoveryScriptEntry[]

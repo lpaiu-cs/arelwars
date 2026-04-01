@@ -103,6 +103,7 @@ async function bootstrap(): Promise<void> {
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
       statCard('ZT1 Total', String(catalog.inventory.zt1Total)),
+      statCard('Script Events', String(catalog.inventory.scriptEventTotal ?? 0)),
       statCard('Web-safe', String(catalog.inventory.webSafeAssetCount)),
       statCard('Timeline Stems', String(previewManifest?.activeStemCount ?? 0)),
       statCard('Timeline Kinds', String(Object.keys(previewManifest?.timelineKindCounts ?? {}).length)),
@@ -118,7 +119,7 @@ async function bootstrap(): Promise<void> {
               <span class="pill">${entry.locale ?? 'n/a'}</span>
               <code>${entry.path}</code>
             </header>
-            <p>${escapeHtml(entry.stringsPreview.slice(0, 2).join(' / ') || 'Recoverable text not found')}</p>
+            <p>${escapeHtml(describeScriptPreview(entry))}</p>
           </article>
         `,
       )
@@ -217,6 +218,16 @@ function timelineCard(entry: RecoveryPreviewStem): string {
       </div>
     </article>
   `
+}
+
+function describeScriptPreview(entry: RecoveryCatalog['featuredScripts'][number]): string {
+  if (entry.eventPreview && entry.eventPreview.length > 0) {
+    return entry.eventPreview
+      .slice(0, 2)
+      .map((event) => (event.speaker ? `${event.speaker}: ${event.text}` : event.text))
+      .join(' / ')
+  }
+  return entry.stringsPreview.slice(0, 2).join(' / ') || 'Recoverable text not found'
 }
 
 function formatKind(value: string): string {

@@ -131,8 +131,20 @@ npm run ios:sync
 1. Use the now-complete first-stream `.pzx` decode to recover chunk placement and the role of later zlib streams.
 2. Turn the current `MPL` bank-switching hypothesis into a hard rule instead of a probe-backed heuristic.
 3. Decode the control-heavy tail sections that begin with markers such as `67 ff 00 00 00`; they likely hold timeline or state-transition metadata layered on top of the frame records.
-4. Turn extracted script data into structured event commands instead of raw string previews.
+4. Extend the current `ZT1` dialogue parser past `caption/speech` events into non-dialogue opcodes and map-state commands.
 5. Replace the current preview-oriented runtime with battle-scene state playback driven by recovered metadata.
+
+## Script Findings
+
+- `ZT1` script payloads now parse beyond raw strings into two high-confidence event types:
+  - `caption`: `FF + textLen(u16) + text`, used for narration cards and location/date cards
+  - `speech`: `prefix bytes + speakerLen(u16) + speaker + speakerTag(u8) + textLen(u16) + text`
+- The parser is heuristic, but it already recovers coherent dialogue sequences for both locales:
+  - `assets/script_eng/0000.zt1` yields `47` ordered events, including `3` narration captions followed by speaker-tagged dialogue
+  - `assets/script_eng/0551.zt1` correctly separates `Arang`, `Helba`, `Rose (...)`, and the follow-up `Helba` line
+  - `assets/script_kor/1080.zt1` and `1102.zt1` recover Korean caption/speech events under `cp949`
+- Recovery artifacts now include per-script event dumps at `recovery/arel_wars1/decoded/zt1/.../*.events.json`.
+- The catalog/web preview now tracks `scriptEventTotal` and uses structured dialogue previews when available instead of flat string snippets.
 
 ## PZX Findings
 

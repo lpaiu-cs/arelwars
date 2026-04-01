@@ -83,6 +83,17 @@ class MplFile:
 
 
 @dataclass(frozen=True)
+class ScriptEvent:
+    offset: int
+    kind: str
+    prefix_hex: str
+    speaker: str | None
+    speaker_tag: int | None
+    text: str
+    byte_length: int
+
+
+@dataclass(frozen=True)
 class PzxRow:
     skips: tuple[int, ...]
     run_lengths: tuple[int, ...]
@@ -912,3 +923,146 @@ def extract_strings(data: bytes, preferred_encoding: str | None = None) -> tuple
         return None, []
 
     return best_encoding, deduped
+
+
+def _decode_script_text(data: bytes, encoding: str) -> str | None:
+    try:
+        text = data.decode(encoding)
+    except UnicodeDecodeError:
+        return None
+
+    if not text:
+        return None
+
+    printable = sum(1 for char in text if char.isprintable() and char not in "\x0b\x0c")
+    if printable / len(text) < 0.95:
+        return None
+    return text
+
+
+def _looks_like_script_speaker(text: str) -> bool:
+    stripped = text.strip()
+    if not stripped or any(char.isspace() for char in stripped):
+        return False
+    return any(char.isalnum() or ("\uac00" <= char <= "\ud7a3") for char in stripped)
+
+
+def _looks_like_script_body(text: str) -> bool:
+    stripped = text.strip()
+    if not stripped:
+        return False
+    if any(char.isalnum() or ("\uac00" <= char <= "\ud7a3") for char in stripped):
+        return True
+    return all(char in ".!?…" for char in stripped.replace(" ", ""))
+
+
+def _parse_script_events_with_encoding(data: bytes, encoding: str) -> list[ScriptEvent]:
+    events: list[ScriptEvent] = []
+    offset = 0
+
+    while offset < len(data):
+        if data[offset] == 0xFF and offset + 3 <= len(data):
+            text_len = struct.unpack("<H", data[offset + 1 : offset + 3])[0]
+            text_end = offset + 3 + text_len
+            if 1 <= text_len <= 800 and text_end <= len(data):
+                text = _decode_script_text(data[offset + 3 : text_end], encoding)
+                if text is not None and _looks_like_script_body(text):
+                    event_end = text_end
+                    while event_end < len(data) and data[event_end] == 0:
+                        event_end += 1
+                    events.append(
+                        ScriptEvent(
+                            offset=offset,
+                            kind="caption",
+                            prefix_hex="ff",
+                            speaker=None,
+                            speaker_tag=None,
+                            text=text,
+                            byte_length=event_end - offset,
+                        )
+                    )
+                    offset = event_end
+                    continue
+
+        matched_event: ScriptEvent | None = None
+        matched_end = offset + 1
+        for gap in range(0, 16):
+            payload_offset = offset + gap
+            if payload_offset + 2 > len(data):
+                break
+
+            speaker_len = struct.unpack("<H", data[payload_offset : payload_offset + 2])[0]
+            if not 2 <= speaker_len <= 16:
+                continue
+
+            speaker_start = payload_offset + 2
+            speaker_end = speaker_start + speaker_len
+            if speaker_end + 3 > len(data):
+                continue
+
+            speaker = _decode_script_text(data[speaker_start:speaker_end], encoding)
+            if speaker is None or not _looks_like_script_speaker(speaker):
+                continue
+
+            speaker_tag = data[speaker_end]
+            text_len = struct.unpack("<H", data[speaker_end + 1 : speaker_end + 3])[0]
+            if not 1 <= text_len <= 800:
+                continue
+
+            text_start = speaker_end + 3
+            text_end = text_start + text_len
+            if text_end > len(data):
+                continue
+
+            text = _decode_script_text(data[text_start:text_end], encoding)
+            if text is None or not _looks_like_script_body(text):
+                continue
+
+            matched_event = ScriptEvent(
+                offset=offset,
+                kind="speech",
+                prefix_hex=data[offset:payload_offset].hex(),
+                speaker=speaker,
+                speaker_tag=speaker_tag,
+                text=text,
+                byte_length=text_end - offset,
+            )
+            matched_end = text_end
+            break
+
+        if matched_event is not None:
+            events.append(matched_event)
+            offset = matched_end
+            continue
+
+        offset += 1
+
+    return events
+
+
+def extract_script_events(
+    data: bytes,
+    preferred_encoding: str | None = None,
+) -> tuple[str | None, tuple[ScriptEvent, ...]]:
+    encodings: list[str] = []
+    if preferred_encoding is not None:
+        encodings.append(preferred_encoding)
+    for fallback in ("utf-8", "cp949"):
+        if fallback not in encodings:
+            encodings.append(fallback)
+
+    best_encoding: str | None = None
+    best_events: list[ScriptEvent] = []
+    best_score = -1
+
+    for encoding in encodings:
+        events = _parse_script_events_with_encoding(data, encoding)
+        if not events:
+            continue
+        score = len(events) * 100 + sum(len(event.text) for event in events)
+        if score > best_score:
+            best_score = score
+            best_encoding = encoding
+            best_events = events
+
+    return (best_encoding, tuple(best_events))

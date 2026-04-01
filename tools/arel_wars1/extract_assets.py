@@ -9,7 +9,7 @@ from pathlib import Path
 import shutil
 import zipfile
 
-from formats import extract_strings, read_zt1
+from formats import extract_script_events, extract_strings, read_zt1
 
 
 WEB_SAFE_SUFFIXES = {".png", ".ogg", ".html"}
@@ -124,6 +124,11 @@ def main() -> None:
             guessed_encoding, strings = extract_strings(
                 decoded.decoded, preferred_encoding=preferred_encoding_for(member)
             )
+            script_encoding, script_events = (
+                extract_script_events(decoded.decoded, preferred_encoding=preferred_encoding_for(member))
+                if kind_for(member) == "script"
+                else (None, ())
+            )
             entry = {
                 "path": member,
                 "kind": kind_for(member),
@@ -131,8 +136,19 @@ def main() -> None:
                 "packedSize": decoded.packed_size,
                 "decodedSize": decoded.unpacked_size,
                 "encoding": guessed_encoding,
+                "scriptEncoding": script_encoding,
                 "stringCount": len(strings),
                 "stringsPreview": strings[:12],
+                "eventCount": len(script_events),
+                "eventPreview": [
+                    {
+                        "kind": event.kind,
+                        "speaker": event.speaker,
+                        "speakerTag": event.speaker_tag,
+                        "text": event.text,
+                    }
+                    for event in script_events[:8]
+                ],
                 "decodedPath": str(decoded_path.relative_to(output_root)),
             }
             zt1_entries.append(entry)
@@ -140,12 +156,29 @@ def main() -> None:
             if strings:
                 preview_path = decoded_root / f"{member}.strings.txt"
                 write_text(preview_path, "\n".join(strings))
+            if script_events:
+                events_path = decoded_root / f"{member}.events.json"
+                write_json(
+                    events_path,
+                    [
+                        {
+                            "offset": event.offset,
+                            "kind": event.kind,
+                            "prefixHex": event.prefix_hex,
+                            "speaker": event.speaker,
+                            "speakerTag": event.speaker_tag,
+                            "text": event.text,
+                            "byteLength": event.byte_length,
+                        }
+                        for event in script_events
+                    ],
+                )
 
     featured_scripts = [
         entry
         for entry in sorted(
             (item for item in zt1_entries if item["kind"] == "script"),
-            key=lambda item: (int(item["stringCount"]), int(item["decodedSize"])),
+            key=lambda item: (int(item["eventCount"]), int(item["stringCount"]), int(item["decodedSize"])),
             reverse=True,
         )[:20]
     ]
@@ -159,9 +192,9 @@ def main() -> None:
         for suffix, reason in (
             (
                 ".pzx",
-                "Primary sprite container. First zlib stream now decodes into chunk-level indexed bitmaps, but palette selection and whole-sprite assembly remain unresolved.",
+                "Primary sprite container. First zlib stream and frame/timeline metadata are partially decoded, but battle-state semantics and some auxiliary tails remain unresolved.",
             ),
-            (".mpl", "Likely animation or mesh metadata. Parser still unknown."),
+            (".mpl", "Two-bank palette parser is recovered. Exact bank-switch semantics are still heuristic."),
             (".ptc", "Particle or effect definition. Parser still unknown."),
         )
         if suffix in ext_counts
@@ -175,6 +208,7 @@ def main() -> None:
             "extensions": dict(sorted(ext_counts.items())),
             "assetDirectories": dict(sorted(asset_dir_counts.items())),
             "zt1Total": len(zt1_entries),
+            "scriptEventTotal": sum(int(entry["eventCount"]) for entry in zt1_entries if entry["kind"] == "script"),
             "webSafeAssetCount": len(web_safe_assets),
         },
         "featuredScripts": featured_scripts,
