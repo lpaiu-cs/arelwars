@@ -11,10 +11,13 @@ import struct
 from formats import (
     find_zlib_streams,
     read_pzx_animation_clip_stream,
+    read_pzx_embedded_resource,
     read_pzx_frame_record_stream,
     read_pzx_first_stream,
+    read_pzx_indexed_animation_clip_stream,
     read_pzx_meta_sections,
     read_pzx_row_stream,
+    read_pzx_root_resource_offsets,
     read_pzx_simple_placement_stream,
 )
 
@@ -155,11 +158,7 @@ def summarize_simple_placement_stream(stream: bytes, chunk_count: int, chunk_siz
     }
 
 
-def summarize_animation_clip_stream(stream: bytes) -> dict[str, object] | None:
-    decoded = read_pzx_animation_clip_stream(stream)
-    if decoded is None:
-        return None
-
+def summarize_animation_clip_data(decoded) -> dict[str, object]:
     clip_sizes = [clip.frame_count for clip in decoded.clips]
     return {
         "clipCount": decoded.clip_count,
@@ -189,6 +188,53 @@ def summarize_animation_clip_stream(stream: bytes) -> dict[str, object] | None:
             }
             for clip in decoded.clips[:6]
         ],
+    }
+
+
+def summarize_animation_clip_stream(stream: bytes) -> dict[str, object] | None:
+    decoded = read_pzx_animation_clip_stream(stream)
+    if decoded is None:
+        return None
+
+    return summarize_animation_clip_data(decoded)
+
+
+def summarize_embedded_resource(resource) -> dict[str, object]:
+    return {
+        "kind": resource.kind,
+        "offset": resource.offset,
+        "header": resource.header,
+        "storageMode": resource.storage_mode,
+        "formatVariant": resource.format_variant,
+        "contentCount": resource.content_count,
+        "indexOffsetsPreview": list(resource.index_offsets[:12]),
+        "indexOffsetsTail": list(resource.index_offsets[-6:]),
+        "packedSize": resource.packed_size,
+        "unpackedSize": resource.unpacked_size,
+        "payloadOffset": resource.payload_offset,
+        "payloadHeadHex": resource.payload[:24].hex(),
+    }
+
+
+def summarize_embedded_pza_resource(resource, streams: list) -> dict[str, object] | None:
+    decoded = read_pzx_indexed_animation_clip_stream(resource.payload, resource.index_offsets)
+    if decoded is None:
+        return None
+
+    matched_stream_indices = [
+        index for index, stream in enumerate(streams[:12]) if stream.decoded == resource.payload
+    ]
+    return {
+        **summarize_embedded_resource(resource),
+        **summarize_animation_clip_data(decoded),
+        "matchedZlibStreamIndices": matched_stream_indices,
+    }
+
+
+def summarize_embedded_pzf_resource(resource) -> dict[str, object]:
+    return {
+        **summarize_embedded_resource(resource),
+        "frameCount": resource.content_count,
     }
 
 
@@ -409,6 +455,10 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     frame_record_summaries: list[dict[str, object]] = []
     animation_clip_summary: dict[str, object] | None = None
     animation_clip_summaries: list[dict[str, object]] = []
+    embedded_resource_summaries: list[dict[str, object]] = []
+    embedded_pzf_summary: dict[str, object] | None = None
+    embedded_pza_summary: dict[str, object] | None = None
+    embedded_pzf_animation_relation: dict[str, object] | None = None
 
     for index, item in enumerate(streams[:12]):
         entry = {
@@ -469,6 +519,34 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             entry["rowStream"] = row_stream_summary
         parsed_streams.append(entry)
 
+    root_resource_offsets = read_pzx_root_resource_offsets(data)
+    if root_resource_offsets is not None:
+        embedded_pzf = read_pzx_embedded_resource(data, root_resource_offsets[1], "pzf")
+        if embedded_pzf is not None:
+            embedded_pzf_summary = summarize_embedded_pzf_resource(embedded_pzf)
+            embedded_resource_summaries.append(embedded_pzf_summary)
+
+        embedded_pza = read_pzx_embedded_resource(data, root_resource_offsets[2], "pza")
+        if embedded_pza is not None:
+            embedded_pza_summary = summarize_embedded_pza_resource(embedded_pza, streams)
+            if embedded_pza_summary is not None:
+                embedded_resource_summaries.append(embedded_pza_summary)
+
+        if embedded_pzf_summary is not None and embedded_pza_summary is not None:
+            max_frame_index = int(embedded_pza_summary["frameIndexRange"][1])
+            frame_count = int(embedded_pzf_summary["frameCount"])
+            if max_frame_index + 1 == frame_count:
+                relation = "exact-max-plus-one"
+            elif max_frame_index < frame_count:
+                relation = "in-range"
+            else:
+                relation = "out-of-range"
+            embedded_pzf_animation_relation = {
+                "relation": relation,
+                "pzfFrameCount": frame_count,
+                "maxFrameIndex": max_frame_index,
+            }
+
     return {
         "path": str(path),
         "size": len(data),
@@ -481,6 +559,11 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             "field16Shift6": table_span,
             "field16Low6": field16 & 0x3F,
             "field18": struct.unpack("<H", data[18:20])[0] if len(data) >= 20 else None,
+            "resourceOffsets": {
+                "pzd": root_resource_offsets[0] if root_resource_offsets is not None else None,
+                "pzf": root_resource_offsets[1] if root_resource_offsets is not None else None,
+                "pza": root_resource_offsets[2] if root_resource_offsets is not None else None,
+            },
         },
         "hasMplPair": has_mpl_pair,
         "zlibStreamCount": len(streams),
@@ -491,6 +574,10 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
         "frameRecordStreams": frame_record_summaries,
         "animationClipStream": animation_clip_summary,
         "animationClipStreams": animation_clip_summaries,
+        "embeddedResources": embedded_resource_summaries,
+        "embeddedPzf": embedded_pzf_summary,
+        "embeddedPza": embedded_pza_summary,
+        "embeddedPzfAnimationRelation": embedded_pzf_animation_relation,
     }
 
 
@@ -672,6 +759,87 @@ def main() -> None:
         if animation_entries
         else None
     )
+    embedded_pzf_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "variant": entry["header"]["field16Low6"],
+            "offset": entry["embeddedPzf"]["offset"],
+            "storageMode": entry["embeddedPzf"]["storageMode"],
+            "formatVariant": entry["embeddedPzf"]["formatVariant"],
+            "frameCount": entry["embeddedPzf"]["frameCount"],
+            "packedSize": entry["embeddedPzf"]["packedSize"],
+            "unpackedSize": entry["embeddedPzf"]["unpackedSize"],
+        }
+        for entry in pzx_entries
+        if entry.get("embeddedPzf") is not None
+    ]
+    embedded_pza_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "variant": entry["header"]["field16Low6"],
+            "offset": entry["embeddedPza"]["offset"],
+            "storageMode": entry["embeddedPza"]["storageMode"],
+            "formatVariant": entry["embeddedPza"]["formatVariant"],
+            "clipCount": entry["embeddedPza"]["clipCount"],
+            "totalFrameCount": entry["embeddedPza"]["totalFrameCount"],
+            "frameIndexRange": entry["embeddedPza"]["frameIndexRange"],
+            "delayRange": entry["embeddedPza"]["delayRange"],
+            "xRange": entry["embeddedPza"]["xRange"],
+            "yRange": entry["embeddedPza"]["yRange"],
+            "matchedZlibStreamIndices": entry["embeddedPza"]["matchedZlibStreamIndices"],
+        }
+        for entry in pzx_entries
+        if entry.get("embeddedPza") is not None
+    ]
+    embedded_pza_stems = sorted({entry["stem"] for entry in embedded_pza_entries})
+    embedded_pza_match_index_counts = Counter(
+        stream_index
+        for entry in embedded_pza_entries
+        for stream_index in entry["matchedZlibStreamIndices"]
+    )
+    embedded_pza_relation_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "relation": entry["embeddedPzfAnimationRelation"]["relation"],
+            "pzfFrameCount": entry["embeddedPzfAnimationRelation"]["pzfFrameCount"],
+            "maxFrameIndex": entry["embeddedPzfAnimationRelation"]["maxFrameIndex"],
+        }
+        for entry in pzx_entries
+        if entry.get("embeddedPzfAnimationRelation") is not None
+    ]
+    embedded_pza_relation_counts = Counter(entry["relation"] for entry in embedded_pza_relation_entries)
+    embedded_pza_frame_index_range = (
+        [
+            min(int(entry["frameIndexRange"][0]) for entry in embedded_pza_entries),
+            max(int(entry["frameIndexRange"][1]) for entry in embedded_pza_entries),
+        ]
+        if embedded_pza_entries
+        else None
+    )
+    embedded_pza_delay_range = (
+        [
+            min(int(entry["delayRange"][0]) for entry in embedded_pza_entries),
+            max(int(entry["delayRange"][1]) for entry in embedded_pza_entries),
+        ]
+        if embedded_pza_entries
+        else None
+    )
+    embedded_pza_x_range = (
+        [
+            min(int(entry["xRange"][0]) for entry in embedded_pza_entries),
+            max(int(entry["xRange"][1]) for entry in embedded_pza_entries),
+        ]
+        if embedded_pza_entries
+        else None
+    )
+    embedded_pza_y_range = (
+        [
+            min(int(entry["yRange"][0]) for entry in embedded_pza_entries),
+            max(int(entry["yRange"][1]) for entry in embedded_pza_entries),
+        ]
+        if embedded_pza_entries
+        else None
+    )
     regular_mpl_palette_stems: list[str] = []
     regular_mpl_palette_set: set[str] = set()
     row_stream_regular_mpl_palette_stems: list[str] = []
@@ -808,6 +976,18 @@ def main() -> None:
             "animationClipYRange": animation_y_range,
             "animationClipNonzeroControlCount": animation_nonzero_control_count,
             "animationClipPreview": animation_entries[:12],
+            "embeddedPzfPzxCount": len(embedded_pzf_entries),
+            "embeddedPzfPreview": embedded_pzf_entries[:12],
+            "embeddedPzaPzxCount": len(embedded_pza_stems),
+            "embeddedPzaPreview": embedded_pza_entries[:12],
+            "embeddedPzaMatchedStreamIndexCounts": dict(sorted(embedded_pza_match_index_counts.items())),
+            "embeddedPzaMatchedThirdStreamCount": int(embedded_pza_match_index_counts.get(2, 0)),
+            "embeddedPzaFrameIndexRange": embedded_pza_frame_index_range,
+            "embeddedPzaDelayRange": embedded_pza_delay_range,
+            "embeddedPzaXRange": embedded_pza_x_range,
+            "embeddedPzaYRange": embedded_pza_y_range,
+            "embeddedPzaPzfRelationCounts": dict(sorted(embedded_pza_relation_counts.items())),
+            "embeddedPzaPzfRelationPreview": embedded_pza_relation_entries[:12],
             "regularMplPaletteCount": len(regular_mpl_palette_stems),
             "regularMplPalettePreview": regular_mpl_palette_stems[:20],
             "paletteCapacityFitCount": len(palette_capacity_fit_stems),
@@ -842,6 +1022,12 @@ def main() -> None:
             f"{len(frame_meta_exact_stems)} stems already expose exact-fit tail subsections that decode as 7-byte flagged tuples or simple 6-byte tuples, so at least part of the secondary metadata is structured placement data rather than opaque blobs.",
             f"Those sections cluster into {frame_meta_group_count} opaque-led tail groups. {frame_meta_linked_group_count} groups already have an exact tuple overlap with at least one base frame record, while {frame_meta_tail_only_group_count} groups use only chunk indices that never appear in the base frame stream.",
             f"Current group classification counts are: base-frame-delta={frame_meta_group_link_counts.get('base-frame-delta', 0)}, overlay-track={frame_meta_group_link_counts.get('overlay-track', 0)}, chunk-linked-reuse={frame_meta_group_link_counts.get('chunk-linked-reuse', 0)}, mixed-or-unknown={frame_meta_group_link_counts.get('mixed-or-unknown', 0)}, opaque-only={frame_meta_group_link_counts.get('opaque-only', 0)}.",
+            "The 12-byte root header after PZX\\x01 behaves as a subresource offset table: field4 -> PZD, field8 -> PZF, field12 -> PZA.",
+            f"Raw embedded PZA containers now parse for {len(embedded_pza_stems)} stems, and {embedded_pza_match_index_counts.get(2, 0)} of those payloads are byte-identical to zlib stream index 2.",
+            "Each embedded PZA container starts with header(u8), clipCount(u16), and a 32-bit offset table. For compressed mode, that table is followed by unpackedSize(u32), packedSize(u32), then one zlib blob.",
+            "Each embedded PZF container follows the same high-level pattern and its contentCount is the frame pool size consumed by CGxPZFMgr::LoadFrame*.",
+            f"Across the raw embedded PZA parses, frameIndex ranges {embedded_pza_frame_index_range[0] if embedded_pza_frame_index_range else 'n/a'}..{embedded_pza_frame_index_range[1] if embedded_pza_frame_index_range else 'n/a'}, delay ranges {embedded_pza_delay_range[0] if embedded_pza_delay_range else 'n/a'}..{embedded_pza_delay_range[1] if embedded_pza_delay_range else 'n/a'}, x ranges {embedded_pza_x_range[0] if embedded_pza_x_range else 'n/a'}..{embedded_pza_x_range[1] if embedded_pza_x_range else 'n/a'}, and y ranges {embedded_pza_y_range[0] if embedded_pza_y_range else 'n/a'}..{embedded_pza_y_range[1] if embedded_pza_y_range else 'n/a'}.",
+            f"PZA frameIndex stays inside the raw PZF frame pool for every parsed stem: exact max+1 match={embedded_pza_relation_counts.get('exact-max-plus-one', 0)}, in-range but sparse={embedded_pza_relation_counts.get('in-range', 0)}, out-of-range={embedded_pza_relation_counts.get('out-of-range', 0)}.",
             f"Exact-fit animation clip streams are now recognized for {len(animation_stems)} stems ({len(animation_entries)} streams). {animation_stream_index_counts.get(2, 0)} of them occur at zlib stream index 2.",
             "Those streams decode as concatenated clips: frameCount(u8) followed by frameIndex(u16), delay(u8), x(i16), y(i16), control(u8) per frame.",
             f"Across the confirmed animation clip streams, frameIndex ranges {animation_frame_index_range[0] if animation_frame_index_range else 'n/a'}..{animation_frame_index_range[1] if animation_frame_index_range else 'n/a'}, delay stays within {animation_delay_range[0] if animation_delay_range else 'n/a'}..{animation_delay_range[1] if animation_delay_range else 'n/a'}, x stays within {animation_x_range[0] if animation_x_range else 'n/a'}..{animation_x_range[1] if animation_x_range else 'n/a'}, y stays within {animation_y_range[0] if animation_y_range else 'n/a'}..{animation_y_range[1] if animation_y_range else 'n/a'}, and nonzero control bytes appear {animation_nonzero_control_count} times.",

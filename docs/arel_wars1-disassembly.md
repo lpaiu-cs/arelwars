@@ -41,6 +41,15 @@ python tools/arel_wars1/disassemble_libgameDSO.py --function _ZN12CGxPZAParser19
   - `CGxPZxMgr::LoadAni -> CGxPZAMgr::LoadAni / LoadAniEx`
   - `CGxPZxMgr::LoadFrame -> CGxPZFMgr::LoadFrameEx`
 - 즉 `.pzx` 후반 stream은 "정체불명의 tail"이라기보다, 네이티브 런타임에서 `PZA`(animation) / `PZF`(frame) parser가 소비하는 서브영역일 가능성이 크다.
+- `CGxPZxParserBase::CheckPZxType`는 이 구조를 직접 드러낸다.
+  - 현재 스트림 머리가 원하는 타입이 아니고 루트 `PZX\x01` 헤더라면
+  - 파일 시작 16바이트의 `field4/field8/field12`를 `type * 4` offset table로 보고
+  - 원하는 typed subresource 위치로 다시 seek 한다.
+- tiny getter 기준 타입 코드는 고정된다.
+  - `CGxPZD::GetContentsType = 0`
+  - `CGxPZF::GetContentsType = 1`
+  - `CGxPZA::GetContentsType = 2`
+  - `CGxMPL::GetContentsType = 4`
 - `PZX` 쪽 로더/렌더러 축은 다음 이름들로 드러난다.
   - `CGsPzxResourceMgr::Load`
   - `CGsPzxResource::Load`
@@ -100,6 +109,10 @@ python tools/arel_wars1/disassemble_libgameDSO.py --function _ZN12CGxPZAParser19
   - `CGxPZFMgr::LoadFrameEx`는 그 `subFrameIndex[]`를 따라가며 `CGxPZDPackage` loader를 호출하고, 결과 subframe/resource pointer를 `CGxPZxFrame` 내부 array(`stride = 0x10`)에 저장한다.
 - 따라서 현재 네이티브 계층은 다음처럼 읽히는 편이 가장 자연스럽다.
   - `PZA clip -> PZF frame index -> PZD subframe index -> 실제 리소스 pointer`
+- `CGxPZxMgr::SetSource`도 같은 결론을 준다.
+  - 표준 `.pzx` 경로에서는 `CGxPZxResource` 하나를 먼저 만들고
+  - 그 resource를 `PZFMgr`와 `PZAMgr`에 각각 `SetResource`한다.
+  - 즉 `PZF`와 `PZA`는 서로 다른 파일이 아니라, 같은 `.pzx` 안의 typed subresource다.
 
 `CGxPZxAni` 객체 레이아웃은 현재까지 다음처럼 보인다.
 
@@ -152,11 +165,32 @@ animation:
 - `DecodeAnimationData` 내부의 두 갈래는 서로 다른 animation 포맷이 아니라 `CGxStream` backend 차이로 보인다.
   - direct memory buffer path
   - callback-based stream path
+- 같은 방식으로 `PZF` frame decode도 두 단계로 보인다.
+  - `BeginDecodeFrame`가 `subFrameCount`와 bounding-box 관련 count byte를 먼저 읽고
+  - count가 0이 아닐 때는 `DecodeBoundingBoxFromBAR/FILE` 계열이 먼저 stream을 소비한 뒤
+  - 마지막에 `EndDecodeFrameFromBAR/FILE`가 subframe list를 읽는 구조로 보인다.
+- 따라서 raw `PZF` payload는 "항상 frame header 직후에 subframe record가 온다"고 가정하면 안 된다.
+  - `010.pzx`처럼 count byte가 0인 샘플은 바로 subframe list가 시작되지만
+  - `082.pzx` 같은 샘플은 bounding-box block이 끼어 있어서 payload head만 보고는 subframe index가 바로 안 보일 수 있다.
 
 ## Asset Cross-check
 
 네이티브에서 복원한 위 레이아웃을 실제 `.pzx` zlib stream에 대입하면, asset 쪽에서도 꽤 강하게 닫힌다.
 
+- 루트 `.pzx` 헤더의 앞 16바이트는 현재 다음처럼 읽는 편이 가장 타당하다.
+
+```text
+0x00  "PZX\x01"
+0x04  PZD subresource offset
+0x08  PZF subresource offset
+0x0C  PZA subresource offset
+```
+
+- raw subresource를 직접 따라가면 `PZF/PZA` 쪽도 네이티브와 같은 단위로 읽힌다.
+  - `field8`의 `PZF` segment는 `header:u8`, `frameCount:u16`, `u32 frameOffset[frameCount]`를 가진다.
+  - `field12`의 `PZA` segment는 `header:u8`, `clipCount:u16`, `u32 clipOffset[clipCount]`를 가진다.
+  - compressed mode일 때는 index table 뒤에 `unpackedSize:u32`, `packedSize:u32`, 그리고 하나의 zlib blob이 붙는다.
+- 즉 later zlib stream 일부는 독립 포맷이 아니라, raw `PZF/PZA` subresource payload가 다시 노출된 결과일 가능성이 높다.
 - `tools/arel_wars1/inspect_binary_assets.py`는 이제 exact-fit animation clip stream을 인식한다.
 - 현재 휴리스틱은 다음이다.
   - stream 전체가 `frameCount:u8 + frameCount * 8-byte frame record`의 clip 연속체로 끝까지 정확히 소진될 것
@@ -172,13 +206,23 @@ animation:
   - `x`: 항상 `0`
   - `y`: `-80..10`
   - `control`: 확인된 exact-fit stream에서는 모두 `0`
+- raw `PZA` subresource 기준으로 보면 범위는 더 넓다.
+  - `159`개 stem에서 `PZA` index table + payload가 clip 구조로 정확히 읽힌다.
+  - 이 중 `145`개는 decompressed payload가 zlib stream index `2`와 byte-identical 하다.
+  - 즉 third stream은 “대체로 PZA”가 아니라, 상당수 stem에서 raw `PZA` subresource payload 그 자체다.
 - clip 개수 분포도 자연스럽다.
   - single-clip stem이 가장 많고
   - 그 다음이 3-clip stem이다.
   - 즉 "한 sprite 안에 여러 animation clip" 구조와 잘 맞는다.
-- 반대로, `frameIndex max < frame-record count` 같은 단순 대응은 아직 성립하지 않는다.
-  - 예: `082/083/084.pzx` 계열은 animation stream이 잡히지만 `frameIndex` 최댓값이 visible frame-record 수보다 훨씬 크다.
-  - 따라서 `frameIndex`는 현재 보고 있는 frame-record stream 길이가 아니라, `CGxPZFMgr::LoadFrameEx`가 여는 별도 frame pool / decompressed frame table을 가리킬 가능성이 높다.
+- 이전에 보이던 mismatch도 이제 설명된다.
+  - `frameIndex`는 visible `frame-record stream` 길이가 아니라 raw `PZF` subresource의 `frameCount`를 가리킨다.
+  - raw `PZA`가 읽히는 `159`개 stem 기준으로 `frameIndex`는 모두 `PZF` frame pool 범위 안에 있다.
+  - 그 중 `143`개는 `max(frameIndex) + 1 == PZF frameCount`가 정확히 성립한다.
+  - 나머지 `16`개도 sparse reference일 뿐 out-of-range는 아니다.
+- 예: `082.pzx`
+  - raw `PZF frameCount = 86`
+  - raw `PZA frameIndex range = 0..85`
+  - 즉 이전의 “visible frame-record 수보다 `frameIndex`가 크다”는 현상은 그 frame-record stream이 실제 `PZF` frame pool이 아니었기 때문에 생긴 오해다.
 
 ## Working Hypothesis
 
@@ -187,13 +231,17 @@ animation:
 - `PZX` later stream은 "프레임 조각/서브프레임/보조 배치" 계층일 수 있다.
 - 실제 재생 순서, delay, clip index, loop 같은 시간축 정보는 `CGxPZAParser::DecodeAnimationData`가 해석하는 별도 구조일 수 있다.
 - 첫 번째 조각 stream을 `PZF` 계층, 이후 animation stream을 `PZA` 계층으로 대응시키면 현재까지 관찰된 "placement는 보이는데 시간축이 안 보인다"는 현상을 자연스럽게 설명할 수 있다.
-- 특히 현재는 "세 번째 zlib stream이 곧 `PZA` blob"인 stem이 대량으로 존재하므로, 남은 문제는 stream 포맷 추정 자체보다 `frameIndex -> PZF frame pool` 연결을 해체하는 쪽으로 좁혀졌다.
+- 특히 현재는:
+  - 루트 `.pzx` 헤더에서 `PZF/PZA` subresource offset을 직접 잡을 수 있고
+  - raw `PZA` index table이 animation clip offsets와 정확히 맞고
+  - raw `PZF frameCount`가 `frameIndex` 풀 범위를 설명한다.
+- 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라, `PZF frame`과 `PZD subframe/image`를 실제 first-stream 조각 구조와 어떻게 연결하느냐로 더 좁혀졌다.
 - 따라서 다음 reverse path의 우선순위는 `PZX tail` 일반화보다 `PZA parser -> PZx animation object` 연결 해체다.
 
 ## Next Reverse Steps
 
-1. `CGxPZAMgr::LoadAni*`와 `CGxPZA::CreateAniFrameIndex`를 더 파서, `frameIndex` 배열이 정확히 어떤 `PZF` 리소스 테이블로 들어가는지 잡는다.
-2. `CGxPZFMgr::LoadFrameEx`와 `CGxPZFParser::UncompressAllDataFromBAR/FILE`를 해체해서, 현재 first-stream / frame-record stream과 네이티브 frame pool 사이의 대응을 확정한다.
-3. `082/083/084.pzx` 같은 frame-record + animation 동시 보유 stem을 기준 샘플로 삼아, "visible frame-record 수"와 "animation frameIndex 상한"이 왜 어긋나는지 설명 가능한 구조를 만든다.
+1. `CGxPZFParser::BeginDecodeFrame / EndDecodeFrameFromBAR/FILE`를 바탕으로 raw `PZF` payload를 자산측에서도 frame 단위로 파싱한다.
+2. 그 `PZF frame`의 `subFrameIndex[]`가 raw `PZD` / first-stream chunk 계층과 어떻게 이어지는지 확정한다.
+3. `082/083/084.pzx`와 `198/208/240.pzx`를 기준 샘플로 삼아, raw `PZF/PZA`와 기존 `frame-record/tail` 해석을 어떻게 분리해야 하는지 정리한다.
 4. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, parser 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
-5. 마지막에 `.pzx` 후반 stream/tail이 `PZA` 입력인지, 독립 overlay track인지, 혹은 둘 다인지 결론을 낸다.
+5. 마지막에 later stream/tail 중 무엇이 truly native `PZF/PZA`이고, 무엇이 별도 overlay / placement metadata인지 결론을 낸다.

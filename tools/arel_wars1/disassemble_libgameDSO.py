@@ -13,6 +13,8 @@ from elftools.elf.elffile import ELFFile
 
 DEFAULT_ELF = Path("recovery/arel_wars1/disassembly/libgameDSO.so")
 DEFAULT_FUNCTIONS = (
+    "_ZN9CGxPZxMgr9SetSourceEPKcjb",
+    "_ZN16CGxPZxParserBase12CheckPZxTypeEP12tagPZxHeaderP9CGxStreamiPKci",
     "_ZN12CGxPZAParser12DecodeHeaderEb",
     "_ZN12CGxPZAParser4OpenEv",
     "_ZN12CGxPZAParser19DecodeAnimationDataEti",

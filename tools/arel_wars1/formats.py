@@ -6,6 +6,7 @@ import zlib
 
 
 ZLIB_HEADERS = {0x01, 0x5E, 0x9C, 0xDA}
+PZX_RESOURCE_KINDS = ("pzd", "pzf", "pza")
 PZX_META_MARKERS: dict[bytes, str] = {
     bytes.fromhex("67ff000000"): "67ff000000",
     bytes.fromhex("6778000000"): "6778000000",
@@ -208,6 +209,21 @@ class PzxAnimationClipStream:
     @property
     def nonzero_control_count(self) -> int:
         return sum(1 for clip in self.clips for frame in clip.frames if frame.control != 0)
+
+
+@dataclass(frozen=True)
+class PzxEmbeddedResource:
+    kind: str
+    offset: int
+    header: int
+    storage_mode: int
+    format_variant: int
+    content_count: int
+    index_offsets: tuple[int, ...]
+    packed_size: int | None
+    unpacked_size: int
+    payload_offset: int
+    payload: bytes
 
 
 def read_zt1(data: bytes) -> Zt1File:
@@ -665,6 +681,38 @@ def _is_reasonable_pzx_animation_frame(delay: int, x: int, y: int) -> bool:
     return 0 <= delay <= 32 and -256 <= x <= 256 and -256 <= y <= 256
 
 
+def _read_pzx_animation_clip_exact(payload: bytes, start: int, end: int) -> PzxAnimationClip | None:
+    if not (0 <= start < end <= len(payload)):
+        return None
+
+    cursor = start
+    frame_count = payload[cursor]
+    if frame_count == 0:
+        return None
+    cursor += 1
+
+    frames: list[PzxAnimationFrame] = []
+    for _ in range(frame_count):
+        if cursor + 8 > end:
+            return None
+
+        frames.append(
+            PzxAnimationFrame(
+                frame_index=struct.unpack("<H", payload[cursor : cursor + 2])[0],
+                delay=payload[cursor + 2],
+                x=struct.unpack("<h", payload[cursor + 3 : cursor + 5])[0],
+                y=struct.unpack("<h", payload[cursor + 5 : cursor + 7])[0],
+                control=payload[cursor + 7],
+            )
+        )
+        cursor += 8
+
+    if cursor != end:
+        return None
+
+    return PzxAnimationClip(offset=start, frame_count=frame_count, frames=tuple(frames))
+
+
 def read_pzx_animation_clip_stream(stream: bytes) -> PzxAnimationClipStream | None:
     if len(stream) < 9:
         return None
@@ -716,6 +764,113 @@ def read_pzx_animation_clip_stream(stream: bytes) -> PzxAnimationClipStream | No
         return None
 
     return PzxAnimationClipStream(clips=tuple(clips))
+
+
+def read_pzx_indexed_animation_clip_stream(
+    payload: bytes,
+    clip_offsets: tuple[int, ...] | list[int],
+) -> PzxAnimationClipStream | None:
+    if not clip_offsets:
+        return None
+
+    offsets = tuple(int(offset) for offset in clip_offsets)
+    if any(offset < 0 or offset > len(payload) for offset in offsets):
+        return None
+    if any(offsets[index] > offsets[index + 1] for index in range(len(offsets) - 1)):
+        return None
+
+    clips: list[PzxAnimationClip] = []
+    for index, start in enumerate(offsets):
+        end = offsets[index + 1] if index + 1 < len(offsets) else len(payload)
+        clip = _read_pzx_animation_clip_exact(payload, start, end)
+        if clip is None:
+            return None
+        clips.append(clip)
+
+    return PzxAnimationClipStream(clips=tuple(clips))
+
+
+def read_pzx_root_resource_offsets(data: bytes) -> tuple[int, int, int] | None:
+    if len(data) < 16 or data[:4] != b"PZX\x01":
+        return None
+
+    return (
+        struct.unpack("<I", data[4:8])[0],
+        struct.unpack("<I", data[8:12])[0],
+        struct.unpack("<I", data[12:16])[0],
+    )
+
+
+def read_pzx_embedded_resource(data: bytes, offset: int, kind: str) -> PzxEmbeddedResource | None:
+    if offset < 0 or offset + 3 > len(data):
+        return None
+
+    header = data[offset]
+    content_count = struct.unpack("<H", data[offset + 1 : offset + 3])[0]
+    if content_count <= 0:
+        return None
+
+    table_start = offset + 3
+    table_end = table_start + content_count * 4
+    if table_end > len(data):
+        return None
+
+    index_offsets = tuple(
+        struct.unpack("<I", data[table_start + index * 4 : table_start + index * 4 + 4])[0]
+        for index in range(content_count)
+    )
+    storage_mode = header & 0x0F
+    format_variant = header >> 4
+
+    if storage_mode == 0:
+        payload_offset = table_end
+        payload = data[payload_offset:]
+        packed_size = None
+        unpacked_size = len(payload)
+    else:
+        if table_end + 8 > len(data):
+            return None
+        unpacked_size = struct.unpack("<I", data[table_end : table_end + 4])[0]
+        packed_size = struct.unpack("<I", data[table_end + 4 : table_end + 8])[0]
+        payload_offset = table_end + 8
+        payload_end = payload_offset + packed_size
+        if payload_end > len(data):
+            return None
+        try:
+            payload = zlib.decompress(data[payload_offset:payload_end])
+        except zlib.error:
+            return None
+        if len(payload) != unpacked_size:
+            return None
+
+    return PzxEmbeddedResource(
+        kind=kind,
+        offset=offset,
+        header=header,
+        storage_mode=storage_mode,
+        format_variant=format_variant,
+        content_count=content_count,
+        index_offsets=index_offsets,
+        packed_size=packed_size,
+        unpacked_size=unpacked_size,
+        payload_offset=payload_offset,
+        payload=payload,
+    )
+
+
+def read_pzx_embedded_resources(data: bytes) -> tuple[PzxEmbeddedResource, ...] | None:
+    offsets = read_pzx_root_resource_offsets(data)
+    if offsets is None:
+        return None
+
+    resources: list[PzxEmbeddedResource] = []
+    for kind, offset in zip(PZX_RESOURCE_KINDS, offsets):
+        resource = read_pzx_embedded_resource(data, offset, kind)
+        if resource is None:
+            return None
+        resources.append(resource)
+
+    return tuple(resources)
 
 
 def read_pzx_first_stream(stream: bytes, table_span: int) -> PzxFirstStream | None:
