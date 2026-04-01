@@ -4,11 +4,16 @@ from __future__ import annotations
 import argparse
 import math
 from pathlib import Path
-import struct
 
 from PIL import Image, ImageDraw
 
-from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_row_stream
+from formats import (
+    find_zlib_streams,
+    mpl_index_to_rgba,
+    read_mpl,
+    read_pzx_first_stream,
+    read_pzx_row_stream,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -21,19 +26,12 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def rgb565(word: int) -> tuple[int, int, int, int]:
-    r = ((word >> 11) & 0x1F) * 255 // 31
-    g = ((word >> 5) & 0x3F) * 255 // 63
-    b = (word & 0x1F) * 255 // 31
-    return (r, g, b, 0 if word == 0 else 255)
-
-
 def render_rows(rows, width: int, height: int, palette_words: list[int], scale: int) -> Image.Image:
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     pixels = image.load()
     for y, row in enumerate(rows):
         for x, value in enumerate(row.decoded):
-            pixels[x, y] = rgb565(palette_words[value])
+            pixels[x, y] = mpl_index_to_rgba(value, palette_words)
     if scale > 1:
         image = image.resize((width * scale, height * scale), Image.Resampling.NEAREST)
     return image
@@ -67,16 +65,15 @@ def build_sheet(stem: str, frames, palette_label: str, scale: int) -> Image.Imag
 
 
 def read_mpl_palettes(path: Path) -> tuple[int, dict[str, list[int]]] | None:
-    words = [struct.unpack("<H", path.read_bytes()[index : index + 2])[0] for index in range(0, path.stat().st_size, 2)]
-    if len(words) < 8 or (len(words) - 6) % 2 != 0:
+    mpl = read_mpl(path.read_bytes())
+    if mpl is None:
         return None
-    color_count = (len(words) - 6) // 2
 
     return (
-        color_count,
+        mpl.color_count,
         {
-            "a": words[6 : 6 + color_count],
-            "b": words[6 + color_count : 6 + 2 * color_count],
+            "a": list(mpl.bank_a),
+            "b": list(mpl.bank_b),
         },
     )
 

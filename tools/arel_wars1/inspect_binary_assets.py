@@ -11,6 +11,7 @@ import struct
 from formats import (
     find_zlib_streams,
     get_pzx_meta_effective_tuples,
+    read_mpl,
     read_pzx_frame_record_stream,
     read_pzx_first_stream,
     read_pzx_meta_sections,
@@ -369,9 +370,10 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
 
 def parse_mpl(path: Path) -> dict[str, object]:
     data = path.read_bytes()
+    mpl = read_mpl(data)
     words = [struct.unpack("<H", data[index : index + 2])[0] for index in range(0, min(len(data), 32), 2)]
     field = struct.unpack("<I", data[4:8])[0] if len(data) >= 8 else 0
-    return {
+    entry = {
         "path": str(path),
         "size": len(data),
         "signatureHex": data[:4].hex(),
@@ -382,6 +384,25 @@ def parse_mpl(path: Path) -> dict[str, object]:
         "declaredMinusActual": (field >> 16) - (len(data) // 2),
         "headerWords": words,
     }
+    if mpl is None:
+        return entry
+
+    entry.update(
+        {
+            "colorCount": mpl.color_count,
+            "headerMatchesCurrentModel": mpl.header_matches_current_model,
+            "expectedHeaderWord3": mpl.expected_header_word3,
+            "expectedHeaderWord5": mpl.expected_header_word5,
+            "bankAZeroWordCount": sum(1 for word in mpl.bank_a if word == 0),
+            "bankBZeroWordCount": sum(1 for word in mpl.bank_b if word == 0),
+            "bankDiffCount": sum(1 for a, b in zip(mpl.bank_a, mpl.bank_b, strict=True) if a != b),
+            "bankPreview": {
+                "a": [int(word) for word in mpl.bank_a[:8]],
+                "b": [int(word) for word in mpl.bank_b[:8]],
+            },
+        }
+    )
+    return entry
 
 
 def main() -> None:
@@ -658,9 +679,11 @@ def main() -> None:
             "Variant=7 assets such as 180.pzx expose the same row-oriented RLE directly as standalone zlib streams without the outer chunk header.",
             "179.pzx stream 1 is a simple 30-record placement table: each 10-byte record selects one chunk and places it at signed x/y coordinates, covering all 30 decoded chunks exactly once.",
             "For 61 paired MPL files, actualWordCount equals 2 * (maxDecodedIndex + 1) + 6, consistent with a 6-word header plus two palette banks.",
+            "All 65 MPL files now match the stronger header model 560, 10, 0, (2 * colorCount + 11), 0, (7936 + colorCount), followed by two palette banks.",
             "229.pzx uses only indices 0..38 while its MPL carries 148 colors per bank, so at least one asset family keeps oversized palette banks instead of trimming them to the exact max index.",
             "180.pzx raw row streams top out at palette index 46, which exactly fits the shared 179/180 MPL payload as a 47-color two-bank palette.",
             "179.pzx still does not map directly to the 47-color shared palette, which suggests its byte values pack extra shading or effect bits above the base color index.",
+            "Palette index 0 behaves like transparency more consistently than checking for a zero RGB565 word; bank B is the default visible sprite palette for the sampled stems, while flagged frame items are best explained as bank-A overlays.",
             f"Auxiliary frame-record streams are now recognized for {len(frame_record_stems)} stems ({len(frame_record_entries)} streams), with each item encoded as chunkIndex(u16), x(i16), y(i16), flag(u8).",
             f"{len(frame_record_control_stems)} of those stems also carry embedded 5-byte control chunks inside or between frame records; observed markers include 66 05 00 00 00, 66 0A 00 00 00, 66 0C 00 00 00, 67 78 00 00 00, and 67 FF 00 00 00.",
             "198.pzx parses as a clean frame-record prefix, while 208.pzx and 240.pzx both continue into a second metadata tail after the frame-record section. 208 also inserts 66 0C 00 00 00 inside individual records.",

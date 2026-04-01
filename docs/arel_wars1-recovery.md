@@ -129,10 +129,10 @@ npm run ios:sync
 ## Immediate Next Targets
 
 1. Use the now-complete first-stream `.pzx` decode to recover chunk placement and the role of later zlib streams.
-2. Firm up `.mpl` into a real palette parser, including bank-selection metadata and oversized-bank handling.
+2. Turn the current `MPL` bank-switching hypothesis into a hard rule instead of a probe-backed heuristic.
 3. Decode the control-heavy tail sections that begin with markers such as `67 ff 00 00 00`; they likely hold timeline or state-transition metadata layered on top of the frame records.
 4. Turn extracted script data into structured event commands instead of raw string previews.
-5. Stand up a Phaser-side asset preview that can swap from synthetic placeholders to decoded `.pzx` and heuristic `.mpl` colors.
+5. Replace the current preview-oriented runtime with battle-scene state playback driven by recovered metadata.
 
 ## PZX Findings
 
@@ -276,7 +276,7 @@ until row width is satisfied for the current row
 then consume FE FF as the row separator
 ```
 
-- This decoder is enough to render chunk-level pseudo-color previews even though true palettes and whole-sprite assembly are still unresolved.
+- This decoder is enough to render chunk-level previews and feed whole-sprite assembly once a compatible `MPL` bank rule is chosen.
 
 ## MPL Findings
 
@@ -291,3 +291,9 @@ then consume FE FF as the row separator
   - `179` can now be spatially assembled from its placement stream, but its chunk bytes range up to `199`, so some upper bits likely encode shading or effect state instead of direct palette slots
 - With exact matches, oversized-bank fits, and shared-file reuse combined, all 65 paired stems now fit the current two-bank palette hypothesis.
 - Heuristic RGB565 probes already produce sprite-like colored sheets for stems such as `198`, `208`, `229`, and `240`, plus `180` on the raw row-stream path.
+- The current parser model is now explicit:
+  - `header[0..5] = 560, 10, 0, (2 * colorCount + 11), 0, (7936 + colorCount)` across all 65 `.mpl` files
+  - bank `B` is the default visible sprite palette for the tested stems
+  - palette index `0` behaves like transparent regardless of the 16-bit color word stored in the bank
+  - the best current whole-sprite rule is `default bank B, flagged item -> bank A`
+- Probe sheets under `recovery/arel_wars1/mpl_bank_composite_probes/` show that `208`, `214`, `221`, `225`, `226`, `230`, and `240` all become coherent sprites under that rule, while `bank A` alone stays mask-like.

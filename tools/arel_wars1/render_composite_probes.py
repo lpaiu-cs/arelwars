@@ -3,11 +3,16 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-import struct
 
 from PIL import Image
 
-from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_simple_placement_stream
+from formats import (
+    find_zlib_streams,
+    mpl_index_to_rgba,
+    read_mpl,
+    read_pzx_first_stream,
+    read_pzx_simple_placement_stream,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -19,23 +24,15 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def rgb565(word: int) -> tuple[int, int, int, int]:
-    r = ((word >> 11) & 0x1F) * 255 // 31
-    g = ((word >> 5) & 0x3F) * 255 // 63
-    b = (word & 0x1F) * 255 // 31
-    return (r, g, b, 0 if word == 0 else 255)
-
-
 def read_mpl_palettes(path: Path) -> tuple[int, dict[str, list[int]]] | None:
-    words = [struct.unpack("<H", path.read_bytes()[index : index + 2])[0] for index in range(0, path.stat().st_size, 2)]
-    if len(words) < 8 or (len(words) - 6) % 2 != 0:
+    mpl = read_mpl(path.read_bytes())
+    if mpl is None:
         return None
-    color_count = (len(words) - 6) // 2
     return (
-        color_count,
+        mpl.color_count,
         {
-            "a": words[6 : 6 + color_count],
-            "b": words[6 + color_count : 6 + 2 * color_count],
+            "a": list(mpl.bank_a),
+            "b": list(mpl.bank_b),
         },
     )
 
@@ -56,7 +53,7 @@ def render_chunk(chunk, palette_words: list[int], transform, scale: int) -> Imag
     pixels = image.load()
     for y, row in enumerate(chunk.rows):
         for x, value in enumerate(row.decoded):
-            pixels[x, y] = rgb565(palette_words[transform(value)])
+            pixels[x, y] = mpl_index_to_rgba(transform(value), palette_words)
     if scale > 1:
         image = image.resize((chunk.width * scale, chunk.height * scale), Image.Resampling.NEAREST)
     return image

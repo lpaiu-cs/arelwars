@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import struct
+from typing import Sequence
 import zlib
 
 
@@ -43,6 +44,42 @@ class ZlibStreamHit:
     offset: int
     consumed: int
     decoded: bytes
+
+
+@dataclass(frozen=True)
+class MplFile:
+    header_words: tuple[int, int, int, int, int, int]
+    color_count: int
+    bank_a: tuple[int, ...]
+    bank_b: tuple[int, ...]
+
+    @property
+    def actual_word_count(self) -> int:
+        return len(self.header_words) + len(self.bank_a) + len(self.bank_b)
+
+    @property
+    def expected_header_word3(self) -> int:
+        return self.color_count * 2 + 11
+
+    @property
+    def expected_header_word5(self) -> int:
+        return 7936 + self.color_count
+
+    @property
+    def header_matches_current_model(self) -> bool:
+        return (
+            self.header_words[0] == 560
+            and self.header_words[1] == 10
+            and self.header_words[2] == 0
+            and self.header_words[3] == self.expected_header_word3
+            and self.header_words[4] == 0
+            and self.header_words[5] == self.expected_header_word5
+        )
+
+    def bank(self, label: str) -> tuple[int, ...]:
+        if label.lower() == "b":
+            return self.bank_b
+        return self.bank_a
 
 
 @dataclass(frozen=True)
@@ -208,6 +245,36 @@ def find_zlib_streams(data: bytes, *, min_out: int = 8, min_consumed: int = 8) -
         hits.append(ZlibStreamHit(offset=offset, consumed=consumed, decoded=decoded))
 
     return hits
+
+
+def read_mpl(data: bytes) -> MplFile | None:
+    if len(data) < 16 or len(data) % 2 != 0:
+        return None
+
+    words = [struct.unpack("<H", data[index : index + 2])[0] for index in range(0, len(data), 2)]
+    if len(words) < 8 or (len(words) - 6) % 2 != 0:
+        return None
+
+    color_count = (len(words) - 6) // 2
+    return MplFile(
+        header_words=tuple(int(word) for word in words[:6]),  # type: ignore[arg-type]
+        color_count=color_count,
+        bank_a=tuple(int(word) for word in words[6 : 6 + color_count]),
+        bank_b=tuple(int(word) for word in words[6 + color_count : 6 + 2 * color_count]),
+    )
+
+
+def rgb565_rgba(word: int, *, alpha: int = 255) -> tuple[int, int, int, int]:
+    r = ((word >> 11) & 0x1F) * 255 // 31
+    g = ((word >> 5) & 0x3F) * 255 // 63
+    b = (word & 0x1F) * 255 // 31
+    return (r, g, b, alpha)
+
+
+def mpl_index_to_rgba(index: int, palette_words: Sequence[int]) -> tuple[int, int, int, int]:
+    if index <= 0 or index >= len(palette_words):
+        return (0, 0, 0, 0)
+    return rgb565_rgba(int(palette_words[index]))
 
 
 def decode_pzx_row(body: bytes, cursor: int, width: int) -> tuple[PzxRow, int]:

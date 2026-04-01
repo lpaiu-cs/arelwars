@@ -10,6 +10,9 @@ from PIL import Image, ImageDraw
 from formats import (
     find_zlib_streams,
     get_pzx_meta_effective_tuples,
+    MplFile,
+    mpl_index_to_rgba,
+    read_mpl,
     read_pzx_first_stream,
     read_pzx_frame_record_stream,
     read_pzx_meta_sections,
@@ -26,13 +29,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def rgb565(word: int) -> tuple[int, int, int, int]:
-    r = ((word >> 11) & 0x1F) * 255 // 31
-    g = ((word >> 5) & 0x3F) * 255 // 63
-    b = (word & 0x1F) * 255 // 31
-    return (r, g, b, 0 if word == 0 else 255)
-
-
 def pseudo_color(value: int, *, tail: bool = False) -> tuple[int, int, int, int]:
     if value == 0:
         return (0, 0, 0, 0)
@@ -41,14 +37,26 @@ def pseudo_color(value: int, *, tail: bool = False) -> tuple[int, int, int, int]
     return ((value * 53) % 256, (40 + value * 97) % 256, (120 + value * 17) % 256, 255)
 
 
-def read_mpl_palette(path: Path) -> tuple[str, list[int], callable] | None:
-    data = path.read_bytes()
-    words = [struct.unpack("<H", data[index : index + 2])[0] for index in range(0, len(data), 2)]
-    if len(words) < 8 or (len(words) - 6) % 2 != 0:
-        return None
-    color_count = (len(words) - 6) // 2
-    palette_words = words[6 : 6 + color_count]
-    return ("a-direct", palette_words, lambda value: min(value, color_count - 1))
+def build_mpl_bank_mapper(mpl: MplFile, mode: str = "flag-bank") -> tuple[str, callable]:
+    if mode == "bank-a":
+        return ("mpl-bank-a", lambda value, **_kwargs: mpl_index_to_rgba(value, mpl.bank_a))
+    if mode == "bank-b":
+        return ("mpl-bank-b", lambda value, **_kwargs: mpl_index_to_rgba(value, mpl.bank_b))
+    if mode == "flag-invert":
+        return (
+            "mpl-flag-invert",
+            lambda value, flag=None, **_kwargs: mpl_index_to_rgba(
+                value,
+                mpl.bank_a if int(flag or 0) > 0 else mpl.bank_b,
+            ),
+        )
+    return (
+        "mpl-flag-bank",
+        lambda value, flag=None, **_kwargs: mpl_index_to_rgba(
+            value,
+            mpl.bank_b if int(flag or 0) > 0 else mpl.bank_a,
+        ),
+    )
 
 
 def choose_mapper(stem: str, assets_root: Path, first_stream) -> tuple[str, callable]:
@@ -56,22 +64,20 @@ def choose_mapper(stem: str, assets_root: Path, first_stream) -> tuple[str, call
     max_value = max(max(row.decoded) for chunk in first_stream.chunks for row in chunk.rows)
 
     if mpl_path.exists():
-        palette_info = read_mpl_palette(mpl_path)
-        if palette_info is not None:
-            label, palette_words, transform = palette_info
-            if max_value < len(palette_words):
-                return (label, lambda value, _words=palette_words, _transform=transform: rgb565(_words[_transform(value)]))
+        mpl = read_mpl(mpl_path.read_bytes())
+        if mpl is not None and max_value < mpl.color_count:
+            return build_mpl_bank_mapper(mpl, mode="flag-invert")
 
     return ("pseudo", lambda value, _tail=False: pseudo_color(value, tail=_tail))
 
 
-def render_chunk(chunk, mapper, scale: int, *, tail: bool = False) -> Image.Image:
+def render_chunk(chunk, mapper, scale: int, *, tail: bool = False, flag: int | None = None) -> Image.Image:
     image = Image.new("RGBA", (chunk.width, chunk.height), (0, 0, 0, 0))
     pixels = image.load()
     for y, row in enumerate(chunk.rows):
         for x, value in enumerate(row.decoded):
             try:
-                pixels[x, y] = mapper(value, tail=tail)
+                pixels[x, y] = mapper(value, tail=tail, flag=flag)
             except TypeError:
                 pixels[x, y] = mapper(value)
     if scale > 1:
@@ -102,7 +108,7 @@ def render_composite(items, chunks, mapper, scale: int, *, tail: bool = False, b
 
     for item in items:
         chunk = chunks[item.chunk_index]
-        chunk_image = render_chunk(chunk, mapper, scale, tail=tail)
+        chunk_image = render_chunk(chunk, mapper, scale, tail=tail, flag=getattr(item, "flag", None))
         canvas.alpha_composite(chunk_image, ((item.x - min_x) * scale, (item.y - min_y) * scale))
 
     return canvas
