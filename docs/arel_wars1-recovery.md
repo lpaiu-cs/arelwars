@@ -160,6 +160,12 @@ optional 5-byte control chunks may appear:
 - Grouping those sections by `opaque` separators produces `430` tail groups.
   - `33` groups already have an exact tuple overlap with at least one base frame record.
   - `89` groups are fully tail-only and use chunk indices that never appear in the base frame stream.
+  - Current coarse group classes are:
+    - `base-frame-delta`: `21`
+    - `overlay-track`: `89`
+    - `chunk-linked-reuse`: `32`
+    - `mixed-or-unknown`: `20`
+    - `opaque-only`: `268`
 - Concrete examples:
   - `084.pzx` has `67 ff` blocks that decode directly into `3`-tuple and `10`-tuple flagged placement groups.
   - `208.pzx` has `66 0c` blocks that decode into `8`-tuple flagged placement groups, even though the surrounding tail remains only partially decoded.
@@ -168,7 +174,8 @@ optional 5-byte control chunks may appear:
   - `208.pzx` tail group `0` overlaps base frame `16` on `6 / 8` exact placements, so at least some `66 0c` tail groups are frame-linked deltas rather than independent tracks.
   - `230.pzx` tail sections collapse into `8` groups; every group links back to base frames, with exact overlaps up to `10 / 10` against late frames `13`-`15`.
   - `240.pzx` tail sections collapse into `5` groups, all tail-only. Their chunk ranges advance as `46-47`, `46-47`, `47-48`, `48-50`, `49-51`, which strongly suggests a separate overlay/effect track layered on top of the base sprite animation.
-  - `084.pzx` has mixed behavior: some groups are tail-only (`52`-`61`), while others overlap frames `9`-`12` with `7`-`8` exact placements and appear to be reused across adjacent frames.
+  - `225.pzx` mostly lands in `chunk-linked-reuse`: its groups share many chunk indices with base frames but rarely the exact same `(chunk, x, y, flag)` tuples, suggesting a reusable secondary pose/effect layer.
+  - `084.pzx` has mixed behavior: some groups are tail-only (`52`-`61`), others are `chunk-linked-reuse`, and several central groups become `base-frame-delta` with `7`-`8` exact overlaps against frames `9`-`12`.
 - This means the tail is not one monolithic blob. It is a stream of smaller metadata blocks, some of which are already structured enough to drive placement/state transitions once the block-to-frame relationship is recovered.
 - The row grammar currently held by the tools is:
 

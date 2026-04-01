@@ -202,11 +202,25 @@ def summarize_meta_groups(meta_sections: tuple, frame_records: tuple) -> list[di
             reverse=True,
         )
 
+        link_type = "opaque-only"
+        if tuple_keys:
+            best_exact = int(best_frame_matches[0]["exactOverlap"]) if best_frame_matches else 0
+            best_chunk = int(best_frame_matches[0]["chunkOverlap"]) if best_frame_matches else 0
+            if unique_chunks and len(tail_only_chunks) == len(unique_chunks):
+                link_type = "overlay-track"
+            elif best_exact * 2 >= len(tuple_keys):
+                link_type = "base-frame-delta"
+            elif best_chunk * 2 >= len(tuple_keys):
+                link_type = "chunk-linked-reuse"
+            else:
+                link_type = "mixed-or-unknown"
+
         layout_counts = Counter(section.layout for section in sections)
         marker_counts = Counter(section.marker_hex or "prefix" for section in sections)
         summaries.append(
             {
                 "groupIndex": group_index,
+                "linkType": link_type,
                 "sectionCount": len(sections),
                 "layoutCounts": dict(sorted(layout_counts.items())),
                 "markerCounts": dict(sorted(marker_counts.items())),
@@ -254,6 +268,7 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
     meta_groups = summarize_meta_groups(meta_sections, decoded.records)
     meta_marker_counts = Counter(section.marker_hex or "prefix" for section in meta_sections)
     meta_layout_counts = Counter(section.layout for section in meta_sections)
+    meta_group_link_counts = Counter(group["linkType"] for group in meta_groups)
     min_item_x = min(item.x for item in all_items)
     min_item_y = min(item.y for item in all_items)
     max_item_x = max(item.x + chunk_sizes[item.chunk_index][0] for item in all_items)
@@ -293,6 +308,7 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
             for group in meta_groups
             if int(group["uniqueChunkCount"]) > 0 and int(group["tailOnlyChunkCount"]) == int(group["uniqueChunkCount"])
         ),
+        "metaGroupLinkCounts": dict(sorted(meta_group_link_counts.items())),
         "recordOffsetsPreview": [record.offset for record in decoded.records[:12]],
         "recordPreview": [
             {
@@ -526,6 +542,7 @@ def main() -> None:
             "metaGroupCount": stream["metaGroupCount"],
             "metaLinkedGroupCount": stream["metaLinkedGroupCount"],
             "metaTailOnlyGroupCount": stream["metaTailOnlyGroupCount"],
+            "metaGroupLinkCounts": stream["metaGroupLinkCounts"],
         }
         for entry in pzx_entries
         for stream in entry.get("frameRecordStreams", [])
@@ -543,6 +560,9 @@ def main() -> None:
     frame_meta_group_count = sum(int(entry["metaGroupCount"]) for entry in frame_record_entries)
     frame_meta_linked_group_count = sum(int(entry["metaLinkedGroupCount"]) for entry in frame_record_entries)
     frame_meta_tail_only_group_count = sum(int(entry["metaTailOnlyGroupCount"]) for entry in frame_record_entries)
+    frame_meta_group_link_counts = Counter()
+    for entry in frame_record_entries:
+        frame_meta_group_link_counts.update(entry["metaGroupLinkCounts"])
     frame_meta_exact_stems = sorted(
         {
             entry["stem"]
@@ -671,6 +691,7 @@ def main() -> None:
             "frameMetaGroupCount": frame_meta_group_count,
             "frameMetaLinkedGroupCount": frame_meta_linked_group_count,
             "frameMetaTailOnlyGroupCount": frame_meta_tail_only_group_count,
+            "frameMetaGroupLinkCounts": dict(sorted(frame_meta_group_link_counts.items())),
             "frameMetaExactPzxCount": len(frame_meta_exact_stems),
             "frameMetaExactPreview": frame_meta_exact_stems[:20],
             "frameRecordPreview": frame_record_entries[:12],
@@ -707,6 +728,7 @@ def main() -> None:
             f"The trailing tails now split into {frame_meta_section_count} marker-delimited sections. {frame_meta_marker_counts.get('67ff000000', 0)} use 67 FF 00 00 00 and {frame_meta_marker_counts.get('6778000000', 0)} use 67 78 00 00 00.",
             f"{len(frame_meta_exact_stems)} stems already expose exact-fit tail subsections that decode as 7-byte flagged tuples or simple 6-byte tuples, so at least part of the secondary metadata is structured placement data rather than opaque blobs.",
             f"Those sections cluster into {frame_meta_group_count} opaque-led tail groups. {frame_meta_linked_group_count} groups already have an exact tuple overlap with at least one base frame record, while {frame_meta_tail_only_group_count} groups use only chunk indices that never appear in the base frame stream.",
+            f"Current group classification counts are: base-frame-delta={frame_meta_group_link_counts.get('base-frame-delta', 0)}, overlay-track={frame_meta_group_link_counts.get('overlay-track', 0)}, chunk-linked-reuse={frame_meta_group_link_counts.get('chunk-linked-reuse', 0)}, mixed-or-unknown={frame_meta_group_link_counts.get('mixed-or-unknown', 0)}, opaque-only={frame_meta_group_link_counts.get('opaque-only', 0)}.",
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",
