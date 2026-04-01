@@ -5,8 +5,74 @@ import argparse
 from collections import Counter, defaultdict
 import json
 from pathlib import Path
+import re
 
 from formats import parse_script_prefix
+
+
+ENGLISH_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "been",
+    "beside",
+    "bit",
+    "by",
+    "can",
+    "do",
+    "don't",
+    "down",
+    "for",
+    "from",
+    "get",
+    "got",
+    "have",
+    "how",
+    "i",
+    "i'll",
+    "i'm",
+    "if",
+    "in",
+    "into",
+    "is",
+    "it",
+    "it's",
+    "just",
+    "let",
+    "let's",
+    "like",
+    "long",
+    "make",
+    "more",
+    "my",
+    "now",
+    "of",
+    "on",
+    "or",
+    "our",
+    "out",
+    "prior",
+    "right",
+    "side",
+    "some",
+    "that",
+    "the",
+    "their",
+    "them",
+    "there",
+    "these",
+    "this",
+    "to",
+    "touch",
+    "up",
+    "use",
+    "you",
+    "your",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -31,6 +97,16 @@ def event_path_for(catalog_root: Path, decoded_path: str) -> Path:
 
 def top_counter_items(counter: Counter[object], limit: int) -> list[dict[str, object]]:
     return [{"value": key, "count": count} for key, count in counter.most_common(limit)]
+
+
+def tokenize_english(text: str) -> list[str]:
+    tokens = []
+    for token in re.findall(r"[A-Za-z']+", text.lower()):
+        normalized = token.strip("'")
+        if len(normalized) < 2 or normalized in ENGLISH_STOPWORDS:
+            continue
+        tokens.append(normalized)
+    return tokens
 
 
 def main() -> None:
@@ -62,6 +138,16 @@ def main() -> None:
     unknown_command_speaker_tags: dict[str, Counter[int]] = defaultdict(Counter)
     unknown_command_scripts: dict[str, Counter[str]] = defaultdict(Counter)
     unknown_command_samples: dict[str, list[dict[str, object]]] = defaultdict(list)
+    unknown_variant_counts: Counter[str] = Counter()
+    unknown_variant_mnemonics: dict[str, str] = {}
+    unknown_variant_args: dict[str, tuple[int, ...]] = {}
+    unknown_variant_prev: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_variant_next: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_variant_speakers: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_variant_speaker_tags: dict[str, Counter[int]] = defaultdict(Counter)
+    unknown_variant_scripts: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_variant_tokens: dict[str, Counter[str]] = defaultdict(Counter)
+    unknown_variant_samples: dict[str, list[dict[str, object]]] = defaultdict(list)
     per_script: list[dict[str, object]] = []
 
     for entry in zt1_entries:
@@ -120,6 +206,7 @@ def main() -> None:
                 for index, command in enumerate(prefix_parse.commands):
                     if not command.mnemonic.startswith("cmd-"):
                         continue
+                    variant_key = f"{command.mnemonic}:{','.join(f'{value:02x}' for value in command.args) or '-'}"
                     unknown_opcode_counts.update([command.mnemonic])
                     unknown_command_args[command.mnemonic].update(
                         [",".join(f"{value:02x}" for value in command.args) or "-"]
@@ -153,6 +240,41 @@ def main() -> None:
                                 "prefixHex": prefix_hex,
                                 "sequence": sequence,
                                 "args": list(command.args),
+                            }
+                        )
+                    unknown_variant_counts.update([variant_key])
+                    unknown_variant_mnemonics[variant_key] = command.mnemonic
+                    unknown_variant_args[variant_key] = command.args
+                    unknown_variant_prev[variant_key].update(
+                        [prefix_parse.commands[index - 1].mnemonic if index > 0 else "<start>"]
+                    )
+                    unknown_variant_next[variant_key].update(
+                        [
+                            prefix_parse.commands[index + 1].mnemonic
+                            if index + 1 < len(prefix_parse.commands)
+                            else "<end>"
+                        ]
+                    )
+                    if isinstance(speaker, str):
+                        unknown_variant_speakers[variant_key].update([speaker])
+                    if isinstance(speaker_tag, int):
+                        unknown_variant_speaker_tags[variant_key].update([speaker_tag])
+                    if entry_path:
+                        unknown_variant_scripts[variant_key].update([entry_path])
+                    if locale == "en" and isinstance(raw_event.get("text"), str):
+                        unknown_variant_tokens[variant_key].update(tokenize_english(str(raw_event.get("text"))))
+                    variant_samples = unknown_variant_samples[variant_key]
+                    if len(variant_samples) < 8:
+                        variant_samples.append(
+                            {
+                                "path": entry.get("path"),
+                                "speaker": speaker,
+                                "speakerTag": speaker_tag,
+                                "text": raw_event.get("text"),
+                                "prefixHex": prefix_hex,
+                                "sequence": sequence,
+                                "args": list(command.args),
+                                "locale": locale,
                             }
                         )
 
@@ -220,6 +342,22 @@ def main() -> None:
                 "samples": unknown_command_samples[mnemonic],
             }
             for mnemonic, count in unknown_opcode_counts.most_common()
+        ],
+        "unknownCommandVariants": [
+            {
+                "variant": variant_key,
+                "mnemonic": unknown_variant_mnemonics[variant_key],
+                "args": list(unknown_variant_args[variant_key]),
+                "count": count,
+                "previousCommands": top_counter_items(unknown_variant_prev[variant_key], 8),
+                "nextCommands": top_counter_items(unknown_variant_next[variant_key], 8),
+                "topSpeakers": top_counter_items(unknown_variant_speakers[variant_key], 8),
+                "topSpeakerTags": top_counter_items(unknown_variant_speaker_tags[variant_key], 8),
+                "topScripts": top_counter_items(unknown_variant_scripts[variant_key], 8),
+                "topEnglishTokens": top_counter_items(unknown_variant_tokens[variant_key], 12),
+                "samples": unknown_variant_samples[variant_key],
+            }
+            for variant_key, count in unknown_variant_counts.most_common()
         ],
         "topScripts": sorted(per_script, key=lambda item: int(item["eventCount"]), reverse=True)[:32],
     }
