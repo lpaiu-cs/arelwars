@@ -17,6 +17,8 @@ export interface RecoveryScriptEntry {
   eventCount?: number
   eventPreview?: RecoveryDialogueEvent[]
   decodedPath: string
+  eventsPath?: string
+  webEventsPath?: string
 }
 
 export interface RecoveryDialogueEvent {

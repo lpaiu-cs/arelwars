@@ -173,6 +173,7 @@ def main() -> None:
                         for event in script_events
                     ],
                 )
+                entry["eventsPath"] = str(events_path.relative_to(output_root))
 
     featured_scripts = [
         entry
@@ -182,6 +183,20 @@ def main() -> None:
             reverse=True,
         )[:20]
     ]
+
+    if web_root is not None:
+        events_web_root = web_root / "analysis" / "zt1_events"
+        for entry in featured_scripts:
+            events_path = entry.get("eventsPath")
+            if not isinstance(events_path, str):
+                continue
+            src = output_root / events_path
+            if not src.exists():
+                continue
+            dst = events_web_root / Path(events_path).name
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+            entry["webEventsPath"] = f"/recovery/analysis/zt1_events/{dst.name}"
 
     blocked_formats = [
         {

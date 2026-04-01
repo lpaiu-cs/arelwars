@@ -154,6 +154,7 @@ npm run ios:sync
   - `assets/script_kor/1080.zt1` and `1102.zt1` recover Korean caption/speech events under `cp949`
 - Recovery artifacts now include per-script event dumps at `recovery/arel_wars1/decoded/zt1/.../*.events.json`.
 - The catalog/web preview now tracks `scriptEventTotal` and uses structured dialogue previews when available instead of flat string snippets.
+- The runtime also exports full featured-script event files under `remake/arel-wars1/public/recovery/analysis/zt1_events/`, so the storyboard layer can play through complete recovered dialogue rather than only the first preview rows.
 
 ## PZX Findings
 

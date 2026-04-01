@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import './style.css'
 import { RecoveryBootScene } from './scenes/RecoveryBootScene'
-import type { RecoveryCatalog, RecoveryPreviewManifest, RecoveryPreviewStem, RecoveryStageSnapshot } from './recovery-types'
+import type { RecoveryCatalog, RecoveryDialogueEvent, RecoveryPreviewManifest, RecoveryPreviewStem, RecoveryStageSnapshot } from './recovery-types'
 import { RecoveryStageSystem } from './systems/recoveryStageSystem'
 
 const app = document.querySelector<HTMLDivElement>('#app')
@@ -105,7 +105,7 @@ async function bootstrap(): Promise<void> {
   let stageSystem: RecoveryStageSystem | null = null
 
   if (catalogResult.status === 'fulfilled') {
-    const catalog = catalogResult.value
+    const catalog = await hydrateCatalogScripts(catalogResult.value)
     if (previewManifest) {
       stageSystem = new RecoveryStageSystem(catalog, previewManifest)
     }
@@ -226,6 +226,31 @@ async function fetchJson<T>(path: string): Promise<T> {
     throw new Error(`${path} request failed with ${response.status}`)
   }
   return (await response.json()) as T
+}
+
+async function hydrateCatalogScripts(catalog: RecoveryCatalog): Promise<RecoveryCatalog> {
+  const featuredScripts = await Promise.all(
+    catalog.featuredScripts.map(async (entry) => {
+      if (!entry.webEventsPath) {
+        return entry
+      }
+      try {
+        const events = await fetchJson<RecoveryDialogueEvent[]>(entry.webEventsPath)
+        return {
+          ...entry,
+          eventPreview: events,
+          eventCount: events.length,
+        }
+      } catch {
+        return entry
+      }
+    }),
+  )
+
+  return {
+    ...catalog,
+    featuredScripts,
+  }
 }
 
 function statCard(label: string, value: string): string {
