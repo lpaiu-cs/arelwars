@@ -1,5 +1,6 @@
 {
   "sequenceKind": "has-contiguous-rise",
+  "timelineKind": "rising-anchor-run",
   "linkedGroupCount": 8,
   "overlayGroupCount": 0,
   "linkTypeCounts": {
@@ -48,6 +49,138 @@
     ],
     "length": 3
   },
+  "linkedAnchorRuns": [
+    {
+      "groupIndices": [
+        0
+      ],
+      "anchorFrameIndex": 15,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          2,
+          34
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        1
+      ],
+      "anchorFrameIndex": 13,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          3,
+          34
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        2
+      ],
+      "anchorFrameIndex": 14,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          0,
+          34
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        3
+      ],
+      "anchorFrameIndex": 15,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          2,
+          34
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        4
+      ],
+      "anchorFrameIndex": 13,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          3,
+          34
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        5
+      ],
+      "anchorFrameIndex": 14,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          0,
+          34
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        6
+      ],
+      "anchorFrameIndex": 13,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          3,
+          34
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        7
+      ],
+      "anchorFrameIndex": 14,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          0,
+          34
+        ]
+      ]
+    }
+  ],
+  "overlayRuns": [],
+  "overlayAttachmentsPreview": [],
   "linkedGroupIndices": [
     0,
     1,

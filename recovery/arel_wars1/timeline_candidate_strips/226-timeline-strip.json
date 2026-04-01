@@ -1,0 +1,140 @@
+{
+  "stem": "226",
+  "timelineKind": "mixed-anchor-overlay",
+  "sequenceKind": "linked-mixed",
+  "eventCount": 11,
+  "events": [
+    {
+      "groupIndex": 5,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        31,
+        31
+      ]
+    },
+    {
+      "groupIndex": 7,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        31,
+        31
+      ]
+    },
+    {
+      "groupIndex": 9,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        27,
+        31
+      ]
+    },
+    {
+      "groupIndex": 11,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        27,
+        31
+      ]
+    },
+    {
+      "groupIndex": 13,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        27,
+        31
+      ]
+    },
+    {
+      "groupIndex": 15,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        27,
+        31
+      ]
+    },
+    {
+      "groupIndex": 17,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        27,
+        31
+      ]
+    },
+    {
+      "groupIndex": 19,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        27,
+        31
+      ]
+    },
+    {
+      "groupIndex": 21,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 0,
+      "relation": "before-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        27,
+        31
+      ]
+    },
+    {
+      "groupIndex": 22,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 0,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        28,
+        28
+      ]
+    },
+    {
+      "groupIndex": 24,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 5,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        28,
+        28
+      ]
+    }
+  ]
+}

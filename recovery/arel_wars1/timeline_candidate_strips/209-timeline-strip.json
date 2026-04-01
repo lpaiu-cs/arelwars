@@ -1,0 +1,116 @@
+{
+  "stem": "209",
+  "timelineKind": "single-anchor-with-overlays",
+  "sequenceKind": "single-anchor-delta",
+  "eventCount": 9,
+  "events": [
+    {
+      "groupIndex": 0,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 14,
+      "relation": null,
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        7,
+        34
+      ]
+    },
+    {
+      "groupIndex": 1,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    },
+    {
+      "groupIndex": 2,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    },
+    {
+      "groupIndex": 4,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    },
+    {
+      "groupIndex": 5,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    },
+    {
+      "groupIndex": 6,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    },
+    {
+      "groupIndex": 7,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    },
+    {
+      "groupIndex": 8,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ]
+    }
+  ]
+}

@@ -165,7 +165,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
     output_root.mkdir(parents=True, exist_ok=True)
 
     if linked_panels:
-        title = f"{stem} linked frame candidates ({sequence_summary['sequenceKind']})"
+        title = f"{stem} linked frame candidates ({sequence_summary['sequenceKind']}, {sequence_summary['timelineKind']})"
         sheet = build_sheet(title, linked_panels)
         output_path = output_root / f"{stem}-linked-sequence.png"
         sheet.save(output_path)
@@ -177,7 +177,8 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         outputs.append(output_root / f"{stem}-linked-sequence.json")
 
     if overlay_panels:
-        sheet = build_sheet(f"{stem} overlay sequence candidates", overlay_panels)
+        title = f"{stem} overlay sequence candidates ({sequence_summary['timelineKind']})"
+        sheet = build_sheet(title, overlay_panels)
         output_path = output_root / f"{stem}-overlay-sequence.png"
         sheet.save(output_path)
         outputs.append(output_path)

@@ -1,5 +1,6 @@
 {
   "sequenceKind": "linked-mixed",
+  "timelineKind": "linked-only-scatter",
   "linkedGroupCount": 11,
   "overlayGroupCount": 0,
   "linkTypeCounts": {
@@ -53,6 +54,164 @@
     ],
     "length": 1
   },
+  "linkedAnchorRuns": [
+    {
+      "groupIndices": [
+        0,
+        1
+      ],
+      "anchorFrameIndex": 3,
+      "length": 2,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          0,
+          15
+        ],
+        [
+          0,
+          15
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        2
+      ],
+      "anchorFrameIndex": 2,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          0,
+          16
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        3
+      ],
+      "anchorFrameIndex": 5,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          0,
+          17
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        4
+      ],
+      "anchorFrameIndex": 0,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          12,
+          13
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        6
+      ],
+      "anchorFrameIndex": 6,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          12,
+          13
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        7,
+        8
+      ],
+      "anchorFrameIndex": 3,
+      "length": 2,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          4,
+          18
+        ],
+        [
+          4,
+          18
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        9
+      ],
+      "anchorFrameIndex": 2,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          9,
+          19
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        10
+      ],
+      "anchorFrameIndex": 5,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          9,
+          14
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        11
+      ],
+      "anchorFrameIndex": 0,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          12,
+          13
+        ]
+      ]
+    }
+  ],
+  "overlayRuns": [],
+  "overlayAttachmentsPreview": [],
   "linkedGroupIndices": [
     0,
     1,

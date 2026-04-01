@@ -1,5 +1,6 @@
 {
   "sequenceKind": "single-anchor-delta",
+  "timelineKind": "single-anchor-with-overlays",
   "linkedGroupCount": 1,
   "overlayGroupCount": 8,
   "linkTypeCounts": {
@@ -27,6 +28,162 @@
     ],
     "length": 1
   },
+  "linkedAnchorRuns": [
+    {
+      "groupIndices": [
+        0
+      ],
+      "anchorFrameIndex": 14,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          7,
+          34
+        ]
+      ]
+    }
+  ],
+  "overlayRuns": [
+    {
+      "groupIndices": [
+        1
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 3,
+      "tailOnlyChunkCount": 3
+    },
+    {
+      "groupIndices": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "length": 7,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "tailOnlyChunkCount": 5
+    }
+  ],
+  "overlayAttachmentsPreview": [
+    {
+      "groupIndex": 1,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 3,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 2,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 3,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 4,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 5,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 6,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 7,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 8,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "tupleCount": 5,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 14,
+      "nearestAnchorGroupIndex": 0,
+      "previousLinkedGroupIndex": 0,
+      "nextLinkedGroupIndex": null
+    }
+  ],
   "linkedGroupIndices": [
     0
   ],

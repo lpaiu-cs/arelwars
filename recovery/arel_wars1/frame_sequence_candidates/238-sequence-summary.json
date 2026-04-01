@@ -1,5 +1,6 @@
 {
   "sequenceKind": "overlay-only",
+  "timelineKind": "overlay-track-only",
   "linkedGroupCount": 0,
   "overlayGroupCount": 2,
   "linkTypeCounts": {
@@ -11,6 +12,61 @@
   "anchorFrameSpan": null,
   "strictLoopCycle": null,
   "bestContiguousRun": null,
+  "linkedAnchorRuns": [],
+  "overlayRuns": [
+    {
+      "groupIndices": [
+        7
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        37,
+        37
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndices": [
+        11
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        41,
+        41
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 1
+    }
+  ],
+  "overlayAttachmentsPreview": [
+    {
+      "groupIndex": 7,
+      "chunkIndexRange": [
+        37,
+        37
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 11,
+      "chunkIndexRange": [
+        41,
+        41
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    }
+  ],
   "linkedGroupIndices": [],
   "overlayGroupIndices": [
     7,

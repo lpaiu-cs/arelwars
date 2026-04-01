@@ -467,6 +467,9 @@ def main() -> None:
     frame_meta_sequence_kind_counts = Counter(
         entry["metaSequenceSummary"]["sequenceKind"] for entry in frame_record_entries
     )
+    frame_meta_timeline_kind_counts = Counter(
+        entry["metaSequenceSummary"]["timelineKind"] for entry in frame_record_entries
+    )
     frame_meta_exact_stems = sorted(
         {
             entry["stem"]
@@ -597,12 +600,14 @@ def main() -> None:
             "frameMetaTailOnlyGroupCount": frame_meta_tail_only_group_count,
             "frameMetaGroupLinkCounts": dict(sorted(frame_meta_group_link_counts.items())),
             "frameMetaSequenceKindCounts": dict(sorted(frame_meta_sequence_kind_counts.items())),
+            "frameMetaTimelineKindCounts": dict(sorted(frame_meta_timeline_kind_counts.items())),
             "frameMetaExactPzxCount": len(frame_meta_exact_stems),
             "frameMetaExactPreview": frame_meta_exact_stems[:20],
             "frameMetaSequencePreview": [
                 {
                     "stem": entry["stem"],
                     "sequenceKind": entry["metaSequenceSummary"]["sequenceKind"],
+                    "timelineKind": entry["metaSequenceSummary"]["timelineKind"],
                     "anchorFrameSequence": entry["metaSequenceSummary"]["anchorFrameSequence"][:8],
                     "overlayChunkRanges": entry["metaSequenceSummary"]["overlayChunkRanges"][:8],
                 }
@@ -644,6 +649,7 @@ def main() -> None:
             f"Those sections cluster into {frame_meta_group_count} opaque-led tail groups. {frame_meta_linked_group_count} groups already have an exact tuple overlap with at least one base frame record, while {frame_meta_tail_only_group_count} groups use only chunk indices that never appear in the base frame stream.",
             f"Current group classification counts are: base-frame-delta={frame_meta_group_link_counts.get('base-frame-delta', 0)}, overlay-track={frame_meta_group_link_counts.get('overlay-track', 0)}, chunk-linked-reuse={frame_meta_group_link_counts.get('chunk-linked-reuse', 0)}, mixed-or-unknown={frame_meta_group_link_counts.get('mixed-or-unknown', 0)}, opaque-only={frame_meta_group_link_counts.get('opaque-only', 0)}.",
             f"Sequence-kind counts across frame-record stems are now: {', '.join(f'{key}={value}' for key, value in sorted(frame_meta_sequence_kind_counts.items()))}.",
+            f"Timeline-kind counts are now: {', '.join(f'{key}={value}' for key, value in sorted(frame_meta_timeline_kind_counts.items()))}.",
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",

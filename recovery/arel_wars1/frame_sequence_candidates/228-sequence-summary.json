@@ -1,5 +1,6 @@
 {
   "sequenceKind": "single-anchor-delta",
+  "timelineKind": "single-anchor-with-overlays",
   "linkedGroupCount": 1,
   "overlayGroupCount": 1,
   "linkTypeCounts": {
@@ -27,6 +28,53 @@
     ],
     "length": 1
   },
+  "linkedAnchorRuns": [
+    {
+      "groupIndices": [
+        3
+      ],
+      "anchorFrameIndex": 2,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          0,
+          58
+        ]
+      ]
+    }
+  ],
+  "overlayRuns": [
+    {
+      "groupIndices": [
+        1
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        51,
+        52
+      ],
+      "tupleCount": 3,
+      "tailOnlyChunkCount": 2
+    }
+  ],
+  "overlayAttachmentsPreview": [
+    {
+      "groupIndex": 1,
+      "chunkIndexRange": [
+        51,
+        52
+      ],
+      "tupleCount": 3,
+      "relation": "before-linked",
+      "nearestAnchorFrameIndex": 2,
+      "nearestAnchorGroupIndex": 3,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": 3
+    }
+  ],
   "linkedGroupIndices": [
     3
   ],

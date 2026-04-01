@@ -1,0 +1,20 @@
+{
+  "stem": "203",
+  "timelineKind": "linked-only-scatter",
+  "sequenceKind": "single-anchor-delta",
+  "eventCount": 1,
+  "events": [
+    {
+      "groupIndex": 1,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 0,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        17,
+        32
+      ]
+    }
+  ]
+}

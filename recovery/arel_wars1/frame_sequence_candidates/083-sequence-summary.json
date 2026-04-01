@@ -1,5 +1,6 @@
 {
   "sequenceKind": "overlay-only",
+  "timelineKind": "overlay-track-only",
   "linkedGroupCount": 0,
   "overlayGroupCount": 32,
   "linkTypeCounts": {
@@ -11,6 +12,363 @@
   "anchorFrameSpan": null,
   "strictLoopCycle": null,
   "bestContiguousRun": null,
+  "linkedAnchorRuns": [],
+  "overlayRuns": [
+    {
+      "groupIndices": [
+        9
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        80,
+        80
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndices": [
+        11
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        12
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        80,
+        81
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        13
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        14
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        15
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ],
+      "tupleCount": 1,
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndices": [
+        16
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        80,
+        82
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        17
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        18
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        19
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ],
+      "tupleCount": 1,
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndices": [
+        20
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        80,
+        83
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndices": [
+        21
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tupleCount": 2,
+      "tailOnlyChunkCount": 2
+    }
+  ],
+  "overlayAttachmentsPreview": [
+    {
+      "groupIndex": 9,
+      "chunkIndexRange": [
+        80,
+        80
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 11,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 12,
+      "chunkIndexRange": [
+        80,
+        81
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 13,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 14,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 15,
+      "chunkIndexRange": [
+        79,
+        79
+      ],
+      "tupleCount": 1,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 16,
+      "chunkIndexRange": [
+        80,
+        82
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 17,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 18,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 19,
+      "chunkIndexRange": [
+        79,
+        79
+      ],
+      "tupleCount": 1,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 20,
+      "chunkIndexRange": [
+        80,
+        83
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 21,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 22,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 23,
+      "chunkIndexRange": [
+        79,
+        79
+      ],
+      "tupleCount": 1,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 25,
+      "chunkIndexRange": [
+        80,
+        80
+      ],
+      "tupleCount": 1,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 26,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tupleCount": 2,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    }
+  ],
   "linkedGroupIndices": [],
   "overlayGroupIndices": [
     9,

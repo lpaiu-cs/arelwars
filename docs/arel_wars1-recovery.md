@@ -89,6 +89,11 @@ python3 tools/arel_wars1/render_frame_sequence_candidates.py \
   --assets-root recovery/arel_wars1/apk_unzip/assets \
   --output recovery/arel_wars1/frame_sequence_candidates \
   --stems 208 230 240 225 084
+
+python3 tools/arel_wars1/render_timeline_candidate_strips.py \
+  --assets-root recovery/arel_wars1/apk_unzip/assets \
+  --output recovery/arel_wars1/timeline_candidate_strips \
+  --stems 209 215 226 228 230 084 240
 ```
 
 From `remake/arel-wars1/`:
@@ -195,6 +200,12 @@ optional 5-byte control chunks may appear:
   - `215` is `single-anchor-repeat`: nine linked groups all anchor to frame `10`, plus one tiny overlay-only chunk `26`, which looks more like repeated effect deltas than a true frame-to-frame loop.
   - `226` and `228` sit between the clean cases: both keep a small linked anchor set while also emitting separate tail-only overlays, which is a good sign that linked deltas and effect tracks are intentionally mixed in the same tail format.
   - `240` is `overlay-only`, with no base-frame anchor and a clean advancing overlay chunk sequence.
+- Timeline strips now exist in `recovery/arel_wars1/timeline_candidate_strips/`.
+  - The strip set also covers all `21` active stems, so each candidate tail event can now be read in group-index order instead of as isolated probes.
+  - `209-timeline-strip.png` shows a concrete `single-anchor-with-overlays` pattern: one base-linked pose at frame `14`, followed by a `7`-panel repeated circular overlay run.
+  - `215-timeline-strip.png` shows `single-anchor-cadence`: the same anchor frame `10` reused across a long sequence of tiny linked deltas before a final overlay event.
+  - `226-timeline-strip.png` shows `mixed-anchor-overlay`: a long prefix of overlay-only events tied to frame `0`, then two linked anchor updates (`0`, then `5`).
+  - `240-timeline-strip.png` confirms `overlay-track-only`: every event is unanchored and the chunk ranges expand from `46-47` to `49-51` without touching any base frame.
 - Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
   - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
   - `230-group00-base-frame-delta.png` confirms that one late-frame tail group is almost a direct frame delta, not a separate track.

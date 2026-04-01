@@ -182,6 +182,122 @@ def _longest_contiguous_anchor_run(linked_candidates: Sequence[dict[str, object]
     }
 
 
+def _summarize_linked_anchor_runs(linked_candidates: Sequence[dict[str, object]]) -> list[dict[str, object]]:
+    if not linked_candidates:
+        return []
+
+    runs: list[list[dict[str, object]]] = []
+    current = [linked_candidates[0]]
+    for candidate in linked_candidates[1:]:
+        previous = current[-1]
+        if int(candidate["groupIndex"]) == int(previous["groupIndex"]) + 1 and int(candidate["anchorFrameIndex"]) == int(
+            previous["anchorFrameIndex"]
+        ):
+            current.append(candidate)
+        else:
+            runs.append(current)
+            current = [candidate]
+    runs.append(current)
+
+    return [
+        {
+            "groupIndices": [int(candidate["groupIndex"]) for candidate in run],
+            "anchorFrameIndex": int(run[0]["anchorFrameIndex"]),
+            "length": len(run),
+            "linkTypes": sorted({str(candidate["linkType"]) for candidate in run}),
+            "chunkIndexSpans": [candidate["chunkIndexRange"] for candidate in run],
+        }
+        for run in runs
+    ]
+
+
+def _overlay_signature(candidate: dict[str, object]) -> tuple[object, int]:
+    chunk_range = candidate["chunkIndexRange"]
+    return (tuple(chunk_range) if chunk_range is not None else None, int(candidate["tupleCount"]))
+
+
+def _summarize_overlay_runs(overlay_candidates: Sequence[dict[str, object]]) -> list[dict[str, object]]:
+    if not overlay_candidates:
+        return []
+
+    runs: list[list[dict[str, object]]] = []
+    current = [overlay_candidates[0]]
+    current_signature = _overlay_signature(overlay_candidates[0])
+    for candidate in overlay_candidates[1:]:
+        signature = _overlay_signature(candidate)
+        if int(candidate["groupIndex"]) == int(current[-1]["groupIndex"]) + 1 and signature == current_signature:
+            current.append(candidate)
+        else:
+            runs.append(current)
+            current = [candidate]
+            current_signature = signature
+    runs.append(current)
+
+    return [
+        {
+            "groupIndices": [int(candidate["groupIndex"]) for candidate in run],
+            "length": len(run),
+            "chunkIndexRange": run[0]["chunkIndexRange"],
+            "tupleCount": int(run[0]["tupleCount"]),
+            "tailOnlyChunkCount": int(run[0]["tailOnlyChunkCount"]),
+        }
+        for run in runs
+    ]
+
+
+def _summarize_overlay_attachments(
+    linked_candidates: Sequence[dict[str, object]], overlay_candidates: Sequence[dict[str, object]]
+) -> list[dict[str, object]]:
+    attachments: list[dict[str, object]] = []
+    for overlay in overlay_candidates:
+        prev_linked = None
+        next_linked = None
+        for linked in linked_candidates:
+            if int(linked["groupIndex"]) < int(overlay["groupIndex"]):
+                prev_linked = linked
+            elif int(linked["groupIndex"]) > int(overlay["groupIndex"]):
+                next_linked = linked
+                break
+
+        relation = "unanchored"
+        nearest_anchor_frame = None
+        nearest_anchor_group = None
+        if prev_linked is not None and next_linked is not None:
+            prev_gap = int(overlay["groupIndex"]) - int(prev_linked["groupIndex"])
+            next_gap = int(next_linked["groupIndex"]) - int(overlay["groupIndex"])
+            if prev_gap <= next_gap:
+                relation = "after-linked"
+                nearest = prev_linked
+            else:
+                relation = "before-linked"
+                nearest = next_linked
+            nearest_anchor_frame = int(nearest["anchorFrameIndex"])
+            nearest_anchor_group = int(nearest["groupIndex"])
+        elif prev_linked is not None:
+            relation = "after-linked"
+            nearest_anchor_frame = int(prev_linked["anchorFrameIndex"])
+            nearest_anchor_group = int(prev_linked["groupIndex"])
+        elif next_linked is not None:
+            relation = "before-linked"
+            nearest_anchor_frame = int(next_linked["anchorFrameIndex"])
+            nearest_anchor_group = int(next_linked["groupIndex"])
+
+        attachments.append(
+            {
+                "groupIndex": int(overlay["groupIndex"]),
+                "chunkIndexRange": overlay["chunkIndexRange"],
+                "tupleCount": int(overlay["tupleCount"]),
+                "relation": relation,
+                "nearestAnchorFrameIndex": nearest_anchor_frame,
+                "nearestAnchorGroupIndex": nearest_anchor_group,
+                "previousLinkedGroupIndex": int(prev_linked["groupIndex"]) if prev_linked is not None else None,
+                "nextLinkedGroupIndex": int(next_linked["groupIndex"]) if next_linked is not None else None,
+            }
+        )
+
+    return attachments
+
+
 def summarize_sequence_candidates(meta_groups: Sequence[dict[str, object]]) -> dict[str, object]:
     linked_candidates: list[dict[str, object]] = []
     overlay_candidates: list[dict[str, object]] = []
@@ -218,6 +334,9 @@ def summarize_sequence_candidates(meta_groups: Sequence[dict[str, object]]) -> d
     distinct_anchor_frames = sorted(set(anchor_sequence))
     best_run = _longest_contiguous_anchor_run(linked_candidates)
     strict_cycle = _find_minimal_cycle(anchor_sequence)
+    linked_anchor_runs = _summarize_linked_anchor_runs(linked_candidates)
+    overlay_runs = _summarize_overlay_runs(overlay_candidates)
+    overlay_attachments = _summarize_overlay_attachments(linked_candidates, overlay_candidates)
 
     if not linked_candidates and overlay_candidates:
         sequence_kind = "overlay-only"
@@ -238,11 +357,31 @@ def summarize_sequence_candidates(meta_groups: Sequence[dict[str, object]]) -> d
     else:
         sequence_kind = "linked-mixed"
 
+    if not linked_candidates and overlay_candidates:
+        timeline_kind = "overlay-track-only"
+    elif len(distinct_anchor_frames) == 1 and len(linked_candidates) > 1:
+        timeline_kind = "single-anchor-cadence"
+    elif len(distinct_anchor_frames) == 1 and overlay_candidates:
+        timeline_kind = "single-anchor-with-overlays"
+    elif best_run is not None and int(best_run["length"]) >= 3 and overlay_candidates:
+        timeline_kind = "rising-anchor-with-overlays"
+    elif best_run is not None and int(best_run["length"]) >= 3:
+        timeline_kind = "rising-anchor-run"
+    elif overlay_candidates and linked_candidates:
+        timeline_kind = "mixed-anchor-overlay"
+    elif strict_cycle is not None:
+        timeline_kind = "anchor-loop"
+    elif linked_candidates:
+        timeline_kind = "linked-only-scatter"
+    else:
+        timeline_kind = "no-timeline-candidates"
+
     link_type_counts = Counter(str(candidate["linkType"]) for candidate in linked_candidates)
     link_type_counts.update({"overlay-track": len(overlay_candidates)})
 
     return {
         "sequenceKind": sequence_kind,
+        "timelineKind": timeline_kind,
         "linkedGroupCount": len(linked_candidates),
         "overlayGroupCount": len(overlay_candidates),
         "linkTypeCounts": dict(sorted(link_type_counts.items())),
@@ -252,6 +391,9 @@ def summarize_sequence_candidates(meta_groups: Sequence[dict[str, object]]) -> d
         "anchorFrameSpan": [min(anchor_sequence), max(anchor_sequence)] if anchor_sequence else None,
         "strictLoopCycle": strict_cycle,
         "bestContiguousRun": best_run,
+        "linkedAnchorRuns": linked_anchor_runs[:12],
+        "overlayRuns": overlay_runs[:12],
+        "overlayAttachmentsPreview": overlay_attachments[:16],
         "linkedGroupIndices": [int(candidate["groupIndex"]) for candidate in linked_candidates],
         "overlayGroupIndices": [int(candidate["groupIndex"]) for candidate in overlay_candidates],
         "overlayChunkRanges": [candidate["chunkIndexRange"] for candidate in overlay_candidates],

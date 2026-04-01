@@ -1,0 +1,104 @@
+{
+  "stem": "230",
+  "timelineKind": "rising-anchor-run",
+  "sequenceKind": "has-contiguous-rise",
+  "eventCount": 8,
+  "events": [
+    {
+      "groupIndex": 0,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 15,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        2,
+        34
+      ]
+    },
+    {
+      "groupIndex": 1,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 13,
+      "relation": null,
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        3,
+        34
+      ]
+    },
+    {
+      "groupIndex": 2,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 14,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        0,
+        34
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 15,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        2,
+        34
+      ]
+    },
+    {
+      "groupIndex": 4,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 13,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        3,
+        34
+      ]
+    },
+    {
+      "groupIndex": 5,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 14,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        0,
+        34
+      ]
+    },
+    {
+      "groupIndex": 6,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 13,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        3,
+        34
+      ]
+    },
+    {
+      "groupIndex": 7,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 14,
+      "relation": null,
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        0,
+        34
+      ]
+    }
+  ]
+}

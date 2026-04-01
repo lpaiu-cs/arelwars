@@ -1,0 +1,128 @@
+{
+  "stem": "215",
+  "timelineKind": "single-anchor-cadence",
+  "sequenceKind": "single-anchor-repeat",
+  "eventCount": 10,
+  "events": [
+    {
+      "groupIndex": 2,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        22,
+        22
+      ]
+    },
+    {
+      "groupIndex": 6,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        23,
+        23
+      ]
+    },
+    {
+      "groupIndex": 9,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        22,
+        22
+      ]
+    },
+    {
+      "groupIndex": 14,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        23,
+        23
+      ]
+    },
+    {
+      "groupIndex": 17,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        22,
+        22
+      ]
+    },
+    {
+      "groupIndex": 22,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        23,
+        23
+      ]
+    },
+    {
+      "groupIndex": 25,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        22,
+        22
+      ]
+    },
+    {
+      "groupIndex": 29,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        22,
+        22
+      ]
+    },
+    {
+      "groupIndex": 32,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        21,
+        23
+      ]
+    },
+    {
+      "groupIndex": 33,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 10,
+      "relation": "after-linked",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        26,
+        26
+      ]
+    }
+  ]
+}

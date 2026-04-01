@@ -1,5 +1,6 @@
 {
   "sequenceKind": "single-anchor-delta",
+  "timelineKind": "linked-only-scatter",
   "linkedGroupCount": 1,
   "overlayGroupCount": 0,
   "linkTypeCounts": {
@@ -27,6 +28,26 @@
     ],
     "length": 1
   },
+  "linkedAnchorRuns": [
+    {
+      "groupIndices": [
+        0
+      ],
+      "anchorFrameIndex": 16,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          2,
+          37
+        ]
+      ]
+    }
+  ],
+  "overlayRuns": [],
+  "overlayAttachmentsPreview": [],
   "linkedGroupIndices": [
     0
   ],

@@ -1,0 +1,68 @@
+{
+  "stem": "240",
+  "timelineKind": "overlay-track-only",
+  "sequenceKind": "overlay-only",
+  "eventCount": 5,
+  "events": [
+    {
+      "groupIndex": 0,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        46,
+        47
+      ]
+    },
+    {
+      "groupIndex": 1,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        46,
+        47
+      ]
+    },
+    {
+      "groupIndex": 2,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 7,
+      "chunkIndexRange": [
+        47,
+        48
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        48,
+        50
+      ]
+    },
+    {
+      "groupIndex": 4,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 15,
+      "chunkIndexRange": [
+        49,
+        51
+      ]
+    }
+  ]
+}

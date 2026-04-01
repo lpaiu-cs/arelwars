@@ -1,0 +1,32 @@
+{
+  "stem": "228",
+  "timelineKind": "single-anchor-with-overlays",
+  "sequenceKind": "single-anchor-delta",
+  "eventCount": 2,
+  "events": [
+    {
+      "groupIndex": 1,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 2,
+      "relation": "before-linked",
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        51,
+        52
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 2,
+      "relation": null,
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        0,
+        58
+      ]
+    }
+  ]
+}

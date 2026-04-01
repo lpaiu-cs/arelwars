@@ -1,0 +1,32 @@
+{
+  "stem": "238",
+  "timelineKind": "overlay-track-only",
+  "sequenceKind": "overlay-only",
+  "eventCount": 2,
+  "events": [
+    {
+      "groupIndex": 7,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        37,
+        37
+      ]
+    },
+    {
+      "groupIndex": 11,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        41,
+        41
+      ]
+    }
+  ]
+}

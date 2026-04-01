@@ -1,0 +1,392 @@
+{
+  "stem": "083",
+  "timelineKind": "overlay-track-only",
+  "sequenceKind": "overlay-only",
+  "eventCount": 32,
+  "events": [
+    {
+      "groupIndex": 9,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        80
+      ]
+    },
+    {
+      "groupIndex": 11,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ]
+    },
+    {
+      "groupIndex": 12,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        81
+      ]
+    },
+    {
+      "groupIndex": 13,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        34,
+        79
+      ]
+    },
+    {
+      "groupIndex": 14,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ]
+    },
+    {
+      "groupIndex": 15,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ]
+    },
+    {
+      "groupIndex": 16,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        82
+      ]
+    },
+    {
+      "groupIndex": 17,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        34,
+        79
+      ]
+    },
+    {
+      "groupIndex": 18,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ]
+    },
+    {
+      "groupIndex": 19,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ]
+    },
+    {
+      "groupIndex": 20,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        83
+      ]
+    },
+    {
+      "groupIndex": 21,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        34,
+        79
+      ]
+    },
+    {
+      "groupIndex": 22,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ]
+    },
+    {
+      "groupIndex": 23,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ]
+    },
+    {
+      "groupIndex": 25,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        80,
+        80
+      ]
+    },
+    {
+      "groupIndex": 26,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        34,
+        79
+      ]
+    },
+    {
+      "groupIndex": 27,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ]
+    },
+    {
+      "groupIndex": 28,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ]
+    },
+    {
+      "groupIndex": 30,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        80,
+        80
+      ]
+    },
+    {
+      "groupIndex": 32,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ]
+    },
+    {
+      "groupIndex": 34,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        80,
+        80
+      ]
+    },
+    {
+      "groupIndex": 36,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        80
+      ]
+    },
+    {
+      "groupIndex": 37,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        66,
+        66
+      ]
+    },
+    {
+      "groupIndex": 38,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        67,
+        67
+      ]
+    },
+    {
+      "groupIndex": 40,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        66,
+        66
+      ]
+    },
+    {
+      "groupIndex": 41,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        66,
+        67
+      ]
+    },
+    {
+      "groupIndex": 42,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        67,
+        67
+      ]
+    },
+    {
+      "groupIndex": 43,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        77,
+        78
+      ]
+    },
+    {
+      "groupIndex": 50,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        66,
+        68
+      ]
+    },
+    {
+      "groupIndex": 51,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        67,
+        67
+      ]
+    },
+    {
+      "groupIndex": 56,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        68,
+        68
+      ]
+    },
+    {
+      "groupIndex": 62,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        58,
+        58
+      ]
+    }
+  ]
+}

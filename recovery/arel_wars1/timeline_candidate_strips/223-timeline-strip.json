@@ -1,0 +1,20 @@
+{
+  "stem": "223",
+  "timelineKind": "overlay-track-only",
+  "sequenceKind": "overlay-only",
+  "eventCount": 1,
+  "events": [
+    {
+      "groupIndex": 0,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        41,
+        41
+      ]
+    }
+  ]
+}

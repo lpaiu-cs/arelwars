@@ -1,5 +1,6 @@
 {
   "sequenceKind": "overlay-only",
+  "timelineKind": "overlay-track-only",
   "linkedGroupCount": 0,
   "overlayGroupCount": 3,
   "linkTypeCounts": {
@@ -11,6 +12,86 @@
   "anchorFrameSpan": null,
   "strictLoopCycle": null,
   "bestContiguousRun": null,
+  "linkedAnchorRuns": [],
+  "overlayRuns": [
+    {
+      "groupIndices": [
+        2
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        35,
+        35
+      ],
+      "tupleCount": 1,
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndices": [
+        3
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        34,
+        34
+      ],
+      "tupleCount": 1,
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndices": [
+        5
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        35,
+        35
+      ],
+      "tupleCount": 1,
+      "tailOnlyChunkCount": 1
+    }
+  ],
+  "overlayAttachmentsPreview": [
+    {
+      "groupIndex": 2,
+      "chunkIndexRange": [
+        35,
+        35
+      ],
+      "tupleCount": 1,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 3,
+      "chunkIndexRange": [
+        34,
+        34
+      ],
+      "tupleCount": 1,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    },
+    {
+      "groupIndex": 5,
+      "chunkIndexRange": [
+        35,
+        35
+      ],
+      "tupleCount": 1,
+      "relation": "unanchored",
+      "nearestAnchorFrameIndex": null,
+      "nearestAnchorGroupIndex": null,
+      "previousLinkedGroupIndex": null,
+      "nextLinkedGroupIndex": null
+    }
+  ],
   "linkedGroupIndices": [],
   "overlayGroupIndices": [
     2,

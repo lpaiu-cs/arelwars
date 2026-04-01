@@ -1,0 +1,248 @@
+{
+  "stem": "084",
+  "timelineKind": "rising-anchor-with-overlays",
+  "sequenceKind": "has-contiguous-rise",
+  "eventCount": 20,
+  "events": [
+    {
+      "groupIndex": 0,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 1,
+      "relation": null,
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        26,
+        50
+      ]
+    },
+    {
+      "groupIndex": 1,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 7,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        2,
+        50
+      ]
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 7,
+      "relation": "after-linked",
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        52,
+        57
+      ]
+    },
+    {
+      "groupIndex": 4,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 9,
+      "relation": "before-linked",
+      "tupleCount": 6,
+      "chunkIndexRange": [
+        56,
+        61
+      ]
+    },
+    {
+      "groupIndex": 6,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 9,
+      "relation": null,
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        8,
+        49
+      ]
+    },
+    {
+      "groupIndex": 7,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        8,
+        68
+      ]
+    },
+    {
+      "groupIndex": 8,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 11,
+      "relation": null,
+      "tupleCount": 14,
+      "chunkIndexRange": [
+        8,
+        71
+      ]
+    },
+    {
+      "groupIndex": 9,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 12,
+      "relation": null,
+      "tupleCount": 15,
+      "chunkIndexRange": [
+        8,
+        71
+      ]
+    },
+    {
+      "groupIndex": 10,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 8,
+      "relation": null,
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        3,
+        54
+      ]
+    },
+    {
+      "groupIndex": 12,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 12,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        55,
+        55
+      ]
+    },
+    {
+      "groupIndex": 14,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 11,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        54,
+        54
+      ]
+    },
+    {
+      "groupIndex": 16,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 12,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        55,
+        55
+      ]
+    },
+    {
+      "groupIndex": 18,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 11,
+      "relation": null,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        54,
+        54
+      ]
+    },
+    {
+      "groupIndex": 19,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 9,
+      "relation": null,
+      "tupleCount": 11,
+      "chunkIndexRange": [
+        9,
+        72
+      ]
+    },
+    {
+      "groupIndex": 21,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 12,
+      "relation": null,
+      "tupleCount": 13,
+      "chunkIndexRange": [
+        8,
+        72
+      ]
+    },
+    {
+      "groupIndex": 22,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 12,
+      "relation": "after-linked",
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        66,
+        71
+      ]
+    },
+    {
+      "groupIndex": 23,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 12,
+      "relation": null,
+      "tupleCount": 14,
+      "chunkIndexRange": [
+        9,
+        72
+      ]
+    },
+    {
+      "groupIndex": 24,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 12,
+      "relation": "after-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        65,
+        67
+      ]
+    },
+    {
+      "groupIndex": 25,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 9,
+      "relation": null,
+      "tupleCount": 11,
+      "chunkIndexRange": [
+        8,
+        72
+      ]
+    },
+    {
+      "groupIndex": 28,
+      "eventType": "linked",
+      "linkType": "base-frame-delta",
+      "anchorFrameIndex": 8,
+      "relation": null,
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        3,
+        73
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 {
   "sequenceKind": "single-anchor-repeat",
+  "timelineKind": "single-anchor-cadence",
   "linkedGroupCount": 9,
   "overlayGroupCount": 1,
   "linkTypeCounts": {
@@ -45,6 +46,181 @@
     ],
     "length": 1
   },
+  "linkedAnchorRuns": [
+    {
+      "groupIndices": [
+        2
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          22,
+          22
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        6
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          23,
+          23
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        9
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          22,
+          22
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        14
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          23,
+          23
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        17
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          22,
+          22
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        22
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          23,
+          23
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        25
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          22,
+          22
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        29
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "chunk-linked-reuse"
+      ],
+      "chunkIndexSpans": [
+        [
+          22,
+          22
+        ]
+      ]
+    },
+    {
+      "groupIndices": [
+        32
+      ],
+      "anchorFrameIndex": 10,
+      "length": 1,
+      "linkTypes": [
+        "base-frame-delta"
+      ],
+      "chunkIndexSpans": [
+        [
+          21,
+          23
+        ]
+      ]
+    }
+  ],
+  "overlayRuns": [
+    {
+      "groupIndices": [
+        33
+      ],
+      "length": 1,
+      "chunkIndexRange": [
+        26,
+        26
+      ],
+      "tupleCount": 1,
+      "tailOnlyChunkCount": 1
+    }
+  ],
+  "overlayAttachmentsPreview": [
+    {
+      "groupIndex": 33,
+      "chunkIndexRange": [
+        26,
+        26
+      ],
+      "tupleCount": 1,
+      "relation": "after-linked",
+      "nearestAnchorFrameIndex": 10,
+      "nearestAnchorGroupIndex": 32,
+      "previousLinkedGroupIndex": 32,
+      "nextLinkedGroupIndex": null
+    }
+  ],
   "linkedGroupIndices": [
     2,
     6,
