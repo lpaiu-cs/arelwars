@@ -1,0 +1,44 @@
+[
+  {
+    "groupIndex": 0,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 16,
+    "tailChunkRange": [
+      2,
+      37
+    ],
+    "tupleCount": 8,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 16,
+        "exactOverlap": 6,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 11,
+        "exactOverlap": 0,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 5
+      }
+    ]
+  }
+]

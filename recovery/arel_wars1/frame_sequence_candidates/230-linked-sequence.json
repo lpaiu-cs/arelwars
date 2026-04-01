@@ -1,0 +1,338 @@
+[
+  {
+    "groupIndex": 0,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 15,
+    "tailChunkRange": [
+      2,
+      34
+    ],
+    "tupleCount": 10,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 15,
+        "exactOverlap": 10,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 6,
+        "chunkOverlap": 7
+      },
+      {
+        "frameIndex": 13,
+        "exactOverlap": 5,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 14,
+        "exactOverlap": 4,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 1,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 1,
+        "chunkOverlap": 5
+      }
+    ]
+  },
+  {
+    "groupIndex": 1,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 13,
+    "tailChunkRange": [
+      3,
+      34
+    ],
+    "tupleCount": 9,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 13,
+        "exactOverlap": 6,
+        "chunkOverlap": 7
+      },
+      {
+        "frameIndex": 14,
+        "exactOverlap": 6,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 15,
+        "exactOverlap": 4,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 3,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 1,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 1,
+        "chunkOverlap": 3
+      }
+    ]
+  },
+  {
+    "groupIndex": 2,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 14,
+    "tailChunkRange": [
+      0,
+      34
+    ],
+    "tupleCount": 10,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 14,
+        "exactOverlap": 7,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 15,
+        "exactOverlap": 7,
+        "chunkOverlap": 7
+      },
+      {
+        "frameIndex": 13,
+        "exactOverlap": 5,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 3,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 1,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 1,
+        "chunkOverlap": 3
+      }
+    ]
+  },
+  {
+    "groupIndex": 3,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 15,
+    "tailChunkRange": [
+      2,
+      34
+    ],
+    "tupleCount": 10,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 15,
+        "exactOverlap": 7,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 6,
+        "chunkOverlap": 7
+      },
+      {
+        "frameIndex": 14,
+        "exactOverlap": 6,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 13,
+        "exactOverlap": 4,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 1,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 1,
+        "chunkOverlap": 5
+      }
+    ]
+  },
+  {
+    "groupIndex": 4,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 13,
+    "tailChunkRange": [
+      3,
+      34
+    ],
+    "tupleCount": 10,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 13,
+        "exactOverlap": 8,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 15,
+        "exactOverlap": 7,
+        "chunkOverlap": 7
+      },
+      {
+        "frameIndex": 14,
+        "exactOverlap": 4,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 3,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 1,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 1,
+        "chunkOverlap": 3
+      }
+    ]
+  },
+  {
+    "groupIndex": 5,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 14,
+    "tailChunkRange": [
+      0,
+      34
+    ],
+    "tupleCount": 10,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 14,
+        "exactOverlap": 9,
+        "chunkOverlap": 9
+      },
+      {
+        "frameIndex": 13,
+        "exactOverlap": 4,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 15,
+        "exactOverlap": 4,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 3,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 1,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 1,
+        "chunkOverlap": 3
+      }
+    ]
+  },
+  {
+    "groupIndex": 6,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 13,
+    "tailChunkRange": [
+      3,
+      34
+    ],
+    "tupleCount": 10,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 13,
+        "exactOverlap": 7,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 14,
+        "exactOverlap": 7,
+        "chunkOverlap": 7
+      },
+      {
+        "frameIndex": 15,
+        "exactOverlap": 4,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 3,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 1,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 1,
+        "chunkOverlap": 3
+      }
+    ]
+  },
+  {
+    "groupIndex": 7,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 14,
+    "tailChunkRange": [
+      0,
+      34
+    ],
+    "tupleCount": 9,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 14,
+        "exactOverlap": 7,
+        "chunkOverlap": 9
+      },
+      {
+        "frameIndex": 13,
+        "exactOverlap": 6,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 15,
+        "exactOverlap": 5,
+        "chunkOverlap": 6
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 3,
+        "chunkOverlap": 5
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 1,
+        "chunkOverlap": 7
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 1,
+        "chunkOverlap": 4
+      }
+    ]
+  }
+]

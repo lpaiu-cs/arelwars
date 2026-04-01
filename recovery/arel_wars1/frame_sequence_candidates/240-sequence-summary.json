@@ -1,0 +1,92 @@
+{
+  "sequenceKind": "overlay-only",
+  "linkedGroupCount": 0,
+  "overlayGroupCount": 5,
+  "linkTypeCounts": {
+    "overlay-track": 5
+  },
+  "anchorFrameSequence": [],
+  "anchorFrameDeltas": [],
+  "distinctAnchorFrames": [],
+  "anchorFrameSpan": null,
+  "strictLoopCycle": null,
+  "bestContiguousRun": null,
+  "linkedGroupIndices": [],
+  "overlayGroupIndices": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "overlayChunkRanges": [
+    [
+      46,
+      47
+    ],
+    [
+      46,
+      47
+    ],
+    [
+      47,
+      48
+    ],
+    [
+      48,
+      50
+    ],
+    [
+      49,
+      51
+    ]
+  ],
+  "linkedCandidatesPreview": [],
+  "overlayCandidatesPreview": [
+    {
+      "groupIndex": 0,
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        46,
+        47
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 1,
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        46,
+        47
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 2,
+      "tupleCount": 7,
+      "chunkIndexRange": [
+        47,
+        48
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 3,
+      "tupleCount": 9,
+      "chunkIndexRange": [
+        48,
+        50
+      ],
+      "tailOnlyChunkCount": 3
+    },
+    {
+      "groupIndex": 4,
+      "tupleCount": 15,
+      "chunkIndexRange": [
+        49,
+        51
+      ],
+      "tailOnlyChunkCount": 3
+    }
+  ]
+}

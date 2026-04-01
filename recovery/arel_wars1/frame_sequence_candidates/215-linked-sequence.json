@@ -1,0 +1,160 @@
+[
+  {
+    "groupIndex": 2,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      22,
+      22
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 6,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      23,
+      23
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 9,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      22,
+      22
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 14,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      23,
+      23
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 17,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      22,
+      22
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 22,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      23,
+      23
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 25,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      22,
+      22
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 29,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      22,
+      22
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 32,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 10,
+    "tailChunkRange": [
+      21,
+      23
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 10,
+        "exactOverlap": 2,
+        "chunkOverlap": 2
+      },
+      {
+        "frameIndex": 9,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  }
+]

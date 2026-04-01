@@ -1,0 +1,464 @@
+[
+  {
+    "groupIndex": 0,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 3,
+    "tailChunkRange": [
+      0,
+      15
+    ],
+    "tupleCount": 13,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 11
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 8
+      }
+    ]
+  },
+  {
+    "groupIndex": 1,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 3,
+    "tailChunkRange": [
+      0,
+      15
+    ],
+    "tupleCount": 13,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 11
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 8
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 8
+      }
+    ]
+  },
+  {
+    "groupIndex": 2,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 2,
+    "tailChunkRange": [
+      0,
+      16
+    ],
+    "tupleCount": 13,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 12
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 12
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 11
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 11
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 9
+      }
+    ]
+  },
+  {
+    "groupIndex": 3,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 5,
+    "tailChunkRange": [
+      0,
+      17
+    ],
+    "tupleCount": 12,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 11
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 10
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 9
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 9
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 8
+      }
+    ]
+  },
+  {
+    "groupIndex": 4,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 0,
+    "tailChunkRange": [
+      12,
+      13
+    ],
+    "tupleCount": 3,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 6,
+    "linkType": "base-frame-delta",
+    "anchorFrameIndex": 6,
+    "tailChunkRange": [
+      12,
+      13
+    ],
+    "tupleCount": 3,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 6,
+        "exactOverlap": 3,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 7,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 3,
+    "tailChunkRange": [
+      4,
+      18
+    ],
+    "tupleCount": 6,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 8,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 3,
+    "tailChunkRange": [
+      4,
+      18
+    ],
+    "tupleCount": 6,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 9,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 2,
+    "tailChunkRange": [
+      9,
+      19
+    ],
+    "tupleCount": 5,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 2
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 10,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 5,
+    "tailChunkRange": [
+      9,
+      14
+    ],
+    "tupleCount": 4,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 5,
+        "exactOverlap": 0,
+        "chunkOverlap": 4
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 2
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 2
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  },
+  {
+    "groupIndex": 11,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 0,
+    "tailChunkRange": [
+      12,
+      13
+    ],
+    "tupleCount": 3,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 4,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 3
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  }
+]

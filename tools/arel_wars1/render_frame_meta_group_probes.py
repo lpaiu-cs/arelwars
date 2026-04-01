@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 from pathlib import Path
 import struct
 
 from PIL import Image, ImageDraw
 
 from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_frame_record_stream, read_pzx_meta_sections
+from pzx_meta import classify_group, group_meta_sections
 
 
 def parse_args() -> argparse.Namespace:
@@ -71,67 +71,6 @@ def render_chunk(chunk, mapper, scale: int, *, tail: bool = False) -> Image.Imag
     if scale > 1:
         image = image.resize((chunk.width * scale, chunk.height * scale), Image.Resampling.NEAREST)
     return image
-
-
-def group_meta_sections(meta_sections: tuple) -> list[list]:
-    groups: list[list] = []
-    current: list = []
-
-    for section in meta_sections:
-        if section.layout == "opaque":
-            if current:
-                groups.append(current)
-            current = [section]
-            continue
-
-        if not current:
-            current = []
-        current.append(section)
-
-    if current:
-        groups.append(current)
-
-    return groups
-
-
-def classify_group(group: list, frame_records: tuple) -> tuple[str, list[dict[str, int]]]:
-    tuples = [item for section in group for item in section.tuples]
-    tuple_keys = [(item.chunk_index, item.x, item.y, item.flag) for item in tuples]
-    unique_chunks = sorted({item.chunk_index for item in tuples})
-    frame_item_sets = [{(item.chunk_index, item.x, item.y, item.flag) for item in record.items} for record in frame_records]
-    frame_chunk_sets = [{item.chunk_index for item in record.items} for record in frame_records]
-    all_frame_chunks = {item.chunk_index for record in frame_records for item in record.items}
-    tail_only_chunks = sorted(chunk for chunk in unique_chunks if chunk not in all_frame_chunks)
-
-    best_frame_matches: list[dict[str, int]] = []
-    for frame_index, (frame_items, frame_chunks) in enumerate(zip(frame_item_sets, frame_chunk_sets)):
-        exact_overlap = sum(1 for key in tuple_keys if key in frame_items)
-        chunk_overlap = sum(1 for item in tuples if item.chunk_index in frame_chunks)
-        if exact_overlap == 0 and chunk_overlap == 0:
-            continue
-        best_frame_matches.append(
-            {"frameIndex": frame_index, "exactOverlap": exact_overlap, "chunkOverlap": chunk_overlap}
-        )
-
-    best_frame_matches.sort(
-        key=lambda entry: (int(entry["exactOverlap"]), int(entry["chunkOverlap"]), -int(entry["frameIndex"])),
-        reverse=True,
-    )
-
-    link_type = "opaque-only"
-    if tuple_keys:
-        best_exact = int(best_frame_matches[0]["exactOverlap"]) if best_frame_matches else 0
-        best_chunk = int(best_frame_matches[0]["chunkOverlap"]) if best_frame_matches else 0
-        if unique_chunks and len(tail_only_chunks) == len(unique_chunks):
-            link_type = "overlay-track"
-        elif best_exact * 2 >= len(tuple_keys):
-            link_type = "base-frame-delta"
-        elif best_chunk * 2 >= len(tuple_keys):
-            link_type = "chunk-linked-reuse"
-        else:
-            link_type = "mixed-or-unknown"
-
-    return (link_type, best_frame_matches[:6])
 
 
 def collect_positions(base_items, tail_items, chunks) -> tuple[int, int, int, int]:
