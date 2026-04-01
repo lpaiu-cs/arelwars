@@ -423,6 +423,10 @@ frame:
 
 현재 APK의 embedded `.pzx` decode는 native-equivalent 기준으로 사실상 닫혔다.
 
+- `img/*.pzx` 253개 gameplay sprite asset뿐 아니라 top-level auxiliary `logo.pzx`, `TouchOemIME.pzx`, `certi.pzx`도 정리됐다.
+  - `logo.pzx`: `PZD type 7 (1 image) + PZF format 1 (1 frame)`, no `PZA`
+  - `TouchOemIME.pzx`: `PZD type 8 (121 images) + PZF format 3 (19 frames)`, no `PZA`
+  - `certi.pzx`: reduced `PZF -> PZD` root layout (`pzf-pzd-no-pza`), `PZF frameCount 9`, `PZD imageCount 8`
 - root `PZX\x01` header는 `PZD/PZF/PZA` subresource offset table이다.
 - `PZD`는 `type 7` row-stream list와 `type 8` whole-stream-compressed first-stream sheet로 닫혔다.
 - `PZF`는 frame pool / bbox / subframe / `extraLen + extraPtr`까지 base family layout이 닫혔다.
@@ -431,10 +435,16 @@ frame:
 - bbox API selector와 collision return/filter도 런타임 의미가 정리됐다.
 - `globalDelayBias(+3)`는 현재 build 기준 dormant signed bias field다.
 - `66/67/70...` selector byte는 `EffectEx/ZeroEffectEx` parallel family에서는 draw/module selector + trailing `u32` parameter로 소비되고, current embedded `.pzx` set은 base family exact-fit path로 소비된다.
+- [verify_current_apk_closure.py](C:/vs/other/arelwars/tools/arel_wars1/verify_current_apk_closure.py)가 현재 APK closure 조건을 코드로 검증한다.
+  - asset graph: `img/*.pzx = 253`, auxiliary top-level `.pzx = 3`, standalone `.pzf/.pzd/.pza = 0`
+  - native graph: standalone `GsLoadPzf*`, `EffectEx/ZeroEffectEx` manager ctor, reference-point getter inbound caller `0`
+  - parser invariants: embedded `PZD/PZF/PZA` relation counts, auxiliary UI PZX layout, synthetic `EffectEx` selector decode pass
 
-## Residual Gaps
+즉 current APK 기준으로 남아 있는 decode blocker는 없다.
+
+## Dormant Branches
 
 1. `bbox variant 2` reference-point mode는 code path는 남아 있지만, current asset set에 샘플이 없고 `GetReferencePointCount/GetReferencePoint` 정적 caller도 보이지 않는다.
-   - current APK 기준으로는 dormant feature 쪽에 가깝다.
+   - current APK 기준 dormant feature다.
 2. standalone `EffectEx/ZeroEffectEx` raw parser는 구현됐지만, 현재 APK에는 `.pzf/.pzd` 실샘플이 없어서 real-asset regression은 아직 못 돌렸다.
-   - 다만 current APK asset graph에는 이 경로로 들어오는 caller나 file reference가 없으므로, 현재 게임 decode 관점에서 blocker는 아니다.
+   - current APK asset/call graph에는 이 경로로 들어오는 caller나 file reference가 없으므로 dormant parallel family로 정리한다.

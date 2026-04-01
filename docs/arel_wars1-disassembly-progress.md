@@ -203,13 +203,29 @@
 
 ### Open
 
-- reference-point mode(`bbox variant 2`)는 current APK 기준 dormant feature로 보인다.
-  - parsed asset set에서 sample이 `0`이고, `GetReferencePointCount/GetReferencePoint` 정적 caller도 `0`개다.
-- `EffectEx / ZeroEffectEx` raw parser 구현은 끝났지만, 현재 APK에는 standalone `.pzf/.pzd` 실샘플이 없어서 남은 건 real standalone sample regression뿐이다.
+current APK 기준 open blocker는 없다.
+
+- top-level auxiliary UI PZX 3종도 정리됐다.
+  - `logo.pzx`: standard `PZD type 7 + PZF format 1`, no `PZA`
+  - `TouchOemIME.pzx`: standard `PZD type 8 + PZF format 3`, no `PZA`
+  - `certi.pzx`: reduced `PZF -> PZD` root layout, no `PZA`
+- reference-point mode(`bbox variant 2`)는 dormant feature다.
+  - parsed asset set sample `0`
+  - `GetReferencePointCount/GetReferencePoint` 정적 caller `0`
+- `EffectEx / ZeroEffectEx`는 dormant parallel family다.
+  - raw parser 구현 완료
+  - current APK standalone `.pzf/.pzd` sample `0`
+  - inbound caller / extension literal도 `0`
+
+### Verification
+
+- `tools/arel_wars1/verify_current_apk_closure.py`
+  - current APK embedded asset graph, auxiliary UI PZX family, call graph, parser invariants를 한 번에 검증한다.
+  - synthetic `EffectEx` selector sample도 같이 돌려서 `selector + trailing u32` decode를 회귀 고정한다.
 
 ### Next Focus
 
-1. standalone `EffectEx / ZeroEffectEx` sample을 확보하면 새 parser를 real asset에 걸어 synthetic 검증을 actual regression으로 바꾼다.
+1. 다른 build나 외부 dump에서 standalone `EffectEx / ZeroEffectEx` sample을 확보하면 새 parser를 real asset regression으로 확장한다.
 
 ### Refresh Commands
 
@@ -217,4 +233,5 @@
 python tools/arel_wars1/disassemble_libgameDSO.py --defaults
 python tools/arel_wars1/extract_assets.py --apk arel_wars1/arel_wars_1.apk --output recovery/arel_wars1/native_tmp/extract
 python tools/arel_wars1/inspect_binary_assets.py --assets-root recovery/arel_wars1/native_tmp/extract/apk_unzip/assets --output recovery/arel_wars1/native_tmp/binary_asset_report-session.json
+python tools/arel_wars1/verify_current_apk_closure.py
 ```

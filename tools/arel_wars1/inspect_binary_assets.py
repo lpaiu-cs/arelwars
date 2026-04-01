@@ -20,6 +20,7 @@ from formats import (
     read_pzx_meta_sections,
     read_pzx_pzd_resource,
     read_pzx_row_stream,
+    read_pzx_root_segments,
     read_pzx_root_resource_offsets,
     read_pzx_simple_placement_stream,
 )
@@ -858,13 +859,18 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
         parsed_streams.append(entry)
 
     root_resource_offsets = read_pzx_root_resource_offsets(data)
-    if root_resource_offsets is not None:
-        embedded_pzd = read_pzx_pzd_resource(data, root_resource_offsets[0], root_resource_offsets[1])
+    root_segments = read_pzx_root_segments(data)
+    if root_segments is not None:
+        embedded_pzd = None
+        if root_segments.pzd_offset is not None and root_segments.pzd_end is not None:
+            embedded_pzd = read_pzx_pzd_resource(data, root_segments.pzd_offset, root_segments.pzd_end)
         if embedded_pzd is not None:
             embedded_pzd_summary = summarize_embedded_pzd_resource(embedded_pzd)
             embedded_resource_summaries.append(embedded_pzd_summary)
 
-        embedded_pzf = read_pzx_embedded_resource(data, root_resource_offsets[1], "pzf")
+        embedded_pzf = None
+        if root_segments.pzf_offset is not None:
+            embedded_pzf = read_pzx_embedded_resource(data, root_segments.pzf_offset, "pzf")
         if embedded_pzf is not None:
             max_subframe_index = None
             if embedded_pzd_summary is not None:
@@ -876,7 +882,9 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             )
             embedded_resource_summaries.append(embedded_pzf_summary)
 
-        embedded_pza = read_pzx_embedded_resource(data, root_resource_offsets[2], "pza")
+        embedded_pza = None
+        if root_segments.pza_offset is not None:
+            embedded_pza = read_pzx_embedded_resource(data, root_segments.pza_offset, "pza")
         if embedded_pza is not None:
             embedded_pza_summary = summarize_embedded_pza_resource(embedded_pza, streams)
             if embedded_pza_summary is not None:
@@ -946,10 +954,28 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             "field16Shift6": table_span,
             "field16Low6": field16 & 0x3F,
             "field18": struct.unpack("<H", data[18:20])[0] if len(data) >= 20 else None,
+            "resourceLayout": root_segments.layout if root_segments is not None else None,
             "resourceOffsets": {
                 "pzd": root_resource_offsets[0] if root_resource_offsets is not None else None,
                 "pzf": root_resource_offsets[1] if root_resource_offsets is not None else None,
                 "pza": root_resource_offsets[2] if root_resource_offsets is not None else None,
+            },
+            "resourceSegments": {
+                "pzd": (
+                    [root_segments.pzd_offset, root_segments.pzd_end]
+                    if root_segments is not None and root_segments.pzd_offset is not None and root_segments.pzd_end is not None
+                    else None
+                ),
+                "pzf": (
+                    [root_segments.pzf_offset, root_segments.pzf_end]
+                    if root_segments is not None and root_segments.pzf_offset is not None and root_segments.pzf_end is not None
+                    else None
+                ),
+                "pza": (
+                    [root_segments.pza_offset, root_segments.pza_end]
+                    if root_segments is not None and root_segments.pza_offset is not None and root_segments.pza_end is not None
+                    else None
+                ),
             },
         },
         "hasMplPair": has_mpl_pair,
@@ -994,10 +1020,12 @@ def main() -> None:
     img_root = assets_root / "img"
 
     pzx_paths = sorted(img_root.glob("*.pzx"))
+    auxiliary_pzx_paths = sorted(assets_root.glob("*.pzx"))
     mpl_paths = sorted(img_root.glob("*.mpl"))
     mpl_stems = {path.stem for path in mpl_paths}
 
     pzx_entries = [parse_pzx(path, path.stem in mpl_stems) for path in pzx_paths]
+    auxiliary_pzx_entries = [parse_pzx(path, False) for path in auxiliary_pzx_paths]
     mpl_entries = [parse_mpl(path) for path in mpl_paths]
     mpl_by_stem = {Path(entry["path"]).stem: entry for entry in mpl_entries}
 
@@ -1559,10 +1587,56 @@ def main() -> None:
     table_span_counts = Counter(
         entry["firstStream"]["tableSpan"] for entry in first_stream_ready if entry["firstStream"] is not None
     )
+    auxiliary_layout_counts = Counter(
+        entry["header"]["resourceLayout"]
+        for entry in auxiliary_pzx_entries
+        if entry["header"].get("resourceLayout") is not None
+    )
+    auxiliary_names = [Path(str(entry["path"])).name for entry in auxiliary_pzx_entries]
+    auxiliary_preview = [
+        {
+            "name": Path(str(entry["path"])).name,
+            "variant": entry["header"]["field16Low6"],
+            "resourceLayout": entry["header"].get("resourceLayout"),
+            "resourceSegments": entry["header"].get("resourceSegments"),
+            "embeddedPzd": (
+                None
+                if entry.get("embeddedPzd") is None
+                else {
+                    "typeCode": entry["embeddedPzd"]["typeCode"],
+                    "contentCount": entry["embeddedPzd"]["contentCount"],
+                    "layout": entry["embeddedPzd"]["layout"],
+                }
+            ),
+            "embeddedPzf": (
+                None
+                if entry.get("embeddedPzf") is None
+                else {
+                    "formatVariant": entry["embeddedPzf"]["formatVariant"],
+                    "frameCount": entry["embeddedPzf"]["frameCount"],
+                    "bboxModeName": entry["embeddedPzf"].get("bboxModeName"),
+                }
+            ),
+            "embeddedPza": (
+                None
+                if entry.get("embeddedPza") is None
+                else {
+                    "formatVariant": entry["embeddedPza"]["formatVariant"],
+                    "clipCount": entry["embeddedPza"].get("clipCount"),
+                }
+            ),
+        }
+        for entry in auxiliary_pzx_entries
+    ]
 
     report = {
         "summary": {
             "pzxCount": len(pzx_entries),
+            "allPzxCount": len(pzx_entries) + len(auxiliary_pzx_entries),
+            "auxiliaryPzxCount": len(auxiliary_pzx_entries),
+            "auxiliaryPzxNames": auxiliary_names,
+            "auxiliaryPzxLayoutCounts": dict(sorted(auxiliary_layout_counts.items())),
+            "auxiliaryPzxPreview": auxiliary_preview,
             "mplCount": len(mpl_entries),
             "pairedStemCount": len(shared_pairs),
             "pairedStemsPreview": shared_pairs[:20],
@@ -1700,10 +1774,12 @@ def main() -> None:
         "findings": [
             "All PZX files start with magic 50 5a 58 01 ('PZX\\x01').",
             "Many PZX files contain one or more embedded zlib streams.",
-            f"Root field4 now resolves cleanly as the native PZD subresource for all {len(embedded_pzd_entries)} PZX files.",
-            f"PZD splits into two native layouts with no leftovers: type 7 = {embedded_pzd_type_counts.get(7, 0)} stems and type 8 = {embedded_pzd_type_counts.get(8, 0)} stems.",
-            f"Every type 8 PZD region contains exactly one zlib stream, and its decoded first-stream chunk count always equals contentCount ({embedded_pzd_type_counts.get(8, 0)} / {embedded_pzd_type_counts.get(8, 0)} stems).",
-            f"Every type 7 PZD region contains exactly contentCount standalone rowstreams in file order ({embedded_pzd_type_counts.get(7, 0)} / {embedded_pzd_type_counts.get(7, 0)} stems).",
+            f"The APK carries {len(pzx_entries) + len(auxiliary_pzx_entries)} PZX files total: {len(pzx_entries)} gameplay sprite assets under img/ plus {len(auxiliary_pzx_entries)} top-level auxiliary UI assets ({', '.join(auxiliary_names)}).",
+            f"Those auxiliary files are also resolved: layout counts are {dict(sorted(auxiliary_layout_counts.items()))}, with logo/TouchOemIME using standard PZD->PZF roots and certi using a reduced PZF->PZD root with no PZA.",
+            f"Across the {len(pzx_entries)} img/ sprite PZX files, root field4 now resolves cleanly as the native PZD subresource for all {len(embedded_pzd_entries)} entries.",
+            f"Within that sprite set, PZD splits into two native layouts with no leftovers: type 7 = {embedded_pzd_type_counts.get(7, 0)} stems and type 8 = {embedded_pzd_type_counts.get(8, 0)} stems.",
+            f"Every sprite-set type 8 PZD region contains exactly one zlib stream, and its decoded first-stream chunk count always equals contentCount ({embedded_pzd_type_counts.get(8, 0)} / {embedded_pzd_type_counts.get(8, 0)} stems).",
+            f"Every sprite-set type 7 PZD region contains exactly contentCount standalone rowstreams in file order ({embedded_pzd_type_counts.get(7, 0)} / {embedded_pzd_type_counts.get(7, 0)} stems).",
             "Raw type 7 PZD tables are file-local absolute offsets: flags=0 entries land on per-image local-palette blocks, while flags=1 inserts one global 16-bit palette block before the table and makes each entry point directly at a 16-byte image descriptor.",
             "Raw type 8 PZD uses the native zero-parser whole-stream-compressed path: optional global 16-bit palette, unpackedSize(u32), packedSize(u32), one zlib blob, then an inflated decoded-relative u32 image-offset table whose first entry is contentCount * 4.",
             "Decoded variant=8 chunk records start with width(u16), height(u16), a CD-CD-CD tagged mode word (usually 02 or 04), declared payload length(u32), and reserved zero(u32).",
@@ -1743,6 +1819,7 @@ def main() -> None:
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",
         ],
         "pzx": pzx_entries,
+        "auxiliaryPzx": auxiliary_pzx_entries,
         "mpl": mpl_entries,
     }
 

@@ -359,6 +359,17 @@ class PzxEmbeddedResource:
 
 
 @dataclass(frozen=True)
+class PzxRootSegments:
+    layout: str
+    pzd_offset: int | None
+    pzd_end: int | None
+    pzf_offset: int | None
+    pzf_end: int | None
+    pza_offset: int | None
+    pza_end: int | None
+
+
+@dataclass(frozen=True)
 class PzxPzdZlibStream:
     index: int
     offset: int
@@ -1252,6 +1263,41 @@ def read_pzx_root_resource_offsets(data: bytes) -> tuple[int, int, int] | None:
         struct.unpack("<I", data[8:12])[0],
         struct.unpack("<I", data[12:16])[0],
     )
+
+
+def read_pzx_root_segments(data: bytes) -> PzxRootSegments | None:
+    offsets = read_pzx_root_resource_offsets(data)
+    if offsets is None:
+        return None
+
+    pzd_offset, pzf_offset, pza_offset = offsets
+    end = len(data)
+
+    if 16 <= pzd_offset <= pzf_offset <= pza_offset <= end:
+        return PzxRootSegments(
+            layout="pzd-pzf-pza",
+            pzd_offset=pzd_offset,
+            pzd_end=pzf_offset,
+            pzf_offset=pzf_offset,
+            pzf_end=pza_offset,
+            pza_offset=pza_offset,
+            pza_end=end,
+        )
+
+    # Some top-level UI assets use a reduced root layout:
+    # field8 -> PZF, field4 -> PZD, and field12 points into the root prelude rather than a real PZA resource.
+    if 16 <= pzf_offset <= pzd_offset <= end and pza_offset <= pzf_offset:
+        return PzxRootSegments(
+            layout="pzf-pzd-no-pza",
+            pzd_offset=pzd_offset,
+            pzd_end=end,
+            pzf_offset=pzf_offset,
+            pzf_end=pzd_offset,
+            pza_offset=None,
+            pza_end=None,
+        )
+
+    return None
 
 
 def _read_pzd_image_descriptor(
