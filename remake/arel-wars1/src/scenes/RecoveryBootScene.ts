@@ -66,8 +66,8 @@ export class RecoveryBootScene extends Phaser.Scene {
         80,
         148,
         this.stageSystem?.isReady()
-          ? 'Recovered sprite timelines and structured dialogue now drive a shared stage state.'
-          : 'Confirmed recoveries: PZX tail timelines, sequence candidates, and runtime strip previews.',
+          ? 'Recovered sprite timelines and structured dialogue now drive a shared stage state on desktop and Android.'
+          : 'Confirmed recoveries: PZX tail timelines, sequence candidates, runtime strip previews, and Android packaging.',
         {
           fontFamily: 'Trebuchet MS, sans-serif',
           fontSize: '16px',
@@ -114,7 +114,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     })
 
     this.add
-      .text(84, height - 52, 'This remains a reconstruction layer, not a claim of 1:1 engine parity. Unknown opcodes and battle state semantics are still being recovered.', {
+      .text(84, height - 52, 'Android APK packaging is verified. This is still a reconstruction layer rather than a 1:1 engine clone, and some battle-state semantics remain under recovery.', {
         fontFamily: 'Trebuchet MS, sans-serif',
         fontSize: '15px',
         color: '#7f908e',

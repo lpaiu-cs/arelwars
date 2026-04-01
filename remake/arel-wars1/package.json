@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "cap:sync": "npm run build && npx cap sync",
     "android:debug": "npm run build && npx cap sync android && (cd android && ./gradlew assembleDebug)",
+    "android:release": "npm run build && npx cap sync android && (cd android && ./gradlew assembleRelease)",
     "ios:sync": "npm run build && npx cap sync ios",
     "ios:build": "npm run build && npx cap sync ios && xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator build"
   },

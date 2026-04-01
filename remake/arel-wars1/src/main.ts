@@ -25,7 +25,7 @@ app.innerHTML = `
         </div>
         <div class="status-card">
           <span class="label">모바일 패키징</span>
-          <strong>Capacitor 예정</strong>
+          <strong>Capacitor Android APK</strong>
         </div>
         <div class="status-card">
           <span class="label">현재 단계</span>
@@ -111,9 +111,9 @@ async function bootstrap(): Promise<void> {
     }
     game = createGame(stageSystem)
     stage.textContent = previewManifest
-      ? `Recovered stage online (${previewManifest.activeStemCount} stems)`
-      : 'ZT1 decoded, runtime shell online'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}`
+      ? `Recovered stage online (${previewManifest.activeStemCount} stems / Android APK verified)`
+      : 'ZT1 decoded, Android APK verified'
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''} Android packaging has been verified on a modern emulator.`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
