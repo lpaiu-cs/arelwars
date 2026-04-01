@@ -1,0 +1,64 @@
+{
+  "sequenceKind": "overlay-only",
+  "linkedGroupCount": 0,
+  "overlayGroupCount": 3,
+  "linkTypeCounts": {
+    "overlay-track": 3
+  },
+  "anchorFrameSequence": [],
+  "anchorFrameDeltas": [],
+  "distinctAnchorFrames": [],
+  "anchorFrameSpan": null,
+  "strictLoopCycle": null,
+  "bestContiguousRun": null,
+  "linkedGroupIndices": [],
+  "overlayGroupIndices": [
+    0,
+    1,
+    2
+  ],
+  "overlayChunkRanges": [
+    [
+      35,
+      35
+    ],
+    [
+      35,
+      35
+    ],
+    [
+      35,
+      35
+    ]
+  ],
+  "linkedCandidatesPreview": [],
+  "overlayCandidatesPreview": [
+    {
+      "groupIndex": 0,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        35,
+        35
+      ],
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndex": 1,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        35,
+        35
+      ],
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndex": 2,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        35,
+        35
+      ],
+      "tailOnlyChunkCount": 1
+    }
+  ]
+}

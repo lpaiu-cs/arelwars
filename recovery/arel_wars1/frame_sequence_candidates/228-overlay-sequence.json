@@ -1,0 +1,13 @@
+[
+  {
+    "groupIndex": 1,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      51,
+      52
+    ],
+    "tupleCount": 3,
+    "bestFrameMatches": []
+  }
+]

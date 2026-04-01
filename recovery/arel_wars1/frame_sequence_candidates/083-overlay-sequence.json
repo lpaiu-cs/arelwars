@@ -1,0 +1,354 @@
+[
+  {
+    "groupIndex": 9,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 11,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 12,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      81
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 13,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      34,
+      79
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 14,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 15,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      79
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 16,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      82
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 17,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      34,
+      79
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 18,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 19,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      79
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 20,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      83
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 21,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      34,
+      79
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 22,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 23,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      79
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 25,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      80
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 26,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      34,
+      79
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 27,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 28,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      79
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 30,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      80
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 32,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      79,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 34,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      80
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 36,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      80,
+      80
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 37,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      66,
+      66
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 38,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      67,
+      67
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 40,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      66,
+      66
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 41,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      66,
+      67
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 42,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      67,
+      67
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 43,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      77,
+      78
+    ],
+    "tupleCount": 2,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 50,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      66,
+      68
+    ],
+    "tupleCount": 4,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 51,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      67,
+      67
+    ],
+    "tupleCount": 3,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 56,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      68,
+      68
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 62,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      58,
+      58
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  }
+]

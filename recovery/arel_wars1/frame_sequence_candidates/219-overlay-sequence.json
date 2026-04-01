@@ -1,0 +1,35 @@
+[
+  {
+    "groupIndex": 2,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      35,
+      35
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 3,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      34,
+      34
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  },
+  {
+    "groupIndex": 5,
+    "linkType": "overlay-track",
+    "anchorFrameIndex": null,
+    "tailChunkRange": [
+      35,
+      35
+    ],
+    "tupleCount": 1,
+    "bestFrameMatches": []
+  }
+]

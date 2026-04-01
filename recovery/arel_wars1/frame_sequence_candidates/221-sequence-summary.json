@@ -1,0 +1,50 @@
+{
+  "sequenceKind": "single-anchor-delta",
+  "linkedGroupCount": 1,
+  "overlayGroupCount": 0,
+  "linkTypeCounts": {
+    "chunk-linked-reuse": 1,
+    "overlay-track": 0
+  },
+  "anchorFrameSequence": [
+    1
+  ],
+  "anchorFrameDeltas": [],
+  "distinctAnchorFrames": [
+    1
+  ],
+  "anchorFrameSpan": [
+    1,
+    1
+  ],
+  "strictLoopCycle": null,
+  "bestContiguousRun": {
+    "groupIndices": [
+      6
+    ],
+    "anchorFrames": [
+      1
+    ],
+    "length": 1
+  },
+  "linkedGroupIndices": [
+    6
+  ],
+  "overlayGroupIndices": [],
+  "overlayChunkRanges": [],
+  "linkedCandidatesPreview": [
+    {
+      "groupIndex": 6,
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 1,
+      "exactOverlap": 0,
+      "chunkOverlap": 5,
+      "tupleCount": 10,
+      "chunkIndexRange": [
+        6,
+        45
+      ]
+    }
+  ],
+  "overlayCandidatesPreview": []
+}

@@ -1,0 +1,290 @@
+{
+  "sequenceKind": "overlay-only",
+  "linkedGroupCount": 0,
+  "overlayGroupCount": 32,
+  "linkTypeCounts": {
+    "overlay-track": 32
+  },
+  "anchorFrameSequence": [],
+  "anchorFrameDeltas": [],
+  "distinctAnchorFrames": [],
+  "anchorFrameSpan": null,
+  "strictLoopCycle": null,
+  "bestContiguousRun": null,
+  "linkedGroupIndices": [],
+  "overlayGroupIndices": [
+    9,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    25,
+    26,
+    27,
+    28,
+    30,
+    32,
+    34,
+    36,
+    37,
+    38,
+    40,
+    41,
+    42,
+    43,
+    50,
+    51,
+    56,
+    62
+  ],
+  "overlayChunkRanges": [
+    [
+      80,
+      80
+    ],
+    [
+      79,
+      80
+    ],
+    [
+      80,
+      81
+    ],
+    [
+      34,
+      79
+    ],
+    [
+      79,
+      80
+    ],
+    [
+      79,
+      79
+    ],
+    [
+      80,
+      82
+    ],
+    [
+      34,
+      79
+    ],
+    [
+      79,
+      80
+    ],
+    [
+      79,
+      79
+    ],
+    [
+      80,
+      83
+    ],
+    [
+      34,
+      79
+    ],
+    [
+      79,
+      80
+    ],
+    [
+      79,
+      79
+    ],
+    [
+      80,
+      80
+    ],
+    [
+      34,
+      79
+    ],
+    [
+      79,
+      80
+    ],
+    [
+      79,
+      79
+    ],
+    [
+      80,
+      80
+    ],
+    [
+      79,
+      80
+    ],
+    [
+      80,
+      80
+    ],
+    [
+      80,
+      80
+    ],
+    [
+      66,
+      66
+    ],
+    [
+      67,
+      67
+    ],
+    [
+      66,
+      66
+    ],
+    [
+      66,
+      67
+    ],
+    [
+      67,
+      67
+    ],
+    [
+      77,
+      78
+    ],
+    [
+      66,
+      68
+    ],
+    [
+      67,
+      67
+    ],
+    [
+      68,
+      68
+    ],
+    [
+      58,
+      58
+    ]
+  ],
+  "linkedCandidatesPreview": [],
+  "overlayCandidatesPreview": [
+    {
+      "groupIndex": 9,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        80
+      ],
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndex": 11,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 12,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        81
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 13,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 14,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 15,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ],
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndex": 16,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        82
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 17,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 18,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        79,
+        80
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 19,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        79,
+        79
+      ],
+      "tailOnlyChunkCount": 1
+    },
+    {
+      "groupIndex": 20,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        80,
+        83
+      ],
+      "tailOnlyChunkCount": 2
+    },
+    {
+      "groupIndex": 21,
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        34,
+        79
+      ],
+      "tailOnlyChunkCount": 2
+    }
+  ]
+}

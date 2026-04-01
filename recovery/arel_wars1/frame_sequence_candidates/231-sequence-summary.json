@@ -1,0 +1,36 @@
+{
+  "sequenceKind": "overlay-only",
+  "linkedGroupCount": 0,
+  "overlayGroupCount": 1,
+  "linkTypeCounts": {
+    "overlay-track": 1
+  },
+  "anchorFrameSequence": [],
+  "anchorFrameDeltas": [],
+  "distinctAnchorFrames": [],
+  "anchorFrameSpan": null,
+  "strictLoopCycle": null,
+  "bestContiguousRun": null,
+  "linkedGroupIndices": [],
+  "overlayGroupIndices": [
+    0
+  ],
+  "overlayChunkRanges": [
+    [
+      49,
+      49
+    ]
+  ],
+  "linkedCandidatesPreview": [],
+  "overlayCandidatesPreview": [
+    {
+      "groupIndex": 0,
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        49,
+        49
+      ],
+      "tailOnlyChunkCount": 1
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "groupIndex": 3,
+    "linkType": "chunk-linked-reuse",
+    "anchorFrameIndex": 2,
+    "tailChunkRange": [
+      0,
+      58
+    ],
+    "tupleCount": 4,
+    "bestFrameMatches": [
+      {
+        "frameIndex": 2,
+        "exactOverlap": 0,
+        "chunkOverlap": 2
+      },
+      {
+        "frameIndex": 6,
+        "exactOverlap": 0,
+        "chunkOverlap": 2
+      },
+      {
+        "frameIndex": 7,
+        "exactOverlap": 0,
+        "chunkOverlap": 2
+      },
+      {
+        "frameIndex": 0,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 1,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      },
+      {
+        "frameIndex": 3,
+        "exactOverlap": 0,
+        "chunkOverlap": 1
+      }
+    ]
+  }
+]

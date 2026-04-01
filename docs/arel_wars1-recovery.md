@@ -187,10 +187,13 @@ optional 5-byte control chunks may appear:
   - `225.pzx` mostly lands in `chunk-linked-reuse`: its groups share many chunk indices with base frames but rarely the exact same `(chunk, x, y, flag)` tuples, suggesting a reusable secondary pose/effect layer.
   - `084.pzx` has mixed behavior: some groups are tail-only (`52`-`61`), others are `chunk-linked-reuse`, and several central groups become `base-frame-delta` with `7`-`8` exact overlaps against frames `9`-`12`.
 - Sequence-candidate sheets now exist in `recovery/arel_wars1/frame_sequence_candidates/`.
+  - The gallery now covers all `21` stems whose frame-record tails currently produce non-empty sequence candidates.
   - `208` is currently `single-anchor-delta`: one `base-frame-delta` group anchored at frame `16`.
+  - `209` is also `single-anchor-delta`, but with `8` overlay-only groups reusing the same tail chunk range `18-34`, which looks like a fixed base pose plus repeated circular effect layers.
   - `230` is currently `has-contiguous-rise` with a best contiguous anchor run `[13, 14, 15]`, which fits the late-frame loop hypothesis.
   - `084` is also `has-contiguous-rise`, with a central run `[9, 10, 11, 12]`.
   - `215` is `single-anchor-repeat`: nine linked groups all anchor to frame `10`, plus one tiny overlay-only chunk `26`, which looks more like repeated effect deltas than a true frame-to-frame loop.
+  - `226` and `228` sit between the clean cases: both keep a small linked anchor set while also emitting separate tail-only overlays, which is a good sign that linked deltas and effect tracks are intentionally mixed in the same tail format.
   - `240` is `overlay-only`, with no base-frame anchor and a clean advancing overlay chunk sequence.
 - Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
   - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
