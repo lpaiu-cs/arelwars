@@ -74,6 +74,9 @@ High-level layout differences from Arel Wars 1:
       - `control + int16 fields`
       - `control + int16 fields + tail byte`
       - `control + nested secondary marker`
+    - compact coordinate recovery now distinguishes two especially useful subcases:
+      - `effect/001.pzf`: mostly direct `x,y` tuples
+      - `weapon2/003.pzf`: mostly `index,x,y` tuples
   - current variant split is:
     - `anchor-only`: armor `000/001`, head `000/001/002`
     - `anchor+marker`: effect `000/002`, weapon `000/001/002`, weapon2 `000/001/002`
@@ -108,6 +111,8 @@ These steps are now complete:
    - preview sheets under `recovery/arel_wars2/pzd_previews/`
 5. First `PZF -> PZD` anchor probe overlays
    - probe renders under [`pzf_anchor_probes`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_anchor_probes)
+6. First compact-marker scatter probes
+   - point-cloud renders under [`pzf_marker_scatter`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_marker_scatter)
 
 ## Recommended Order For AW2 From Here
 
@@ -160,6 +165,12 @@ python3 tools/arel_wars2/render_pzd_previews.py \
 python3 tools/arel_wars2/render_pzf_anchor_probes.py \
   --assets-root recovery/arel_wars2/apk_unzip/assets \
   --output recovery/arel_wars2/pzf_anchor_probes
+```
+
+```bash
+python3 tools/arel_wars2/render_pzf_marker_scatter.py \
+  --assets-root recovery/arel_wars2/apk_unzip/assets \
+  --output recovery/arel_wars2/pzf_marker_scatter
 ```
 
 For quick script sanity checks, reuse AW1 helpers in a one-off Python session:

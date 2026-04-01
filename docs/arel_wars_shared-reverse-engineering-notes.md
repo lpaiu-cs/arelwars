@@ -105,6 +105,12 @@ This document captures the parts of the recovery work that are likely to stay us
   - `control + int16* + tail byte`
   - `control + nested 67xx000000 marker`
 - `marker-only` AW2 families are the cleanest next target because their payloads often collapse directly into small point-like signed-coordinate tuples.
+- Current high-confidence compact tuple cases:
+  - `effect/001.pzf`: mostly direct `x,y`
+  - `weapon2/003.pzf`: mostly `index,x,y`
 - A fast visual sanity check for AW2 body-part assets now exists:
   - [`render_pzf_anchor_probes.py`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars2/render_pzf_anchor_probes.py)
   - representative outputs under [`pzf_anchor_probes`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_anchor_probes)
+- A complementary point-cloud sanity check now exists for compact marker tuples:
+  - [`render_pzf_marker_scatter.py`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars2/render_pzf_marker_scatter.py)
+  - representative outputs under [`pzf_marker_scatter`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_marker_scatter)

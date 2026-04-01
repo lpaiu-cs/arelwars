@@ -139,6 +139,64 @@
       "control+u8-skip1+int16": 66,
       "control+u8-skip1+int16+u8-tail1": 5,
       "raw": 1
+    },
+    "pzfCompactCoordinateControlHistogram": {
+      "0000": 39,
+      "0100": 148,
+      "0200": 56,
+      "0300": 14,
+      "0323": 6,
+      "032a": 1,
+      "0337": 3,
+      "0400": 8,
+      "0401": 1,
+      "0403": 10,
+      "0404": 1,
+      "0423": 6,
+      "0429": 1,
+      "0437": 3,
+      "0500": 3,
+      "0600": 14,
+      "0800": 1,
+      "0900": 1,
+      "0a00": 3,
+      "0b00": 5,
+      "0c00": 1,
+      "0d00": 2,
+      "0e00": 14,
+      "0f00": 8,
+      "1000": 5,
+      "1100": 10,
+      "1200": 4,
+      "1300": 4,
+      "1400": 13,
+      "1500": 2,
+      "1600": 1,
+      "1700": 3,
+      "1900": 1,
+      "1b00": 4,
+      "1c00": 1,
+      "2000": 51,
+      "2100": 13,
+      "2200": 26,
+      "2300": 8,
+      "2400": 7,
+      "2500": 3,
+      "2600": 4,
+      "2700": 3,
+      "2800": 5,
+      "2a00": 1,
+      "2b00": 4,
+      "2d00": 2,
+      "2e00": 2,
+      "3500": 6,
+      "3600": 27,
+      "3700": 3,
+      "3800": 27,
+      "3900": 5,
+      "3a00": 2,
+      "3b00": 5,
+      "3c00": 13
     }
   },
   "findings": [
@@ -150,6 +208,7 @@
     "Decoded PZF metadata streams also carry dense 67ff000000-delimited sections, so PZF now looks like offset table + anchor boxes + timing/state markers rather than an opaque blob.",
     "Current PZF samples already separate into anchor-only, anchor+marker, and marker-only variants, so the AW2 body-part sidecar parser should branch by variant instead of assuming one universal record layout.",
     "Inside 67ff sections, the payloads already cluster into repeatable control-word families such as 0100, 0200, and 0401, and many of those payloads reduce cleanly to int16 fields plus an optional trailing byte.",
+    "Compact marker tuples are now recoverable from many PZF sections; the cleanest cases already collapse into point-like signed-coordinate records keyed by control words such as 0100 and 0200.",
     "AW2 img/menu PZX files still use magic 'PZX\\x01', but many now decode directly as row streams instead of the AW1 chunk-offset-table first stream.",
     "Sampled AW2 MPL files under assets/pc are tiny sidecars rather than AW1-style two-bank palette blobs, so AW1 MPL logic must not be reused blindly.",
     "AW2 PTC remains structurally similar to AW1 compact parameter blocks and can already be summarized into angle, ratio, signed-delta, and timing fields."
@@ -39958,7 +40017,10 @@
         "layoutHistogram": {},
         "signatureHistogram": {},
         "signaturePreview": [],
-        "sectionPrototypePreview": []
+        "sectionPrototypePreview": [],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 53,
@@ -40292,7 +40354,10 @@
         "layoutHistogram": {},
         "signatureHistogram": {},
         "signaturePreview": [],
-        "sectionPrototypePreview": []
+        "sectionPrototypePreview": [],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 60,
@@ -41766,6 +41831,345 @@
             "leadWordHex": "0700",
             "payloadHex": "070001f8ffb9ff3900380008009aff6fff01"
           }
+        ],
+        "compactCoordinateCount": 299,
+        "compactCoordinateControlHistogram": {
+          "0100": 1,
+          "0200": 6,
+          "0300": 3,
+          "0323": 6,
+          "032a": 1,
+          "0337": 3,
+          "0400": 3,
+          "0403": 10,
+          "0404": 1,
+          "0423": 6,
+          "0429": 1,
+          "0437": 3,
+          "0600": 5,
+          "0900": 1,
+          "0a00": 1,
+          "0b00": 4,
+          "0c00": 1,
+          "0d00": 2,
+          "0e00": 13,
+          "0f00": 6,
+          "1000": 3,
+          "1100": 7,
+          "1200": 3,
+          "1300": 2,
+          "1400": 1,
+          "1500": 1,
+          "1900": 1,
+          "1b00": 1,
+          "1c00": 1,
+          "2000": 51,
+          "2100": 12,
+          "2200": 25,
+          "2300": 7,
+          "2400": 6,
+          "2500": 2,
+          "2800": 2,
+          "2a00": 1,
+          "2b00": 4,
+          "2d00": 2,
+          "2e00": 2,
+          "3500": 6,
+          "3600": 27,
+          "3700": 3,
+          "3800": 27,
+          "3900": 5,
+          "3a00": 2,
+          "3b00": 5,
+          "3c00": 13
+        },
+        "compactCoordinatePreview": [
+          {
+            "controlWordHex": "0900",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 2,
+            "y": 30,
+            "fieldCount": 2,
+            "fields": [
+              2,
+              30
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0b00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 69,
+            "y": -1,
+            "fieldCount": 2,
+            "fields": [
+              69,
+              -1
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0d00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 115,
+            "y": -54,
+            "fieldCount": 2,
+            "fields": [
+              115,
+              -54
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0f00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 114,
+            "y": -21,
+            "fieldCount": 2,
+            "fields": [
+              114,
+              -21
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0f00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 104,
+            "y": -54,
+            "fieldCount": 2,
+            "fields": [
+              104,
+              -54
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0f00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 114,
+            "y": -75,
+            "fieldCount": 2,
+            "fields": [
+              114,
+              -75
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0f00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 112,
+            "y": -18,
+            "fieldCount": 2,
+            "fields": [
+              112,
+              -18
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0f00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 104,
+            "y": -51,
+            "fieldCount": 2,
+            "fields": [
+              104,
+              -51
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0f00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 114,
+            "y": -71,
+            "fieldCount": 2,
+            "fields": [
+              114,
+              -71
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0a00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -4,
+            "y": 29,
+            "fieldCount": 2,
+            "fields": [
+              -4,
+              29
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0c00",
+            "layoutKind": "control+u8-skip1+int16",
+            "x": 3,
+            "y": 1,
+            "fieldCount": 2,
+            "fields": [
+              3,
+              1
+            ]
+          },
+          {
+            "controlWordHex": "0e00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 112,
+            "y": -48,
+            "fieldCount": 2,
+            "fields": [
+              112,
+              -48
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0b00",
+            "layoutKind": "control+u8-skip1+int16",
+            "x": 5,
+            "y": 1,
+            "fieldCount": 2,
+            "fields": [
+              5,
+              1
+            ]
+          },
+          {
+            "controlWordHex": "0d00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 109,
+            "y": -44,
+            "fieldCount": 2,
+            "fields": [
+              109,
+              -44
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 107,
+            "y": -47,
+            "fieldCount": 2,
+            "fields": [
+              107,
+              -47
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 116,
+            "y": -68,
+            "fieldCount": 2,
+            "fields": [
+              116,
+              -68
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 116,
+            "y": -15,
+            "fieldCount": 2,
+            "fields": [
+              116,
+              -15
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -20,
+            "y": -117,
+            "fieldCount": 2,
+            "fields": [
+              -20,
+              -117
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 26,
+            "y": -99,
+            "fieldCount": 2,
+            "fields": [
+              26,
+              -99
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 19,
+            "y": -62,
+            "fieldCount": 2,
+            "fields": [
+              19,
+              -62
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 30,
+            "y": -47,
+            "fieldCount": 2,
+            "fields": [
+              30,
+              -47
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -14,
+            "y": -53,
+            "fieldCount": 2,
+            "fields": [
+              -14,
+              -53
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -27,
+            "y": -87,
+            "fieldCount": 2,
+            "fields": [
+              -27,
+              -87
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -44,
+            "y": -64,
+            "fieldCount": 2,
+            "fields": [
+              -44,
+              -64
+            ],
+            "tailByteHex": "01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -42827,6 +43231,346 @@
             "leadWordHex": "0100",
             "payloadHex": "01001200b1ff85ff01"
           }
+        ],
+        "compactCoordinateCount": 45,
+        "compactCoordinateControlHistogram": {
+          "0100": 17,
+          "0200": 6,
+          "0300": 3,
+          "0400": 1,
+          "0500": 1,
+          "0600": 1,
+          "0800": 1,
+          "2100": 1,
+          "2200": 1,
+          "2300": 1,
+          "2400": 1,
+          "2500": 1,
+          "2600": 4,
+          "2700": 3,
+          "2800": 3
+        },
+        "compactCoordinatePreview": [
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 16,
+            "y": -109,
+            "fieldCount": 2,
+            "fields": [
+              16,
+              -109
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 27,
+            "y": -115,
+            "fieldCount": 2,
+            "fields": [
+              27,
+              -115
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0600",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -57,
+            "y": -85,
+            "fieldCount": 2,
+            "fields": [
+              -57,
+              -85
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 16,
+            "y": -66,
+            "fieldCount": 2,
+            "fields": [
+              16,
+              -66
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0500",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 19,
+            "y": -54,
+            "fieldCount": 2,
+            "fields": [
+              19,
+              -54
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0800",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -13,
+            "y": -78,
+            "fieldCount": 2,
+            "fields": [
+              -13,
+              -78
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -67,
+            "y": -124,
+            "fieldCount": 3,
+            "fields": [
+              14,
+              -67,
+              -124
+            ],
+            "index": 14,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -59,
+            "y": -116,
+            "fieldCount": 3,
+            "fields": [
+              15,
+              -59,
+              -116
+            ],
+            "index": 15,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -67,
+            "y": -107,
+            "fieldCount": 3,
+            "fields": [
+              16,
+              -67,
+              -107
+            ],
+            "index": 16,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -85,
+            "y": -139,
+            "fieldCount": 3,
+            "fields": [
+              17,
+              -85,
+              -139
+            ],
+            "index": 17,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -79,
+            "y": -123,
+            "fieldCount": 3,
+            "fields": [
+              18,
+              -79,
+              -123
+            ],
+            "index": 18,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -61,
+            "y": -105,
+            "fieldCount": 3,
+            "fields": [
+              19,
+              -61,
+              -105
+            ],
+            "index": 19,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -86,
+            "fieldCount": 3,
+            "fields": [
+              20,
+              -29,
+              -86
+            ],
+            "index": 20,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -50,
+            "y": -194,
+            "fieldCount": 3,
+            "fields": [
+              22,
+              -50,
+              -194
+            ],
+            "index": 22,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -205,
+            "fieldCount": 3,
+            "fields": [
+              23,
+              -55,
+              -205
+            ],
+            "index": 23,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -62,
+            "y": -226,
+            "fieldCount": 3,
+            "fields": [
+              24,
+              -62,
+              -226
+            ],
+            "index": 24,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -67,
+            "y": -219,
+            "fieldCount": 3,
+            "fields": [
+              25,
+              -67,
+              -219
+            ],
+            "index": 25,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -116,
+            "fieldCount": 3,
+            "fields": [
+              27,
+              -29,
+              -116
+            ],
+            "index": 27,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -32,
+            "y": -123,
+            "fieldCount": 3,
+            "fields": [
+              28,
+              -32,
+              -123
+            ],
+            "index": 28,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -38,
+            "y": -136,
+            "fieldCount": 3,
+            "fields": [
+              29,
+              -38,
+              -136
+            ],
+            "index": 29,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -42,
+            "y": -132,
+            "fieldCount": 3,
+            "fields": [
+              30,
+              -42,
+              -132
+            ],
+            "index": 30,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "2100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -59,
+            "y": -167,
+            "fieldCount": 2,
+            "fields": [
+              -59,
+              -167
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -22,
+            "y": -126,
+            "fieldCount": 3,
+            "fields": [
+              32,
+              -22,
+              -126
+            ],
+            "index": 32,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "2200",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -50,
+            "y": -153,
+            "fieldCount": 2,
+            "fields": [
+              -50,
+              -153
+            ],
+            "tailByteHex": "01"
+          }
         ]
       },
       "anchorBoxes": null,
@@ -43734,6 +44478,332 @@
             "leadWordHex": "1400",
             "payloadHex": "1400c9ffc4ff0167780000000100000d00baff94ff01"
           }
+        ],
+        "compactCoordinateCount": 47,
+        "compactCoordinateControlHistogram": {
+          "0200": 3,
+          "0300": 5,
+          "0400": 4,
+          "0500": 2,
+          "0600": 2,
+          "0b00": 1,
+          "0e00": 1,
+          "0f00": 2,
+          "1000": 2,
+          "1100": 2,
+          "1200": 1,
+          "1300": 2,
+          "1400": 12,
+          "1500": 1,
+          "1600": 1,
+          "1700": 3,
+          "1b00": 3
+        },
+        "compactCoordinatePreview": [
+          {
+            "controlWordHex": "0600",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": 34,
+            "y": -86,
+            "fieldCount": 2,
+            "fields": [
+              34,
+              -86
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -71,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -71
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0300",
+            "layoutKind": "control+int16",
+            "x": -58,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              20,
+              201,
+              -58,
+              -255
+            ],
+            "index": 20
+          },
+          {
+            "controlWordHex": "0b00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -69,
+            "y": -175,
+            "fieldCount": 2,
+            "fields": [
+              -69,
+              -175
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0300",
+            "layoutKind": "control+int16",
+            "x": -158,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              12,
+              191,
+              -158,
+              -255
+            ],
+            "index": 12
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -38,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -38
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0e00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -40,
+            "y": -99,
+            "fieldCount": 2,
+            "fields": [
+              -40,
+              -99
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -37,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -37
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0300",
+            "layoutKind": "control+int16",
+            "x": -165,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              22,
+              140,
+              -165,
+              -255
+            ],
+            "index": 22
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -48,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -48
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0f00",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -71,
+            "y": -129,
+            "fieldCount": 2,
+            "fields": [
+              -71,
+              -129
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0400",
+            "layoutKind": "control+int16",
+            "x": -166,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              21,
+              136,
+              -166,
+              -255
+            ],
+            "index": 21
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -37,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -37
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -65,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -65
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -108,
+            "y": -152,
+            "fieldCount": 2,
+            "fields": [
+              -108,
+              -152
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0500",
+            "layoutKind": "control+int16",
+            "x": -165,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              22,
+              140,
+              -165,
+              -255
+            ],
+            "index": 22
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -48,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -48
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -75,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -75
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -129,
+            "y": -171,
+            "fieldCount": 2,
+            "fields": [
+              -129,
+              -171
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0500",
+            "layoutKind": "control+int16",
+            "x": -166,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              21,
+              136,
+              -166,
+              -255
+            ],
+            "index": 21
+          },
+          {
+            "controlWordHex": "0300",
+            "layoutKind": "control+int16",
+            "x": -165,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              22,
+              140,
+              -165,
+              -255
+            ],
+            "index": 22
+          },
+          {
+            "controlWordHex": "1300",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -167,
+            "y": -221,
+            "fieldCount": 2,
+            "fields": [
+              -167,
+              -221
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0300",
+            "layoutKind": "control+int16",
+            "x": -48,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              20,
+              201,
+              -48,
+              -255
+            ],
+            "index": 20
+          },
+          {
+            "controlWordHex": "1400",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -55,
+            "y": -65,
+            "fieldCount": 2,
+            "fields": [
+              -55,
+              -65
+            ],
+            "tailByteHex": "01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -44026,7 +45096,10 @@
         "layoutHistogram": {},
         "signatureHistogram": {},
         "signaturePreview": [],
-        "sectionPrototypePreview": []
+        "sectionPrototypePreview": [],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 25,
@@ -44330,7 +45403,10 @@
         "layoutHistogram": {},
         "signatureHistogram": {},
         "signaturePreview": [],
-        "sectionPrototypePreview": []
+        "sectionPrototypePreview": [],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 18,
@@ -44628,7 +45704,10 @@
         "layoutHistogram": {},
         "signatureHistogram": {},
         "signaturePreview": [],
-        "sectionPrototypePreview": []
+        "sectionPrototypePreview": [],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 25,
@@ -45551,7 +46630,10 @@
             "leadWordHex": "0000",
             "payloadHex": "000000020001ecffccff1e002200000086ffb2ff00030087ffb1ff01"
           }
-        ]
+        ],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 30,
@@ -46598,7 +47680,10 @@
             "leadWordHex": "0200",
             "payloadHex": "020001f1ffcdff1d0024000400f0ffb7ff0203040500f0ffb7ff030403"
           }
-        ]
+        ],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 30,
@@ -47263,7 +48348,10 @@
             "leadWordHex": "0100",
             "payloadHex": "0100000500a8ff17ff000100000500a8ff17ff0000000001000001006eff32ff"
           }
-        ]
+        ],
+        "compactCoordinateCount": 0,
+        "compactCoordinateControlHistogram": {},
+        "compactCoordinatePreview": []
       },
       "anchorBoxes": {
         "stride": 18,
@@ -48305,6 +49393,332 @@
             "leadByte": 1,
             "leadWordHex": "0101",
             "payloadHex": "010101f8ff96ff76006200ffffc5ff140021000000deff97ff01"
+          }
+        ],
+        "compactCoordinateCount": 75,
+        "compactCoordinateControlHistogram": {
+          "0000": 16,
+          "0100": 42,
+          "0200": 13,
+          "0600": 3,
+          "0a00": 1
+        },
+        "compactCoordinatePreview": [
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -120,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              2,
+              218,
+              -120,
+              -255
+            ],
+            "index": 2
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -138,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              3,
+              206,
+              -138,
+              -255
+            ],
+            "index": 3
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -144,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              4,
+              226,
+              -144,
+              -255
+            ],
+            "index": 4
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -137,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              5,
+              251,
+              -137,
+              -255
+            ],
+            "index": 5
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -92,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              6,
+              250,
+              -92,
+              -255
+            ],
+            "index": 6
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -114,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              7,
+              224,
+              -114,
+              -255
+            ],
+            "index": 7
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -122,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              8,
+              216,
+              -122,
+              -255
+            ],
+            "index": 8
+          },
+          {
+            "controlWordHex": "0000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -48,
+            "y": -150,
+            "fieldCount": 2,
+            "fields": [
+              -48,
+              -150
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -48,
+            "y": -150,
+            "fieldCount": 2,
+            "fields": [
+              -48,
+              -150
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -6,
+            "y": -100,
+            "fieldCount": 2,
+            "fields": [
+              -6,
+              -100
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -6,
+            "y": -100,
+            "fieldCount": 2,
+            "fields": [
+              -6,
+              -100
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -80,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              9,
+              160,
+              -80,
+              -255
+            ],
+            "index": 9
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -171,
+            "fieldCount": 2,
+            "fields": [
+              -29,
+              -171
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -80,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              10,
+              155,
+              -80,
+              -255
+            ],
+            "index": 10
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -172,
+            "fieldCount": 2,
+            "fields": [
+              -29,
+              -172
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -72,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              11,
+              155,
+              -72,
+              -255
+            ],
+            "index": 11
+          },
+          {
+            "controlWordHex": "0000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -27,
+            "y": -171,
+            "fieldCount": 2,
+            "fields": [
+              -27,
+              -171
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -80,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              9,
+              160,
+              -80,
+              -255
+            ],
+            "index": 9
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -171,
+            "fieldCount": 2,
+            "fields": [
+              -29,
+              -171
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -80,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              10,
+              155,
+              -80,
+              -255
+            ],
+            "index": 10
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -172,
+            "fieldCount": 2,
+            "fields": [
+              -29,
+              -172
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -72,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              11,
+              155,
+              -72,
+              -255
+            ],
+            "index": 11
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -16,
+            "y": -123,
+            "fieldCount": 2,
+            "fields": [
+              -16,
+              -123
+            ],
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -80,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              9,
+              160,
+              -80,
+              -255
+            ],
+            "index": 9
           }
         ]
       },
@@ -49365,6 +50779,125 @@
             "leadWordHex": "1500",
             "payloadHex": "15000800c6ff0016000800c6ff01"
           }
+        ],
+        "compactCoordinateCount": 8,
+        "compactCoordinateControlHistogram": {
+          "0100": 6,
+          "0401": 1,
+          "1100": 1
+        },
+        "compactCoordinatePreview": [
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -148,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              12,
+              216,
+              -148,
+              -255
+            ],
+            "index": 12
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -158,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              13,
+              227,
+              -158,
+              -255
+            ],
+            "index": 13
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -130,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              14,
+              251,
+              -130,
+              -255
+            ],
+            "index": 14
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -85,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              15,
+              249,
+              -85,
+              -255
+            ],
+            "index": 15
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -108,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              16,
+              224,
+              -108,
+              -255
+            ],
+            "index": 16
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -114,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              17,
+              216,
+              -114,
+              -255
+            ],
+            "index": 17
+          },
+          {
+            "controlWordHex": "0401",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -83,
+            "y": -187,
+            "fieldCount": 4,
+            "fields": [
+              0,
+              16,
+              -83,
+              -187
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "1100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -91,
+            "y": -193,
+            "fieldCount": 2,
+            "fields": [
+              -91,
+              -193
+            ],
+            "tailByteHex": "01"
+          }
         ]
       },
       "anchorBoxes": {
@@ -50099,6 +51632,153 @@
             "leadByte": 0,
             "leadWordHex": "0000",
             "payloadHex": "0000ecffbfff000200000700b1ffd8ff01"
+          }
+        ],
+        "compactCoordinateCount": 10,
+        "compactCoordinateControlHistogram": {
+          "0100": 9,
+          "0200": 1
+        },
+        "compactCoordinatePreview": [
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -153,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              2,
+              218,
+              -153,
+              -255
+            ],
+            "index": 2
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -130,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              3,
+              251,
+              -130,
+              -255
+            ],
+            "index": 3
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -84,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              4,
+              249,
+              -84,
+              -255
+            ],
+            "index": 4
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -107,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              5,
+              223,
+              -107,
+              -255
+            ],
+            "index": 5
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -113,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              6,
+              214,
+              -113,
+              -255
+            ],
+            "index": 6
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -40,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              9,
+              177,
+              -40,
+              -255
+            ],
+            "index": 9
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -40,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              7,
+              177,
+              -40,
+              -255
+            ],
+            "index": 7
+          },
+          {
+            "controlWordHex": "0200",
+            "layoutKind": "control+int16",
+            "x": -40,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              8,
+              177,
+              -40,
+              -255
+            ],
+            "index": 8
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -40,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              9,
+              177,
+              -40,
+              -255
+            ],
+            "index": 9
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16",
+            "x": -40,
+            "y": -255,
+            "fieldCount": 4,
+            "fields": [
+              7,
+              177,
+              -40,
+              -255
+            ],
+            "index": 7
           }
         ]
       },
@@ -51063,6 +52743,354 @@
             "leadByte": 1,
             "leadWordHex": "0100",
             "payloadHex": "01000000e4ffa9ff01"
+          }
+        ],
+        "compactCoordinateCount": 130,
+        "compactCoordinateControlHistogram": {
+          "0000": 23,
+          "0100": 73,
+          "0200": 27,
+          "0300": 3,
+          "0600": 3,
+          "0a00": 1
+        },
+        "compactCoordinatePreview": [
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -15,
+            "y": -93,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -15,
+              -93
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -15,
+            "y": -95,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -15,
+              -95
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -17,
+            "y": -98,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -17,
+              -98
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -19,
+            "y": -97,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -19,
+              -97
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -19,
+            "y": -97,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -19,
+              -97
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -18,
+            "y": -95,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -18,
+              -95
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -18,
+            "y": -95,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -18,
+              -95
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0000",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -97,
+            "fieldCount": 4,
+            "fields": [
+              1,
+              0,
+              -29,
+              -97
+            ],
+            "index": 1,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -40,
+            "y": -117,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -40,
+              -117
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -5,
+            "y": -83,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -5,
+              -83
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -5,
+            "y": -83,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -5,
+              -83
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -20,
+            "y": -90,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -20,
+              -90
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -25,
+            "y": -88,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -25,
+              -88
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -28,
+            "y": -87,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -28,
+              -87
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -28,
+            "y": -87,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -28,
+              -87
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -29,
+            "y": -88,
+            "fieldCount": 3,
+            "fields": [
+              1,
+              -29,
+              -88
+            ],
+            "index": 1,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -30,
+            "y": -91,
+            "fieldCount": 3,
+            "fields": [
+              2,
+              -30,
+              -91
+            ],
+            "index": 2,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -31,
+            "y": -88,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -31,
+              -88
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -37,
+            "y": -86,
+            "fieldCount": 3,
+            "fields": [
+              1,
+              -37,
+              -86
+            ],
+            "index": 1,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -34,
+            "y": -77,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -34,
+              -77
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -33,
+            "y": -89,
+            "fieldCount": 3,
+            "fields": [
+              1,
+              -33,
+              -89
+            ],
+            "index": 1,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -33,
+            "y": -90,
+            "fieldCount": 3,
+            "fields": [
+              2,
+              -33,
+              -90
+            ],
+            "index": 2,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -31,
+            "y": -85,
+            "fieldCount": 3,
+            "fields": [
+              0,
+              -31,
+              -85
+            ],
+            "index": 0,
+            "tailByteHex": "01"
+          },
+          {
+            "controlWordHex": "0100",
+            "layoutKind": "control+int16+u8-tail1",
+            "x": -31,
+            "y": -80,
+            "fieldCount": 3,
+            "fields": [
+              1,
+              -31,
+              -80
+            ],
+            "index": 1,
+            "tailByteHex": "01"
           }
         ]
       },

@@ -124,7 +124,7 @@ def summarize_be_offset_table(data: bytes, stop: int) -> dict[str, object]:
     }
 
 
-def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
+def iter_pzf_section_payloads(decoded: bytes) -> list[bytes]:
     marker = bytes.fromhex("67ff000000")
     offsets: list[int] = []
     start = 0
@@ -135,6 +135,24 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
         offsets.append(found)
         start = found + 1
 
+    payloads: list[bytes] = []
+    for index, offset in enumerate(offsets):
+        next_offset = offsets[index + 1] if index + 1 < len(offsets) else len(decoded)
+        payloads.append(decoded[offset + len(marker) : next_offset])
+    return payloads
+
+
+def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
+    marker = bytes.fromhex("67ff000000")
+    offsets: list[int] = []
+    start = 0
+    while True:
+        found = decoded.find(marker, start)
+        if found < 0:
+            break
+        offsets.append(found)
+        start = found + 1
+    payloads = iter_pzf_section_payloads(decoded)
     prefix_len = offsets[0] if offsets else len(decoded)
     section_lengths = []
     lead_byte_histogram = Counter()
@@ -143,9 +161,9 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
     signature_counts = Counter()
     signature_samples: dict[tuple[str | None, int], bytes] = {}
     layout_histogram = Counter()
-    for index, offset in enumerate(offsets):
-        next_offset = offsets[index + 1] if index + 1 < len(offsets) else len(decoded)
-        payload = decoded[offset + len(marker) : next_offset]
+    compact_coordinate_counts = Counter()
+    compact_coordinates = []
+    for payload in payloads:
         section_lengths.append(len(payload))
         if payload:
             lead_byte_histogram[payload[0]] += 1
@@ -163,7 +181,13 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
             signature = (payload[:2].hex() if len(payload) >= 2 else None, len(payload))
             signature_counts[signature] += 1
             signature_samples.setdefault(signature, payload)
-            layout_histogram[describe_pzf_section_payload(payload)["layoutKind"]] += 1
+            structure = describe_pzf_section_payload(payload)
+            layout_histogram[structure["layoutKind"]] += 1
+            compact_coordinate = extract_pzf_coordinate_hint(structure)
+            if compact_coordinate is not None:
+                compact_coordinate_counts[compact_coordinate["controlWordHex"]] += 1
+                if len(compact_coordinates) < 24:
+                    compact_coordinates.append(compact_coordinate)
     histogram = Counter(section_lengths)
     return {
         "markerCounts": {"67ff000000": len(offsets)},
@@ -195,6 +219,9 @@ def summarize_pzf_meta_sections(decoded: bytes) -> dict[str, object]:
             )[:16]
         ],
         "sectionPrototypePreview": section_prototypes,
+        "compactCoordinateCount": sum(compact_coordinate_counts.values()),
+        "compactCoordinateControlHistogram": dict(sorted(compact_coordinate_counts.items())),
+        "compactCoordinatePreview": compact_coordinates,
     }
 
 
@@ -286,6 +313,49 @@ def describe_pzf_section_payload(payload: bytes) -> dict[str, object]:
     structure["layoutKind"] = f"control+{value_layout['kind']}"
     structure["valueLayout"] = value_layout
     return structure
+
+
+def extract_pzf_coordinate_hint(structure: dict[str, object]) -> dict[str, object] | None:
+    layout_kind = str(structure.get("layoutKind"))
+    if "nested-marker" in layout_kind or layout_kind == "raw":
+        return None
+
+    value_layout = structure.get("valueLayout")
+    if not isinstance(value_layout, dict):
+        return None
+
+    values = value_layout.get("int16Preview")
+    count = value_layout.get("int16Count")
+    if not isinstance(values, list) or not isinstance(count, int) or count < 2 or count > 4:
+        return None
+
+    if count == 2:
+        index_value = None
+        x_value = int(values[0])
+        y_value = int(values[1])
+    else:
+        index_value = int(values[0])
+        x_value = int(values[-2])
+        y_value = int(values[-1])
+
+    if not (-512 <= x_value <= 512 and -512 <= y_value <= 512):
+        return None
+    if index_value is not None and not (-32 <= index_value <= 256):
+        return None
+
+    hint = {
+        "controlWordHex": structure.get("leadWordHex"),
+        "layoutKind": layout_kind,
+        "x": x_value,
+        "y": y_value,
+        "fieldCount": count,
+        "fields": values[:count],
+    }
+    if index_value is not None:
+        hint["index"] = index_value
+    if isinstance(value_layout.get("tailByteHex"), str):
+        hint["tailByteHex"] = value_layout["tailByteHex"]
+    return hint
 
 
 def summarize_pzf_anchor_boxes(decoded: bytes, stride: int | None) -> dict[str, object] | None:
@@ -476,12 +546,15 @@ def main() -> None:
     )
     pzf_lead_word_counts = Counter()
     pzf_layout_counts = Counter()
+    pzf_compact_coordinate_counts = Counter()
     for entry in pzf_entries:
         meta_sections = entry.get("metaSections") or {}
         for lead_word, count in (meta_sections.get("leadWordHistogram") or {}).items():
             pzf_lead_word_counts[str(lead_word)] += int(count)
         for layout_kind, count in (meta_sections.get("layoutHistogram") or {}).items():
             pzf_layout_counts[str(layout_kind)] += int(count)
+        for control_word, count in (meta_sections.get("compactCoordinateControlHistogram") or {}).items():
+            pzf_compact_coordinate_counts[str(control_word)] += int(count)
     pzx_row_ready = [entry for entry in pzx_entries if entry["rowStreams"]]
     pzx_chunk_table_ready = [entry for entry in pzx_entries if entry["firstStreamChunkTable"] is not None]
 
@@ -501,6 +574,7 @@ def main() -> None:
             "pzfMetaSectionHistogram": dict(sorted(pzf_marker_section_counts.items())),
             "pzfMarkerLeadWordHistogram": dict(sorted(pzf_lead_word_counts.items())),
             "pzfMarkerLayoutHistogram": dict(sorted(pzf_layout_counts.items())),
+            "pzfCompactCoordinateControlHistogram": dict(sorted(pzf_compact_coordinate_counts.items())),
         },
         "findings": [
             "AW2 keeps ZT1 as the same zlib-wrapped text container used by AW1, and the recovered script parser works on sampled EN/KO/JA script files.",
@@ -511,6 +585,7 @@ def main() -> None:
             "Decoded PZF metadata streams also carry dense 67ff000000-delimited sections, so PZF now looks like offset table + anchor boxes + timing/state markers rather than an opaque blob.",
             "Current PZF samples already separate into anchor-only, anchor+marker, and marker-only variants, so the AW2 body-part sidecar parser should branch by variant instead of assuming one universal record layout.",
             "Inside 67ff sections, the payloads already cluster into repeatable control-word families such as 0100, 0200, and 0401, and many of those payloads reduce cleanly to int16 fields plus an optional trailing byte.",
+            "Compact marker tuples are now recoverable from many PZF sections; the cleanest cases already collapse into point-like signed-coordinate records keyed by control words such as 0100 and 0200.",
             "AW2 img/menu PZX files still use magic 'PZX\\x01', but many now decode directly as row streams instead of the AW1 chunk-offset-table first stream.",
             "Sampled AW2 MPL files under assets/pc are tiny sidecars rather than AW1-style two-bank palette blobs, so AW1 MPL logic must not be reused blindly.",
             "AW2 PTC remains structurally similar to AW1 compact parameter blocks and can already be summarized into angle, ratio, signed-delta, and timing fields.",
