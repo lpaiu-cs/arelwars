@@ -3,6 +3,12 @@
   "timelineKind": "single-anchor-with-overlays",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 2,
+  "loopSummary": {
+    "startEventIndex": 1,
+    "endEventIndex": 1,
+    "reason": "overlay-tail",
+    "confidence": "medium"
+  },
   "eventFramePaths": [
     "frames/228/00-g01-overlay.png",
     "frames/228/01-g03-linked.png"
@@ -19,6 +25,19 @@
         51,
         52
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/228/00-g01-overlay.png"
     },
     {
@@ -31,6 +50,15 @@
       "chunkIndexRange": [
         0,
         58
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
       ],
       "framePath": "frames/228/01-g03-linked.png"
     }

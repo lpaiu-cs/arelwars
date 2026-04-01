@@ -2,28 +2,35 @@
   "stem": "084",
   "timelineKind": "rising-anchor-with-overlays",
   "sequenceKind": "has-contiguous-rise",
-  "eventCount": 20,
+  "eventCount": 21,
+  "loopSummary": {
+    "startEventIndex": 5,
+    "endEventIndex": 8,
+    "reason": "best-contiguous-run",
+    "confidence": "high"
+  },
   "eventFramePaths": [
     "frames/084/00-g00-linked.png",
     "frames/084/01-g01-linked.png",
     "frames/084/02-g03-overlay.png",
     "frames/084/03-g04-overlay.png",
-    "frames/084/04-g06-linked.png",
-    "frames/084/05-g07-linked.png",
-    "frames/084/06-g08-linked.png",
-    "frames/084/07-g09-linked.png",
-    "frames/084/08-g10-linked.png",
-    "frames/084/09-g12-linked.png",
-    "frames/084/10-g14-linked.png",
-    "frames/084/11-g16-linked.png",
-    "frames/084/12-g18-linked.png",
-    "frames/084/13-g19-linked.png",
-    "frames/084/14-g21-linked.png",
-    "frames/084/15-g22-overlay.png",
-    "frames/084/16-g23-linked.png",
-    "frames/084/17-g24-overlay.png",
-    "frames/084/18-g25-linked.png",
-    "frames/084/19-g28-linked.png"
+    "frames/084/04-g05-overlay.png",
+    "frames/084/05-g06-linked.png",
+    "frames/084/06-g07-linked.png",
+    "frames/084/07-g08-linked.png",
+    "frames/084/08-g09-linked.png",
+    "frames/084/09-g10-linked.png",
+    "frames/084/10-g12-linked.png",
+    "frames/084/11-g14-linked.png",
+    "frames/084/12-g16-linked.png",
+    "frames/084/13-g18-linked.png",
+    "frames/084/14-g19-linked.png",
+    "frames/084/15-g21-linked.png",
+    "frames/084/16-g22-overlay.png",
+    "frames/084/17-g23-linked.png",
+    "frames/084/18-g24-overlay.png",
+    "frames/084/19-g25-linked.png",
+    "frames/084/20-g28-linked.png"
   ],
   "events": [
     {
@@ -36,6 +43,15 @@
       "chunkIndexRange": [
         26,
         50
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
       ],
       "framePath": "frames/084/00-g00-linked.png"
     },
@@ -50,6 +66,15 @@
         2,
         50
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
       "framePath": "frames/084/01-g01-linked.png"
     },
     {
@@ -62,6 +87,19 @@
       "chunkIndexRange": [
         52,
         57
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
       ],
       "framePath": "frames/084/02-g03-overlay.png"
     },
@@ -76,7 +114,48 @@
         56,
         61
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/084/03-g04-overlay.png"
+    },
+    {
+      "groupIndex": 5,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 9,
+      "relation": "before-linked",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        39,
+        39
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "6700000000"
+      ],
+      "timingValues": [
+        255,
+        0
+      ],
+      "framePath": "frames/084/04-g05-overlay.png"
     },
     {
       "groupIndex": 6,
@@ -89,7 +168,16 @@
         8,
         49
       ],
-      "framePath": "frames/084/04-g06-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/084/05-g06-linked.png"
     },
     {
       "groupIndex": 7,
@@ -102,7 +190,18 @@
         8,
         68
       ],
-      "framePath": "frames/084/05-g07-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/06-g07-linked.png"
     },
     {
       "groupIndex": 8,
@@ -115,7 +214,26 @@
         8,
         71
       ],
-      "framePath": "frames/084/06-g08-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/07-g08-linked.png"
     },
     {
       "groupIndex": 9,
@@ -128,7 +246,28 @@
         8,
         71
       ],
-      "framePath": "frames/084/07-g09-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/08-g09-linked.png"
     },
     {
       "groupIndex": 10,
@@ -141,7 +280,16 @@
         3,
         54
       ],
-      "framePath": "frames/084/08-g10-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/084/09-g10-linked.png"
     },
     {
       "groupIndex": 12,
@@ -154,7 +302,16 @@
         55,
         55
       ],
-      "framePath": "frames/084/09-g12-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/084/10-g12-linked.png"
     },
     {
       "groupIndex": 14,
@@ -167,7 +324,16 @@
         54,
         54
       ],
-      "framePath": "frames/084/10-g14-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/084/11-g14-linked.png"
     },
     {
       "groupIndex": 16,
@@ -180,7 +346,16 @@
         55,
         55
       ],
-      "framePath": "frames/084/11-g16-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/084/12-g16-linked.png"
     },
     {
       "groupIndex": 18,
@@ -193,7 +368,16 @@
         54,
         54
       ],
-      "framePath": "frames/084/12-g18-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/084/13-g18-linked.png"
     },
     {
       "groupIndex": 19,
@@ -206,7 +390,20 @@
         9,
         72
       ],
-      "framePath": "frames/084/13-g19-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/14-g19-linked.png"
     },
     {
       "groupIndex": 21,
@@ -219,7 +416,24 @@
         8,
         72
       ],
-      "framePath": "frames/084/14-g21-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/15-g21-linked.png"
     },
     {
       "groupIndex": 22,
@@ -232,7 +446,20 @@
         66,
         71
       ],
-      "framePath": "frames/084/15-g22-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/16-g22-overlay.png"
     },
     {
       "groupIndex": 23,
@@ -245,7 +472,26 @@
         9,
         72
       ],
-      "framePath": "frames/084/16-g23-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/17-g23-linked.png"
     },
     {
       "groupIndex": 24,
@@ -258,7 +504,18 @@
         65,
         67
       ],
-      "framePath": "frames/084/17-g24-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/18-g24-overlay.png"
     },
     {
       "groupIndex": 25,
@@ -271,7 +528,20 @@
         8,
         72
       ],
-      "framePath": "frames/084/18-g25-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/084/19-g25-linked.png"
     },
     {
       "groupIndex": 28,
@@ -284,7 +554,16 @@
         3,
         73
       ],
-      "framePath": "frames/084/19-g28-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/084/20-g28-linked.png"
     }
   ]
 }

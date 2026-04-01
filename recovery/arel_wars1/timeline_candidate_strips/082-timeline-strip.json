@@ -3,29 +3,35 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 18,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 17,
+    "reason": "overlay-track-only",
+    "confidence": "medium"
+  },
   "eventFramePaths": [
-    "frames/082/00-g04-overlay.png",
-    "frames/082/01-g05-overlay.png",
-    "frames/082/02-g16-overlay.png",
-    "frames/082/03-g18-overlay.png",
-    "frames/082/04-g22-overlay.png",
-    "frames/082/05-g28-overlay.png",
-    "frames/082/06-g30-overlay.png",
-    "frames/082/07-g36-overlay.png",
-    "frames/082/08-g39-overlay.png",
-    "frames/082/09-g45-overlay.png",
-    "frames/082/10-g47-overlay.png",
-    "frames/082/11-g48-overlay.png",
-    "frames/082/12-g50-overlay.png",
-    "frames/082/13-g51-overlay.png",
-    "frames/082/14-g52-overlay.png",
-    "frames/082/15-g54-overlay.png",
-    "frames/082/16-g55-overlay.png",
-    "frames/082/17-g56-overlay.png"
+    "frames/082/00-g06-overlay.png",
+    "frames/082/01-g07-overlay.png",
+    "frames/082/02-g19-overlay.png",
+    "frames/082/03-g21-overlay.png",
+    "frames/082/04-g25-overlay.png",
+    "frames/082/05-g31-overlay.png",
+    "frames/082/06-g33-overlay.png",
+    "frames/082/07-g39-overlay.png",
+    "frames/082/08-g42-overlay.png",
+    "frames/082/09-g48-overlay.png",
+    "frames/082/10-g50-overlay.png",
+    "frames/082/11-g51-overlay.png",
+    "frames/082/12-g53-overlay.png",
+    "frames/082/13-g54-overlay.png",
+    "frames/082/14-g55-overlay.png",
+    "frames/082/15-g57-overlay.png",
+    "frames/082/16-g58-overlay.png",
+    "frames/082/17-g59-overlay.png"
   ],
   "events": [
     {
-      "groupIndex": 4,
+      "groupIndex": 6,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -35,10 +41,19 @@
         78,
         78
       ],
-      "framePath": "frames/082/00-g04-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "6607000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        70,
+        255
+      ],
+      "framePath": "frames/082/00-g06-overlay.png"
     },
     {
-      "groupIndex": 5,
+      "groupIndex": 7,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -48,10 +63,19 @@
         80,
         80
       ],
-      "framePath": "frames/082/01-g05-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/01-g07-overlay.png"
     },
     {
-      "groupIndex": 16,
+      "groupIndex": 19,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -61,10 +85,21 @@
         40,
         41
       ],
-      "framePath": "frames/082/02-g16-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/02-g19-overlay.png"
     },
     {
-      "groupIndex": 18,
+      "groupIndex": 21,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -74,10 +109,19 @@
         44,
         44
       ],
-      "framePath": "frames/082/03-g18-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/03-g21-overlay.png"
     },
     {
-      "groupIndex": 22,
+      "groupIndex": 25,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -87,10 +131,19 @@
         44,
         44
       ],
-      "framePath": "frames/082/04-g22-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/04-g25-overlay.png"
     },
     {
-      "groupIndex": 28,
+      "groupIndex": 31,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -100,10 +153,25 @@
         84,
         84
       ],
-      "framePath": "frames/082/05-g28-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/05-g31-overlay.png"
     },
     {
-      "groupIndex": 30,
+      "groupIndex": 33,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -113,20 +181,20 @@
         84,
         84
       ],
-      "framePath": "frames/082/06-g30-overlay.png"
-    },
-    {
-      "groupIndex": 36,
-      "eventType": "overlay",
-      "linkType": "overlay-track",
-      "anchorFrameIndex": null,
-      "relation": "unanchored",
-      "tupleCount": 1,
-      "chunkIndexRange": [
-        97,
-        97
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
       ],
-      "framePath": "frames/082/07-g36-overlay.png"
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/06-g33-overlay.png"
     },
     {
       "groupIndex": 39,
@@ -139,10 +207,19 @@
         97,
         97
       ],
-      "framePath": "frames/082/08-g39-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/07-g39-overlay.png"
     },
     {
-      "groupIndex": 45,
+      "groupIndex": 42,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -152,20 +229,16 @@
         97,
         97
       ],
-      "framePath": "frames/082/09-g45-overlay.png"
-    },
-    {
-      "groupIndex": 47,
-      "eventType": "overlay",
-      "linkType": "overlay-track",
-      "anchorFrameIndex": null,
-      "relation": "unanchored",
-      "tupleCount": 2,
-      "chunkIndexRange": [
-        92,
-        97
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
       ],
-      "framePath": "frames/082/10-g47-overlay.png"
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/08-g42-overlay.png"
     },
     {
       "groupIndex": 48,
@@ -178,10 +251,65 @@
         97,
         97
       ],
-      "framePath": "frames/082/11-g48-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/09-g48-overlay.png"
     },
     {
       "groupIndex": 50,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        92,
+        97
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/10-g50-overlay.png"
+    },
+    {
+      "groupIndex": 51,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        97,
+        97
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/11-g51-overlay.png"
+    },
+    {
+      "groupIndex": 53,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -191,10 +319,23 @@
         84,
         92
       ],
-      "framePath": "frames/082/12-g50-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/12-g53-overlay.png"
     },
     {
-      "groupIndex": 51,
+      "groupIndex": 54,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -204,10 +345,21 @@
         89,
         97
       ],
-      "framePath": "frames/082/13-g51-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/13-g54-overlay.png"
     },
     {
-      "groupIndex": 52,
+      "groupIndex": 55,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -217,10 +369,19 @@
         97,
         97
       ],
-      "framePath": "frames/082/14-g52-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/14-g55-overlay.png"
     },
     {
-      "groupIndex": 54,
+      "groupIndex": 57,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -230,10 +391,23 @@
         84,
         92
       ],
-      "framePath": "frames/082/15-g54-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/15-g57-overlay.png"
     },
     {
-      "groupIndex": 55,
+      "groupIndex": 58,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -243,10 +417,21 @@
         90,
         97
       ],
-      "framePath": "frames/082/16-g55-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/082/16-g58-overlay.png"
     },
     {
-      "groupIndex": 56,
+      "groupIndex": 59,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": null,
@@ -256,7 +441,16 @@
         97,
         97
       ],
-      "framePath": "frames/082/17-g56-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/082/17-g59-overlay.png"
     }
   ]
 }

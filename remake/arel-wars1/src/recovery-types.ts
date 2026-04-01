@@ -38,6 +38,26 @@ export interface RecoveryTimelineRun {
   length: number
 }
 
+export interface RecoveryLoopSummary {
+  startEventIndex: number
+  endEventIndex: number
+  reason: string
+  confidence: string
+}
+
+export interface RecoveryPreviewFrame {
+  framePath: string
+  groupIndex: number | null
+  eventType: string | null
+  linkType: string | null
+  anchorFrameIndex: number | null
+  relation: string | null
+  tupleCount: number | null
+  durationHintMs: number | null
+  timingMarkers: string[] | null
+  timingValues: number[] | null
+}
+
 export interface RecoveryPreviewStem {
   stem: string
   sequenceKind: string
@@ -51,6 +71,8 @@ export interface RecoveryPreviewStem {
     jsonPath: string
   }
   eventFramePaths: string[]
+  eventFrames: RecoveryPreviewFrame[]
+  loopSummary: RecoveryLoopSummary | null
   sequenceSummaryPath: string
   linkedSequencePngPath: string | null
   overlaySequencePngPath: string | null

@@ -1,164 +1,319 @@
 {
   "stem": "226",
-  "timelineKind": "mixed-anchor-overlay",
-  "sequenceKind": "linked-mixed",
-  "eventCount": 11,
+  "timelineKind": "overlay-track-only",
+  "sequenceKind": "overlay-only",
+  "eventCount": 13,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 12,
+    "reason": "overlay-track-only",
+    "confidence": "medium"
+  },
   "eventFramePaths": [
-    "frames/226/00-g05-overlay.png",
-    "frames/226/01-g07-overlay.png",
-    "frames/226/02-g09-overlay.png",
-    "frames/226/03-g11-overlay.png",
-    "frames/226/04-g13-overlay.png",
-    "frames/226/05-g15-overlay.png",
-    "frames/226/06-g17-overlay.png",
-    "frames/226/07-g19-overlay.png",
-    "frames/226/08-g21-overlay.png",
-    "frames/226/09-g22-linked.png",
-    "frames/226/10-g24-linked.png"
+    "frames/226/00-g01-overlay.png",
+    "frames/226/01-g03-overlay.png",
+    "frames/226/02-g05-overlay.png",
+    "frames/226/03-g07-overlay.png",
+    "frames/226/04-g09-overlay.png",
+    "frames/226/05-g11-overlay.png",
+    "frames/226/06-g13-overlay.png",
+    "frames/226/07-g15-overlay.png",
+    "frames/226/08-g17-overlay.png",
+    "frames/226/09-g19-overlay.png",
+    "frames/226/10-g21-overlay.png",
+    "frames/226/11-g23-overlay.png",
+    "frames/226/12-g25-overlay.png"
   ],
   "events": [
+    {
+      "groupIndex": 1,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        26,
+        26
+      ],
+      "durationHintMs": 120,
+      "timingMarkers": [
+        "6778000000",
+        "6778000000"
+      ],
+      "timingValues": [
+        120,
+        120
+      ],
+      "framePath": "frames/226/00-g01-overlay.png"
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 1,
+      "chunkIndexRange": [
+        26,
+        26
+      ],
+      "durationHintMs": 200,
+      "timingMarkers": [
+        "6778000000",
+        "67c8000000"
+      ],
+      "timingValues": [
+        120,
+        200
+      ],
+      "framePath": "frames/226/01-g03-overlay.png"
+    },
     {
       "groupIndex": 5,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 1,
       "chunkIndexRange": [
         31,
         31
       ],
-      "framePath": "frames/226/00-g05-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/02-g05-overlay.png"
     },
     {
       "groupIndex": 7,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 1,
       "chunkIndexRange": [
         31,
         31
       ],
-      "framePath": "frames/226/01-g07-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/03-g07-overlay.png"
     },
     {
       "groupIndex": 9,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 2,
       "chunkIndexRange": [
         27,
         31
       ],
-      "framePath": "frames/226/02-g09-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/04-g09-overlay.png"
     },
     {
       "groupIndex": 11,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 2,
       "chunkIndexRange": [
         27,
         31
       ],
-      "framePath": "frames/226/03-g11-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/05-g11-overlay.png"
     },
     {
       "groupIndex": 13,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 2,
       "chunkIndexRange": [
         27,
         31
       ],
-      "framePath": "frames/226/04-g13-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/06-g13-overlay.png"
     },
     {
       "groupIndex": 15,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 2,
       "chunkIndexRange": [
         27,
         31
       ],
-      "framePath": "frames/226/05-g15-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/07-g15-overlay.png"
     },
     {
       "groupIndex": 17,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 2,
       "chunkIndexRange": [
         27,
         31
       ],
-      "framePath": "frames/226/06-g17-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/08-g17-overlay.png"
     },
     {
       "groupIndex": 19,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 2,
       "chunkIndexRange": [
         27,
         31
       ],
-      "framePath": "frames/226/07-g19-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/09-g19-overlay.png"
     },
     {
       "groupIndex": 21,
       "eventType": "overlay",
       "linkType": "overlay-track",
-      "anchorFrameIndex": 0,
-      "relation": "before-linked",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
       "tupleCount": 2,
       "chunkIndexRange": [
         27,
         31
       ],
-      "framePath": "frames/226/08-g21-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/226/10-g21-overlay.png"
     },
     {
-      "groupIndex": 22,
-      "eventType": "linked",
-      "linkType": "chunk-linked-reuse",
-      "anchorFrameIndex": 0,
-      "relation": null,
-      "tupleCount": 1,
+      "groupIndex": 23,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
       "chunkIndexRange": [
-        28,
-        28
+        27,
+        31
       ],
-      "framePath": "frames/226/09-g22-linked.png"
+      "durationHintMs": 200,
+      "timingMarkers": [
+        "67c8000000",
+        "67c8000000",
+        "660a000000"
+      ],
+      "timingValues": [
+        200,
+        200,
+        100
+      ],
+      "framePath": "frames/226/11-g23-overlay.png"
     },
     {
-      "groupIndex": 24,
-      "eventType": "linked",
-      "linkType": "base-frame-delta",
-      "anchorFrameIndex": 5,
-      "relation": null,
-      "tupleCount": 1,
+      "groupIndex": 25,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": null,
+      "relation": "unanchored",
+      "tupleCount": 2,
       "chunkIndexRange": [
-        28,
-        28
+        27,
+        31
       ],
-      "framePath": "frames/226/10-g24-linked.png"
+      "durationHintMs": 100,
+      "timingMarkers": [
+        "6764000000",
+        "6764000000",
+        "6607000000"
+      ],
+      "timingValues": [
+        100,
+        100,
+        70
+      ],
+      "framePath": "frames/226/12-g25-overlay.png"
     }
   ]
 }

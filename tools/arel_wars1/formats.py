@@ -10,8 +10,16 @@ PZX_META_MARKERS: dict[bytes, str] = {
     bytes.fromhex("67ff000000"): "67ff000000",
     bytes.fromhex("6778000000"): "6778000000",
     bytes.fromhex("6605000000"): "6605000000",
+    bytes.fromhex("6607000000"): "6607000000",
+    bytes.fromhex("6608000000"): "6608000000",
     bytes.fromhex("660a000000"): "660a000000",
     bytes.fromhex("660c000000"): "660c000000",
+    bytes.fromhex("6764000000"): "6764000000",
+    bytes.fromhex("6796000000"): "6796000000",
+    bytes.fromhex("67b4000000"): "67b4000000",
+    bytes.fromhex("67be000000"): "67be000000",
+    bytes.fromhex("67c8000000"): "67c8000000",
+    bytes.fromhex("6700000000"): "6700000000",
 }
 
 
@@ -151,6 +159,14 @@ class PzxMetaSection:
     tuple_count: int
     valid_tuple_count: int
     tuples: tuple[PzxMetaTuple, ...]
+    timing_ms: int | None
+    extended_layout: str | None
+    extended_prefix_hex: str | None
+    extended_suffix_hex: str | None
+    extended_tuple_stride: int | None
+    extended_tuple_count: int
+    extended_valid_tuple_count: int
+    extended_tuples: tuple[PzxMetaTuple, ...]
 
 
 def read_zt1(data: bytes) -> Zt1File:
@@ -446,6 +462,76 @@ def _parse_pzx_meta_tuples(
     return (valid_count, tuple(tuples))
 
 
+def decode_pzx_marker_timing_ms(marker_hex: str | None) -> int | None:
+    if marker_hex is None:
+        return None
+
+    marker = bytes.fromhex(marker_hex)
+    if len(marker) != 5:
+        return None
+    if marker[0] == 0x66:
+        return marker[1] * 10
+    if marker[0] == 0x67:
+        return marker[1]
+    return None
+
+
+def _find_extended_pzx_meta_candidate(
+    payload: bytes,
+    chunk_count: int,
+) -> tuple[str, str | None, str | None, int, int, tuple[PzxMetaTuple, ...]] | None:
+    candidates: list[tuple[int, int, int, int, int, str, str | None, str | None, tuple[PzxMetaTuple, ...]]] = []
+    for stride, layout_name in ((7, "flagged-tuples"), (6, "plain-tuples")):
+        for prefix_len in range(0, 8):
+            for suffix_len in range(0, 12):
+                if len(payload) < prefix_len + suffix_len + stride:
+                    continue
+                parsed = _parse_pzx_meta_tuples(
+                    payload,
+                    chunk_count,
+                    start=prefix_len,
+                    stride=stride,
+                )
+                if parsed is None:
+                    continue
+                valid_count, tuples = parsed
+                tuple_count = len(tuples)
+                if tuple_count == 0:
+                    continue
+                covered = prefix_len + tuple_count * stride + suffix_len
+                if covered != len(payload):
+                    continue
+                prefix_hex = payload[:prefix_len].hex() if prefix_len > 0 else None
+                suffix_hex = payload[len(payload) - suffix_len :].hex() if suffix_len > 0 else None
+                layout = layout_name
+                if prefix_len > 0:
+                    layout = f"prefix{prefix_len}+{layout}"
+                if suffix_len > 0:
+                    layout = f"{layout}+suffix{suffix_len}"
+                candidates.append(
+                    (
+                        valid_count,
+                        tuple_count,
+                        1 if stride == 7 else 0,
+                        -prefix_len,
+                        -suffix_len,
+                        layout,
+                        prefix_hex,
+                        suffix_hex,
+                        tuples,
+                    )
+                )
+
+    if not candidates:
+        return None
+
+    valid_count, tuple_count, _, _, _, layout, prefix_hex, suffix_hex, tuples = max(candidates)
+    if valid_count != tuple_count:
+        return None
+    stride = 7 if "flagged" in layout else 6
+    return (layout, prefix_hex, suffix_hex, stride, valid_count, tuples)
+
+
 def _iter_pzx_meta_markers(stream: bytes) -> tuple[tuple[int, str], ...]:
     hits: list[tuple[int, str]] = []
     offset = 0
@@ -485,6 +571,13 @@ def read_pzx_meta_sections(stream: bytes, chunk_count: int) -> tuple[PzxMetaSect
         best_tuple_count = 0
         best_valid_tuple_count = 0
         best_tuples: tuple[PzxMetaTuple, ...] = ()
+        extended_layout: str | None = None
+        extended_prefix_hex: str | None = None
+        extended_suffix_hex: str | None = None
+        extended_tuple_stride: int | None = None
+        extended_tuple_count = 0
+        extended_valid_tuple_count = 0
+        extended_tuples: tuple[PzxMetaTuple, ...] = ()
 
         candidates: list[tuple[int, int, int, str, str | None, tuple[PzxMetaTuple, ...]]] = []
         for start_offset, stride, layout in (
@@ -509,6 +602,18 @@ def read_pzx_meta_sections(stream: bytes, chunk_count: int) -> tuple[PzxMetaSect
                 best_valid_tuple_count = valid_count
                 best_tuples = tuples
 
+        extended = _find_extended_pzx_meta_candidate(payload, chunk_count)
+        if extended is not None:
+            (
+                extended_layout,
+                extended_prefix_hex,
+                extended_suffix_hex,
+                extended_tuple_stride,
+                extended_valid_tuple_count,
+                extended_tuples,
+            ) = extended
+            extended_tuple_count = len(extended_tuples)
+
         sections.append(
             PzxMetaSection(
                 offset=offset,
@@ -519,6 +624,14 @@ def read_pzx_meta_sections(stream: bytes, chunk_count: int) -> tuple[PzxMetaSect
                 tuple_count=best_tuple_count,
                 valid_tuple_count=best_valid_tuple_count,
                 tuples=best_tuples,
+                timing_ms=decode_pzx_marker_timing_ms(marker_hex),
+                extended_layout=extended_layout,
+                extended_prefix_hex=extended_prefix_hex,
+                extended_suffix_hex=extended_suffix_hex,
+                extended_tuple_stride=extended_tuple_stride,
+                extended_tuple_count=extended_tuple_count,
+                extended_valid_tuple_count=extended_valid_tuple_count,
+                extended_tuples=extended_tuples,
             )
         )
 

@@ -2,7 +2,13 @@
   "stem": "209",
   "timelineKind": "single-anchor-with-overlays",
   "sequenceKind": "single-anchor-delta",
-  "eventCount": 9,
+  "eventCount": 10,
+  "loopSummary": {
+    "startEventIndex": 1,
+    "endEventIndex": 9,
+    "reason": "overlay-tail",
+    "confidence": "medium"
+  },
   "eventFramePaths": [
     "frames/209/00-g00-linked.png",
     "frames/209/01-g01-overlay.png",
@@ -12,7 +18,8 @@
     "frames/209/05-g05-overlay.png",
     "frames/209/06-g06-overlay.png",
     "frames/209/07-g07-overlay.png",
-    "frames/209/08-g08-overlay.png"
+    "frames/209/08-g08-overlay.png",
+    "frames/209/09-g09-overlay.png"
   ],
   "events": [
     {
@@ -25,6 +32,13 @@
       "chunkIndexRange": [
         7,
         34
+      ],
+      "durationHintMs": 50,
+      "timingMarkers": [
+        "6605000000"
+      ],
+      "timingValues": [
+        50
       ],
       "framePath": "frames/209/00-g00-linked.png"
     },
@@ -39,6 +53,15 @@
         18,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "660a000000"
+      ],
+      "timingValues": [
+        255,
+        100
+      ],
       "framePath": "frames/209/01-g01-overlay.png"
     },
     {
@@ -51,6 +74,15 @@
       "chunkIndexRange": [
         18,
         34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
       ],
       "framePath": "frames/209/02-g02-overlay.png"
     },
@@ -65,6 +97,15 @@
         18,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
       "framePath": "frames/209/03-g03-overlay.png"
     },
     {
@@ -77,6 +118,15 @@
       "chunkIndexRange": [
         18,
         34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
       ],
       "framePath": "frames/209/04-g04-overlay.png"
     },
@@ -91,6 +141,15 @@
         18,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
       "framePath": "frames/209/05-g05-overlay.png"
     },
     {
@@ -103,6 +162,15 @@
       "chunkIndexRange": [
         18,
         34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
       ],
       "framePath": "frames/209/06-g06-overlay.png"
     },
@@ -117,6 +185,15 @@
         18,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
       "framePath": "frames/209/07-g07-overlay.png"
     },
     {
@@ -130,7 +207,38 @@
         18,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
       "framePath": "frames/209/08-g08-overlay.png"
+    },
+    {
+      "groupIndex": 9,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 14,
+      "relation": "after-linked",
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        18,
+        34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "6607000000"
+      ],
+      "timingValues": [
+        255,
+        70
+      ],
+      "framePath": "frames/209/09-g09-overlay.png"
     }
   ]
 }

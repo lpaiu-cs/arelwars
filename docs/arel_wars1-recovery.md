@@ -180,7 +180,7 @@ optional 5-byte control chunks may appear:
 
 - `208`, `240`, and `084` all leave a non-empty tail after the frame-record prefix. Those tails repeatedly contain `67 ff 00 00 00`, which is now the strongest candidate marker for a second animation/timeline metadata layer.
 - The tail parser now splits those post-frame sections into `773` marker-delimited blocks across all recognized frame-record assets.
-  - Marker usage is dominated by `67 ff 00 00 00` (`671` blocks), followed by `66 05 00 00 00`, `67 78 00 00 00`, `66 0a 00 00 00`, and `66 0c 00 00 00`.
+  - Marker usage is dominated by `67 ff 00 00 00` (`671` blocks), followed by `66 07 00 00 00` (`34`), `66 05 00 00 00` (`27`), `67 78 00 00 00` (`25`), `66 0a 00 00 00` (`15`), `67 c8 00 00 00` (`6`), and `66 0c 00 00 00` (`5`).
   - `329` blocks already decode exactly as `flagged-tuples`, and another `14` fit `3-byte header + flagged-tuples`.
   - At least `21` stems expose exact-fit tail blocks, including `082`, `083`, `084`, `208`, `225`, `226`, and `240`.
 - Grouping those sections by `opaque` separators produces `430` tail groups.
@@ -217,11 +217,20 @@ optional 5-byte control chunks may appear:
   - `215-timeline-strip.png` shows `single-anchor-cadence`: the same anchor frame `10` reused across a long sequence of tiny linked deltas before a final overlay event.
   - `226-timeline-strip.png` shows `mixed-anchor-overlay`: a long prefix of overlay-only events tied to frame `0`, then two linked anchor updates (`0`, then `5`).
   - `240-timeline-strip.png` confirms `overlay-track-only`: every event is unanchored and the chunk ranges expand from `46-47` to `49-51` without touching any base frame.
+- Strip JSON exports now also carry recovered timing and loop hints.
+  - Every marker block is normalized into a raw timing value; the current histogram across active frame-record assets is `0`, `50`, `70`, `80`, `100`, `120`, `150`, `180`, `200`, and `255`.
+  - `209` currently resolves to a short `50`-unit linked intro followed by a `255`-unit overlay tail loop.
+  - `215` shows a `120`-unit cadence opener and repeated `255`-unit linked deltas around anchor frame `10`.
+  - `226` exposes mixed timing markers directly in the tail: `120`, `200`, `100`, and `255`.
+  - `230` and `084` now export explicit loop windows based on their strongest contiguous anchor runs:
+    - `230`: event loop `1-3`
+    - `084`: event loop `5-8`
 - Each timeline strip export now also writes per-event combined frames under `recovery/arel_wars1/timeline_candidate_strips/frames/<stem>/`.
   - Those event frames are now copied into the web runtime and used by the Phaser scene as lightweight candidate playback.
 - The runtime export now packages those results into `public/recovery/analysis/preview_manifest.json`.
   - Current featured stems are `084`, `230`, `209`, `215`, `226`, `082`, and `203`.
   - The manifest currently summarizes `21` active stems and `7` timeline classes for the web preview.
+  - Each featured stem now exports `eventFrames[]` with `durationHintMs`, raw `timingMarkers`, and an inferred `loopSummary`, so the Phaser preview no longer uses a single fixed playback delay.
 - Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
   - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
   - `230-group00-base-frame-delta.png` confirms that one late-frame tail group is almost a direct frame delta, not a separate track.

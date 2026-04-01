@@ -154,17 +154,36 @@ def main() -> None:
         overlay_name = f"{stem}-overlay-sequence.png"
         timeline_strip_data = entry["timelineStripData"]
         event_frame_paths: list[str] = []
+        event_frames: list[dict[str, object]] = []
+        loop_summary = timeline_strip_data.get("loopSummary") if isinstance(timeline_strip_data, dict) else None
         if isinstance(timeline_strip_data, dict):
             raw_frame_paths = timeline_strip_data.get("eventFramePaths", [])
+            raw_events = timeline_strip_data.get("events", [])
             if isinstance(raw_frame_paths, list):
-                for raw_path in raw_frame_paths:
+                for index, raw_path in enumerate(raw_frame_paths):
                     src = timeline_root / str(raw_path)
                     if not src.exists():
                         continue
                     frame_rel_path = Path(stem) / Path(str(raw_path)).name
                     dst = event_target_root / frame_rel_path
                     copy_file(src, dst)
-                    event_frame_paths.append(f"/recovery/analysis/timeline_event_frames/{frame_rel_path.as_posix()}")
+                    web_path = f"/recovery/analysis/timeline_event_frames/{frame_rel_path.as_posix()}"
+                    event_frame_paths.append(web_path)
+                    raw_event = raw_events[index] if isinstance(raw_events, list) and index < len(raw_events) and isinstance(raw_events[index], dict) else {}
+                    event_frames.append(
+                        {
+                            "framePath": web_path,
+                            "groupIndex": raw_event.get("groupIndex"),
+                            "eventType": raw_event.get("eventType"),
+                            "linkType": raw_event.get("linkType"),
+                            "anchorFrameIndex": raw_event.get("anchorFrameIndex"),
+                            "relation": raw_event.get("relation"),
+                            "tupleCount": raw_event.get("tupleCount"),
+                            "durationHintMs": raw_event.get("durationHintMs"),
+                            "timingMarkers": raw_event.get("timingMarkers"),
+                            "timingValues": raw_event.get("timingValues"),
+                        }
+                    )
 
         copy_file(Path(entry["timelineStripSourcePng"]), timeline_target_root / timeline_png_name)
         copy_file(Path(entry["timelineStripSourceJson"]), timeline_target_root / timeline_json_name)
@@ -188,6 +207,8 @@ def main() -> None:
                     "jsonPath": f"/recovery/analysis/timeline_candidate_strips/{timeline_json_name}",
                 },
                 "eventFramePaths": event_frame_paths,
+                "eventFrames": event_frames,
+                "loopSummary": loop_summary,
                 "sequenceSummaryPath": f"/recovery/analysis/frame_sequence_candidates/{sequence_json_name}",
                 "linkedSequencePngPath": (
                     f"/recovery/analysis/frame_sequence_candidates/{linked_name}" if entry["linkedSourcePng"] is not None else None

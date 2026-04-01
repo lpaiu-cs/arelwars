@@ -3,6 +3,12 @@
   "timelineKind": "rising-anchor-run",
   "sequenceKind": "has-contiguous-rise",
   "eventCount": 8,
+  "loopSummary": {
+    "startEventIndex": 1,
+    "endEventIndex": 3,
+    "reason": "best-contiguous-run",
+    "confidence": "high"
+  },
   "eventFramePaths": [
     "frames/230/00-g00-linked.png",
     "frames/230/01-g01-linked.png",
@@ -25,6 +31,19 @@
         2,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/230/00-g00-linked.png"
     },
     {
@@ -37,6 +56,19 @@
       "chunkIndexRange": [
         3,
         34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
       ],
       "framePath": "frames/230/01-g01-linked.png"
     },
@@ -51,6 +83,19 @@
         0,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/230/02-g02-linked.png"
     },
     {
@@ -63,6 +108,19 @@
       "chunkIndexRange": [
         2,
         34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
       ],
       "framePath": "frames/230/03-g03-linked.png"
     },
@@ -77,6 +135,19 @@
         3,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/230/04-g04-linked.png"
     },
     {
@@ -89,6 +160,19 @@
       "chunkIndexRange": [
         0,
         34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
       ],
       "framePath": "frames/230/05-g05-linked.png"
     },
@@ -103,6 +187,19 @@
         3,
         34
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "6778000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        120
+      ],
       "framePath": "frames/230/06-g06-linked.png"
     },
     {
@@ -115,6 +212,17 @@
       "chunkIndexRange": [
         0,
         34
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
       ],
       "framePath": "frames/230/07-g07-linked.png"
     }

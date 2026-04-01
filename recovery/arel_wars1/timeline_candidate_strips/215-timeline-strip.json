@@ -2,18 +2,26 @@
   "stem": "215",
   "timelineKind": "single-anchor-cadence",
   "sequenceKind": "single-anchor-repeat",
-  "eventCount": 10,
+  "eventCount": 12,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 11,
+    "reason": "single-anchor-cadence",
+    "confidence": "medium"
+  },
   "eventFramePaths": [
     "frames/215/00-g02-linked.png",
-    "frames/215/01-g06-linked.png",
-    "frames/215/02-g09-linked.png",
-    "frames/215/03-g14-linked.png",
-    "frames/215/04-g17-linked.png",
-    "frames/215/05-g22-linked.png",
-    "frames/215/06-g25-linked.png",
-    "frames/215/07-g29-linked.png",
-    "frames/215/08-g32-linked.png",
-    "frames/215/09-g33-overlay.png"
+    "frames/215/01-g03-overlay.png",
+    "frames/215/02-g06-linked.png",
+    "frames/215/03-g08-linked.png",
+    "frames/215/04-g12-linked.png",
+    "frames/215/05-g14-linked.png",
+    "frames/215/06-g18-linked.png",
+    "frames/215/07-g20-linked.png",
+    "frames/215/08-g23-linked.png",
+    "frames/215/09-g24-overlay.png",
+    "frames/215/10-g25-linked.png",
+    "frames/215/11-g26-overlay.png"
   ],
   "events": [
     {
@@ -27,7 +35,40 @@
         22,
         22
       ],
+      "durationHintMs": 120,
+      "timingMarkers": [
+        "6778000000",
+        "6778000000"
+      ],
+      "timingValues": [
+        120,
+        120
+      ],
       "framePath": "frames/215/00-g02-linked.png"
+    },
+    {
+      "groupIndex": 3,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 10,
+      "relation": "after-linked",
+      "tupleCount": 2,
+      "chunkIndexRange": [
+        19,
+        20
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6607000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        70
+      ],
+      "framePath": "frames/215/01-g03-overlay.png"
     },
     {
       "groupIndex": 6,
@@ -35,15 +76,28 @@
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 10,
       "relation": null,
-      "tupleCount": 1,
+      "tupleCount": 4,
       "chunkIndexRange": [
-        23,
+        19,
         23
       ],
-      "framePath": "frames/215/01-g06-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "6607000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        70
+      ],
+      "framePath": "frames/215/02-g06-linked.png"
     },
     {
-      "groupIndex": 9,
+      "groupIndex": 8,
       "eventType": "linked",
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 10,
@@ -53,7 +107,42 @@
         22,
         22
       ],
-      "framePath": "frames/215/02-g09-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/215/03-g08-linked.png"
+    },
+    {
+      "groupIndex": 12,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        19,
+        23
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "6608000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        80
+      ],
+      "framePath": "frames/215/04-g12-linked.png"
     },
     {
       "groupIndex": 14,
@@ -63,13 +152,48 @@
       "relation": null,
       "tupleCount": 1,
       "chunkIndexRange": [
-        23,
-        23
+        22,
+        22
       ],
-      "framePath": "frames/215/03-g14-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/215/05-g14-linked.png"
     },
     {
-      "groupIndex": 17,
+      "groupIndex": 18,
+      "eventType": "linked",
+      "linkType": "chunk-linked-reuse",
+      "anchorFrameIndex": 10,
+      "relation": null,
+      "tupleCount": 4,
+      "chunkIndexRange": [
+        19,
+        23
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "6607000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        70
+      ],
+      "framePath": "frames/215/06-g18-linked.png"
+    },
+    {
+      "groupIndex": 20,
       "eventType": "linked",
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 10,
@@ -79,49 +203,67 @@
         22,
         22
       ],
-      "framePath": "frames/215/04-g17-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/215/07-g20-linked.png"
     },
     {
-      "groupIndex": 22,
+      "groupIndex": 23,
       "eventType": "linked",
       "linkType": "chunk-linked-reuse",
       "anchorFrameIndex": 10,
       "relation": null,
       "tupleCount": 1,
       "chunkIndexRange": [
-        23,
-        23
+        22,
+        22
       ],
-      "framePath": "frames/215/05-g22-linked.png"
+      "durationHintMs": 120,
+      "timingMarkers": [
+        "6778000000",
+        "6778000000"
+      ],
+      "timingValues": [
+        120,
+        120
+      ],
+      "framePath": "frames/215/08-g23-linked.png"
+    },
+    {
+      "groupIndex": 24,
+      "eventType": "overlay",
+      "linkType": "overlay-track",
+      "anchorFrameIndex": 10,
+      "relation": "after-linked",
+      "tupleCount": 3,
+      "chunkIndexRange": [
+        19,
+        25
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6607000000",
+        "6607000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        70,
+        70
+      ],
+      "framePath": "frames/215/09-g24-overlay.png"
     },
     {
       "groupIndex": 25,
-      "eventType": "linked",
-      "linkType": "chunk-linked-reuse",
-      "anchorFrameIndex": 10,
-      "relation": null,
-      "tupleCount": 1,
-      "chunkIndexRange": [
-        22,
-        22
-      ],
-      "framePath": "frames/215/06-g25-linked.png"
-    },
-    {
-      "groupIndex": 29,
-      "eventType": "linked",
-      "linkType": "chunk-linked-reuse",
-      "anchorFrameIndex": 10,
-      "relation": null,
-      "tupleCount": 1,
-      "chunkIndexRange": [
-        22,
-        22
-      ],
-      "framePath": "frames/215/07-g29-linked.png"
-    },
-    {
-      "groupIndex": 32,
       "eventType": "linked",
       "linkType": "base-frame-delta",
       "anchorFrameIndex": 10,
@@ -131,10 +273,21 @@
         21,
         23
       ],
-      "framePath": "frames/215/08-g32-linked.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
+      ],
+      "framePath": "frames/215/10-g25-linked.png"
     },
     {
-      "groupIndex": 33,
+      "groupIndex": 26,
       "eventType": "overlay",
       "linkType": "overlay-track",
       "anchorFrameIndex": 10,
@@ -144,7 +297,16 @@
         26,
         26
       ],
-      "framePath": "frames/215/09-g33-overlay.png"
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
+      ],
+      "framePath": "frames/215/11-g26-overlay.png"
     }
   ]
 }

@@ -3,6 +3,12 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 5,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 4,
+    "reason": "overlay-track-only",
+    "confidence": "medium"
+  },
   "eventFramePaths": [
     "frames/240/00-g00-overlay.png",
     "frames/240/01-g01-overlay.png",
@@ -22,6 +28,19 @@
         46,
         47
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/240/00-g00-overlay.png"
     },
     {
@@ -34,6 +53,19 @@
       "chunkIndexRange": [
         46,
         47
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255
       ],
       "framePath": "frames/240/01-g01-overlay.png"
     },
@@ -48,6 +80,27 @@
         47,
         48
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/240/02-g02-overlay.png"
     },
     {
@@ -61,6 +114,31 @@
         48,
         50
       ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ],
       "framePath": "frames/240/03-g03-overlay.png"
     },
     {
@@ -73,6 +151,43 @@
       "chunkIndexRange": [
         49,
         51
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
       ],
       "framePath": "frames/240/04-g04-overlay.png"
     }

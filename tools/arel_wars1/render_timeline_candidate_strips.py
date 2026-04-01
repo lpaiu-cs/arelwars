@@ -9,7 +9,13 @@ import struct
 from PIL import Image, ImageDraw
 
 from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_frame_record_stream, read_pzx_meta_sections
-from pzx_meta import group_meta_sections, summarize_meta_groups, summarize_sequence_candidates
+from pzx_meta import (
+    group_meta_sections,
+    infer_group_timing,
+    infer_loop_summary,
+    summarize_meta_groups,
+    summarize_sequence_candidates,
+)
 from render_frame_meta_group_probes import choose_mapper, collect_positions, render_composite
 
 
@@ -54,6 +60,7 @@ def _build_event_entries(
             continue
 
         chunk_range = sorted({item.chunk_index for item in tail_items})
+        timing = infer_group_timing(group)
         events.append(
             {
                 "groupIndex": group_index,
@@ -63,6 +70,9 @@ def _build_event_entries(
                 "relation": relation,
                 "tupleCount": len(tail_items),
                 "chunkIndexRange": [chunk_range[0], chunk_range[-1]] if chunk_range else None,
+                "durationHintMs": timing["durationHintMs"],
+                "timingMarkers": timing["markerHexes"],
+                "timingValues": timing["markerValues"],
                 "tailItems": tail_items,
             }
         )
@@ -134,6 +144,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
     events = _build_event_entries(meta_groups, meta_group_summaries, sequence_summary)
     if not events:
         return []
+    loop_summary = infer_loop_summary(events, sequence_summary)
 
     mapper_label, mapper = choose_mapper(stem, assets_root, first_stream)
     panels: list[Image.Image] = []
@@ -152,7 +163,10 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
             sublabel = f"anchor=None chunks={event['chunkIndexRange'][0]}-{event['chunkIndexRange'][1]}"
         else:
             sublabel = f"anchor={anchor} chunks={event['chunkIndexRange'][0]}-{event['chunkIndexRange'][1]}"
+        duration_hint = event["durationHintMs"]
         footer = event["relation"] or event["linkType"]
+        if duration_hint is not None:
+            footer = f"{footer} / {duration_hint}ms"
         panels.append(_build_frame_panel(combined, label, sublabel, footer))
 
         event_frame_root.mkdir(parents=True, exist_ok=True)
@@ -170,6 +184,9 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
                 "relation": event["relation"],
                 "tupleCount": event["tupleCount"],
                 "chunkIndexRange": event["chunkIndexRange"],
+                "durationHintMs": event["durationHintMs"],
+                "timingMarkers": event["timingMarkers"],
+                "timingValues": event["timingValues"],
                 "framePath": str(Path("frames") / stem / frame_name),
             }
         )
@@ -188,6 +205,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
                 "timelineKind": sequence_summary["timelineKind"],
                 "sequenceKind": sequence_summary["sequenceKind"],
                 "eventCount": len(event_summaries),
+                "loopSummary": loop_summary,
                 "eventFramePaths": event_frame_paths,
                 "events": event_summaries,
             },

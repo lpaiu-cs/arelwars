@@ -168,6 +168,7 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
     meta_marker_counts = Counter(section.marker_hex or "prefix" for section in meta_sections)
     meta_layout_counts = Counter(section.layout for section in meta_sections)
     meta_group_link_counts = Counter(group["linkType"] for group in meta_groups)
+    meta_timing_values = [int(section.timing_ms) for section in meta_sections if section.timing_ms is not None]
     min_item_x = min(item.x for item in all_items)
     min_item_y = min(item.y for item in all_items)
     max_item_x = max(item.x + chunk_sizes[item.chunk_index][0] for item in all_items)
@@ -208,6 +209,9 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
             if int(group["uniqueChunkCount"]) > 0 and int(group["tailOnlyChunkCount"]) == int(group["uniqueChunkCount"])
         ),
         "metaGroupLinkCounts": dict(sorted(meta_group_link_counts.items())),
+        "metaTimingMarkerCount": len(meta_timing_values),
+        "metaTimingValues": meta_timing_values[:96],
+        "metaTimingValueHistogram": dict(sorted(Counter(meta_timing_values).items())),
         "metaSequenceSummary": meta_sequence_summary,
         "recordOffsetsPreview": [record.offset for record in decoded.records[:12]],
         "recordPreview": [
@@ -239,8 +243,15 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
                 "payloadLen": len(section.payload),
                 "layout": section.layout,
                 "headerHex": section.header_hex,
+                "timingMs": section.timing_ms,
                 "tupleCount": section.tuple_count,
                 "validTupleCount": section.valid_tuple_count,
+                "extendedLayout": section.extended_layout,
+                "extendedPrefixHex": section.extended_prefix_hex,
+                "extendedSuffixHex": section.extended_suffix_hex,
+                "extendedTupleStride": section.extended_tuple_stride,
+                "extendedTupleCount": section.extended_tuple_count,
+                "extendedValidTupleCount": section.extended_valid_tuple_count,
                 "payloadHeadHex": section.payload[:24].hex(),
                 "tuplePreview": [
                     {
@@ -250,6 +261,15 @@ def summarize_frame_record_stream(stream: bytes, chunk_count: int, chunk_sizes: 
                         "flag": item.flag,
                     }
                     for item in section.tuples[:6]
+                ],
+                "extendedTuplePreview": [
+                    {
+                        "chunkIndex": item.chunk_index,
+                        "x": item.x,
+                        "y": item.y,
+                        "flag": item.flag,
+                    }
+                    for item in section.extended_tuples[:6]
                 ],
             }
             for section in meta_sections[:8]

@@ -210,7 +210,7 @@ function timelineCard(entry: RecoveryPreviewStem): string {
         <span class="pill">${escapeHtml(formatKind(entry.sequenceKind))}</span>
       </header>
       <p class="timeline-card-copy">
-        Anchors ${escapeHtml(describeAnchors(entry))}. Linked ${entry.linkedGroupCount}, overlays ${entry.overlayGroupCount}.
+        Anchors ${escapeHtml(describeAnchors(entry))}. Linked ${entry.linkedGroupCount}, overlays ${entry.overlayGroupCount}, cadence ${escapeHtml(describeTiming(entry))}, ${escapeHtml(describeLoop(entry))}.
       </p>
       <div class="timeline-strip-frame">
         <img src="${entry.timelineStrip.pngPath}" alt="Timeline strip for stem ${entry.stem}" loading="lazy" />
@@ -230,6 +230,25 @@ function describeAnchors(entry: RecoveryPreviewStem): string {
 
   const preview = entry.anchorFrameSequence.slice(0, 5).join(' / ')
   return entry.anchorFrameSequence.length > 5 ? `${preview} ...` : preview
+}
+
+function describeTiming(entry: RecoveryPreviewStem): string {
+  const durations = entry.eventFrames
+    .map((frame) => frame.durationHintMs)
+    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
+  if (durations.length === 0) {
+    return 'unresolved'
+  }
+
+  const unique = Array.from(new Set(durations)).sort((left, right) => left - right)
+  return unique.length === 1 ? `${unique[0]}ms` : `${unique[0]}-${unique[unique.length - 1]}ms`
+}
+
+function describeLoop(entry: RecoveryPreviewStem): string {
+  if (!entry.loopSummary) {
+    return 'loop unresolved'
+  }
+  return `loop ${entry.loopSummary.startEventIndex}-${entry.loopSummary.endEventIndex}`
 }
 
 function escapeHtml(value: string): string {

@@ -16,8 +16,8 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     this.featuredEntries.forEach((entry) => {
       this.load.image(this.previewKey(entry.stem), entry.timelineStrip.pngPath)
-      entry.eventFramePaths.slice(0, 16).forEach((path, index) => {
-        this.load.image(this.frameKey(entry.stem, index), path)
+      entry.eventFrames.forEach((frame, index) => {
+        this.load.image(this.frameKey(entry.stem, index), frame.framePath)
       })
     })
   }
@@ -90,8 +90,8 @@ export class RecoveryBootScene extends Phaser.Scene {
     const milestones = [
       '1. Export runtime timeline manifests',
       '2. Resolve packed pixel semantics in 179',
-      '3. Decode MPL bank switching and frame timing',
-      '4. Promote strip candidates into real sprite playback',
+      '3. Decode MPL bank switching and raw timing directives',
+      '4. Promote recovered loop windows into runtime playback',
     ]
 
     milestones.forEach((line, index) => {
@@ -144,9 +144,17 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     let frameTimer: Phaser.Time.TimerEvent | null = null
 
+    const resolveLoopStart = (entry: RecoveryPreviewStem): number => entry.loopSummary?.startEventIndex ?? 0
+    const resolveLoopEnd = (entry: RecoveryPreviewStem): number => {
+      if (entry.eventFrames.length === 0) {
+        return 0
+      }
+      return Math.min(entry.loopSummary?.endEventIndex ?? entry.eventFrames.length - 1, entry.eventFrames.length - 1)
+    }
+
     const startFramePlayback = (entry: RecoveryPreviewStem): void => {
       frameTimer?.remove(false)
-      if (entry.eventFramePaths.length < 2) {
+      if (entry.eventFrames.length === 0) {
         previewImage.setTexture(this.resolvePreviewTexture(entry, 0))
         this.fitImageToBox(previewImage, 316, 176)
         return
@@ -155,22 +163,36 @@ export class RecoveryBootScene extends Phaser.Scene {
       let frameIndex = 0
       previewImage.setTexture(this.resolvePreviewTexture(entry, frameIndex))
       this.fitImageToBox(previewImage, 316, 176)
-      frameTimer = this.time.addEvent({
-        delay: 260,
-        loop: true,
-        callback: () => {
-          frameIndex = (frameIndex + 1) % entry.eventFramePaths.length
+
+      const scheduleNextFrame = (): void => {
+        const current = entry.eventFrames[Math.min(frameIndex, entry.eventFrames.length - 1)]
+        const delay = Math.max(current?.durationHintMs ?? 180, 70)
+        frameTimer = this.time.delayedCall(delay, () => {
+          const loopStart = resolveLoopStart(entry)
+          const loopEnd = resolveLoopEnd(entry)
+          if (frameIndex >= loopEnd) {
+            frameIndex = loopStart
+          } else {
+            frameIndex += 1
+          }
           previewImage.setTexture(this.resolvePreviewTexture(entry, frameIndex))
           this.fitImageToBox(previewImage, 316, 176)
-        },
-      })
+          scheduleNextFrame()
+        })
+      }
+
+      if (entry.eventFrames.length > 1) {
+        scheduleNextFrame()
+      }
     }
 
     const applyEntry = (entry: RecoveryPreviewStem): void => {
       startFramePlayback(entry)
       label.setText(`Stem ${entry.stem}`)
       detail.setText(`${this.formatKind(entry.timelineKind)} / anchors ${this.describeAnchors(entry)}`)
-      footer.setText(`${entry.linkedGroupCount} linked groups, ${entry.overlayGroupCount} overlays, ${Math.max(entry.eventFramePaths.length, 1)} frames`)
+      footer.setText(
+        `${entry.linkedGroupCount} linked, ${entry.overlayGroupCount} overlays, ${Math.max(entry.eventFrames.length, 1)} frames / ${this.describeTiming(entry)} / ${this.describeLoop(entry)}`,
+      )
     }
 
     applyEntry(this.featuredEntries[0])
@@ -225,10 +247,10 @@ export class RecoveryBootScene extends Phaser.Scene {
   }
 
   private resolvePreviewTexture(entry: RecoveryPreviewStem, index: number): string {
-    if (entry.eventFramePaths.length === 0) {
+    if (entry.eventFrames.length === 0) {
       return this.previewKey(entry.stem)
     }
-    return this.frameKey(entry.stem, Math.min(index, entry.eventFramePaths.length - 1))
+    return this.frameKey(entry.stem, Math.min(index, entry.eventFrames.length - 1))
   }
 
   private fitImageToBox(image: Phaser.GameObjects.Image, maxWidth: number, maxHeight: number): void {
@@ -249,5 +271,24 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     const preview = entry.anchorFrameSequence.slice(0, 4).join(' / ')
     return entry.anchorFrameSequence.length > 4 ? `${preview} ...` : preview
+  }
+
+  private describeTiming(entry: RecoveryPreviewStem): string {
+    const durations = entry.eventFrames
+      .map((frame) => frame.durationHintMs)
+      .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
+    if (durations.length === 0) {
+      return 'timing unresolved'
+    }
+
+    const unique = Array.from(new Set(durations)).sort((left, right) => left - right)
+    return unique.length === 1 ? `${unique[0]}ms cadence` : `${unique[0]}-${unique[unique.length - 1]}ms cadence`
+  }
+
+  private describeLoop(entry: RecoveryPreviewStem): string {
+    if (!entry.loopSummary) {
+      return 'loop unresolved'
+    }
+    return `loop ${entry.loopSummary.startEventIndex}-${entry.loopSummary.endEventIndex}`
   }
 }

@@ -3,6 +3,12 @@
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 1,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 0,
+    "reason": "linked-scatter",
+    "confidence": "low"
+  },
   "eventFramePaths": [
     "frames/203/00-g01-linked.png"
   ],
@@ -17,6 +23,17 @@
       "chunkIndexRange": [
         17,
         32
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255,
+        255
       ],
       "framePath": "frames/203/00-g01-linked.png"
     }

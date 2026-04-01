@@ -104,6 +104,7 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
 
         layout_counts = Counter(section.layout for section in sections)
         marker_counts = Counter(section.marker_hex or "prefix" for section in sections)
+        timing_markers = [int(section.timing_ms) for section in sections if section.timing_ms is not None]
         summaries.append(
             {
                 "groupIndex": group_index,
@@ -111,6 +112,8 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
                 "sectionCount": len(sections),
                 "layoutCounts": dict(sorted(layout_counts.items())),
                 "markerCounts": dict(sorted(marker_counts.items())),
+                "timingHintMs": max(timing_markers) if timing_markers else None,
+                "timingMarkerValues": timing_markers,
                 "sectionOffsets": [section.offset for section in sections[:12]],
                 "tupleCount": len(tuple_keys),
                 "uniqueChunkCount": len(unique_chunks),
@@ -123,9 +126,14 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
                         "offset": section.offset,
                         "markerHex": section.marker_hex,
                         "layout": section.layout,
+                        "timingMs": section.timing_ms,
                         "payloadLen": len(section.payload),
                         "headerHex": section.header_hex,
                         "tupleCount": section.tuple_count,
+                        "extendedLayout": section.extended_layout,
+                        "extendedPrefixHex": section.extended_prefix_hex,
+                        "extendedSuffixHex": section.extended_suffix_hex,
+                        "extendedTupleCount": section.extended_tuple_count,
                         "tuplePreview": [
                             {
                                 "chunkIndex": item.chunk_index,
@@ -296,6 +304,80 @@ def _summarize_overlay_attachments(
         )
 
     return attachments
+
+
+def _marker_timing_values(sections: Sequence[Any]) -> list[int]:
+    return [int(section.timing_ms) for section in sections if section.timing_ms is not None]
+
+
+def infer_group_timing(sections: Sequence[Any]) -> dict[str, object]:
+    markers = [str(section.marker_hex) for section in sections if section.marker_hex is not None]
+    timing_values = _marker_timing_values(sections)
+    return {
+        "markerHexes": markers,
+        "markerCount": len(markers),
+        "markerValues": timing_values,
+        "durationHintMs": max(timing_values) if timing_values else None,
+    }
+
+
+def _find_event_index_by_group(events: Sequence[dict[str, object]], group_index: int) -> int | None:
+    for event_index, event in enumerate(events):
+        if int(event["groupIndex"]) == group_index:
+            return event_index
+    return None
+
+
+def infer_loop_summary(events: Sequence[dict[str, object]], sequence_summary: dict[str, object]) -> dict[str, object] | None:
+    if not events:
+        return None
+
+    timeline_kind = str(sequence_summary.get("timelineKind", ""))
+    sequence_kind = str(sequence_summary.get("sequenceKind", ""))
+    start = 0
+    end = len(events) - 1
+    reason = "full-sequence"
+    confidence = "medium"
+
+    if timeline_kind == "single-anchor-with-overlays" and len(events) > 1:
+        start = 1
+        reason = "overlay-tail"
+    elif timeline_kind == "single-anchor-cadence":
+        reason = "single-anchor-cadence"
+    elif timeline_kind == "overlay-track-only":
+        reason = "overlay-track-only"
+    elif timeline_kind in {"rising-anchor-run", "rising-anchor-with-overlays"}:
+        best_run = sequence_summary.get("bestContiguousRun")
+        if isinstance(best_run, dict):
+            group_indices = [int(value) for value in best_run.get("groupIndices", [])]
+            mapped = [index for index in (_find_event_index_by_group(events, group_index) for group_index in group_indices) if index is not None]
+            if mapped:
+                start = min(mapped)
+                end = max(mapped)
+                reason = "best-contiguous-run"
+                confidence = "high"
+    elif sequence_kind == "strict-loop":
+        reason = "strict-cycle"
+        confidence = "high"
+    elif timeline_kind == "linked-only-scatter":
+        reason = "linked-scatter"
+        confidence = "low"
+    elif timeline_kind == "mixed-anchor-overlay":
+        first_linked = next((index for index, event in enumerate(events) if str(event["eventType"]) == "linked"), None)
+        if first_linked is not None:
+            start = first_linked
+            reason = "first-linked-anchor"
+            confidence = "low"
+
+    if start > end:
+        return None
+
+    return {
+        "startEventIndex": start,
+        "endEventIndex": end,
+        "reason": reason,
+        "confidence": confidence,
+    }
 
 
 def summarize_sequence_candidates(meta_groups: Sequence[dict[str, object]]) -> dict[str, object]:

@@ -3,6 +3,12 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 1,
+  "loopSummary": {
+    "startEventIndex": 0,
+    "endEventIndex": 0,
+    "reason": "overlay-track-only",
+    "confidence": "medium"
+  },
   "eventFramePaths": [
     "frames/231/00-g00-overlay.png"
   ],
@@ -17,6 +23,15 @@
       "chunkIndexRange": [
         49,
         49
+      ],
+      "durationHintMs": 255,
+      "timingMarkers": [
+        "67ff000000",
+        "67ff000000"
+      ],
+      "timingValues": [
+        255,
+        255
       ],
       "framePath": "frames/231/00-g00-overlay.png"
     }
