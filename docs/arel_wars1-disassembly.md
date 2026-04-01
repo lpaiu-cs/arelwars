@@ -420,5 +420,6 @@ frame:
 
 ## Residual Gaps
 
-1. `bbox variant 2` reference-point mode는 코드 경로는 보이지만 current asset set에 샘플이 없다.
+1. `bbox variant 2` reference-point mode는 code path는 남아 있지만, current asset set에 샘플이 없고 `GetReferencePointCount/GetReferencePoint` 정적 caller도 보이지 않는다.
+   - current APK 기준으로는 dormant feature 쪽에 가깝다.
 2. standalone `EffectEx/ZeroEffectEx` raw parser는 native semantics가 정리됐지만, 현재 APK에는 `.pzf/.pzd` 샘플이 없어서 asset-side exact-fit parser까지는 아직 구현하지 않았다.

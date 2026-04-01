@@ -188,14 +188,13 @@
 
 ### Open
 
-- current APK decode 관점에서 남은 핵심은 reference-point mode(`bbox variant 2`) 샘플 부재뿐이다.
-  - code path는 보이지만 실제 자산이 없어 asset-side exact-fit 검증까지는 못 했다.
+- reference-point mode(`bbox variant 2`)는 current APK 기준 dormant feature로 보인다.
+  - parsed asset set에서 sample이 `0`이고, `GetReferencePointCount/GetReferencePoint` 정적 caller도 잡히지 않았다.
 - `EffectEx / ZeroEffectEx` raw parser는 native semantics가 닫혔지만, 현재 APK에는 standalone `.pzf/.pzd` 샘플이 없어서 tool-side parser 구현까지는 아직 안 했다.
 
 ### Next Focus
 
-1. reference-point mode(`bbox variant 2`)가 실제 게임 데이터에서 쓰이는지, 아니면 dormant path인지 자산/consumer 기준으로 정리한다.
-2. standalone `EffectEx / ZeroEffectEx` sample을 확보할 수 있으면 `selector + trailing u32` layout까지 tool-side exact parser로 내린다.
+1. standalone `EffectEx / ZeroEffectEx` sample을 확보할 수 있으면 `selector + trailing u32` layout까지 tool-side exact parser로 내린다.
 
 ### Refresh Commands
 
