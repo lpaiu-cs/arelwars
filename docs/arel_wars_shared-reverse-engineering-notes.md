@@ -12,6 +12,8 @@ This document captures the parts of the recovery work that are likely to stay us
   Heuristic `ZT1` parser for:
   - `caption`: `FF + textLen(u16) + text`
   - `speech`: `prefix + speakerLen(u16) + speaker + speakerTag(u8) + textLen(u16) + text`
+- [`parse_script_prefix()`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/formats.py)
+  Converts recovered speech prefixes into structured command records.
 - [`analyze_script_events.py`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/analyze_script_events.py)
   Builds speaker-tag and opcode-prefix summaries from recovered event dumps.
 
@@ -33,8 +35,8 @@ This document captures the parts of the recovery work that are likely to stay us
 
 - Script event coverage is now high enough to be operational:
   - `624` script files parsed
-  - `en`: `55` captions, `3637` speech events
-  - `ko`: `57` captions, `3862` speech events
+  - `en`: `55` captions, `3849` speech events
+  - `ko`: `57` captions, `3879` speech events
 - Speaker tags are structurally meaningful even if the exact asset binding is still incomplete.
   Examples from [`script_event_report.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/script_event_report.json):
   - `0`: mostly `Vincent / 빈센트`
@@ -54,6 +56,11 @@ This document captures the parts of the recovery work that are likely to stay us
   - `03090100`
   - `030a0100`
 - Treat those prefixes as candidate presentation/state opcodes, not junk.
+- The strongest current reusable prefix rule is:
+  - `03 <portraitId> <expression>` => `set-left-portrait`
+  - `01 <portraitId> <expression>` => `set-right-portrait`
+  - `04 <expression>` => `set-expression`
+- Allow multi-word speaker names. Rejecting spaces causes real events such as `Mercenary 1` and `Royal Soldier` to collapse into bogus prefix bytes.
 
 ## Arel Wars 1 PZX/MPL Rules That Are Probably Version-Specific
 
@@ -67,6 +74,7 @@ This document captures the parts of the recovery work that are likely to stay us
 
 ## Known Limits
 
-- `179.pzx` in Arel Wars 1 still carries packed pixel/shading bits beyond the direct palette index path.
-- `PTC` remains opaque.
-- `ZT1` parsing is strong on dialogue flow but still incomplete for non-dialogue opcodes and map-state commands.
+- `179.pzx` in Arel Wars 1 now has a usable `shadeBand * 47 + paletteResidue` preview heuristic, but the original blend equation is still unproven.
+- `PTC` is structurally parsed but semantically heuristic.
+- `ZT1` parsing is strong on dialogue flow and prefix-command structure, but some non-dialogue/map-state opcode names are still provisional.
+- AW2 `PZF` uses a big-endian plain-header offset table before its zlib metadata stream; that header rule is likely reusable across more than one AW2 body-part asset family.

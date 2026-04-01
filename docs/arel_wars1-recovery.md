@@ -135,23 +135,33 @@ npm run ios:sync
   - a DOM-side storyboard panel that advances structured `ZT1` dialogue and recovered sprite timelines from the same state source
   - a DOM-side featured timeline gallery fed from the preview manifest
 
-## Immediate Next Targets
+## Closed Gaps
 
-1. Use the now-complete first-stream `.pzx` decode to recover chunk placement and the role of later zlib streams.
-2. Turn the current `MPL` bank-switching hypothesis into a hard rule instead of a probe-backed heuristic.
-3. Decode the control-heavy tail sections that begin with markers such as `67 ff 00 00 00`; they likely hold timeline or state-transition metadata layered on top of the frame records.
-4. Extend the current `ZT1` dialogue parser past `caption/speech` events into non-dialogue opcodes and map-state commands.
-5. Replace the current preview-oriented runtime with battle-scene state playback driven by recovered metadata.
+1. `ZT1` now accepts multi-word speaker labels such as `Mercenary 1`, `Mercenary 2`, `Royal Soldier`, and their localized equivalents, which removes a major source of false `prefixHex` inflation.
+2. Speech prefixes are no longer treated as opaque bytes only. They now parse into structured command sequences such as `set-left-portrait`, `set-right-portrait`, and `set-expression`, with the remaining one-byte opcodes kept as stable `cmd-XX` records.
+3. `179.pzx` is no longer just “unknown packed pixels.” The current working model is `value = shadeBand * 47 + paletteResidue`, with `188..199` acting like a small highlight/special tail on top of the shared `179/180` palette pair.
+4. `PTC` is no longer opaque. AW1 `assets/ptc/*.ptc` files parse as compact 25-26 word parameter blocks with stable angle, Q16 ratio, signed delta, and timing field groups.
+
+## Current Hard Limits
+
+1. Exact battle-state semantics for some `cmd-XX` script opcodes are still inferred from dialogue flow, not named from original source.
+2. The `179.pzx` shade-band model is now usable for preview rendering, but the exact original blend equation is still heuristic.
+3. Local iOS builds remain blocked on a full Xcode install.
 
 ## Script Findings
 
 - `ZT1` script payloads now parse beyond raw strings into two high-confidence event types:
   - `caption`: `FF + textLen(u16) + text`, used for narration cards and location/date cards
   - `speech`: `prefix bytes + speakerLen(u16) + speaker + speakerTag(u8) + textLen(u16) + text`
-- The parser is heuristic, but it already recovers coherent dialogue sequences for both locales:
-  - `assets/script_eng/0000.zt1` yields `47` ordered events, including `3` narration captions followed by speaker-tagged dialogue
-  - `assets/script_eng/0551.zt1` correctly separates `Arang`, `Helba`, `Rose (...)`, and the follow-up `Helba` line
-  - `assets/script_kor/1080.zt1` and `1102.zt1` recover Korean caption/speech events under `cp949`
+- The parser is now materially stronger on speaker labels that contain spaces or ordinal suffixes.
+  - `assets/script_eng/0030.zt1` now cleanly separates `Mercenary 1`, `Mercenary 2`, `Mercenary`, `Cecil`, and `Vincent` without swallowing those names into later `prefixHex` bytes.
+  - `assets/script_eng/0551.zt1` correctly separates `Arang`, `Helba`, `Rose (...)`, and the follow-up `Helba` line.
+  - `assets/script_kor/1080.zt1` and `1102.zt1` recover Korean caption/speech events under `cp949`.
+- Prefix bytes now parse into command records as well as raw hex.
+  - `03 <portraitId> <expression>` currently fits the strongest `set-left-portrait` family.
+  - `01 <portraitId> <expression>` currently fits the strongest `set-right-portrait` family.
+  - `04 <expression>` behaves like a one-argument `set-expression` command in many speech transitions.
+  - Other one-byte opcodes are exported as stable `cmd-XX` records until their battle-state semantics are pinned down.
 - Recovery artifacts now include per-script event dumps at `recovery/arel_wars1/decoded/zt1/.../*.events.json`.
 - The catalog/web preview now tracks `scriptEventTotal` and uses structured dialogue previews when available instead of flat string snippets.
 - The runtime also exports full featured-script event files under `remake/arel-wars1/public/recovery/analysis/zt1_events/`, so the storyboard layer can play through complete recovered dialogue rather than only the first preview rows.
@@ -172,7 +182,11 @@ npm run ios:sync
 - `variant=7` files can skip the chunk-table wrapper entirely and expose standalone row-RLE images as individual zlib streams.
 - `179.pzx` has a second zlib stream that parses cleanly as `30` fixed `10-byte` placement records, one per decoded chunk.
 - The same simple placement pattern also appears in a small portrait/single-frame group: `022`, `023`, `024`, `025`, `026`, `027`, and `078`.
-- Those placement records are enough to build a first whole-sprite composite probe for `179`, although the chunk pixel bytes still appear to carry packed shading/effect bits above the final color index.
+- Those placement records are enough to build whole-sprite composite probes for `179`.
+- `179` now has a usable packed-pixel heuristic:
+  - non-zero bytes cluster well under `value % 47` residues, matching the shared `179/180` palette capacity
+  - `value // 47` produces four dominant shade bands plus a small `188..199` highlight tail
+  - probe sheets under `recovery/arel_wars1/special_pzx_probes/` show `mod47-shade` and `mod47-highlight` variants that render a coherent sprite instead of pure noise
 - A broader `frame-record` family is now recognized in later zlib streams for `51` stems.
   - `198.pzx` stream `1` parses as `9` frame records and consumes `400 / 486` bytes before a trailing metadata tail.
   - `208.pzx` stream `1` parses as `17` frame records and consumes `1618 / 1966` bytes. Its records carry a recurring in-record control block `66 0c 00 00 00`.
@@ -310,7 +324,7 @@ then consume FE FF as the row separator
   - `179.mpl == 180.mpl`
 - `179` remains special inside that shared-palette pair:
   - `180` fits the palette directly with raw row-stream indices `0..46`
-  - `179` can now be spatially assembled from its placement stream, but its chunk bytes range up to `199`, so some upper bits likely encode shading or effect state instead of direct palette slots
+  - `179` can now be spatially assembled from its placement stream, and its chunk bytes fit a usable `shadeBand * 47 + paletteResidue` heuristic on top of the shared palette
 - With exact matches, oversized-bank fits, and shared-file reuse combined, all 65 paired stems now fit the current two-bank palette hypothesis.
 - Heuristic RGB565 probes already produce sprite-like colored sheets for stems such as `198`, `208`, `229`, and `240`, plus `180` on the raw row-stream path.
 - The current parser model is now explicit:
@@ -319,3 +333,17 @@ then consume FE FF as the row separator
   - palette index `0` behaves like transparent regardless of the 16-bit color word stored in the bank
   - the best current whole-sprite rule is `default bank B, flagged item -> bank A`
 - Probe sheets under `recovery/arel_wars1/mpl_bank_composite_probes/` show that `208`, `214`, `221`, `225`, `226`, `230`, and `240` all become coherent sprites under that rule, while `bank A` alone stays mask-like.
+
+## PTC Findings
+
+- AW1 `PTC` files are now structurally parsed instead of treated as raw blobs.
+- The stable shape is:
+  - `25-26` little-endian `u16` fields
+  - optional `0-1` trailing bytes
+- Repeated field groups are already clear enough to drive later effect recovery:
+  - fields `0..1`: angle-like values clustered around `0 / 90 / 180 / 270 / 360`
+  - fields `2` and `4`: larger magnitude/range values
+  - fields `10, 12, 14, 16`: Q16-style ratio fields with frequent values such as `0.1`, `0.2`, `0.4`, `0.8`, `0.9`, `0.95`
+  - fields `18..21`: signed deltas, often `0`, `-130`, `-65`, `131`, `262`, or `-1`
+  - fields `22..24`: compact timing/count fields
+- These grouped summaries are exported in [`binary_asset_report.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/binary_asset_report.json) under `ptc`.

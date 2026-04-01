@@ -7,6 +7,22 @@ import zlib
 
 
 ZLIB_HEADERS = {0x01, 0x5E, 0x9C, 0xDA}
+SCRIPT_PREFIX_MNEMONICS: dict[int, str] = {
+    0x01: "set-right-portrait",
+    0x03: "set-left-portrait",
+    0x04: "set-expression",
+    0x05: "cmd-05",
+    0x06: "cmd-06",
+    0x07: "cmd-07",
+    0x08: "cmd-08",
+    0x09: "cmd-09",
+    0x0A: "cmd-0a",
+    0x0B: "cmd-0b",
+}
+SCRIPT_PREFIX_ARG_COUNTS: dict[int, int] = {
+    0x01: 2,
+    0x03: 2,
+}
 PZX_META_MARKERS: dict[bytes, str] = {
     bytes.fromhex("67ff000000"): "67ff000000",
     bytes.fromhex("6778000000"): "6778000000",
@@ -30,6 +46,10 @@ def _is_text_char(char: str) -> bool:
     if char.isascii():
         return char.isalnum() or char in " .,!?'-:;()[]/&+\""
     return "\uac00" <= char <= "\ud7a3"
+
+
+def u16_to_i16(value: int) -> int:
+    return struct.unpack("<h", struct.pack("<H", value & 0xFFFF))[0]
 
 
 @dataclass(frozen=True)
@@ -91,6 +111,19 @@ class ScriptEvent:
     speaker_tag: int | None
     text: str
     byte_length: int
+
+
+@dataclass(frozen=True)
+class ScriptPrefixCommand:
+    opcode: int
+    args: tuple[int, ...]
+    mnemonic: str
+
+
+@dataclass(frozen=True)
+class ScriptPrefixParse:
+    commands: tuple[ScriptPrefixCommand, ...]
+    trailing_hex: str | None
 
 
 @dataclass(frozen=True)
@@ -219,6 +252,13 @@ class PzxMetaSection:
     extended_tuples: tuple[PzxMetaTuple, ...]
 
 
+@dataclass(frozen=True)
+class PtcFile:
+    fields_u16: tuple[int, ...]
+    fields_i16: tuple[int, ...]
+    trailer_bytes: bytes
+
+
 def read_zt1(data: bytes) -> Zt1File:
     if len(data) < 8:
         raise ValueError("ZT1 payload is too short")
@@ -273,6 +313,51 @@ def read_mpl(data: bytes) -> MplFile | None:
         bank_a=tuple(int(word) for word in words[6 : 6 + color_count]),
         bank_b=tuple(int(word) for word in words[6 + color_count : 6 + 2 * color_count]),
     )
+
+
+def read_ptc(data: bytes) -> PtcFile | None:
+    if len(data) < 50:
+        return None
+
+    even_size = len(data) - (len(data) % 2)
+    fields_u16 = tuple(struct.unpack("<H", data[index : index + 2])[0] for index in range(0, even_size, 2))
+    return PtcFile(
+        fields_u16=fields_u16,
+        fields_i16=tuple(u16_to_i16(value) for value in fields_u16),
+        trailer_bytes=data[even_size:],
+    )
+
+
+def parse_script_prefix(prefix: bytes | str) -> ScriptPrefixParse:
+    if isinstance(prefix, str):
+        prefix_bytes = bytes.fromhex(prefix) if prefix else b""
+    else:
+        prefix_bytes = prefix
+
+    commands: list[ScriptPrefixCommand] = []
+    cursor = 0
+
+    while cursor < len(prefix_bytes):
+        if prefix_bytes[cursor] == 0x00 and cursor == len(prefix_bytes) - 1:
+            cursor += 1
+            break
+
+        opcode = prefix_bytes[cursor]
+        arg_count = SCRIPT_PREFIX_ARG_COUNTS.get(opcode, 1)
+        next_cursor = cursor + 1 + arg_count
+        if next_cursor > len(prefix_bytes):
+            break
+        commands.append(
+            ScriptPrefixCommand(
+                opcode=opcode,
+                args=tuple(prefix_bytes[cursor + 1 : next_cursor]),
+                mnemonic=SCRIPT_PREFIX_MNEMONICS.get(opcode, f"cmd-{opcode:02x}"),
+            )
+        )
+        cursor = next_cursor
+
+    trailing = prefix_bytes[cursor:].hex() if cursor < len(prefix_bytes) else None
+    return ScriptPrefixParse(commands=tuple(commands), trailing_hex=trailing or None)
 
 
 def rgb565_rgba(word: int, *, alpha: int = 255) -> tuple[int, int, int, int]:
@@ -942,9 +1027,17 @@ def _decode_script_text(data: bytes, encoding: str) -> str | None:
 
 def _looks_like_script_speaker(text: str) -> bool:
     stripped = text.strip()
-    if not stripped or any(char.isspace() for char in stripped):
+    if not stripped or len(stripped) > 24:
         return False
-    return any(char.isalnum() or ("\uac00" <= char <= "\ud7a3") for char in stripped)
+    allowed_punctuation = set(" .'!-&*/()")
+    if not all(
+        char.isalnum() or ("\uac00" <= char <= "\ud7a3") or char in allowed_punctuation for char in stripped
+    ):
+        return False
+    alpha_count = sum(
+        1 for char in stripped if char.isalnum() or ("\uac00" <= char <= "\ud7a3")
+    )
+    return alpha_count >= 2
 
 
 def _looks_like_script_body(text: str) -> bool:

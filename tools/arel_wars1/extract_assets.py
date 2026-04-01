@@ -9,7 +9,7 @@ from pathlib import Path
 import shutil
 import zipfile
 
-from formats import extract_script_events, extract_strings, read_zt1
+from formats import extract_script_events, extract_strings, parse_script_prefix, read_zt1
 
 
 WEB_SAFE_SUFFIXES = {".png", ".ogg", ".html"}
@@ -165,12 +165,22 @@ def main() -> None:
                             "offset": event.offset,
                             "kind": event.kind,
                             "prefixHex": event.prefix_hex,
+                            "prefixCommands": [
+                                {
+                                    "opcode": command.opcode,
+                                    "args": list(command.args),
+                                    "mnemonic": command.mnemonic,
+                                }
+                                for command in prefix_parse.commands
+                            ],
+                            "prefixTrailingHex": prefix_parse.trailing_hex,
                             "speaker": event.speaker,
                             "speakerTag": event.speaker_tag,
                             "text": event.text,
                             "byteLength": event.byte_length,
                         }
                         for event in script_events
+                        for prefix_parse in [parse_script_prefix(event.prefix_hex)]
                     ],
                 )
                 entry["eventsPath"] = str(events_path.relative_to(output_root))
@@ -210,7 +220,7 @@ def main() -> None:
                 "Primary sprite container. First zlib stream and frame/timeline metadata are partially decoded, but battle-state semantics and some auxiliary tails remain unresolved.",
             ),
             (".mpl", "Two-bank palette parser is recovered. Exact bank-switch semantics are still heuristic."),
-            (".ptc", "Particle or effect definition. Parser still unknown."),
+            (".ptc", "Particle/effect files now parse as compact numeric parameter blocks, but field semantics are still heuristic."),
         )
         if suffix in ext_counts
     ]

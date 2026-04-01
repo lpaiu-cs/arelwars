@@ -12,6 +12,7 @@ from formats import (
     find_zlib_streams,
     get_pzx_meta_effective_tuples,
     read_mpl,
+    read_ptc,
     read_pzx_frame_record_stream,
     read_pzx_first_stream,
     read_pzx_meta_sections,
@@ -405,17 +406,52 @@ def parse_mpl(path: Path) -> dict[str, object]:
     return entry
 
 
+def parse_ptc(path: Path) -> dict[str, object]:
+    data = path.read_bytes()
+    ptc = read_ptc(data)
+    entry = {
+        "path": str(path),
+        "size": len(data),
+        "signatureHex": data[:8].hex(),
+    }
+    if ptc is None:
+        return entry
+
+    fields = list(ptc.fields_u16)
+    signed_fields = list(ptc.fields_i16)
+    extra_words = fields[25:]
+    entry.update(
+        {
+            "fieldCount": len(fields),
+            "trailerHex": ptc.trailer_bytes.hex() or None,
+            "angleRangeDeg": fields[:2],
+            "magnitudeFieldsQ16": fields[2:5:2],
+            "emissionFields": fields[6:10],
+            "ratioFieldsQ16": fields[10:17:2],
+            "ratioFieldsFloat": [round(value / 65535, 4) for value in fields[10:17:2]],
+            "signedDeltaFields": signed_fields[18:22],
+            "timingFields": fields[22:25],
+            "extraWords": extra_words,
+            "fieldsPreview": fields[:26],
+        }
+    )
+    return entry
+
+
 def main() -> None:
     args = parse_args()
     assets_root = args.assets_root.resolve()
     img_root = assets_root / "img"
+    ptc_root = assets_root / "ptc"
 
     pzx_paths = sorted(img_root.glob("*.pzx"))
     mpl_paths = sorted(img_root.glob("*.mpl"))
+    ptc_paths = sorted(ptc_root.glob("*.ptc"))
     mpl_stems = {path.stem for path in mpl_paths}
 
     pzx_entries = [parse_pzx(path, path.stem in mpl_stems) for path in pzx_paths]
     mpl_entries = [parse_mpl(path) for path in mpl_paths]
+    ptc_entries = [parse_ptc(path) for path in ptc_paths]
     mpl_by_stem = {Path(entry["path"]).stem: entry for entry in mpl_entries}
 
     shared_mpl_groups: dict[str, list[str]] = {}
@@ -615,11 +651,42 @@ def main() -> None:
     table_span_counts = Counter(
         entry["firstStream"]["tableSpan"] for entry in first_stream_ready if entry["firstStream"] is not None
     )
+    ptc_field_count_counts = Counter(int(entry["fieldCount"]) for entry in ptc_entries if entry.get("fieldCount") is not None)
+    ptc_ratio_signature_counts = Counter(
+        tuple(entry["ratioFieldsQ16"]) for entry in ptc_entries if entry.get("ratioFieldsQ16") is not None
+    )
+    special_179_entry = next((entry for entry in pzx_entries if Path(str(entry["path"])).stem == "179"), None)
+    if special_179_entry is not None and special_179_entry.get("firstStream") is not None:
+        special_179_path = Path(str(special_179_entry["path"]))
+        data = special_179_path.read_bytes()
+        field16 = struct.unpack("<H", data[16:18])[0] if len(data) >= 18 else 0
+        first_stream = read_pzx_first_stream(find_zlib_streams(data)[0].decoded, field16 >> 6)
+        if first_stream is not None:
+            band_histogram = Counter()
+            residue_histogram = Counter()
+            special_tail_histogram = Counter()
+            for chunk in first_stream.chunks:
+                for row in chunk.rows:
+                    for value in row.decoded:
+                        if value == 0:
+                            continue
+                        band_histogram[min(value // 47, 4)] += 1
+                        residue_histogram[value % 47] += 1
+                        if value >= 188:
+                            special_tail_histogram[value] += 1
+            special_179_entry["packedPixelHeuristic"] = {
+                "hypothesis": "value = shadeBand * 47 + paletteResidue, with 188..199 used as highlight/special codes",
+                "valueRange": [0, int(special_179_entry["firstStream"]["maxDecodedIndex"])],
+                "mod47BandHistogram": dict(sorted(band_histogram.items())),
+                "mod47ResidueTop": [[value, count] for value, count in residue_histogram.most_common(24)],
+                "specialTailHistogram": dict(sorted(special_tail_histogram.items())),
+            }
 
     report = {
         "summary": {
             "pzxCount": len(pzx_entries),
             "mplCount": len(mpl_entries),
+            "ptcCount": len(ptc_entries),
             "pairedStemCount": len(shared_pairs),
             "pairedStemsPreview": shared_pairs[:20],
             "pzxVariantCounts": dict(sorted(variant_counts.items())),
@@ -668,6 +735,14 @@ def main() -> None:
             "effectiveRegularMplPalettePreview": sorted(effective_regular_stems)[:20],
             "sharedMplGroupCount": len(shared_mpl_group_entries),
             "sharedMplGroupPreview": shared_mpl_group_entries[:8],
+            "ptcFieldCountCounts": dict(sorted(ptc_field_count_counts.items())),
+            "ptcRatioSignaturePreview": [
+                {
+                    "ratioFieldsQ16": list(signature),
+                    "count": count,
+                }
+                for signature, count in ptc_ratio_signature_counts.most_common(8)
+            ],
         },
         "findings": [
             "All PZX files start with magic 50 5a 58 01 ('PZX\\x01').",
@@ -682,7 +757,7 @@ def main() -> None:
             "All 65 MPL files now match the stronger header model 560, 10, 0, (2 * colorCount + 11), 0, (7936 + colorCount), followed by two palette banks.",
             "229.pzx uses only indices 0..38 while its MPL carries 148 colors per bank, so at least one asset family keeps oversized palette banks instead of trimming them to the exact max index.",
             "180.pzx raw row streams top out at palette index 46, which exactly fits the shared 179/180 MPL payload as a 47-color two-bank palette.",
-            "179.pzx still does not map directly to the 47-color shared palette, which suggests its byte values pack extra shading or effect bits above the base color index.",
+            "179.pzx does not map directly to the 47-color shared palette, but its non-zero bytes cluster cleanly under a mod-47 residue model with four main shade bands plus a small 188..199 highlight tail.",
             "Palette index 0 behaves like transparency more consistently than checking for a zero RGB565 word; bank B is the default visible sprite palette for the sampled stems, while flagged frame items are best explained as bank-A overlays.",
             f"Auxiliary frame-record streams are now recognized for {len(frame_record_stems)} stems ({len(frame_record_entries)} streams), with each item encoded as chunkIndex(u16), x(i16), y(i16), flag(u8).",
             f"{len(frame_record_control_stems)} of those stems also carry embedded 5-byte control chunks inside or between frame records; observed markers include 66 05 00 00 00, 66 0A 00 00 00, 66 0C 00 00 00, 67 78 00 00 00, and 67 FF 00 00 00.",
@@ -697,9 +772,11 @@ def main() -> None:
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",
+            "PTC files are no longer opaque blobs: across 50 files they parse as compact 25-26 word parameter blocks plus a 0-2 byte trailer, with stable angle, Q16 ratio, signed delta, and timing field groups.",
         ],
         "pzx": pzx_entries,
         "mpl": mpl_entries,
+        "ptc": ptc_entries,
     }
 
     write_json(args.output.resolve(), report)

@@ -3,11 +3,11 @@
   "localeKindCounts": {
     "en": {
       "caption": 55,
-      "speech": 3637
+      "speech": 3849
     },
     "ko": {
       "caption": 57,
-      "speech": 3862
+      "speech": 3879
     }
   },
   "speakerTagDirectory": [
@@ -18,9 +18,9 @@
         "빈센트",
         "*Flap*",
         "펄럭..",
-        "RUAAAGH!!",
-        "*CHEER!*",
-        "빈세트"
+        "Get moving!",
+        "빈세트",
+        "크아악!"
       ],
       "sampleCount": 1014
     },
@@ -156,45 +156,48 @@
       "topNames": [
         "Proxy",
         "프록시",
+        "Strange Elven",
+        "Proxy 1",
         "수상한엘븐",
+        "수상한 자",
         "프록시1",
-        "프록시2",
-        "수상한자1",
-        "수상한자2",
-        "수상한자"
+        "Strange Man",
+        "Proxy 2",
+        "수상한 자1"
       ],
-      "sampleCount": 73
+      "sampleCount": 106
     },
     {
       "speakerTag": 17,
       "topNames": [
+        "Mercenary 1",
         "용병단원1",
+        "Mercenary 2",
         "용병단원2",
         "Mercenary",
         "용병단원",
         "Mercenaries",
         "용병단원들",
         "Soldiers",
-        "병사들",
-        "용병단원3",
-        "왕국군"
+        "병사들"
       ],
-      "sampleCount": 73
+      "sampleCount": 116
     },
     {
       "speakerTag": 18,
       "topNames": [
+        "Hume Soldier",
         "흄병사",
+        "Officer",
         "장교",
         "Spearman",
-        "Officer",
         "창병대",
         "Guard",
-        "경비병",
-        "경비병1",
-        "경비병2"
+        "Guard 1",
+        "Guard 2",
+        "경비병"
       ],
-      "sampleCount": 34
+      "sampleCount": 46
     },
     {
       "speakerTag": 19,
@@ -220,76 +223,91 @@
     {
       "speakerTag": 21,
       "topNames": [
+        "Elven Sergeant",
         "엘븐상급병",
         "아테움의원",
         "엘븐특수병",
+        "Elven Soldier",
+        "Elven Guard",
         "엘븐군",
         "엘븐상급병사",
         "엘븐경비"
       ],
-      "sampleCount": 38
+      "sampleCount": 65
     },
     {
       "speakerTag": 22,
       "topNames": [
+        "Beril Elder",
         "베릴족장",
         "Minotaur",
         "미노타"
       ],
-      "sampleCount": 12
+      "sampleCount": 18
     },
     {
       "speakerTag": 23,
       "topNames": [
+        "Tigus Elder",
         "티구스족장",
         "Buster",
         "버스터",
         "Pigling",
         "피글링"
       ],
-      "sampleCount": 12
+      "sampleCount": 18
     },
     {
       "speakerTag": 24,
       "topNames": [
         "Werewolf",
-        "늑대인간"
+        "늑대인간",
+        "Strange Buster",
+        "괴이한 버스터"
       ],
-      "sampleCount": 22
+      "sampleCount": 26
     },
     {
       "speakerTag": 25,
       "topNames": [
+        "Elven Soldier",
         "엘븐병사",
+        "Elven Soldier1",
+        "Elven Soldier2",
+        "Elven Soldier3",
         "엘븐병사들",
         "엘븐병사1",
         "엘븐병사2",
         "엘븐병사3"
       ],
-      "sampleCount": 76
+      "sampleCount": 152
     },
     {
       "speakerTag": 26,
       "topNames": [
+        "Knoll Soldier",
         "놀병사",
-        "Knoll",
-        "놀"
+        "Captured Knoll",
+        "잡혀간 놀",
+        "Knoll"
       ],
-      "sampleCount": 6
+      "sampleCount": 15
     },
     {
       "speakerTag": 27,
       "topNames": [
+        "Short Hair",
         "숏헤어"
       ],
-      "sampleCount": 12
+      "sampleCount": 23
     },
     {
       "speakerTag": 28,
       "topNames": [
+        "Deformed Goblin",
         "변한고블린"
       ],
-      "sampleCount": 2
+      "sampleCount": 4
     },
     {
       "speakerTag": 29,
@@ -311,7 +329,9 @@
   "prefixPatterns": [
     {
       "prefixHex": "00",
-      "count": 2714,
+      "count": 2781,
+      "parsedCommands": [],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0000.zt1",
@@ -346,8 +366,56 @@
       ]
     },
     {
+      "prefixHex": "040700",
+      "count": 137,
+      "parsedCommands": [
+        {
+          "opcode": 4,
+          "args": [
+            7
+          ],
+          "mnemonic": "set-expression"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0213.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "So an all out world war is brewing... This is huge."
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Telleum invasion force is ready."
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "I'm sorry, Consul Juno!"
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Yes, ma'am!"
+        },
+        {
+          "path": "assets/script_eng/0810.zt1",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "There are only a few enemies. Get them!"
+        }
+      ]
+    },
+    {
       "prefixHex": "ff",
       "count": 112,
+      "parsedCommands": [],
+      "trailingHex": "ff",
       "samples": [
         {
           "path": "assets/script_eng/0000.zt1",
@@ -382,8 +450,66 @@
       ]
     },
     {
+      "prefixHex": "03070500",
+      "count": 104,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            7,
+            5
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "How are things going?"
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Hurry it up, it's taking too long!"
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Sarge, I'm counting on you to speed things up."
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Okay."
+        },
+        {
+          "path": "assets/script_eng/0801.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Soldiers, the success of this operation depends on how fast we move."
+        }
+      ]
+    },
+    {
       "prefixHex": "03050100",
-      "count": 99,
+      "count": 102,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            5,
+            1
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0000.zt1",
@@ -418,50 +544,30 @@
       ]
     },
     {
-      "prefixHex": "040700",
-      "count": 93,
-      "samples": [
-        {
-          "path": "assets/script_eng/0213.zt1",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "So an all out world war is brewing... This is huge."
-        },
-        {
-          "path": "assets/script_eng/0973.zt1",
-          "speaker": "Phoenix",
-          "speakerTag": 15,
-          "text": "No, she's not dead."
-        },
-        {
-          "path": "assets/script_eng/1001.zt1",
-          "speaker": "Proxy",
-          "speakerTag": 16,
-          "text": "Darn it, release the creatures!"
-        },
-        {
-          "path": "assets/script_eng/1040.zt1",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "I wondered how you escaped the prison... did Theon help you? "
-        },
-        {
-          "path": "assets/script_eng/1040.zt1",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "Sigh..."
-        }
-      ]
-    },
-    {
       "prefixHex": "040a00",
-      "count": 86,
+      "count": 102,
+      "parsedCommands": [
+        {
+          "opcode": 4,
+          "args": [
+            10
+          ],
+          "mnemonic": "set-expression"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0240.zt1",
           "speaker": "Rogan",
           "speakerTag": 10,
           "text": "I'm not sure. In Hell, maybe? Heehee!"
+        },
+        {
+          "path": "assets/script_eng/0400.zt1",
+          "speaker": "Beril Elder",
+          "speakerTag": 22,
+          "text": "Is he suggesting we form a state... like those wicked Hume?"
         },
         {
           "path": "assets/script_eng/0400.zt1",
@@ -480,54 +586,23 @@
           "speaker": "Kuma",
           "speakerTag": 9,
           "text": "Mom... Mom... *WahhHhhhHh*"
-        },
-        {
-          "path": "assets/script_eng/0403.zt1",
-          "speaker": "Werewolf",
-          "speakerTag": 24,
-          "text": "The Elven?! Yes Chief, as you wish!"
-        }
-      ]
-    },
-    {
-      "prefixHex": "03070100",
-      "count": 77,
-      "samples": [
-        {
-          "path": "assets/script_eng/0213.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "..."
-        },
-        {
-          "path": "assets/script_eng/0293.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "What?"
-        },
-        {
-          "path": "assets/script_eng/0363.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "The resurrection ritual has begun."
-        },
-        {
-          "path": "assets/script_eng/0761.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "The enemy has started the resurrection ritual!"
-        },
-        {
-          "path": "assets/script_eng/0800.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Yes, senator."
         }
       ]
     },
     {
       "prefixHex": "03090100",
-      "count": 76,
+      "count": 79,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            9,
+            1
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0043.zt1",
@@ -562,8 +637,66 @@
       ]
     },
     {
+      "prefixHex": "03070100",
+      "count": 78,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            7,
+            1
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0213.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "..."
+        },
+        {
+          "path": "assets/script_eng/0293.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "What?"
+        },
+        {
+          "path": "assets/script_eng/0363.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "The resurrection ritual has begun."
+        },
+        {
+          "path": "assets/script_eng/0761.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "The enemy has started the resurrection ritual!"
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Yes, senator."
+        }
+      ]
+    },
+    {
       "prefixHex": "030a0100",
-      "count": 75,
+      "count": 76,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            10,
+            1
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0243.zt1",
@@ -598,44 +731,19 @@
       ]
     },
     {
-      "prefixHex": "03070500",
-      "count": 70,
-      "samples": [
-        {
-          "path": "assets/script_eng/0800.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "How are things going?"
-        },
-        {
-          "path": "assets/script_eng/0800.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Okay."
-        },
-        {
-          "path": "assets/script_eng/0870.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Who goes there? Show yourself!"
-        },
-        {
-          "path": "assets/script_eng/0880.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "You barbarians, how dare you desecrate our holy forest?"
-        },
-        {
-          "path": "assets/script_eng/1040.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "So he's not here with you, now."
-        }
-      ]
-    },
-    {
       "prefixHex": "01040000",
       "count": 68,
+      "parsedCommands": [
+        {
+          "opcode": 1,
+          "args": [
+            4,
+            0
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0000.zt1",
@@ -670,152 +778,19 @@
       ]
     },
     {
-      "prefixHex": "03040100",
-      "count": 64,
-      "samples": [
-        {
-          "path": "assets/script_eng/0000.zt1",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "What's up, bro?"
-        },
-        {
-          "path": "assets/script_eng/0031.zt1",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "I know that!  Geez!"
-        },
-        {
-          "path": "assets/script_eng/0033.zt1",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Bah, that'll make things more difficult..."
-        },
-        {
-          "path": "assets/script_eng/0033.zt1",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "You're rotten to the core."
-        },
-        {
-          "path": "assets/script_eng/0041.zt1",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Why not?"
-        }
-      ]
-    },
-    {
-      "prefixHex": "01070000",
-      "count": 64,
-      "samples": [
-        {
-          "path": "assets/script_eng/0210.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "This excavation can take days. The Hume won't leave us alone."
-        },
-        {
-          "path": "assets/script_eng/0212.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Are you serious? Is he really alive?"
-        },
-        {
-          "path": "assets/script_eng/0283.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "..."
-        },
-        {
-          "path": "assets/script_eng/0290.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "..."
-        },
-        {
-          "path": "assets/script_eng/0750.zt1",
-          "speaker": "Manos",
-          "speakerTag": 14,
-          "text": "I've been preparing for this day... for a long time."
-        }
-      ]
-    },
-    {
-      "prefixHex": "030a0500",
-      "count": 61,
-      "samples": [
-        {
-          "path": "assets/script_eng/0242.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "You're not going anywhere!"
-        },
-        {
-          "path": "assets/script_eng/0400.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Attention, brothers!"
-        },
-        {
-          "path": "assets/script_eng/0400.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "!c00ffffKuma!cffffff, what's wrong?"
-        },
-        {
-          "path": "assets/script_eng/0402.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Kuma, you can't be here."
-        },
-        {
-          "path": "assets/script_eng/0403.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Thank you for coming. I need your help."
-        }
-      ]
-    },
-    {
-      "prefixHex": "01070200",
-      "count": 60,
-      "samples": [
-        {
-          "path": "assets/script_eng/0212.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "This can't be happening.  I must... avenge Lantere..."
-        },
-        {
-          "path": "assets/script_eng/0213.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "I don't believe you."
-        },
-        {
-          "path": "assets/script_eng/0621.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "So do we. Take them if you can!"
-        },
-        {
-          "path": "assets/script_eng/0800.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "You fool, this is war... not some game."
-        },
-        {
-          "path": "assets/script_eng/0801.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Holy Elven, march!"
-        }
-      ]
-    },
-    {
       "prefixHex": "03040500",
-      "count": 59,
+      "count": 66,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            4,
+            5
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0000.zt1",
@@ -850,8 +825,112 @@
       ]
     },
     {
+      "prefixHex": "03040100",
+      "count": 66,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            4,
+            1
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0000.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "What's up, bro?"
+        },
+        {
+          "path": "assets/script_eng/0031.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "I know that!  Geez!"
+        },
+        {
+          "path": "assets/script_eng/0033.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "Bah, that'll make things more difficult..."
+        },
+        {
+          "path": "assets/script_eng/0033.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "You're rotten to the core."
+        },
+        {
+          "path": "assets/script_eng/0041.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "Why not?"
+        }
+      ]
+    },
+    {
+      "prefixHex": "030a0500",
+      "count": 66,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            10,
+            5
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0242.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "You're not going anywhere!"
+        },
+        {
+          "path": "assets/script_eng/0400.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Attention, brothers!"
+        },
+        {
+          "path": "assets/script_eng/0400.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Brothers, please calm down, let's discuss this like gentle busters."
+        },
+        {
+          "path": "assets/script_eng/0400.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "!c00ffffKuma!cffffff, what's wrong?"
+        },
+        {
+          "path": "assets/script_eng/0402.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Kuma, you can't be here."
+        }
+      ]
+    },
+    {
       "prefixHex": "040400",
-      "count": 55,
+      "count": 64,
+      "parsedCommands": [
+        {
+          "opcode": 4,
+          "args": [
+            4
+          ],
+          "mnemonic": "set-expression"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0000.zt1",
@@ -872,22 +951,182 @@
           "text": "Mwa ha ha!"
         },
         {
-          "path": "assets/script_eng/0020.zt1",
-          "speaker": "Agger",
-          "speakerTag": 4,
-          "text": "You insolent brat! I'm a general! Show your respect!"
+          "path": "assets/script_eng/0012.zt1",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Yes, you're good, Captain."
         },
         {
-          "path": "assets/script_eng/0020.zt1",
-          "speaker": "Agger",
-          "speakerTag": 4,
-          "text": "Disobey my command, will you?  Then our contract is VOID!"
+          "path": "assets/script_eng/0012.zt1",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Oooo, Captain's angry. Let's run!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "01070000",
+      "count": 64,
+      "parsedCommands": [
+        {
+          "opcode": 1,
+          "args": [
+            7,
+            0
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0210.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "This excavation can take days. The Hume won't leave us alone."
+        },
+        {
+          "path": "assets/script_eng/0212.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Are you serious? Is he really alive?"
+        },
+        {
+          "path": "assets/script_eng/0283.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "..."
+        },
+        {
+          "path": "assets/script_eng/0290.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "..."
+        },
+        {
+          "path": "assets/script_eng/0750.zt1",
+          "speaker": "Manos",
+          "speakerTag": 14,
+          "text": "I've been preparing for this day... for a long time."
+        }
+      ]
+    },
+    {
+      "prefixHex": "01070200",
+      "count": 60,
+      "parsedCommands": [
+        {
+          "opcode": 1,
+          "args": [
+            7,
+            2
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0212.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "This can't be happening.  I must... avenge Lantere..."
+        },
+        {
+          "path": "assets/script_eng/0213.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "I don't believe you."
+        },
+        {
+          "path": "assets/script_eng/0621.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "So do we. Take them if you can!"
+        },
+        {
+          "path": "assets/script_eng/0800.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "You fool, this is war... not some game."
+        },
+        {
+          "path": "assets/script_eng/0801.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Holy Elven, march!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "03070501070200",
+      "count": 52,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            7,
+            5
+          ],
+          "mnemonic": "set-left-portrait"
+        },
+        {
+          "opcode": 1,
+          "args": [
+            7,
+            2
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0802.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Go! Don't let them get away!"
+        },
+        {
+          "path": "assets/script_eng/0890.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Soldiers, march!"
+        },
+        {
+          "path": "assets/script_eng/0893.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "I'm putting you in charge for their capture. Dismissed."
+        },
+        {
+          "path": "assets/script_eng/0913.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Bah, I knew I shouldn't have trusted that old fool..."
+        },
+        {
+          "path": "assets/script_eng/0913.zt1",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Theon, I'll catch you... After Atheum, however."
         }
       ]
     },
     {
       "prefixHex": "03000100",
-      "count": 44,
+      "count": 47,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            0,
+            1
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0233.zt1",
@@ -922,8 +1161,127 @@
       ]
     },
     {
+      "prefixHex": "030a05010a0200",
+      "count": 46,
+      "parsedCommands": [
+        {
+          "opcode": 3,
+          "args": [
+            10,
+            5
+          ],
+          "mnemonic": "set-left-portrait"
+        },
+        {
+          "opcode": 1,
+          "args": [
+            10,
+            2
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0240.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Where are my brothers? "
+        },
+        {
+          "path": "assets/script_eng/0400.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "The Elven?! Those weasels!"
+        },
+        {
+          "path": "assets/script_eng/0401.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Whatever you are, you're going to die today!"
+        },
+        {
+          "path": "assets/script_eng/0410.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Get ready to battle! "
+        },
+        {
+          "path": "assets/script_eng/0420.zt1",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Return our brothers to us... or we'll take them by force!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0404040500",
+      "count": 44,
+      "parsedCommands": [
+        {
+          "opcode": 4,
+          "args": [
+            4
+          ],
+          "mnemonic": "set-expression"
+        },
+        {
+          "opcode": 4,
+          "args": [
+            5
+          ],
+          "mnemonic": "set-expression"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/script_eng/0000.zt1",
+          "speaker": "Agger",
+          "speakerTag": 4,
+          "text": "Why should I care? You mercenaries do anything for money. "
+        },
+        {
+          "path": "assets/script_eng/0011.zt1",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Captain, are you sure about this?"
+        },
+        {
+          "path": "assets/script_eng/0020.zt1",
+          "speaker": "Agger",
+          "speakerTag": 4,
+          "text": "Mercenaries!  Are you here?"
+        },
+        {
+          "path": "assets/script_eng/0023.zt1",
+          "speaker": "Agger",
+          "speakerTag": 4,
+          "text": "Sure, dismissed."
+        },
+        {
+          "path": "assets/script_eng/0030.zt1",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Cecil!"
+        }
+      ]
+    },
+    {
       "prefixHex": "01040300",
       "count": 42,
+      "parsedCommands": [
+        {
+          "opcode": 1,
+          "args": [
+            4,
+            3
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0020.zt1",
@@ -958,116 +1316,127 @@
       ]
     },
     {
-      "prefixHex": "01090100",
+      "prefixHex": "040500",
       "count": 38,
+      "parsedCommands": [
+        {
+          "opcode": 4,
+          "args": [
+            5
+          ],
+          "mnemonic": "set-expression"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
-          "path": "assets/script_eng/0043.zt1",
-          "speaker": "Theon",
-          "speakerTag": 12,
-          "text": "My apologies. Are you the Marching Mercenaries?"
+          "path": "assets/script_eng/0000.zt1",
+          "speaker": "Agger",
+          "speakerTag": 4,
+          "text": "*Tsk Tsk* You lowlifes."
         },
         {
-          "path": "assets/script_eng/0210.zt1",
-          "speaker": "Theon",
-          "speakerTag": 12,
-          "text": "Ha ha ha, like I said before, I'm here for the future of Drusilla."
+          "path": "assets/script_eng/0012.zt1",
+          "speaker": "Mercenaries",
+          "speakerTag": 17,
+          "text": "We're just kidding. Mwa ha ha! "
         },
         {
-          "path": "assets/script_eng/0213.zt1",
-          "speaker": "Theon",
-          "speakerTag": 12,
-          "text": "Ha ha ha... Okay, let's finish excavating for the Phoenix."
+          "path": "assets/script_eng/0020.zt1",
+          "speaker": "Agger",
+          "speakerTag": 4,
+          "text": "I want you to take full charge of the Beril siege."
         },
         {
-          "path": "assets/script_eng/0450.zt1",
-          "speaker": "Theon",
-          "speakerTag": 12,
-          "text": "Easily. Ha ha ha."
+          "path": "assets/script_eng/0020.zt1",
+          "speaker": "Agger",
+          "speakerTag": 4,
+          "text": "Do it, or... return my money!"
         },
         {
-          "path": "assets/script_eng/0623.zt1",
-          "speaker": "Theon",
-          "speakerTag": 12,
-          "text": "Ha ha, did you forget my name already? Call me !c00ffffTheon!cffffff."
+          "path": "assets/script_eng/0030.zt1",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "He said... He has no supplies for us."
         }
       ]
     },
     {
-      "prefixHex": "01010000",
+      "prefixHex": "03040501040200",
       "count": 38,
-      "samples": [
+      "parsedCommands": [
         {
-          "path": "assets/script_eng/0122.zt1",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "..."
+          "opcode": 3,
+          "args": [
+            4,
+            5
+          ],
+          "mnemonic": "set-left-portrait"
         },
         {
-          "path": "assets/script_eng/0533.zt1",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "We're just following Council orders, it was to invade the Hume."
-        },
-        {
-          "path": "assets/script_eng/0800.zt1",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "I know it is, and it's why I'm here.  As a matter of fact, I'm your !c00ffffAdjutant!cffffff as of today."
-        },
-        {
-          "path": "assets/script_eng/0800.zt1",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "Looks like you're having preparation issues.  Let me take care of that."
-        },
-        {
-          "path": "assets/script_eng/0804.zt1",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "The purple bar on the upper right side is the enemy tower's HP."
+          "opcode": 1,
+          "args": [
+            4,
+            2
+          ],
+          "mnemonic": "set-right-portrait"
         }
-      ]
-    },
-    {
-      "prefixHex": "030a05010a0200",
-      "count": 38,
+      ],
+      "trailingHex": null,
       "samples": [
         {
-          "path": "assets/script_eng/0240.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Where are my brothers? "
+          "path": "assets/script_eng/0000.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "Blah!"
         },
         {
-          "path": "assets/script_eng/0400.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "The Elven?! Those weasels!"
+          "path": "assets/script_eng/0012.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "You guys, enough is enough!"
         },
         {
-          "path": "assets/script_eng/0460.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Who are you!"
+          "path": "assets/script_eng/0020.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "Cecil, give him the money. We're out!"
         },
         {
-          "path": "assets/script_eng/0460.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "So you're the one!"
+          "path": "assets/script_eng/0030.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "W-what? Is he crazy?"
         },
         {
-          "path": "assets/script_eng/0461.zt1",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Just what have you done..."
+          "path": "assets/script_eng/0033.zt1",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "Yes, and do you know why?  We've been doing all the fighting!! "
         }
       ]
     },
     {
       "prefixHex": "040403050500",
-      "count": 37,
+      "count": 38,
+      "parsedCommands": [
+        {
+          "opcode": 4,
+          "args": [
+            4
+          ],
+          "mnemonic": "set-expression"
+        },
+        {
+          "opcode": 3,
+          "args": [
+            5,
+            5
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
       "samples": [
         {
           "path": "assets/script_eng/0043.zt1",
@@ -1088,93 +1457,346 @@
           "text": "Vincent, we should listen to him."
         },
         {
+          "path": "assets/script_eng/0092.zt1",
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Why did the Elven attack the Hume?"
+        },
+        {
           "path": "assets/script_eng/0093.zt1",
           "speaker": "Cecil",
           "speakerTag": 1,
           "text": "That can't be coincidence... can it?"
-        },
-        {
-          "path": "assets/script_eng/0093.zt1",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "Now now, we have no time to be wasting like this."
-        }
-      ]
-    },
-    {
-      "prefixHex": "03070501070200",
-      "count": 37,
-      "samples": [
-        {
-          "path": "assets/script_eng/0923.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Where are your manners, stranger!"
-        },
-        {
-          "path": "assets/script_eng/0993.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Answer him, or I'll end you!"
-        },
-        {
-          "path": "assets/script_eng/0993.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Let's find their lab..."
-        },
-        {
-          "path": "assets/script_eng/1040.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "You're playing God. I won't forgive you for this!"
-        },
-        {
-          "path": "assets/script_eng/1041.zt1",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "I'll end you right here...  and I'll save Lantere myself."
-        }
-      ]
-    },
-    {
-      "prefixHex": "03060100",
-      "count": 36,
-      "samples": [
-        {
-          "path": "assets/script_eng/0400.zt1",
-          "speaker": "Arang",
-          "speakerTag": 7,
-          "text": "Warrior !c00ffffHelba!cffffff."
-        },
-        {
-          "path": "assets/script_eng/0483.zt1",
-          "speaker": "Arang",
-          "speakerTag": 7,
-          "text": "Yes, their number is many... far too many."
-        },
-        {
-          "path": "assets/script_eng/0490.zt1",
-          "speaker": "Arang",
-          "speakerTag": 7,
-          "text": "Not good. !cff37ffBeril!cffffff was wiped out."
-        },
-        {
-          "path": "assets/script_eng/0501.zt1",
-          "speaker": "Arang",
-          "speakerTag": 7,
-          "text": "Careful, he's the commander of the Hume expeditionary force!"
-        },
-        {
-          "path": "assets/script_eng/0503.zt1",
-          "speaker": "Arang",
-          "speakerTag": 7,
-          "text": "Helba, let's go!"
         }
       ]
     }
   ],
+  "prefixOpcodeCounts": {
+    "00": 236,
+    "01": 2015,
+    "02": 194,
+    "03": 2831,
+    "04": 1858,
+    "05": 761,
+    "06": 210,
+    "07": 119,
+    "08": 679,
+    "09": 147,
+    "0a": 199,
+    "0b": 198,
+    "0c": 145,
+    "0d": 32,
+    "0e": 19,
+    "0f": 16,
+    "10": 70,
+    "11": 10,
+    "12": 20,
+    "13": 22,
+    "14": 15,
+    "15": 12,
+    "16": 16,
+    "17": 12,
+    "18": 22,
+    "19": 12,
+    "1a": 4,
+    "1b": 6,
+    "1c": 8,
+    "1d": 4,
+    "1e": 6,
+    "1f": 4,
+    "20": 27,
+    "21": 14,
+    "22": 14,
+    "23": 6,
+    "25": 4,
+    "26": 6,
+    "27": 6,
+    "28": 12,
+    "29": 6,
+    "2a": 2,
+    "2b": 8,
+    "2c": 7,
+    "2d": 4,
+    "2e": 29,
+    "30": 2,
+    "31": 4,
+    "32": 8,
+    "33": 6,
+    "34": 10,
+    "35": 2,
+    "37": 4,
+    "3a": 6,
+    "3b": 4,
+    "3c": 4,
+    "3e": 2,
+    "3f": 2,
+    "40": 2,
+    "41": 4,
+    "42": 4,
+    "43": 6,
+    "45": 4,
+    "47": 5,
+    "48": 2,
+    "49": 2,
+    "4b": 2,
+    "4d": 2,
+    "52": 1,
+    "54": 1,
+    "56": 2,
+    "57": 2,
+    "59": 3,
+    "5b": 3,
+    "5d": 3,
+    "61": 13,
+    "63": 1,
+    "64": 1,
+    "65": 14,
+    "66": 16,
+    "67": 1,
+    "68": 5,
+    "69": 1,
+    "6c": 1,
+    "6d": 2,
+    "6e": 9,
+    "6f": 7,
+    "72": 2,
+    "73": 6,
+    "74": 3,
+    "75": 5,
+    "77": 3,
+    "79": 2,
+    "a1": 1,
+    "aa": 2,
+    "b5": 1,
+    "b8": 2,
+    "bd": 1,
+    "c0": 1,
+    "c1": 1,
+    "c4": 1,
+    "c9": 1,
+    "cc": 2,
+    "ce": 2,
+    "d4": 1,
+    "e9": 2,
+    "ee": 1,
+    "f3": 1,
+    "ff": 1
+  },
+  "prefixMnemonicCounts": {
+    "cmd-00": 236,
+    "cmd-02": 194,
+    "cmd-05": 761,
+    "cmd-06": 210,
+    "cmd-07": 119,
+    "cmd-08": 679,
+    "cmd-09": 147,
+    "cmd-0a": 199,
+    "cmd-0b": 198,
+    "cmd-0c": 145,
+    "cmd-0d": 32,
+    "cmd-0e": 19,
+    "cmd-0f": 16,
+    "cmd-10": 70,
+    "cmd-11": 10,
+    "cmd-12": 20,
+    "cmd-13": 22,
+    "cmd-14": 15,
+    "cmd-15": 12,
+    "cmd-16": 16,
+    "cmd-17": 12,
+    "cmd-18": 22,
+    "cmd-19": 12,
+    "cmd-1a": 4,
+    "cmd-1b": 6,
+    "cmd-1c": 8,
+    "cmd-1d": 4,
+    "cmd-1e": 6,
+    "cmd-1f": 4,
+    "cmd-20": 27,
+    "cmd-21": 14,
+    "cmd-22": 14,
+    "cmd-23": 6,
+    "cmd-25": 4,
+    "cmd-26": 6,
+    "cmd-27": 6,
+    "cmd-28": 12,
+    "cmd-29": 6,
+    "cmd-2a": 2,
+    "cmd-2b": 8,
+    "cmd-2c": 7,
+    "cmd-2d": 4,
+    "cmd-2e": 29,
+    "cmd-30": 2,
+    "cmd-31": 4,
+    "cmd-32": 8,
+    "cmd-33": 6,
+    "cmd-34": 10,
+    "cmd-35": 2,
+    "cmd-37": 4,
+    "cmd-3a": 6,
+    "cmd-3b": 4,
+    "cmd-3c": 4,
+    "cmd-3e": 2,
+    "cmd-3f": 2,
+    "cmd-40": 2,
+    "cmd-41": 4,
+    "cmd-42": 4,
+    "cmd-43": 6,
+    "cmd-45": 4,
+    "cmd-47": 5,
+    "cmd-48": 2,
+    "cmd-49": 2,
+    "cmd-4b": 2,
+    "cmd-4d": 2,
+    "cmd-52": 1,
+    "cmd-54": 1,
+    "cmd-56": 2,
+    "cmd-57": 2,
+    "cmd-59": 3,
+    "cmd-5b": 3,
+    "cmd-5d": 3,
+    "cmd-61": 13,
+    "cmd-63": 1,
+    "cmd-64": 1,
+    "cmd-65": 14,
+    "cmd-66": 16,
+    "cmd-67": 1,
+    "cmd-68": 5,
+    "cmd-69": 1,
+    "cmd-6c": 1,
+    "cmd-6d": 2,
+    "cmd-6e": 9,
+    "cmd-6f": 7,
+    "cmd-72": 2,
+    "cmd-73": 6,
+    "cmd-74": 3,
+    "cmd-75": 5,
+    "cmd-77": 3,
+    "cmd-79": 2,
+    "cmd-a1": 1,
+    "cmd-aa": 2,
+    "cmd-b5": 1,
+    "cmd-b8": 2,
+    "cmd-bd": 1,
+    "cmd-c0": 1,
+    "cmd-c1": 1,
+    "cmd-c4": 1,
+    "cmd-c9": 1,
+    "cmd-cc": 2,
+    "cmd-ce": 2,
+    "cmd-d4": 1,
+    "cmd-e9": 2,
+    "cmd-ee": 1,
+    "cmd-f3": 1,
+    "cmd-ff": 1,
+    "set-expression": 1858,
+    "set-left-portrait": 2831,
+    "set-right-portrait": 2015
+  },
+  "portraitCommandHints": {
+    "set-left-portrait": {
+      "portraitIds": {
+        "0": 162,
+        "1": 66,
+        "2": 72,
+        "3": 203,
+        "4": 488,
+        "5": 407,
+        "6": 170,
+        "7": 455,
+        "8": 50,
+        "9": 229,
+        "10": 433,
+        "11": 90,
+        "64": 6
+      },
+      "speakerHints": {
+        "0:Neive": 80,
+        "0:네이브": 82,
+        "10:Helba": 214,
+        "10:헬바": 212,
+        "11:Rose": 45,
+        "11:로즈": 45,
+        "1:Lantere": 29,
+        "1:란테르": 29,
+        "2:Manos": 34,
+        "2:마노스": 34,
+        "3:Martin": 98,
+        "3:마틴": 99,
+        "4:Vincent": 243,
+        "4:빈센트": 242,
+        "5:Cecil": 198,
+        "5:세실": 198,
+        "6:Arang": 85,
+        "6:아랑": 85,
+        "7:Juno": 225,
+        "7:유노": 230,
+        "8:Caesar": 23,
+        "8:케사르": 23,
+        "9:Theon": 112,
+        "9:테온": 117
+      }
+    },
+    "set-right-portrait": {
+      "portraitIds": {
+        "0": 72,
+        "1": 156,
+        "2": 22,
+        "3": 148,
+        "4": 430,
+        "5": 206,
+        "6": 120,
+        "7": 378,
+        "8": 36,
+        "9": 92,
+        "10": 285,
+        "11": 64,
+        "64": 6
+      },
+      "speakerHints": {
+        "0:Neive": 33,
+        "0:네이브": 33,
+        "10:Helba": 127,
+        "10:헬바": 125,
+        "11:Rose": 32,
+        "11:로즈": 32,
+        "1:Lantere": 66,
+        "1:란테르": 66,
+        "2:Manos": 11,
+        "2:마노스": 11,
+        "3:Martin": 61,
+        "3:마틴": 61,
+        "4:Vincent": 196,
+        "4:빈센트": 196,
+        "5:Cecil": 99,
+        "5:세실": 99,
+        "6:Arang": 59,
+        "6:아랑": 59,
+        "7:Juno": 176,
+        "7:유노": 176,
+        "8:Caesar": 15,
+        "8:케사르": 15,
+        "9:Theon": 43,
+        "9:테온": 43
+      }
+    }
+  },
   "topScripts": [
+    {
+      "path": "assets/script_eng/0923.zt1",
+      "locale": "en",
+      "eventCount": 51,
+      "kindCounts": {
+        "speech": 51
+      },
+      "topSpeakers": [
+        "Juno",
+        "Manos",
+        "Theon",
+        "Rogan",
+        "Elven Sergeant"
+      ]
+    },
     {
       "path": "assets/script_kor/0923.zt1",
       "locale": "ko",
@@ -1188,6 +1810,25 @@
         "테온",
         "로간",
         "엘븐상급병"
+      ]
+    },
+    {
+      "path": "assets/script_eng/0343.zt1",
+      "locale": "en",
+      "eventCount": 49,
+      "kindCounts": {
+        "caption": 1,
+        "speech": 48
+      },
+      "topSpeakers": [
+        "Vincent",
+        "Cecil",
+        "Martin",
+        "Neive",
+        "Rose",
+        "Mercenary 1",
+        "Mercenary 2",
+        "Mercenaries"
       ]
     },
     {
@@ -1207,20 +1848,6 @@
         "용병단원1",
         "용병단원2",
         "용병단원들"
-      ]
-    },
-    {
-      "path": "assets/script_eng/0923.zt1",
-      "locale": "en",
-      "eventCount": 48,
-      "kindCounts": {
-        "speech": 48
-      },
-      "topSpeakers": [
-        "Juno",
-        "Manos",
-        "Theon",
-        "Rogan"
       ]
     },
     {
@@ -1290,23 +1917,6 @@
       ]
     },
     {
-      "path": "assets/script_eng/0343.zt1",
-      "locale": "en",
-      "eventCount": 45,
-      "kindCounts": {
-        "caption": 1,
-        "speech": 44
-      },
-      "topSpeakers": [
-        "Vincent",
-        "Cecil",
-        "Martin",
-        "Neive",
-        "Rose",
-        "Mercenaries"
-      ]
-    },
-    {
       "path": "assets/script_eng/0213.zt1",
       "locale": "en",
       "eventCount": 41,
@@ -1337,6 +1947,23 @@
       ]
     },
     {
+      "path": "assets/script_eng/0400.zt1",
+      "locale": "en",
+      "eventCount": 40,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 36
+      },
+      "topSpeakers": [
+        "Helba",
+        "Beril Elder",
+        "Tigus Elder",
+        "Neive",
+        "Arang",
+        "Kuma"
+      ]
+    },
+    {
       "path": "assets/script_kor/0400.zt1",
       "locale": "ko",
       "eventCount": 40,
@@ -1351,6 +1978,22 @@
         "네이브",
         "아랑",
         "쿠마"
+      ]
+    },
+    {
+      "path": "assets/script_eng/0800.zt1",
+      "locale": "en",
+      "eventCount": 39,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 35
+      },
+      "topSpeakers": [
+        "Juno",
+        "Manos",
+        "Lantere",
+        "Elven Sergeant",
+        "Elven Soldier"
       ]
     },
     {
@@ -1499,6 +2142,22 @@
       ]
     },
     {
+      "path": "assets/script_eng/0980.zt1",
+      "locale": "en",
+      "eventCount": 36,
+      "kindCounts": {
+        "speech": 36
+      },
+      "topSpeakers": [
+        "Juno",
+        "Lantere",
+        "Theon",
+        "Manos",
+        "Elven Soldier",
+        "Elven Guard"
+      ]
+    },
+    {
       "path": "assets/script_kor/0014.zt1",
       "locale": "ko",
       "eventCount": 36,
@@ -1580,20 +2239,6 @@
       ]
     },
     {
-      "path": "assets/script_eng/0800.zt1",
-      "locale": "en",
-      "eventCount": 34,
-      "kindCounts": {
-        "caption": 4,
-        "speech": 30
-      },
-      "topSpeakers": [
-        "Juno",
-        "Manos",
-        "Lantere"
-      ]
-    },
-    {
       "path": "assets/script_eng/0033.zt1",
       "locale": "en",
       "eventCount": 32,
@@ -1622,37 +2267,6 @@
         "Kuma",
         "Martin",
         "Rose"
-      ]
-    },
-    {
-      "path": "assets/script_kor/0033.zt1",
-      "locale": "ko",
-      "eventCount": 32,
-      "kindCounts": {
-        "speech": 32
-      },
-      "topSpeakers": [
-        "세실",
-        "빈센트",
-        "아게르"
-      ]
-    },
-    {
-      "path": "assets/script_kor/0613.zt1",
-      "locale": "ko",
-      "eventCount": 32,
-      "kindCounts": {
-        "caption": 1,
-        "speech": 31
-      },
-      "topSpeakers": [
-        "헬바",
-        "세실",
-        "네이브",
-        "빈센트",
-        "쿠마",
-        "마틴",
-        "로즈"
       ]
     }
   ]

@@ -1,0 +1,2208 @@
+{
+  "scriptCount": 312,
+  "localeKindCounts": {
+    "en": {
+      "caption": 13,
+      "speech": 863
+    },
+    "ja": {
+      "caption": 18,
+      "speech": 864
+    },
+    "ko": {
+      "caption": 15,
+      "speech": 727
+    },
+    "unknown": {
+      "caption": 13,
+      "speech": 729
+    }
+  },
+  "speakerTagDirectory": [
+    {
+      "speakerTag": 0,
+      "topNames": [
+        "아도니스",
+        "Adonis",
+        "アドニス",
+        "크로우",
+        "Crow",
+        "クロウ"
+      ],
+      "sampleCount": 409
+    },
+    {
+      "speakerTag": 1,
+      "topNames": [
+        "루나",
+        "티거",
+        "아리스",
+        "ルナ",
+        "Runa",
+        "アリス",
+        "Tigger",
+        "タイガー",
+        "Aris"
+      ],
+      "sampleCount": 1343
+    },
+    {
+      "speakerTag": 2,
+      "topNames": [
+        "크로우",
+        "Crow",
+        "クロウ"
+      ],
+      "sampleCount": 124
+    },
+    {
+      "speakerTag": 3,
+      "topNames": [
+        "플로라",
+        "Flora",
+        "フローラ",
+        "아길라",
+        "Aguilar",
+        "アギラ"
+      ],
+      "sampleCount": 349
+    },
+    {
+      "speakerTag": 4,
+      "topNames": [
+        "아길라",
+        "アギラ",
+        "Aguilar",
+        "Flora"
+      ],
+      "sampleCount": 109
+    },
+    {
+      "speakerTag": 5,
+      "topNames": [
+        "티거",
+        "Tigger",
+        "タイガー",
+        "플로라",
+        "Flora",
+        "フローラ"
+      ],
+      "sampleCount": 168
+    },
+    {
+      "speakerTag": 6,
+      "topNames": [
+        "Deen",
+        "ディーン"
+      ],
+      "sampleCount": 263
+    },
+    {
+      "speakerTag": 7,
+      "topNames": [
+        "아델",
+        "Adel",
+        "アデル"
+      ],
+      "sampleCount": 176
+    },
+    {
+      "speakerTag": 8,
+      "topNames": [
+        "아리스",
+        "Aris",
+        "アリス"
+      ],
+      "sampleCount": 140
+    },
+    {
+      "speakerTag": 9,
+      "topNames": [
+        "디스트로인",
+        "デストロイ",
+        "Destroin"
+      ],
+      "sampleCount": 89
+    },
+    {
+      "speakerTag": 255,
+      "topNames": [
+        "데븐병사",
+        "Deven Soldiers",
+        "Buster Nomad",
+        "버스터유랑민"
+      ],
+      "sampleCount": 13
+    }
+  ],
+  "prefixPatterns": [
+    {
+      "prefixHex": "0000",
+      "count": 1067,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-00"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "We are an army made of very few elite soldiers.!NWe can't afford to face those hungry Busters."
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Try to avoid fighting!Nand let's chase after !cff0005 Destroin!cffffff quickly!"
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "I don't want any trouble with other tribes..!NLet's avoid all these meaningless fights"
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "and chase Destroin quickly!!NPray for these Busters will let us pass.."
+        },
+        {
+          "path": "assets/eng/script/001.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "!cff37ffCrow!cffffff, report the progress!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0200",
+      "count": 371,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-02"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "If I were him, I would just go to Union!Nand check traces of the !c00ffffWorld Tree!cffffff."
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "So hard to understand Sir !cff0005 Destroin!cffffff. "
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Because of his irrational actions,!Nwe are in the territory of Buster."
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "I will rise with our Deven soldiers.!NHow about it, my king~?"
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Stop it, !cff37ffRuna!cffffff! !cff37ffCrow!cffffff! Don't forget that!Nwe are here to protect Deven's pride!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "ff",
+      "count": 59,
+      "parsedCommands": [],
+      "trailingHex": "ff",
+      "samples": [
+        {
+          "path": "assets/eng/script/099.zt1",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[Under the control of the leader Adonis, Deven restored!N400 years of distrust with foreign nations and brought back peace.]"
+        },
+        {
+          "path": "assets/eng/script/099.zt1",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[Adonis' twin brother, Destroin, hated what he saw.!Nso he began to absorb the power of]"
+        },
+        {
+          "path": "assets/eng/script/099.zt1",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[the World Tree in Union Elven territory and burn it.!NAdonis later found out about this atrocity...]"
+        },
+        {
+          "path": "assets/eng/script/099.zt1",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "!c00ffffPow! Pow! Pooowww!!cffffff"
+        },
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[Thanks to great Helba's effort, Buster came together!Nto create the kingdom 400 years ago..]"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0001050100",
+      "count": 52,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 5,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-05"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/100.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 5,
+          "text": "Hahaha!!! Good! Good! Don't give up!Nin the middle of the journey!!"
+        },
+        {
+          "path": "assets/eng/script/140.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 5,
+          "text": "Simple mind makes it easier~!NHahahaha!!! Everyone is our enemy except us!! Fun!!"
+        },
+        {
+          "path": "assets/eng/script/141.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 5,
+          "text": "Hahahaha!! You didn't forget~!NMy chief!! Let's start!!"
+        },
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 5,
+          "text": "I'm here because all you do is sit here and worry."
+        },
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 5,
+          "text": "Haha!! The descendent of the great !cff0005 Helba!cffffff!!NMy friend, !cff37ffFlora!cffffff, has finally come to senses!!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0001080100",
+      "count": 50,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 8,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-08"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/201.zt1",
+          "speaker": "Aris",
+          "speakerTag": 8,
+          "text": "No worries~ No mistake!"
+        },
+        {
+          "path": "assets/eng/script/230.zt1",
+          "speaker": "Aris",
+          "speakerTag": 8,
+          "text": "That was a compliment~~ Sneaky prince~~!NSounds very eccentric and.. cool~"
+        },
+        {
+          "path": "assets/eng/script/299.zt1",
+          "speaker": "Aris",
+          "speakerTag": 8,
+          "text": "Hehe~ Thank you!!NWill get into it right away.."
+        },
+        {
+          "path": "assets/eng/script/T_005.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "Higher units require more Mana.!NOh, you already know? Haha~"
+        },
+        {
+          "path": "assets/eng/script/T_005.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "This should do for the basics.!NShow your skills in the battle, my prince!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0003020200",
+      "count": 36,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            3
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 2,
+          "args": [
+            2
+          ],
+          "mnemonic": "cmd-02"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "It’s strange. The one who vows to conquer!Npasses by such a poor area.."
+        },
+        {
+          "path": "assets/eng/script/000.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "Avoiding fights is just not me.!NWhen those starving Buster dogs fall,"
+        },
+        {
+          "path": "assets/eng/script/001.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "!cff0005 Destroin!cffffff seems to be headed to Union territory.!NFor some reason, he passed the destination"
+        },
+        {
+          "path": "assets/eng/script/010.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "Sir !cff0005 Adonis!cffffff..!"
+        },
+        {
+          "path": "assets/eng/script/020.zt1",
+          "speaker": "Crow",
+          "speakerTag": 2,
+          "text": "Stop that nonsense. More dangerous the fight,!Nmore fun we have. I choose to"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0001010100",
+      "count": 36,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 1,
+          "args": [
+            1,
+            0
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/010.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "You are one sneaky devil, aren't you?"
+        },
+        {
+          "path": "assets/eng/script/T_003.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "This will do for my brief explanation.!NTime to show and brag your skills."
+        },
+        {
+          "path": "assets/eng/script/T_023.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "This wasn't too long, yeah?!NGood luck, Sir Adonis."
+        },
+        {
+          "path": "assets/eng/script/T_033.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Time to practice! Try upgrading Mana and experience"
+        },
+        {
+          "path": "assets/eng/script/T_063.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "More powerful you means!Nmore powerful nation of Deven~"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0201000200",
+      "count": 32,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 0,
+          "args": [
+            2
+          ],
+          "mnemonic": "cmd-00"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/010.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "That's a relief..!cff0005 Destroin!cffffff!!!NIt ends here!!"
+        },
+        {
+          "path": "assets/eng/script/010.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "There is not enough time. Once he reaches!Ntraces of the !c00ffffWorld Tree!cffffff, it's all over."
+        },
+        {
+          "path": "assets/eng/script/010.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Darn..!!!! We have no choice.. Prepare for battle!"
+        },
+        {
+          "path": "assets/eng/script/011.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "What are you saying!!?"
+        },
+        {
+          "path": "assets/eng/script/030.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Unnecessary matter..!NTake me to where he is!!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0201030100",
+      "count": 30,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 3,
+          "args": [
+            1,
+            0
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/100.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Showing my determination~!NThose Unions are the proof!!!"
+        },
+        {
+          "path": "assets/eng/script/110.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Will do!! I promise.!NThanks for following me, Tigger~~"
+        },
+        {
+          "path": "assets/eng/script/111.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Your simplicity sure helps here! Haha."
+        },
+        {
+          "path": "assets/eng/script/120.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "It's all good~ He's one of our own..!NNo need to worry~"
+        },
+        {
+          "path": "assets/eng/script/131.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Well~ there is no other way. We just have to trust him!NLook at these Devens here."
+        }
+      ]
+    },
+    {
+      "prefixHex": "0001080000",
+      "count": 30,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 8,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-08"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/230.zt1",
+          "speaker": "Aris",
+          "speakerTag": 8,
+          "text": "Things are going a bit funny!!"
+        },
+        {
+          "path": "assets/eng/script/T_005.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "Well then, I will explain how you will fight.!NDo you see an arrow on bottom left?"
+        },
+        {
+          "path": "assets/eng/script/T_025.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "I've told you almost everything.!NYou already saw that summoning units increase"
+        },
+        {
+          "path": "assets/eng/script/T_035.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "Just like population, you can also upgrade Mana."
+        },
+        {
+          "path": "assets/eng/script/T_035.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "Your attacking range is!Nfarther than other units. Use your long range."
+        }
+      ]
+    },
+    {
+      "prefixHex": "0003040200",
+      "count": 24,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            3
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 4,
+          "args": [
+            2
+          ],
+          "mnemonic": "set-expression"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/110.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "Miss !cff0005 Flora!cffffff is right. That prince of Union!Ndidn't seem that he was lying."
+        },
+        {
+          "path": "assets/eng/script/111.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "They seemed to be heading north."
+        },
+        {
+          "path": "assets/eng/script/121.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "I don't think it's that simple, miss.!NI've seen abnormal Unions and few Devens together."
+        },
+        {
+          "path": "assets/eng/script/130.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "If he doesn't, then it's the battle against them!NWe need to be prepared."
+        },
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "!cff0005 Helba!cffffff's descendent.. Are you going to!Nsit here and do nothing?"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0001050000",
+      "count": 24,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 5,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-05"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 5,
+          "text": "That greater power is within them.!NSitting here and praying does nothing~"
+        },
+        {
+          "path": "assets/eng/script/T_034.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "Just like population, you can also upgrade Mana."
+        },
+        {
+          "path": "assets/eng/script/T_034.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "Your attacking range is!Nfarther than other units.."
+        },
+        {
+          "path": "assets/eng/script/T_034.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "I've taught everything I know..!NEverything else is all you."
+        },
+        {
+          "path": "assets/eng/script/T_084.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "Take a good look around the shop!Nand find items you need~"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0201000300",
+      "count": 22,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 0,
+          "args": [
+            3
+          ],
+          "mnemonic": "cmd-00"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/001.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "(Passing by destinations!? What is he after?)"
+        },
+        {
+          "path": "assets/eng/script/010.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Union's troops! Why would they attack us!?"
+        },
+        {
+          "path": "assets/eng/script/011.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Are you controlling their mind?"
+        },
+        {
+          "path": "assets/eng/script/030.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Single Blow!!??"
+        },
+        {
+          "path": "assets/eng/script/030.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "..!!!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0201000000",
+      "count": 22,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 0,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-00"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/010.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "How about we buy some time before the main!Narmy arrives. Holding the enemy long enough"
+        },
+        {
+          "path": "assets/eng/script/021.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "That's what !cff0005 Destroin!cffffff wants.!NHe has seen it. We must capture him."
+        },
+        {
+          "path": "assets/eng/script/030.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "We have matters to take care of.!NIt would be nice of you to make a way.."
+        },
+        {
+          "path": "assets/eng/script/041.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Spare you?!NYou heard yourself saying that."
+        },
+        {
+          "path": "assets/eng/script/131.zt1",
+          "speaker": "Adonis",
+          "speakerTag": 0,
+          "text": "Power of the !c00ffffWorld Tree!cffffff is tremendous.. It makes!Neveryone gather and unite as one"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0201060000",
+      "count": 22,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 6,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-06"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/131.zt1",
+          "speaker": "Deen",
+          "speakerTag": 6,
+          "text": "If he's right, we will be able to meet!Nthat twin devil brother at the !c00ffffWorld Tree!cffffff."
+        },
+        {
+          "path": "assets/eng/script/201.zt1",
+          "speaker": "Deen",
+          "speakerTag": 6,
+          "text": "This is not about conquering the castle.!NI must capture Deven's leader"
+        },
+        {
+          "path": "assets/eng/script/211.zt1",
+          "speaker": "Deen",
+          "speakerTag": 6,
+          "text": "We were chasing after Deven who damaged the!N!c00ffffWorld Tree!cffffff. We came here unintentionally."
+        },
+        {
+          "path": "assets/eng/script/211.zt1",
+          "speaker": "Deen",
+          "speakerTag": 6,
+          "text": "What is it, Aris?"
+        },
+        {
+          "path": "assets/eng/script/220.zt1",
+          "speaker": "Deen",
+          "speakerTag": 6,
+          "text": "How are you? Are you hurt?"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0201030000",
+      "count": 20,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 3,
+          "args": [
+            0,
+            0
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/100.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "I will make the great nation of Buster!Nthat the great !c00ffffHelba!cffffff accomplished.."
+        },
+        {
+          "path": "assets/eng/script/101.zt1",
+          "speaker": "Deen",
+          "speakerTag": 6,
+          "text": "I think that earthquake in your area!Nis also related."
+        },
+        {
+          "path": "assets/eng/script/101.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Then are you going to Deven's capital?"
+        },
+        {
+          "path": "assets/eng/script/120.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Let's go..and ask how it has become like this!!"
+        },
+        {
+          "path": "assets/eng/script/140.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 5,
+          "text": "Prince !cff37ffDeen!cffffff and Deven's king will be here!NRecognizing them would be"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0001010000",
+      "count": 20,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 1,
+          "args": [
+            0,
+            0
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/T_023.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "I've told you almost everything.!NYou might know already. Summoning units"
+        },
+        {
+          "path": "assets/eng/script/T_033.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Just like population, you can also upgrade Mana."
+        },
+        {
+          "path": "assets/eng/script/T_033.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Your attacking range is!Nfarther than other units.. "
+        },
+        {
+          "path": "assets/eng/script/T_033.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "I've taught everything I know..!NEverything else is all you, Sir."
+        },
+        {
+          "path": "assets/eng/script/T_083.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Take a good look around the shop!Nand find items you need."
+        }
+      ]
+    },
+    {
+      "prefixHex": "08000301000800",
+      "count": 20,
+      "parsedCommands": [
+        {
+          "opcode": 8,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-08"
+        },
+        {
+          "opcode": 3,
+          "args": [
+            1,
+            0
+          ],
+          "mnemonic": "set-left-portrait"
+        },
+        {
+          "opcode": 8,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-08"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/T_063.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Manage everything about you here.!NYou can level skills up, equip/upgrade"
+        },
+        {
+          "path": "assets/eng/script/T_073.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Equip items to use or!Ncombine item cards here."
+        },
+        {
+          "path": "assets/eng/script/T_113.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Welcome to the Babel Tower.!NAt the tower, you can battle against"
+        },
+        {
+          "path": "assets/eng/script/T_123.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "This is the Post Office. You can send or!Nreceive mail from other users~"
+        },
+        {
+          "path": "assets/eng/script/T_133.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Sir Adonis, don't you want to!Ncheck your records?"
+        }
+      ]
+    },
+    {
+      "prefixHex": "08000305000800",
+      "count": 20,
+      "parsedCommands": [
+        {
+          "opcode": 8,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-08"
+        },
+        {
+          "opcode": 3,
+          "args": [
+            5,
+            0
+          ],
+          "mnemonic": "set-left-portrait"
+        },
+        {
+          "opcode": 8,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-08"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/T_064.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "Manage everything about you here.!NYou can level skills up, equip/upgrade"
+        },
+        {
+          "path": "assets/eng/script/T_074.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "Equip items to use or!Ncombine item cards here.."
+        },
+        {
+          "path": "assets/eng/script/T_114.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "Welcome to the Babel Tower.!NAt the tower, you can battle against"
+        },
+        {
+          "path": "assets/eng/script/T_124.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "This is the Post Office~ You can send or!Nreceive mail from other users.."
+        },
+        {
+          "path": "assets/eng/script/T_134.zt1",
+          "speaker": "Tigger",
+          "speakerTag": 1,
+          "text": "Flora, don't you want to!Ncheck your records?"
+        }
+      ]
+    },
+    {
+      "prefixHex": "08000308000800",
+      "count": 20,
+      "parsedCommands": [
+        {
+          "opcode": 8,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-08"
+        },
+        {
+          "opcode": 3,
+          "args": [
+            8,
+            0
+          ],
+          "mnemonic": "set-left-portrait"
+        },
+        {
+          "opcode": 8,
+          "args": [
+            0
+          ],
+          "mnemonic": "cmd-08"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/T_065.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "Manage everything about you here.!NYou can level skills up, equip/upgrade"
+        },
+        {
+          "path": "assets/eng/script/T_075.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "Equip items to use or!Ncombine item cards here.."
+        },
+        {
+          "path": "assets/eng/script/T_115.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "Welcome to the Babel Tower.!NAt the tower, you can battle against"
+        },
+        {
+          "path": "assets/eng/script/T_125.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "This is the Post Office. You can send or!Nreceive mail from other users~"
+        },
+        {
+          "path": "assets/eng/script/T_135.zt1",
+          "speaker": "Aris",
+          "speakerTag": 1,
+          "text": "My prince, don't you want to!Ncheck your records?"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0003070200",
+      "count": 18,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            3
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 7,
+          "args": [
+            2
+          ],
+          "mnemonic": "cmd-07"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/201.zt1",
+          "speaker": "Adel",
+          "speakerTag": 7,
+          "text": "They seemed to abandon the castle and go north.!NHow about conquering their abandoned castle?"
+        },
+        {
+          "path": "assets/eng/script/211.zt1",
+          "speaker": "Adel",
+          "speakerTag": 7,
+          "text": "Yes sir!!"
+        },
+        {
+          "path": "assets/eng/script/220.zt1",
+          "speaker": "Adel",
+          "speakerTag": 7,
+          "text": "I'm here, my prince!"
+        },
+        {
+          "path": "assets/eng/script/221.zt1",
+          "speaker": "Adel",
+          "speakerTag": 7,
+          "text": "Don’t be weak! I've seen those Devens in the battle.!NThey looked strong and willing."
+        },
+        {
+          "path": "assets/eng/script/231.zt1",
+          "speaker": "Adel",
+          "speakerTag": 7,
+          "text": "For Union!!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0003010200",
+      "count": 16,
+      "parsedCommands": [
+        {
+          "opcode": 0,
+          "args": [
+            3
+          ],
+          "mnemonic": "cmd-00"
+        },
+        {
+          "opcode": 1,
+          "args": [
+            2,
+            0
+          ],
+          "mnemonic": "set-right-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/001.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "It didn't look like they were protecting their turf.!NThey were too violent"
+        },
+        {
+          "path": "assets/eng/script/030.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "He must have a big misunderstanding.."
+        },
+        {
+          "path": "assets/eng/script/099.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Yes, my king!"
+        },
+        {
+          "path": "assets/eng/script/099.zt1",
+          "speaker": "Runa",
+          "speakerTag": 1,
+          "text": "Yes, my king."
+        },
+        {
+          "path": "assets/jpn/script/001.zt1",
+          "speaker": "ルナ",
+          "speakerTag": 1,
+          "text": "不法侵入しただけにしては、過激すぎますわ。!Nまるで仇討のような勢いですわね.."
+        }
+      ]
+    },
+    {
+      "prefixHex": "02040503040200",
+      "count": 16,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            4
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 5,
+          "args": [
+            3
+          ],
+          "mnemonic": "cmd-05"
+        },
+        {
+          "opcode": 4,
+          "args": [
+            2
+          ],
+          "mnemonic": "set-expression"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/100.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "Miss !cff0005 Flora!cffffff!!! Union's army has appeared!Nin our territory!!"
+        },
+        {
+          "path": "assets/eng/script/111.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "Those Busters on the battlefield..They didn’t!Nlook normal, although they were against you,"
+        },
+        {
+          "path": "assets/eng/script/120.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "Ma'am!! There is a Buster nomad!!"
+        },
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": "Aguilar",
+          "speakerTag": 4,
+          "text": "Watch your words, Sir !c00ffffTigger!cffffff!!"
+        },
+        {
+          "path": "assets/jpn/script/100.zt1",
+          "speaker": "アギラ",
+          "speakerTag": 4,
+          "text": "!cFF0005フローラ!cFFFFFF様!! バスター領域にユニオンの部隊が!N侵入してきました!"
+        }
+      ]
+    },
+    {
+      "prefixHex": "0201030300",
+      "count": 16,
+      "parsedCommands": [
+        {
+          "opcode": 2,
+          "args": [
+            1
+          ],
+          "mnemonic": "cmd-02"
+        },
+        {
+          "opcode": 3,
+          "args": [
+            3,
+            0
+          ],
+          "mnemonic": "set-left-portrait"
+        }
+      ],
+      "trailingHex": null,
+      "samples": [
+        {
+          "path": "assets/eng/script/100.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "What!? Why!? How many are there!?"
+        },
+        {
+          "path": "assets/eng/script/101.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "The World Tree has been damaged?"
+        },
+        {
+          "path": "assets/eng/script/101.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Deven did it? That nation did not cause!Nany trouble for hundreds of years.."
+        },
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "Again? Of course I want to save them but.."
+        },
+        {
+          "path": "assets/eng/script/199.zt1",
+          "speaker": "Flora",
+          "speakerTag": 3,
+          "text": "!c00ffffTi..Tigger!cffffff.."
+        }
+      ]
+    }
+  ],
+  "prefixOpcodeCounts": {
+    "00": 2124,
+    "01": 440,
+    "02": 1046,
+    "03": 685,
+    "04": 133,
+    "05": 393,
+    "06": 149,
+    "07": 126,
+    "08": 609,
+    "09": 98,
+    "0a": 31,
+    "0b": 16,
+    "0c": 10,
+    "0d": 6,
+    "0e": 110,
+    "0f": 4,
+    "10": 8,
+    "11": 4,
+    "13": 8,
+    "16": 4,
+    "17": 4,
+    "18": 4,
+    "19": 12,
+    "1a": 30,
+    "1c": 4,
+    "1e": 12,
+    "1f": 4,
+    "20": 65,
+    "21": 80,
+    "22": 8,
+    "23": 4,
+    "25": 6,
+    "26": 4,
+    "29": 7,
+    "2a": 4,
+    "2b": 4,
+    "2c": 4,
+    "2d": 1,
+    "2e": 53,
+    "31": 2,
+    "36": 11,
+    "37": 1,
+    "38": 4,
+    "3d": 4,
+    "3f": 23,
+    "42": 4,
+    "4e": 5,
+    "50": 52,
+    "61": 1,
+    "63": 6,
+    "66": 24,
+    "7e": 2,
+    "80": 12,
+    "81": 2,
+    "82": 3,
+    "83": 5,
+    "84": 7,
+    "85": 1,
+    "86": 2,
+    "88": 6,
+    "8a": 10,
+    "8b": 14,
+    "8c": 5,
+    "8f": 3,
+    "90": 11,
+    "94": 5,
+    "95": 12,
+    "96": 6,
+    "97": 3,
+    "98": 13,
+    "9a": 1,
+    "9c": 6,
+    "9d": 22,
+    "9e": 2,
+    "9f": 1,
+    "a0": 8,
+    "a1": 4,
+    "a2": 2,
+    "a4": 14,
+    "a5": 2,
+    "a6": 3,
+    "a7": 10,
+    "a8": 5,
+    "a9": 2,
+    "aa": 8,
+    "ab": 2,
+    "ac": 4,
+    "ae": 2,
+    "b0": 34,
+    "b1": 3,
+    "b2": 5,
+    "b3": 12,
+    "b4": 26,
+    "b5": 11,
+    "b6": 14,
+    "b7": 6,
+    "b8": 27,
+    "b9": 5,
+    "ba": 9,
+    "bb": 10,
+    "bc": 15,
+    "bd": 4,
+    "be": 13,
+    "bf": 4,
+    "c0": 18,
+    "c1": 11,
+    "c2": 5,
+    "c3": 1,
+    "c4": 4,
+    "c5": 3,
+    "c6": 7,
+    "c7": 13,
+    "c8": 3,
+    "ca": 2,
+    "cc": 6,
+    "cd": 3,
+    "ce": 5,
+    "cf": 11,
+    "d1": 2,
+    "d2": 3,
+    "d3": 1,
+    "d4": 2,
+    "d6": 4,
+    "d7": 1,
+    "d8": 1,
+    "d9": 10,
+    "da": 4,
+    "db": 1,
+    "dd": 1,
+    "df": 5,
+    "e2": 4,
+    "e5": 1,
+    "e9": 2,
+    "ea": 15,
+    "eb": 48,
+    "ec": 35,
+    "ed": 14,
+    "ee": 1,
+    "f0": 2,
+    "f1": 1,
+    "f2": 1,
+    "f3": 8,
+    "f4": 1,
+    "f5": 3,
+    "f6": 7,
+    "f8": 3,
+    "fc": 2
+  },
+  "prefixMnemonicCounts": {
+    "cmd-00": 2124,
+    "cmd-02": 1046,
+    "cmd-05": 393,
+    "cmd-06": 149,
+    "cmd-07": 126,
+    "cmd-08": 609,
+    "cmd-09": 98,
+    "cmd-0a": 31,
+    "cmd-0b": 16,
+    "cmd-0c": 10,
+    "cmd-0d": 6,
+    "cmd-0e": 110,
+    "cmd-0f": 4,
+    "cmd-10": 8,
+    "cmd-11": 4,
+    "cmd-13": 8,
+    "cmd-16": 4,
+    "cmd-17": 4,
+    "cmd-18": 4,
+    "cmd-19": 12,
+    "cmd-1a": 30,
+    "cmd-1c": 4,
+    "cmd-1e": 12,
+    "cmd-1f": 4,
+    "cmd-20": 65,
+    "cmd-21": 80,
+    "cmd-22": 8,
+    "cmd-23": 4,
+    "cmd-25": 6,
+    "cmd-26": 4,
+    "cmd-29": 7,
+    "cmd-2a": 4,
+    "cmd-2b": 4,
+    "cmd-2c": 4,
+    "cmd-2d": 1,
+    "cmd-2e": 53,
+    "cmd-31": 2,
+    "cmd-36": 11,
+    "cmd-37": 1,
+    "cmd-38": 4,
+    "cmd-3d": 4,
+    "cmd-3f": 23,
+    "cmd-42": 4,
+    "cmd-4e": 5,
+    "cmd-50": 52,
+    "cmd-61": 1,
+    "cmd-63": 6,
+    "cmd-66": 24,
+    "cmd-7e": 2,
+    "cmd-80": 12,
+    "cmd-81": 2,
+    "cmd-82": 3,
+    "cmd-83": 5,
+    "cmd-84": 7,
+    "cmd-85": 1,
+    "cmd-86": 2,
+    "cmd-88": 6,
+    "cmd-8a": 10,
+    "cmd-8b": 14,
+    "cmd-8c": 5,
+    "cmd-8f": 3,
+    "cmd-90": 11,
+    "cmd-94": 5,
+    "cmd-95": 12,
+    "cmd-96": 6,
+    "cmd-97": 3,
+    "cmd-98": 13,
+    "cmd-9a": 1,
+    "cmd-9c": 6,
+    "cmd-9d": 22,
+    "cmd-9e": 2,
+    "cmd-9f": 1,
+    "cmd-a0": 8,
+    "cmd-a1": 4,
+    "cmd-a2": 2,
+    "cmd-a4": 14,
+    "cmd-a5": 2,
+    "cmd-a6": 3,
+    "cmd-a7": 10,
+    "cmd-a8": 5,
+    "cmd-a9": 2,
+    "cmd-aa": 8,
+    "cmd-ab": 2,
+    "cmd-ac": 4,
+    "cmd-ae": 2,
+    "cmd-b0": 34,
+    "cmd-b1": 3,
+    "cmd-b2": 5,
+    "cmd-b3": 12,
+    "cmd-b4": 26,
+    "cmd-b5": 11,
+    "cmd-b6": 14,
+    "cmd-b7": 6,
+    "cmd-b8": 27,
+    "cmd-b9": 5,
+    "cmd-ba": 9,
+    "cmd-bb": 10,
+    "cmd-bc": 15,
+    "cmd-bd": 4,
+    "cmd-be": 13,
+    "cmd-bf": 4,
+    "cmd-c0": 18,
+    "cmd-c1": 11,
+    "cmd-c2": 5,
+    "cmd-c3": 1,
+    "cmd-c4": 4,
+    "cmd-c5": 3,
+    "cmd-c6": 7,
+    "cmd-c7": 13,
+    "cmd-c8": 3,
+    "cmd-ca": 2,
+    "cmd-cc": 6,
+    "cmd-cd": 3,
+    "cmd-ce": 5,
+    "cmd-cf": 11,
+    "cmd-d1": 2,
+    "cmd-d2": 3,
+    "cmd-d3": 1,
+    "cmd-d4": 2,
+    "cmd-d6": 4,
+    "cmd-d7": 1,
+    "cmd-d8": 1,
+    "cmd-d9": 10,
+    "cmd-da": 4,
+    "cmd-db": 1,
+    "cmd-dd": 1,
+    "cmd-df": 5,
+    "cmd-e2": 4,
+    "cmd-e5": 1,
+    "cmd-e9": 2,
+    "cmd-ea": 15,
+    "cmd-eb": 48,
+    "cmd-ec": 35,
+    "cmd-ed": 14,
+    "cmd-ee": 1,
+    "cmd-f0": 2,
+    "cmd-f1": 1,
+    "cmd-f2": 1,
+    "cmd-f3": 8,
+    "cmd-f4": 1,
+    "cmd-f5": 3,
+    "cmd-f6": 7,
+    "cmd-f8": 3,
+    "cmd-fc": 2,
+    "set-expression": 133,
+    "set-left-portrait": 685,
+    "set-right-portrait": 440
+  },
+  "portraitCommandHints": {
+    "set-left-portrait": {
+      "portraitIds": {
+        "0": 115,
+        "1": 134,
+        "2": 76,
+        "3": 60,
+        "4": 24,
+        "5": 116,
+        "6": 12,
+        "7": 8,
+        "8": 120,
+        "9": 12,
+        "80": 8
+      },
+      "speakerHints": {
+        "0:Adonis": 6,
+        "0:Flora": 19,
+        "0:フローラ": 19,
+        "0:아도니스": 20,
+        "0:플로라": 38,
+        "1:Flora": 14,
+        "1:Runa": 18,
+        "1:フローラ": 14,
+        "1:ルナ": 18,
+        "1:루나": 36,
+        "1:플로라": 24,
+        "2:Flora": 20,
+        "2:フローラ": 20,
+        "2:플로라": 32,
+        "3:Flora": 13,
+        "3:フローラ": 13,
+        "3:플로라": 32,
+        "5:Tigger": 29,
+        "5:タイガー": 29,
+        "5:티거": 58,
+        "6:Deen": 6,
+        "8:Aris": 29,
+        "8:アリス": 29,
+        "8:아리스": 62
+      }
+    },
+    "set-right-portrait": {
+      "portraitIds": {
+        "0": 128,
+        "1": 68,
+        "2": 44,
+        "3": 34,
+        "4": 16,
+        "5": 24,
+        "6": 18,
+        "7": 4,
+        "8": 24,
+        "9": 12,
+        "10": 4,
+        "11": 4,
+        "13": 52,
+        "80": 8
+      },
+      "speakerHints": {
+        "0:Adonis": 14,
+        "0:Runa": 18,
+        "0:アドニス": 14,
+        "0:ルナ": 18,
+        "0:루나": 36,
+        "0:아도니스": 28,
+        "13:Runa": 13,
+        "13:ルナ": 13,
+        "13:루나": 26,
+        "1:Runa": 14,
+        "1:ルナ": 14,
+        "1:루나": 28,
+        "2:Runa": 11,
+        "2:ルナ": 11,
+        "2:루나": 22,
+        "3:플로라": 8,
+        "5:Tigger": 6,
+        "5:タイガー": 6,
+        "5:티거": 12,
+        "6:Deen": 9,
+        "6:ディーン": 9,
+        "8:Aris": 6,
+        "8:アリス": 6,
+        "8:아리스": 12
+      }
+    }
+  },
+  "topScripts": [
+    {
+      "path": "assets/eng/script/030.zt1",
+      "locale": "en",
+      "eventCount": 35,
+      "kindCounts": {
+        "speech": 35
+      },
+      "topSpeakers": [
+        "Adonis",
+        "Deen",
+        "Crow",
+        "Runa"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/030.zt1",
+      "locale": "ja",
+      "eventCount": 35,
+      "kindCounts": {
+        "speech": 35
+      },
+      "topSpeakers": [
+        "アドニス",
+        "ディーン",
+        "クロウ",
+        "ルナ"
+      ]
+    },
+    {
+      "path": "assets/eng/script/230.zt1",
+      "locale": "en",
+      "eventCount": 30,
+      "kindCounts": {
+        "speech": 30
+      },
+      "topSpeakers": [
+        "Deen",
+        "Aris",
+        "Adel"
+      ]
+    },
+    {
+      "path": "assets/eng/script/299.zt1",
+      "locale": "en",
+      "eventCount": 30,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 26
+      },
+      "topSpeakers": [
+        "Deen",
+        "Aris",
+        "Adel"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/299.zt1",
+      "locale": "ja",
+      "eventCount": 30,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 26
+      },
+      "topSpeakers": [
+        "ディーン",
+        "アリス",
+        "アデル"
+      ]
+    },
+    {
+      "path": "assets/eng/script/131.zt1",
+      "locale": "en",
+      "eventCount": 29,
+      "kindCounts": {
+        "speech": 29
+      },
+      "topSpeakers": [
+        "Flora",
+        "Adonis",
+        "Deen"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/131.zt1",
+      "locale": "ja",
+      "eventCount": 29,
+      "kindCounts": {
+        "speech": 29
+      },
+      "topSpeakers": [
+        "フローラ",
+        "アドニス",
+        "ディーン"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/230.zt1",
+      "locale": "ja",
+      "eventCount": 29,
+      "kindCounts": {
+        "speech": 29
+      },
+      "topSpeakers": [
+        "ディーン",
+        "アリス",
+        "アデル"
+      ]
+    },
+    {
+      "path": "assets/eng/script/199.zt1",
+      "locale": "en",
+      "eventCount": 28,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 24
+      },
+      "topSpeakers": [
+        "Flora",
+        "Tigger",
+        "Aguilar"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/199.zt1",
+      "locale": "ja",
+      "eventCount": 27,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 23
+      },
+      "topSpeakers": [
+        "フローラ",
+        "タイガー",
+        "アギラ"
+      ]
+    },
+    {
+      "path": "assets/kor/script/199.zt1",
+      "locale": "ko",
+      "eventCount": 27,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 23
+      },
+      "topSpeakers": [
+        "플로라",
+        "티거",
+        "아길라"
+      ]
+    },
+    {
+      "path": "assets/script/199.zt1",
+      "locale": null,
+      "eventCount": 27,
+      "kindCounts": {
+        "caption": 4,
+        "speech": 23
+      },
+      "topSpeakers": [
+        "플로라",
+        "티거",
+        "아길라"
+      ]
+    },
+    {
+      "path": "assets/eng/script/T_003.zt1",
+      "locale": "en",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "Runa"
+      ]
+    },
+    {
+      "path": "assets/eng/script/T_004.zt1",
+      "locale": "en",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "Tigger"
+      ]
+    },
+    {
+      "path": "assets/eng/script/T_005.zt1",
+      "locale": "en",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "Aris"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/T_003.zt1",
+      "locale": "ja",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "ルナ"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/T_004.zt1",
+      "locale": "ja",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "タイガー"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/T_005.zt1",
+      "locale": "ja",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "アリス"
+      ]
+    },
+    {
+      "path": "assets/kor/script/030.zt1",
+      "locale": "ko",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "아도니스",
+        "크로우",
+        "루나"
+      ]
+    },
+    {
+      "path": "assets/kor/script/T_003.zt1",
+      "locale": "ko",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "루나"
+      ]
+    },
+    {
+      "path": "assets/kor/script/T_004.zt1",
+      "locale": "ko",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "티거"
+      ]
+    },
+    {
+      "path": "assets/kor/script/T_005.zt1",
+      "locale": "ko",
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "아리스"
+      ]
+    },
+    {
+      "path": "assets/script/030.zt1",
+      "locale": null,
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "아도니스",
+        "크로우",
+        "루나"
+      ]
+    },
+    {
+      "path": "assets/script/T_003.zt1",
+      "locale": null,
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "루나"
+      ]
+    },
+    {
+      "path": "assets/script/T_004.zt1",
+      "locale": null,
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "티거"
+      ]
+    },
+    {
+      "path": "assets/script/T_005.zt1",
+      "locale": null,
+      "eventCount": 26,
+      "kindCounts": {
+        "speech": 26
+      },
+      "topSpeakers": [
+        "아리스"
+      ]
+    },
+    {
+      "path": "assets/eng/script/211.zt1",
+      "locale": "en",
+      "eventCount": 22,
+      "kindCounts": {
+        "speech": 22
+      },
+      "topSpeakers": [
+        "Deen",
+        "Flora",
+        "Aris",
+        "Adel"
+      ]
+    },
+    {
+      "path": "assets/eng/script/231.zt1",
+      "locale": "en",
+      "eventCount": 22,
+      "kindCounts": {
+        "speech": 22
+      },
+      "topSpeakers": [
+        "Adonis",
+        "Deen",
+        "Flora",
+        "Adel"
+      ]
+    },
+    {
+      "path": "assets/jpn/script/211.zt1",
+      "locale": "ja",
+      "eventCount": 22,
+      "kindCounts": {
+        "speech": 22
+      },
+      "topSpeakers": [
+        "ディーン",
+        "フローラ",
+        "アリス",
+        "アデル"
+      ]
+    },
+    {
+      "path": "assets/kor/script/131.zt1",
+      "locale": "ko",
+      "eventCount": 22,
+      "kindCounts": {
+        "speech": 22
+      },
+      "topSpeakers": [
+        "플로라",
+        "아도니스"
+      ]
+    },
+    {
+      "path": "assets/script/131.zt1",
+      "locale": null,
+      "eventCount": 22,
+      "kindCounts": {
+        "speech": 22
+      },
+      "topSpeakers": [
+        "플로라",
+        "아도니스"
+      ]
+    },
+    {
+      "path": "assets/eng/script/010.zt1",
+      "locale": "en",
+      "eventCount": 21,
+      "kindCounts": {
+        "speech": 21
+      },
+      "topSpeakers": [
+        "Adonis",
+        "Crow",
+        "Runa"
+      ]
+    }
+  ]
+}

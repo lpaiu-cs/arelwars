@@ -6,6 +6,8 @@ from collections import Counter, defaultdict
 import json
 from pathlib import Path
 
+from formats import parse_script_prefix
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Summarize recovered ZT1 script events")
@@ -43,6 +45,10 @@ def main() -> None:
     speaker_tag_names: dict[int, Counter[str]] = defaultdict(Counter)
     prefix_counts: Counter[str] = Counter()
     prefix_samples: dict[str, list[dict[str, object]]] = defaultdict(list)
+    command_opcode_counts: Counter[str] = Counter()
+    command_mnemonic_counts: Counter[str] = Counter()
+    portrait_slot_usage: dict[str, Counter[int]] = defaultdict(Counter)
+    portrait_slot_speakers: dict[str, Counter[str]] = defaultdict(Counter)
     per_script: list[dict[str, object]] = []
 
     for entry in zt1_entries:
@@ -88,6 +94,15 @@ def main() -> None:
                             "text": raw_event.get("text"),
                         }
                     )
+                prefix_parse = parse_script_prefix(prefix_hex)
+                for command in prefix_parse.commands:
+                    opcode_hex = f"{command.opcode:02x}"
+                    command_opcode_counts.update([opcode_hex])
+                    command_mnemonic_counts.update([command.mnemonic])
+                    if command.mnemonic in {"set-left-portrait", "set-right-portrait"} and command.args:
+                        portrait_slot_usage[command.mnemonic].update([command.args[0]])
+                        if isinstance(speaker, str):
+                            portrait_slot_speakers[command.mnemonic].update([f"{command.args[0]}:{speaker}"])
 
         per_script.append(
             {
@@ -117,10 +132,28 @@ def main() -> None:
             {
                 "prefixHex": prefix_hex,
                 "count": count,
+                "parsedCommands": [
+                    {
+                        "opcode": command.opcode,
+                        "args": list(command.args),
+                        "mnemonic": command.mnemonic,
+                    }
+                    for command in parse_script_prefix(prefix_hex).commands
+                ],
+                "trailingHex": parse_script_prefix(prefix_hex).trailing_hex,
                 "samples": prefix_samples[prefix_hex],
             }
             for prefix_hex, count in prefix_counts.most_common(24)
         ],
+        "prefixOpcodeCounts": dict(sorted(command_opcode_counts.items())),
+        "prefixMnemonicCounts": dict(sorted(command_mnemonic_counts.items())),
+        "portraitCommandHints": {
+            slot: {
+                "portraitIds": dict(sorted(counter.items())),
+                "speakerHints": dict(sorted(portrait_slot_speakers.get(slot, Counter()).most_common(24))),
+            }
+            for slot, counter in sorted(portrait_slot_usage.items())
+        },
         "topScripts": sorted(per_script, key=lambda item: int(item["eventCount"]), reverse=True)[:32],
     }
 

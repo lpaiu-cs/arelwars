@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-01T16:20:27.007625+00:00",
+  "generatedAt": "2026-04-01T16:50:16.162590+00:00",
   "apkPath": "/Users/lpaiu/vs/others/arelwars/arel_wars1/arel_wars_1.apk",
   "runtimeTarget": "Phaser + TypeScript + Vite, wrapped later with Capacitor for Android/iOS",
   "inventory": {
@@ -31,10 +31,88 @@
       "script_kor": 312
     },
     "zt1Total": 700,
-    "scriptEventTotal": 7611,
+    "scriptEventTotal": 7840,
     "webSafeAssetCount": 106
   },
   "featuredScripts": [
+    {
+      "path": "assets/script_eng/0923.zt1",
+      "kind": "script",
+      "locale": "en",
+      "packedSize": 1334,
+      "decodedSize": 2656,
+      "encoding": "utf-8",
+      "scriptEncoding": "utf-8",
+      "stringCount": 56,
+      "stringsPreview": [
+        "Elven Sergeant",
+        "Consul, you have a visitor.",
+        "Juno",
+        "Who is it?",
+        "He won't say, but he looks dangerous.",
+        "...and he said he's here on the Senator's behalf.",
+        "Okay, let him in.",
+        "Rogan",
+        "Are you Consul Juno?",
+        "Where are your manners, stranger!",
+        "I hope you know, you're in no position to order me around.",
+        "I'm Senator !c00ffffManos!cffffff's lieutenant. Or in other words... your boss."
+      ],
+      "eventCount": 51,
+      "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Consul, you have a visitor."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Who is it? "
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "He won't say, but he looks dangerous."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "...and he said he's here on the Senator's behalf."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Okay, let him in."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Rogan",
+          "speakerTag": 10,
+          "text": "Are you Consul Juno?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Juno",
+          "speakerTag": 11,
+          "text": "Where are your manners, stranger!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Rogan",
+          "speakerTag": 10,
+          "text": "I hope you know, you're in no position to order me around."
+        }
+      ],
+      "decodedPath": "decoded/zt1/assets/script_eng/0923.zt1.bin",
+      "eventsPath": "decoded/zt1/assets/script_eng/0923.zt1.events.json",
+      "webEventsPath": "/recovery/analysis/zt1_events/0923.zt1.events.json"
+    },
     {
       "path": "assets/script_kor/0923.zt1",
       "kind": "script",
@@ -114,6 +192,84 @@
       "webEventsPath": "/recovery/analysis/zt1_events/0923.zt1.events.json"
     },
     {
+      "path": "assets/script_eng/0343.zt1",
+      "kind": "script",
+      "locale": "en",
+      "packedSize": 1258,
+      "decodedSize": 2436,
+      "encoding": "utf-8",
+      "scriptEncoding": "utf-8",
+      "stringCount": 56,
+      "stringsPreview": [
+        "Cecil",
+        "It's over... right..?",
+        "Vincent",
+        "Yeah, it's over.",
+        "Martin",
+        "Father...",
+        "Neive",
+        "Now that was a long battle. Hehe.",
+        "Rrggh I really need a bath now...",
+        "I'll be leaving.",
+        "Vincent, take me too!",
+        "I guess I'd better go, too."
+      ],
+      "eventCount": 49,
+      "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "It's over... right..?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "Yeah, it's over."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Martin",
+          "speakerTag": 2,
+          "text": "Father..."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Neive",
+          "speakerTag": 3,
+          "text": "Now that was a long battle. Hehe."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "Rrggh I really need a bath now..."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Vincent",
+          "speakerTag": 0,
+          "text": "I'll be leaving."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Vincent, take me too!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Neive",
+          "speakerTag": 3,
+          "text": "I guess I'd better go, too."
+        }
+      ],
+      "decodedPath": "decoded/zt1/assets/script_eng/0343.zt1.bin",
+      "eventsPath": "decoded/zt1/assets/script_eng/0343.zt1.events.json",
+      "webEventsPath": "/recovery/analysis/zt1_events/0343.zt1.events.json"
+    },
+    {
       "path": "assets/script_kor/0343.zt1",
       "kind": "script",
       "locale": "ko",
@@ -190,84 +346,6 @@
       "decodedPath": "decoded/zt1/assets/script_kor/0343.zt1.bin",
       "eventsPath": "decoded/zt1/assets/script_kor/0343.zt1.events.json",
       "webEventsPath": "/recovery/analysis/zt1_events/0343.zt1.events.json"
-    },
-    {
-      "path": "assets/script_eng/0923.zt1",
-      "kind": "script",
-      "locale": "en",
-      "packedSize": 1334,
-      "decodedSize": 2656,
-      "encoding": "utf-8",
-      "scriptEncoding": "utf-8",
-      "stringCount": 56,
-      "stringsPreview": [
-        "Elven Sergeant",
-        "Consul, you have a visitor.",
-        "Juno",
-        "Who is it?",
-        "He won't say, but he looks dangerous.",
-        "...and he said he's here on the Senator's behalf.",
-        "Okay, let him in.",
-        "Rogan",
-        "Are you Consul Juno?",
-        "Where are your manners, stranger!",
-        "I hope you know, you're in no position to order me around.",
-        "I'm Senator !c00ffffManos!cffffff's lieutenant. Or in other words... your boss."
-      ],
-      "eventCount": 48,
-      "eventPreview": [
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Who is it? "
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Okay, let him in."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "Are you Consul Juno?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Where are your manners, stranger!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "I hope you know, you're in no position to order me around."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "I'm Senator !c00ffffManos!cffffff's lieutenant. Or in other words... your boss."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "..."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "Senator Manos wishes to see you. Come with me."
-        }
-      ],
-      "decodedPath": "decoded/zt1/assets/script_eng/0923.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_eng/0923.zt1.events.json",
-      "webEventsPath": "/recovery/analysis/zt1_events/0923.zt1.events.json"
     },
     {
       "path": "assets/script_eng/0000.zt1",
@@ -582,84 +660,6 @@
       "webEventsPath": "/recovery/analysis/zt1_events/0963.zt1.events.json"
     },
     {
-      "path": "assets/script_eng/0343.zt1",
-      "kind": "script",
-      "locale": "en",
-      "packedSize": 1258,
-      "decodedSize": 2436,
-      "encoding": "utf-8",
-      "scriptEncoding": "utf-8",
-      "stringCount": 56,
-      "stringsPreview": [
-        "Cecil",
-        "It's over... right..?",
-        "Vincent",
-        "Yeah, it's over.",
-        "Martin",
-        "Father...",
-        "Neive",
-        "Now that was a long battle. Hehe.",
-        "Rrggh I really need a bath now...",
-        "I'll be leaving.",
-        "Vincent, take me too!",
-        "I guess I'd better go, too."
-      ],
-      "eventCount": 45,
-      "eventPreview": [
-        {
-          "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "It's over... right..?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Yeah, it's over."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Martin",
-          "speakerTag": 2,
-          "text": "Father..."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Neive",
-          "speakerTag": 3,
-          "text": "Now that was a long battle. Hehe."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Rrggh I really need a bath now..."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "I'll be leaving."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "Vincent, take me too!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Neive",
-          "speakerTag": 3,
-          "text": "I guess I'd better go, too."
-        }
-      ],
-      "decodedPath": "decoded/zt1/assets/script_eng/0343.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_eng/0343.zt1.events.json",
-      "webEventsPath": "/recovery/analysis/zt1_events/0343.zt1.events.json"
-    },
-    {
       "path": "assets/script_eng/0213.zt1",
       "kind": "script",
       "locale": "en",
@@ -816,6 +816,84 @@
       "webEventsPath": "/recovery/analysis/zt1_events/0213.zt1.events.json"
     },
     {
+      "path": "assets/script_eng/0400.zt1",
+      "kind": "script",
+      "locale": "en",
+      "packedSize": 1230,
+      "decodedSize": 2380,
+      "encoding": "utf-8",
+      "scriptEncoding": "utf-8",
+      "stringCount": 47,
+      "stringsPreview": [
+        "[June, 520 Drusian Year]",
+        "[Tribe chiefs have gathered in !cff37ffTigus!cffffff, the capital of the Busters in the !cff37ffFlame!cffffff Desert.]",
+        "[!cff37ffCalais!cffffff Chief !c00ffffHelba!cffffff rises to speak.]",
+        "Helba",
+        "Attention, brothers!",
+        "It's bad enough we're stuck in this desert, fearing the Hume and the Elven...",
+        "...and here we are arguing with each other because of stupid political differences!",
+        "We cannot continue like this.",
+        "We must unite our forces!",
+        "Beril Elder",
+        "Is he suggesting we form a state... like those wicked Hume?",
+        "Tigus Elder"
+      ],
+      "eventCount": 40,
+      "eventPreview": [
+        {
+          "kind": "caption",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[June, 520 Drusian Year]"
+        },
+        {
+          "kind": "caption",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[Tribe chiefs have gathered in !cff37ffTigus!cffffff, the capital of the Busters in the !cff37ffFlame!cffffff Desert.]"
+        },
+        {
+          "kind": "caption",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[!cff37ffCalais!cffffff Chief !c00ffffHelba!cffffff rises to speak.]"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "Attention, brothers!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "It's bad enough we're stuck in this desert, fearing the Hume and the Elven..."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "...and here we are arguing with each other because of stupid political differences!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "We cannot continue like this."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Helba",
+          "speakerTag": 6,
+          "text": "We must unite our forces!"
+        }
+      ],
+      "decodedPath": "decoded/zt1/assets/script_eng/0400.zt1.bin",
+      "eventsPath": "decoded/zt1/assets/script_eng/0400.zt1.events.json",
+      "webEventsPath": "/recovery/analysis/zt1_events/0400.zt1.events.json"
+    },
+    {
       "path": "assets/script_kor/0400.zt1",
       "kind": "script",
       "locale": "ko",
@@ -892,6 +970,84 @@
       "decodedPath": "decoded/zt1/assets/script_kor/0400.zt1.bin",
       "eventsPath": "decoded/zt1/assets/script_kor/0400.zt1.events.json",
       "webEventsPath": "/recovery/analysis/zt1_events/0400.zt1.events.json"
+    },
+    {
+      "path": "assets/script_eng/0800.zt1",
+      "kind": "script",
+      "locale": "en",
+      "packedSize": 1112,
+      "decodedSize": 2104,
+      "encoding": "utf-8",
+      "scriptEncoding": "utf-8",
+      "stringCount": 44,
+      "stringsPreview": [
+        "[July, Drusian Year 520]",
+        "[A !cff37ffTelleum!cffffff congressman is assassinated by the Hume.]",
+        "[Sanator !c00ffffManos!cffffff summons all congressmen to the !cff37ffSanctum!cffffff.]",
+        "Manos",
+        "Members of the Council,",
+        "The barbaric Hume finally reveal their true colors.",
+        "This... means war!",
+        "How dare they shed the blood of us Elven..  the Children of God...",
+        "We will repay their insolence in cold vengeance.",
+        "!c00ff00Consul!cffffff !c00ffffJuno!cffffff, please step forward.",
+        "Juno",
+        "Yes, senator."
+      ],
+      "eventCount": 39,
+      "eventPreview": [
+        {
+          "kind": "caption",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[July, Drusian Year 520]"
+        },
+        {
+          "kind": "caption",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[A !cff37ffTelleum!cffffff congressman is assassinated by the Hume.]"
+        },
+        {
+          "kind": "caption",
+          "speaker": null,
+          "speakerTag": null,
+          "text": "[Sanator !c00ffffManos!cffffff summons all congressmen to the !cff37ffSanctum!cffffff.]"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Manos",
+          "speakerTag": 14,
+          "text": "Members of the Council,"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Manos",
+          "speakerTag": 14,
+          "text": "The barbaric Hume finally reveal their true colors."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Manos",
+          "speakerTag": 14,
+          "text": "This... means war!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Manos",
+          "speakerTag": 14,
+          "text": "How dare they shed the blood of us Elven..  the Children of God..."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Manos",
+          "speakerTag": 14,
+          "text": "We will repay their insolence in cold vengeance."
+        }
+      ],
+      "decodedPath": "decoded/zt1/assets/script_eng/0800.zt1.bin",
+      "eventsPath": "decoded/zt1/assets/script_eng/0800.zt1.events.json",
+      "webEventsPath": "/recovery/analysis/zt1_events/0800.zt1.events.json"
     },
     {
       "path": "assets/script_kor/0800.zt1",
@@ -1438,162 +1594,6 @@
       "decodedPath": "decoded/zt1/assets/script_kor/0533.zt1.bin",
       "eventsPath": "decoded/zt1/assets/script_kor/0533.zt1.events.json",
       "webEventsPath": "/recovery/analysis/zt1_events/0533.zt1.events.json"
-    },
-    {
-      "path": "assets/script_eng/0814.zt1",
-      "kind": "script",
-      "locale": "en",
-      "packedSize": 1151,
-      "decodedSize": 2732,
-      "encoding": "utf-8",
-      "scriptEncoding": "utf-8",
-      "stringCount": 37,
-      "stringsPreview": [
-        "Lantere",
-        "Let's start the advanced training, Consul.",
-        "Do you see the icons below the Tower menu?",
-        "!cffa900Touch the icons in the Tower!cffffff to make Juno stronger.",
-        "On it, you can upgrade Mana, Attack/Defense, and Population.",
-        "The first !cff0005Potion icon is Upgrade Mana!cffffff.",
-        "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff.",
-        "But remember: you can upgrade mana only when it's full.",
-        "And upgrading mana consumes mana and also takes a while, leaving you vulnerable to enemy attack.",
-        "Its upgrade progress is displayed in the red bar below the Mana bar.",
-        "Once the progress bar fills up, your Mana Level increases along with your Mana Regeneration Speed and Max Mana.",
-        "Moving on"
-      ],
-      "eventCount": 36,
-      "eventPreview": [
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "Let's start the advanced training, Consul."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "Do you see the icons below the Tower menu?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "!cffa900Touch the icons in the Tower!cffffff to make Juno stronger."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "On it, you can upgrade Mana, Attack/Defense, and Population."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "The first !cff0005Potion icon is Upgrade Mana!cffffff."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. "
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "But remember: you can upgrade mana only when it's full."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "And upgrading mana consumes mana and also takes a while, leaving you vulnerable to enemy attack."
-        }
-      ],
-      "decodedPath": "decoded/zt1/assets/script_eng/0814.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_eng/0814.zt1.events.json",
-      "webEventsPath": "/recovery/analysis/zt1_events/0814.zt1.events.json"
-    },
-    {
-      "path": "assets/script_kor/0814.zt1",
-      "kind": "script",
-      "locale": "ko",
-      "packedSize": 1355,
-      "decodedSize": 2723,
-      "encoding": "cp949",
-      "scriptEncoding": "cp949",
-      "stringCount": 37,
-      "stringsPreview": [
-        "란테르",
-        "자, 상급 코스입니다, 집정관님?",
-        "아래쪽 타워메뉴에 속해있는 아이콘들이 보이지?",
-        "!cffa900타워안의 아이콘을 터치해서 유노를 강하게!cffffff할 수 있어.",
-        "타워메뉴에서는 마나, 공격력/방어력, 인구수 등을 업그레이드 할 수 있지.",
-        "타워메뉴 중 가장 앞에 있는 !cffa900약병모양 아이콘이 마나 업그레이드!cffffff야.",
-        "!cffa900마나 업그레이드를 하면 마나 회복속도가 빨라지고 최대치도 상승!cffffff해.",
-        "다만 마나가 가득 찬 상태에서만 업그레이드를 할 수 있고, 업그레이드 완료까지 시간이 좀 걸리니 조심해야지.",
-        "마나 업그레이드를 하느라 자원을 쓴 상태에서 적의 공격을 받으면 위험해질수도 있거든.",
-        "업그레이드 진행도는 마나막대 아래에 녹색 바로 표시돼.",
-        "그 막대가 다 차면 마나 레벨이 올라서, 마나의 회복속도가 빨라지고 최대치도 상승하지.",
-        "다음으로.."
-      ],
-      "eventCount": 36,
-      "eventPreview": [
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "자, 상급 코스입니다, 집정관님?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "아래쪽 타워메뉴에 속해있는 아이콘들이 보이지?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "!cffa900타워안의 아이콘을 터치해서 유노를 강하게!cffffff할 수 있어."
-        },
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "타워메뉴에서는 마나, 공격력/방어력, 인구수 등을 업그레이드 할 수 있지."
-        },
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "타워메뉴 중 가장 앞에 있는 !cffa900약병모양 아이콘이 마나 업그레이드!cffffff야."
-        },
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "!cffa900마나 업그레이드를 하면 마나 회복속도가 빨라지고 최대치도 상승!cffffff해. "
-        },
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "다만 마나가 가득 찬 상태에서만 업그레이드를 할 수 있고, 업그레이드 완료까지 시간이 좀 걸리니 조심해야지."
-        },
-        {
-          "kind": "speech",
-          "speaker": "란테르",
-          "speakerTag": 13,
-          "text": "마나 업그레이드를 하느라 자원을 쓴 상태에서 적의 공격을 받으면 위험해질수도 있거든."
-        }
-      ],
-      "decodedPath": "decoded/zt1/assets/script_kor/0814.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_kor/0814.zt1.events.json",
-      "webEventsPath": "/recovery/analysis/zt1_events/0814.zt1.events.json"
     }
   ],
   "blockedFormats": [
@@ -1610,7 +1610,7 @@
     {
       "suffix": ".ptc",
       "count": 50,
-      "reason": "Particle or effect definition. Parser still unknown."
+      "reason": "Particle/effect files now parse as compact numeric parameter blocks, but field semantics are still heuristic."
     }
   ],
   "webSafeAssets": [
@@ -3341,7 +3341,7 @@
         "Hey Vincent, stop trying to impress Cecil so badly!",
         "What?!  Who said that!"
       ],
-      "eventCount": 8,
+      "eventCount": 10,
       "eventPreview": [
         {
           "kind": "speech",
@@ -3375,21 +3375,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Captain, are you sure about this?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "Hey Vincent, stop trying to impress Cecil so badly!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "What?!  Who said that!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Mercenaries",
-          "speakerTag": 17,
-          "text": "Mwa ha ha!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Shut it and go rest already!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0011.zt1.bin",
@@ -3418,13 +3418,25 @@
         "You guys, enough is enough!",
         "Oooo, Captain's angry. Let's run!"
       ],
-      "eventCount": 4,
+      "eventCount": 8,
       "eventPreview": [
         {
           "kind": "speech",
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Ha ha, you see? I told you I'm good!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Yes, you're good, Captain."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "There he goes trying to impress Cecil again~"
         },
         {
           "kind": "speech",
@@ -3443,6 +3455,18 @@
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "You guys, enough is enough!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Oooo, Captain's angry. Let's run!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "I'm so scared, I'm shaking!  Kahahaha!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0012.zt1.bin",
@@ -3848,7 +3872,7 @@
         "What did the general say?",
         "He said... He has no supplies for us."
       ],
-      "eventCount": 13,
+      "eventCount": 16,
       "eventPreview": [
         {
           "kind": "speech",
@@ -3888,15 +3912,15 @@
         },
         {
           "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "What did the general say?"
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Cecil!"
         },
         {
           "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "W-what? Is he crazy?"
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "What did the general say?"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0030.zt1.bin",
@@ -4035,7 +4059,7 @@
         "Shut it! You're the ones who attacked our harbor first!",
         "What are you talking about? We would never do such a thing!"
       ],
-      "eventCount": 10,
+      "eventCount": 11,
       "eventPreview": [
         {
           "kind": "speech",
@@ -4054,6 +4078,12 @@
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Hey, what was that?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Sound the alarm, it's Busters!"
         },
         {
           "kind": "speech",
@@ -4078,12 +4108,6 @@
           "speaker": "Arang",
           "speakerTag": 7,
           "text": "What are you talking about? We would never do such a thing!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Like I'd believe you."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0040.zt1.bin",
@@ -4485,7 +4509,7 @@
         "A sizable force of Busters approaching!",
         "Bah, looks like we'll have to fight them for free..."
       ],
-      "eventCount": 9,
+      "eventCount": 10,
       "eventPreview": [
         {
           "kind": "speech",
@@ -4531,9 +4555,9 @@
         },
         {
           "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Bah, looks like we'll have to fight them for free..."
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "A sizable force of Busters approaching!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0060.zt1.bin",
@@ -4697,7 +4721,7 @@
         "Make us proud!",
         "Mercenary 3"
       ],
-      "eventCount": 7,
+      "eventCount": 10,
       "eventPreview": [
         {
           "kind": "speech",
@@ -4731,15 +4755,21 @@
         },
         {
           "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Alright, alright! Geez you guys are so lazy!"
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Captain, you can do it!"
         },
         {
           "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "Ha ha ha!"
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "Make us proud!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 3",
+          "speakerTag": 17,
+          "text": "Ugh, my back is killing me...."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0071.zt1.bin",
@@ -4768,7 +4798,7 @@
         "Yeah...",
         "Mercenary 1"
       ],
-      "eventCount": 11,
+      "eventCount": 13,
       "eventPreview": [
         {
           "kind": "speech",
@@ -5070,13 +5100,19 @@
         "Vincent, the enemy appears to be mostly archers.",
         "Careful now, this will be far different from our battle with Busters."
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
         {
           "kind": "speech",
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "What are you thinking, invading Iron Castle!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "The Hume still have troops?  Ready your swords!"
         },
         {
           "kind": "speech",
@@ -5117,13 +5153,25 @@
         "Gerrrguh!",
         "Vincent!"
       ],
-      "eventCount": 12,
+      "eventCount": 20,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Captain, we've captured a soldier!"
+        },
         {
           "kind": "speech",
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Alright, bring him here."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Urrggh..."
         },
         {
           "kind": "speech",
@@ -5133,39 +5181,27 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Do you really expect me to answer that..."
+        },
+        {
+          "kind": "speech",
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Do you wanna get beat THEN answer... or just answer?"
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Gerrrguh!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Cecil",
           "speakerTag": 1,
           "text": "Vincent!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Say it!  Now!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Council...?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "Elven is a republic governed by congressmen..."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "meaning their congressmen have decided to go to  !cff0005war!cffffff."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0092.zt1.bin",
@@ -5271,7 +5307,7 @@
         "Friends...?",
         "Mercenary 1"
       ],
-      "eventCount": 15,
+      "eventCount": 16,
       "eventPreview": [
         {
           "kind": "speech",
@@ -6007,8 +6043,20 @@
         "Vincent",
         "Catch me if you can!  I dare you!!"
       ],
-      "eventCount": 1,
+      "eventCount": 3,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Guard 1",
+          "speakerTag": 18,
+          "text": "A prisoner has escaped!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Guard 2",
+          "speakerTag": 18,
+          "text": "Catch him!"
+        },
         {
           "kind": "speech",
           "speaker": "Vincent",
@@ -6183,7 +6231,7 @@
         "They're blocking our way!",
         "Ah, shoot! Guys, get ready to fight!"
       ],
-      "eventCount": 6,
+      "eventCount": 7,
       "eventPreview": [
         {
           "kind": "speech",
@@ -6199,9 +6247,15 @@
         },
         {
           "kind": "speech",
-          "speaker": "RUAAAGH!!",
-          "speakerTag": 0,
-          "text": "Officer"
+          "speaker": "Royal Soldier",
+          "speakerTag": 17,
+          "text": "RUAAAGH!!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Officer",
+          "speakerTag": 18,
+          "text": "Halt! Traitor Vincent, stop right there!"
         },
         {
           "kind": "speech",
@@ -6372,7 +6426,7 @@
         "Everything okay while we're gone?",
         "Mercenary 2"
       ],
-      "eventCount": 23,
+      "eventCount": 30,
       "eventPreview": [
         {
           "kind": "speech",
@@ -6406,21 +6460,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Captain! Cecil!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Cecil",
           "speakerTag": 1,
           "text": "Everything okay while we're gone?"
         },
         {
           "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Grah don't even mention that place... They starvee their prisoners to death!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Martin",
-          "speakerTag": 2,
-          "text": "Ha ha ha..."
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "Thank God, I thought you two were in the Kingdom prison."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0170.zt1.bin",
@@ -6743,8 +6797,14 @@
         "Protect what?  In this icy mountain?",
         "Only one way to find out!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 21,
+          "text": "Hold them off! We can't let them pass!"
+        },
         {
           "kind": "speech",
           "speaker": "Cecil",
@@ -7210,7 +7270,7 @@
         "Cut it out!",
         "Mercenaries"
       ],
-      "eventCount": 11,
+      "eventCount": 14,
       "eventPreview": [
         {
           "kind": "speech",
@@ -7232,6 +7292,18 @@
         },
         {
           "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Our Captain... I've never seen him so serious."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "Finally he's grown up."
+        },
+        {
+          "kind": "speech",
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Cut it out!"
@@ -7247,18 +7319,6 @@
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Well, I just didn't want to think too hard."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "Heehee."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "How long do we have to go to get to Ksil?"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0220.zt1.bin",
@@ -7334,8 +7394,14 @@
         "I don't know, but there's something seriously wrong with these Buster.",
         "Vincent, let's go after them! They may have something to do with K'sil's destruction!"
       ],
-      "eventCount": 6,
+      "eventCount": 7,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Unidentified Man",
+          "speakerTag": 16,
+          "text": "Retreat!"
+        },
         {
           "kind": "speech",
           "speaker": "Martin",
@@ -8425,7 +8491,7 @@
         "All our aerial units are sick....",
         "Do you think you can fight only with the ground units?"
       ],
-      "eventCount": 4,
+      "eventCount": 6,
       "eventPreview": [
         {
           "kind": "speech",
@@ -8438,6 +8504,18 @@
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "W-what? You guys are so pathetic!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Aww... Captain, I feel like I'm dying...."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "Ack... Captain, I need a doctor...."
         },
         {
           "kind": "speech",
@@ -8899,7 +8977,7 @@
         "Ahem!",
         "Cecil's here. Let's run!"
       ],
-      "eventCount": 20,
+      "eventCount": 26,
       "eventPreview": [
         {
           "kind": "speech",
@@ -8909,9 +8987,33 @@
         },
         {
           "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Are you going to be our new king if we win??"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "That means...  we'll be the new royal guards. Yippee!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Yeah, in your dreams maybe. I don't want to be king."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 2",
+          "speakerTag": 17,
+          "text": "If you become king, I want to eat steak every day!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Not to mention all the girls... Woohoo!"
         },
         {
           "kind": "speech",
@@ -8921,33 +9023,9 @@
         },
         {
           "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "You guys are pathetic."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Cecil, how's the palace looking?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "They're heavily armed. I think they were expecting us."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Hmm... do you think we should go through with this?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Cecil",
-          "speakerTag": 1,
-          "text": "Why not?"
+          "speaker": "Mercenary 1",
+          "speakerTag": 17,
+          "text": "Cecil's here. Let's run!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0310.zt1.bin",
@@ -9170,7 +9248,7 @@
         "Vincent, take me too!",
         "I guess I'd better go, too."
       ],
-      "eventCount": 45,
+      "eventCount": 49,
       "eventPreview": [
         {
           "kind": "speech",
@@ -9757,7 +9835,7 @@
         "Is he suggesting we form a state... like those wicked Hume?",
         "Tigus Elder"
       ],
-      "eventCount": 28,
+      "eventCount": 40,
       "eventPreview": [
         {
           "kind": "caption",
@@ -9809,7 +9887,8 @@
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0400.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_eng/0400.zt1.events.json"
+      "eventsPath": "decoded/zt1/assets/script_eng/0400.zt1.events.json",
+      "webEventsPath": "/recovery/analysis/zt1_events/0400.zt1.events.json"
     },
     {
       "path": "assets/script_eng/0401.zt1",
@@ -9829,7 +9908,7 @@
         "CHARGE!",
         "Whatever you are, you're going to die today!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
         {
           "kind": "speech",
@@ -9842,6 +9921,12 @@
           "speaker": "Neive",
           "speakerTag": 3,
           "text": "Helba, wait. They don't look like the Elven I know."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Strange Elven",
+          "speakerTag": 16,
+          "text": "CHARGE!"
         },
         {
           "kind": "speech",
@@ -9876,8 +9961,14 @@
         "Kuma",
         "Mom! Mom!"
       ],
-      "eventCount": 11,
+      "eventCount": 12,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Strange Elven",
+          "speakerTag": 16,
+          "text": "Run!"
+        },
         {
           "kind": "speech",
           "speaker": "Helba",
@@ -9919,12 +10010,6 @@
           "speaker": "Kuma",
           "speakerTag": 9,
           "text": "Mom! Mom!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Kuma, you can't be here."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0402.zt1.bin",
@@ -10107,7 +10192,7 @@
         "Chief, the enemy is in sight!",
         "Get ready to battle!"
       ],
-      "eventCount": 8,
+      "eventCount": 9,
       "eventPreview": [
         {
           "kind": "speech",
@@ -10153,9 +10238,9 @@
         },
         {
           "kind": "speech",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Get ready to battle! "
+          "speaker": "Knoll Soldier",
+          "speakerTag": 26,
+          "text": "Chief, the enemy is in sight!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0410.zt1.bin",
@@ -10237,7 +10322,7 @@
         "This is no place for you. Guard!",
         "Knoll Soldier"
       ],
-      "eventCount": 15,
+      "eventCount": 16,
       "eventPreview": [
         {
           "kind": "speech",
@@ -10386,13 +10471,31 @@
         "Return to where you came from or we'll use deadly force!",
         "Enough of your nonsense!  Get out of the way!"
       ],
-      "eventCount": 2,
+      "eventCount": 5,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Stop! You're trespassing on Elven territory!"
+        },
         {
           "kind": "speech",
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "Return our brothers to us... or we'll take them by force!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "What are you talking about? We never took any of you!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Return to where you came from or we'll use deadly force!"
         },
         {
           "kind": "speech",
@@ -10705,8 +10808,14 @@
         "I said... GET OUT OF OUR WAY!",
         "Attack!"
       ],
-      "eventCount": 2,
+      "eventCount": 5,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Knoll Soldier",
+          "speakerTag": 26,
+          "text": "Chief!  Elven militia up ahead!"
+        },
         {
           "kind": "speech",
           "speaker": "Helba",
@@ -10715,9 +10824,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "You blasphemous intruders, leave our forest!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "I said... GET OUT OF OUR WAY!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Attack!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0441.zt1.bin",
@@ -10746,7 +10867,7 @@
         "T-that's...",
         "Talk and we'll let you live."
       ],
-      "eventCount": 10,
+      "eventCount": 16,
       "eventPreview": [
         {
           "kind": "speech",
@@ -10756,9 +10877,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "I-I don't know."
+        },
+        {
+          "kind": "speech",
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "Hmm.. Any Buster hostages travel past here?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "H-hostages? I-I don't know..."
         },
         {
           "kind": "speech",
@@ -10783,18 +10916,6 @@
           "speaker": "Neive",
           "speakerTag": 3,
           "text": "Hey now, any strange happenings going on in your lands?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Neive",
-          "speakerTag": 3,
-          "text": "Talk and we'll let you live."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "The army?"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0442.zt1.bin",
@@ -11102,7 +11223,7 @@
         "Thank you for your assistance.",
         "Other units are on their way, too."
       ],
-      "eventCount": 11,
+      "eventCount": 19,
       "eventPreview": [
         {
           "kind": "speech",
@@ -11118,9 +11239,27 @@
         },
         {
           "kind": "speech",
+          "speaker": "Short Hair",
+          "speakerTag": 27,
+          "text": "Chief Helba!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "!c00ff00Short Hair!cffffff! What are you doing here?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Short Hair",
+          "speakerTag": 27,
+          "text": "We came as soon as we heard. *Meow*"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Short Hair",
+          "speakerTag": 27,
+          "text": "We won't ignore injustice. We want to help! *Meow*"
         },
         {
           "kind": "speech",
@@ -11129,28 +11268,10 @@
           "text": "Thank you for your assistance."
         },
         {
-          "kind": "caption",
-          "speaker": null,
-          "speakerTag": null,
-          "text": "[meanwhile, in Nortium]"
-        },
-        {
           "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "What's taking so long!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "Dangit, they're almost here!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "Test them? But they're not stable yet... are they?"
+          "speaker": "Short Hair",
+          "speakerTag": 27,
+          "text": "Other units are on their way, too."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0453.zt1.bin",
@@ -11179,7 +11300,7 @@
         "Captured Knoll",
         "RrrRRrrgghggg...."
       ],
-      "eventCount": 9,
+      "eventCount": 11,
       "eventPreview": [
         {
           "kind": "speech",
@@ -11254,13 +11375,19 @@
         "Just what have you done...",
         "Mwahahaha!  Let's see you kill your own brothers!"
       ],
-      "eventCount": 5,
+      "eventCount": 6,
       "eventPreview": [
         {
           "kind": "speech",
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "Just what happened to you?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Captured Knoll",
+          "speakerTag": 26,
+          "text": "RRRrrrrgggghh...."
         },
         {
           "kind": "speech",
@@ -11385,8 +11512,14 @@
         "We can't leave our  wounded here... we fight.",
         "Brothers, to arms!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Knoll Soldier",
+          "speakerTag": 26,
+          "text": "Chief Helba, an Elven pursuit party is after us!"
+        },
         {
           "kind": "speech",
           "speaker": "Neive",
@@ -11509,7 +11642,7 @@
         "!c00ffffArang!cffffff, what are you doing here?",
         "Please help us! !cff37ffTigus!cffffff is in danger!"
       ],
-      "eventCount": 15,
+      "eventCount": 16,
       "eventPreview": [
         {
           "kind": "speech",
@@ -11585,13 +11718,31 @@
         "Chief, I'm honored to fight with you.",
         "Let's go!"
       ],
-      "eventCount": 5,
+      "eventCount": 8,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "Ha ha, we've got you now!"
+        },
         {
           "kind": "speech",
           "speaker": "Arang",
           "speakerTag": 7,
           "text": "Stubborn Hume!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "Stop running already..."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "Do you know how far I had to run to chase you!"
         },
         {
           "kind": "speech",
@@ -11721,7 +11872,7 @@
         "Just what on earth is going on?!",
         "We don't have time. The Piglings already left for battle."
       ],
-      "eventCount": 13,
+      "eventCount": 14,
       "eventPreview": [
         {
           "kind": "speech",
@@ -12023,7 +12174,7 @@
         "Attack!",
         "Knoll"
       ],
-      "eventCount": 13,
+      "eventCount": 14,
       "eventPreview": [
         {
           "kind": "speech",
@@ -12318,7 +12469,7 @@
         "Chief, we can't let him live... He'll come back to kill us!",
         "Let him go."
       ],
-      "eventCount": 11,
+      "eventCount": 15,
       "eventPreview": [
         {
           "kind": "speech",
@@ -12328,15 +12479,33 @@
         },
         {
           "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "P-please don't kill me..."
+        },
+        {
+          "kind": "speech",
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "Speak now and I'll spare your life."
         },
         {
           "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "I-I really don't know. I did what General Agger ordered."
+        },
+        {
+          "kind": "speech",
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "What was his order?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "To transport the Buster to a different location. There, P-please don't kill me!"
         },
         {
           "kind": "speech",
@@ -12349,24 +12518,6 @@
           "speaker": "Arang",
           "speakerTag": 7,
           "text": "Chief, we can't let him live... He'll come back to kill us!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "Let him go."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Arang",
-          "speakerTag": 7,
-          "text": "Chief, why did you let him go?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Helba",
-          "speakerTag": 6,
-          "text": "I've learned a thing or two from our last battle..."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0523.zt1.bin",
@@ -12604,7 +12755,7 @@
         "I understand, my chief.",
         "Did you hear that?"
       ],
-      "eventCount": 13,
+      "eventCount": 15,
       "eventPreview": [
         {
           "kind": "speech",
@@ -12850,7 +13001,7 @@
         "Strange Man",
         "We created you!  How dare you run away."
       ],
-      "eventCount": 16,
+      "eventCount": 20,
       "eventPreview": [
         {
           "kind": "speech",
@@ -12896,9 +13047,9 @@
         },
         {
           "kind": "speech",
-          "speaker": "Rose",
-          "speakerTag": 8,
-          "text": "We didn't ask for this... You've turned us into monsters!"
+          "speaker": "Strange Man",
+          "speakerTag": 16,
+          "text": "We created you!  How dare you run away."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0550.zt1.bin",
@@ -13051,7 +13202,7 @@
         "I just can't trust them, not yet.",
         "Arang, I understand why you feel the way you do."
       ],
-      "eventCount": 23,
+      "eventCount": 24,
       "eventPreview": [
         {
           "kind": "speech",
@@ -13122,8 +13273,14 @@
         "Helba",
         "You... I'll end you all!"
       ],
-      "eventCount": 2,
+      "eventCount": 3,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Unidentified Man",
+          "speakerTag": 16,
+          "text": "My children... it's time to go back home."
+        },
         {
           "kind": "speech",
           "speaker": "Rose",
@@ -14838,7 +14995,7 @@
         "Bah, more?!",
         "Chief, some of the ones we rescued from the lab have their minds intact."
       ],
-      "eventCount": 9,
+      "eventCount": 10,
       "eventPreview": [
         {
           "kind": "speech",
@@ -14872,6 +15029,12 @@
         },
         {
           "kind": "speech",
+          "speaker": "Short Hair",
+          "speakerTag": 27,
+          "text": "Alert, stragglers attacking!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Arang",
           "speakerTag": 7,
           "text": "Bah, more?!"
@@ -14881,12 +15044,6 @@
           "speaker": "Rose",
           "speakerTag": 8,
           "text": "Chief, some of the ones we rescued from the lab have their minds intact."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rose",
-          "speakerTag": 8,
-          "text": "They're saying they want to help."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0660.zt1.bin",
@@ -15101,7 +15258,7 @@
         "Busters",
         "Shout"
       ],
-      "eventCount": 14,
+      "eventCount": 15,
       "eventPreview": [
         {
           "kind": "speech",
@@ -15178,7 +15335,7 @@
         "No, it has to be you. You're the only king we want.",
         "We all want to serve you."
       ],
-      "eventCount": 12,
+      "eventCount": 13,
       "eventPreview": [
         {
           "kind": "speech",
@@ -16164,7 +16321,7 @@
         "Juno",
         "Yes, senator."
       ],
-      "eventCount": 34,
+      "eventCount": 39,
       "eventPreview": [
         {
           "kind": "caption",
@@ -16216,7 +16373,8 @@
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0800.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_eng/0800.zt1.events.json"
+      "eventsPath": "decoded/zt1/assets/script_eng/0800.zt1.events.json",
+      "webEventsPath": "/recovery/analysis/zt1_events/0800.zt1.events.json"
     },
     {
       "path": "assets/script_eng/0801.zt1",
@@ -16235,8 +16393,14 @@
         "Don't let me down!",
         "Holy Elven, march!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "A Hume defense platoon is in sight!"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -16276,8 +16440,20 @@
         "Juno",
         "Go! Don't let them get away!"
       ],
-      "eventCount": 1,
+      "eventCount": 3,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "Run! We must alert the others!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, the enemy's retreating!"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -16309,7 +16485,7 @@
         "S-she was too fast...",
         "Great... We'll follow her. Move out!"
       ],
-      "eventCount": 6,
+      "eventCount": 8,
       "eventPreview": [
         {
           "kind": "speech",
@@ -16337,9 +16513,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "She went after the Hume."
+        },
+        {
+          "kind": "speech",
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "What? Then what are you doing here?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "S-she was too fast..."
         },
         {
           "kind": "speech",
@@ -16445,7 +16633,7 @@
         "There are only a few enemies. Get them!",
         "Drat!!!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
         {
           "kind": "speech",
@@ -16458,6 +16646,12 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Hmm, it seems we've lost the rest of our forces..."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Hume Soldier",
+          "speakerTag": 18,
+          "text": "There are only a few enemies. Get them!"
         },
         {
           "kind": "speech",
@@ -16646,8 +16840,7 @@
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0814.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_eng/0814.zt1.events.json",
-      "webEventsPath": "/recovery/analysis/zt1_events/0814.zt1.events.json"
+      "eventsPath": "decoded/zt1/assets/script_eng/0814.zt1.events.json"
     },
     {
       "path": "assets/script_eng/0820.zt1",
@@ -16672,8 +16865,14 @@
         "Sigh... I'm just a little nervous.",
         "That's surprising... everyone seems to call you \"the Iron Lady\"."
       ],
-      "eventCount": 15,
+      "eventCount": 19,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul Juno, troops have been deployed to !cff37ffIron!cffffff Castle."
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -16682,9 +16881,27 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "!c00ff00Dendroids!cffffff have joined our forces."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "You can add the unit at the Shop."
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Good. Let everyone rest until our next engagement."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Yes, ma'am!"
         },
         {
           "kind": "speech",
@@ -16697,30 +16914,6 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Sigh... I'm just a little nervous."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "That's surprising... everyone seems to call you \"the Iron Lady\"."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "You.. if you're here just to make fun of me, I won't have it."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "Ha ha, come on. I was just trying to make you laugh."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "By the way, I can't believe the Hume killed the congressman..."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0820.zt1.bin",
@@ -16808,7 +17001,7 @@
         "N-no, ma'am!",
         "Let's go!"
       ],
-      "eventCount": 5,
+      "eventCount": 8,
       "eventPreview": [
         {
           "kind": "speech",
@@ -16830,9 +17023,27 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "But Consul, Senator !c00ffffManos!cffffff wanted them all dead."
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Are you disobeying my orders?"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "N-no, ma'am!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Let's go!"
         },
         {
           "kind": "speech",
@@ -16944,7 +17155,7 @@
         "Y-yes, Consul!",
         "Puhahaha!"
       ],
-      "eventCount": 18,
+      "eventCount": 19,
       "eventPreview": [
         {
           "kind": "speech",
@@ -17089,7 +17300,7 @@
         "Elven Sergeant",
         "Their !c00ff00Hunters!cffffff are drawing their bows!"
       ],
-      "eventCount": 10,
+      "eventCount": 11,
       "eventPreview": [
         {
           "kind": "speech",
@@ -17319,8 +17530,14 @@
         "Good. Now get moving!",
         "Yes, ma'am!"
       ],
-      "eventCount": 4,
+      "eventCount": 8,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, what do we do with these prisoners?"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -17335,15 +17552,33 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "But that's...   will that be okay?"
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Soldier, who is your commanding officer!"
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Why it's.... you, Consul Juno!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Good. Now get moving!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Yes, ma'am!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0852.zt1.bin",
@@ -17449,7 +17684,7 @@
         "That's...",
         "We'll talk later!"
       ],
-      "eventCount": 6,
+      "eventCount": 7,
       "eventPreview": [
         {
           "kind": "speech",
@@ -17462,6 +17697,12 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Keep your eyes peeled for a possible ambush!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, our troops are in combat!"
         },
         {
           "kind": "speech",
@@ -17507,7 +17748,7 @@
         "Elven Soldier",
         "Yes, ma'am!"
       ],
-      "eventCount": 2,
+      "eventCount": 3,
       "eventPreview": [
         {
           "kind": "speech",
@@ -17520,6 +17761,12 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Tank them with !c00ff00Dendroids!cffffff, and attack with !c00ff00Arbalests!cffffff and !c00ff00Slingers!cffffff!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Yes, ma'am!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0861.zt1.bin",
@@ -17851,8 +18098,14 @@
         "Busters may have the appearance of animals,",
         "but they're just as intelligent and organized as us Elven."
       ],
-      "eventCount": 8,
+      "eventCount": 10,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, we're surrounded by Busters!"
+        },
         {
           "kind": "speech",
           "speaker": "Buster",
@@ -17894,12 +18147,6 @@
           "speaker": "Buster",
           "speakerTag": 23,
           "text": "Gwah-! *Oink Oink*"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Soldiers, defend the forest!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0880.zt1.bin",
@@ -18080,7 +18327,7 @@
         "Drive them away!",
         "Soldiers, march!"
       ],
-      "eventCount": 5,
+      "eventCount": 7,
       "eventPreview": [
         {
           "kind": "speech",
@@ -18102,9 +18349,21 @@
         },
         {
           "kind": "speech",
-          "speaker": "*CHEER!*",
-          "speakerTag": 0,
-          "text": "Elven Soldier2"
+          "speaker": "Elven Soldier1",
+          "speakerTag": 25,
+          "text": "*CHEER!*"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier2",
+          "speakerTag": 25,
+          "text": "Punish them!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier3",
+          "speakerTag": 25,
+          "text": "Drive them away!"
         },
         {
           "kind": "speech",
@@ -18169,8 +18428,14 @@
         "Identify yourself!",
         "Run!!!!"
       ],
-      "eventCount": 2,
+      "eventCount": 3,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Get moving!",
+          "speakerTag": 0,
+          "text": "Unidentified Man 1"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -18210,7 +18475,7 @@
         "Soldier, arrest this man!",
         "Calm down. I'm not going anywhere."
       ],
-      "eventCount": 20,
+      "eventCount": 22,
       "eventPreview": [
         {
           "kind": "speech",
@@ -18220,9 +18485,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "N-no, ma'am. They were too fast."
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "I'm putting you in charge for their capture. Dismissed."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Sigh..."
         },
         {
           "kind": "speech",
@@ -18247,18 +18524,6 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Soldier, arrest this man!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Theon",
-          "speakerTag": 12,
-          "text": "Calm down. I'm not going anywhere."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "How can I trust anything you say, traitor!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0893.zt1.bin",
@@ -18281,8 +18546,14 @@
         "Do not let the enemy get close.",
         "!c00ff00Witches!cffffff, keep them at bay!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, the Buster sent !c00ff00Goblins!cffffff...  but something's wrong with them!"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -18444,7 +18715,7 @@
         "T-thank you, ma'am!",
         "Theon, I'll catch you... After Atheum, however."
       ],
-      "eventCount": 6,
+      "eventCount": 10,
       "eventPreview": [
         {
           "kind": "speech",
@@ -18454,9 +18725,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "T-that's... umm"
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Talk clearly!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "He ran away sir!  I mean ma'am!"
         },
         {
           "kind": "speech",
@@ -18472,15 +18755,15 @@
         },
         {
           "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "I said dismissed. Get out of here before I change my mind!"
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Am I... in trouble?"
         },
         {
           "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
-          "text": "Theon, I'll catch you... After Atheum, however."
+          "text": "I said dismissed. Get out of here before I change my mind!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0913.zt1.bin",
@@ -18509,13 +18792,31 @@
         "Get our soldiers ready. We'll going to  clear the Busters out of Atheum.",
         "Yes, ma'am!"
       ],
-      "eventCount": 4,
+      "eventCount": 10,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Consul, I come with news."
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Report."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Most of the !cff37ffAtheum!cffffff citizens have evacuated to the !cff37ffSanctum!cffffff,"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "and the city is filled with strange Busters."
         },
         {
           "kind": "speech",
@@ -18525,15 +18826,21 @@
         },
         {
           "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Huh... I see."
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "They seem to be out of their minds... destroying everything in their way."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Some of them are even fighting each other."
         },
         {
           "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
-          "text": "Get our soldiers ready. We'll going to  clear the Busters out of Atheum."
+          "text": "Huh... I see."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0920.zt1.bin",
@@ -18557,7 +18864,7 @@
         "Shout",
         "Attack!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
         {
           "kind": "speech",
@@ -18576,6 +18883,12 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "defend our great town from the enemy's destruction!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "*Shout* Attack!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0921.zt1.bin",
@@ -18600,13 +18913,31 @@
         "I hope Lantere is doing okay...",
         "With the cities destroyed, I can't send him supplies...!"
       ],
-      "eventCount": 4,
+      "eventCount": 7,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Consul, no more Busters are in sight."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Unfortunately the city's major facilities were destroyed in battle."
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Good.  Now we rest and heal our wounds."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Yes, ma'am!"
         },
         {
           "kind": "speech",
@@ -18653,13 +18984,31 @@
         "I hope you know, you're in no position to order me around.",
         "I'm Senator !c00ffffManos!cffffff's lieutenant. Or in other words... your boss."
       ],
-      "eventCount": 48,
+      "eventCount": 51,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Consul, you have a visitor."
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Who is it? "
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "He won't say, but he looks dangerous."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "...and he said he's here on the Senator's behalf."
         },
         {
           "kind": "speech",
@@ -18684,24 +19033,6 @@
           "speaker": "Rogan",
           "speakerTag": 10,
           "text": "I hope you know, you're in no position to order me around."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "I'm Senator !c00ffffManos!cffffff's lieutenant. Or in other words... your boss."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "..."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Rogan",
-          "speakerTag": 10,
-          "text": "Senator Manos wishes to see you. Come with me."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0923.zt1.bin",
@@ -18805,7 +19136,7 @@
         "I'll hold them off alone for now.  Hurry up and ready our forces!",
         "Yes, ma'am!"
       ],
-      "eventCount": 3,
+      "eventCount": 7,
       "eventPreview": [
         {
           "kind": "speech",
@@ -18815,15 +19146,39 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Consul Juno! I'm so happy you're alive!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Happiness later.  Report the situation!"
         },
         {
           "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "These Hume came from up north."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "They don't look like trained soldiers, but we're no better if we don't group and prepare."
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "I'll hold them off alone for now.  Hurry up and ready our forces!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Yes, ma'am!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0931.zt1.bin",
@@ -18852,7 +19207,7 @@
         "Yes, the intelligence is from one of their own.",
         "They took Lydia... and Lantere...!"
       ],
-      "eventCount": 5,
+      "eventCount": 10,
       "eventPreview": [
         {
           "kind": "speech",
@@ -18862,9 +19217,27 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "They're the !c00ffffMarching Mercenaries!cffffff from the !cff37ffFree Trade Harbor!cffffff."
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "The Marching Mercenaries? I've never heard of them."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Rumor has it they'll do anything for money."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "And..."
         },
         {
           "kind": "speech",
@@ -18874,15 +19247,15 @@
         },
         {
           "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "W-what? Are you sure about this?!"
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "They're the ones that reclaimed !cff37ffLydia!cffffff."
         },
         {
           "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
-          "text": "They took Lydia... and Lantere...!"
+          "text": "W-what? Are you sure about this?!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0933.zt1.bin",
@@ -18959,8 +19332,14 @@
         "Don't make me say it twice...",
         "Yes, ma'am!"
       ],
-      "eventCount": 2,
+      "eventCount": 5,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul. We've found Theon's tracks."
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -18969,9 +19348,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Don't you think we should be more careful?"
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Don't make me say it twice..."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Yes, ma'am!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0943.zt1.bin",
@@ -19000,8 +19391,14 @@
         "Huh, do you know what that is?",
         "I've read that somewhere on this continent is the Creator's ancient !cff37ffAltar of Seal!cffffff."
       ],
-      "eventCount": 20,
+      "eventCount": 21,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul! Hume HQ is in sight!"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -19043,12 +19440,6 @@
           "speaker": "Cecil",
           "speakerTag": 1,
           "text": "I've heard about the !cff0005Creator!cffffff."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "Who is it?"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0950.zt1.bin",
@@ -19231,7 +19622,7 @@
         "Consul, incoming Hume!",
         "Everyone, get ready!"
       ],
-      "eventCount": 22,
+      "eventCount": 23,
       "eventPreview": [
         {
           "kind": "speech",
@@ -19277,9 +19668,9 @@
         },
         {
           "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Everyone, get ready!"
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, incoming Hume!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/0960.zt1.bin",
@@ -19499,7 +19890,7 @@
         "Stones?! What are you talking...",
         "!c00ff00Siege Golems!cffffff! They're ancient guardians!"
       ],
-      "eventCount": 6,
+      "eventCount": 7,
       "eventPreview": [
         {
           "kind": "speech",
@@ -19524,6 +19915,12 @@
           "speaker": "Theon",
           "speakerTag": 12,
           "text": "Oh, no-!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, the stones are moving!"
         },
         {
           "kind": "speech",
@@ -19722,7 +20119,7 @@
         "You'd rather find an individual than fight for the future of Drusilla...",
         "I won't force you, but... don't do something you'll regret."
       ],
-      "eventCount": 31,
+      "eventCount": 36,
       "eventPreview": [
         {
           "kind": "speech",
@@ -19794,7 +20191,7 @@
         "Gwaah-!",
         "Soldiers, get ready to fight!"
       ],
-      "eventCount": 3,
+      "eventCount": 5,
       "eventPreview": [
         {
           "kind": "speech",
@@ -19804,9 +20201,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Strange Buster",
+          "speakerTag": 24,
+          "text": "*ROOAAR!*"
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Identify yourselves now, or we'll kill you all."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Strange Buster",
+          "speakerTag": 24,
+          "text": "Gwaah-!"
         },
         {
           "kind": "speech",
@@ -20136,7 +20545,7 @@
         "Elven Soldier",
         "RUAAAAH!  RUAAAAAH"
       ],
-      "eventCount": 4,
+      "eventCount": 5,
       "eventPreview": [
         {
           "kind": "speech",
@@ -20161,6 +20570,12 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Destroy this lab and end them all! This is our !c00ffffholy war!cffffff!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "*RUAAAAH!  RUAAAAAH*"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1000.zt1.bin",
@@ -20251,8 +20666,26 @@
         "I'm only going to ask this once... is there another lab like this one?",
         "I-I can't..."
       ],
-      "eventCount": 6,
+      "eventCount": 15,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Proxy 1",
+          "speakerTag": 16,
+          "text": "What happened to our reinforcements??"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Proxy 2",
+          "speakerTag": 16,
+          "text": "The HQ is under attack!  We need to run!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Proxy 1",
+          "speakerTag": 16,
+          "text": "Ah, shoot! Let's move to the !cff37ff2nd Lab!cffffff!"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -20267,27 +20700,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Proxy 1",
+          "speakerTag": 16,
+          "text": "Argh..."
+        },
+        {
+          "kind": "speech",
           "speaker": "Theon",
           "speakerTag": 12,
           "text": "I'm only going to ask this once... is there another lab like this one?"
         },
         {
           "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "So... you want it the hard way.  I see."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Did you want to be next?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "I never said you'll live."
+          "speaker": "Proxy 2",
+          "speakerTag": 16,
+          "text": "I-I can't..."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1002.zt1.bin",
@@ -20388,8 +20815,14 @@
         "Consul, I see a cloud of dust approaching behind us...",
         "The enemy must have reinforcements. Everyone on guard!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, we've found the remnants of the enemy!"
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -20559,7 +20992,7 @@
         "This is what legend says.",
         "The Creator gave the Hume [technology], the Elven [magic]..."
       ],
-      "eventCount": 26,
+      "eventCount": 27,
       "eventPreview": [
         {
           "kind": "speech",
@@ -20671,8 +21104,14 @@
         "Soldiers, do not make a rash move!",
         "Don't get too close until we know what they can do!"
       ],
-      "eventCount": 3,
+      "eventCount": 4,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, those Buster don't look familiar!"
+        },
         {
           "kind": "speech",
           "speaker": "Theon",
@@ -20751,7 +21190,7 @@
         "You're the !c00ffffReincarnated!cffffff....",
         "And you're the prophet of destiny... and you're the king of the deserted ones."
       ],
-      "eventCount": 15,
+      "eventCount": 16,
       "eventPreview": [
         {
           "kind": "speech",
@@ -20770,6 +21209,12 @@
           "speaker": "Helba",
           "speakerTag": 6,
           "text": "The ground...  it's vibrating!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, the !c00ffffPhoenix!cffffff is awakening!"
         },
         {
           "kind": "speech",
@@ -20794,12 +21239,6 @@
           "speaker": "Phoenix",
           "speakerTag": 15,
           "text": "I'm the ancient weapon of the Great Creator."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Theon",
-          "speakerTag": 12,
-          "text": "The Phoenix has granted me information about Proxies, the Creator, and Spirit Crystal."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1033.zt1.bin",
@@ -21145,8 +21584,14 @@
         "Cecil",
         "Great, just wait til you here what we discovered!"
       ],
-      "eventCount": 26,
+      "eventCount": 27,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, we've spotted the Hume mercenaries!"
+        },
         {
           "kind": "speech",
           "speaker": "Theon",
@@ -21188,12 +21633,6 @@
           "speaker": "Cecil",
           "speakerTag": 1,
           "text": "Great, just wait til you here what we discovered!"
-        },
-        {
-          "kind": "caption",
-          "speaker": null,
-          "speakerTag": null,
-          "text": "[A bit Later]"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1053.zt1.bin",
@@ -21299,8 +21738,14 @@
         "Where's Lantere? Didn't you find him?",
         "...No."
       ],
-      "eventCount": 10,
+      "eventCount": 13,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul Juno, we found !c00ff00Archmages!cffffff locked in their facilities."
+        },
         {
           "kind": "speech",
           "speaker": "Juno",
@@ -21309,9 +21754,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Theon is examining them, he thinks they're used to collect spirits."
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Okay. When he's done, ask the Archmages if they can join us to fight."
+        },
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Yes, ma'am!"
         },
         {
           "kind": "speech",
@@ -21330,24 +21787,6 @@
           "speaker": "Vincent",
           "speakerTag": 0,
           "text": "Where's Lantere? Didn't you find him?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "...No."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Vincent",
-          "speakerTag": 0,
-          "text": "What happened?"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "I had my reasons."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1063.zt1.bin",
@@ -21652,7 +22091,7 @@
         "Maybe I'm not this great person you think I am.",
         "Elven Soldier"
       ],
-      "eventCount": 7,
+      "eventCount": 12,
       "eventPreview": [
         {
           "kind": "caption",
@@ -21680,21 +22119,27 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "Consul, is something wrong?"
+        },
+        {
+          "kind": "speech",
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Sergeant, what kind of person do you think I am?"
         },
         {
           "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Maybe I'm not this great person you think I am."
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "You're a great commander,"
         },
         {
           "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "Everyone, get ready, let's show them what real fear is."
+          "speaker": "Elven Sergeant",
+          "speakerTag": 21,
+          "text": "and a reliable leader."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1080.zt1.bin",
@@ -21723,8 +22168,14 @@
         "It's the right thing to do. There will be no peace until they are done away with.",
         "We don't need your help, you know."
       ],
-      "eventCount": 15,
+      "eventCount": 16,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, Sage Theon is back."
+        },
         {
           "kind": "speech",
           "speaker": "Theon",
@@ -21766,12 +22217,6 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "We don't need your help, you know."
-        },
-        {
-          "kind": "speech",
-          "speaker": "Arang",
-          "speakerTag": 7,
-          "text": "Watch your tongue, you speak to our king!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1090.zt1.bin",
@@ -22197,7 +22642,7 @@
         "Soldiers! The enemies has desecrated our land and families!",
         "In the honor of our lost loved ones..."
       ],
-      "eventCount": 9,
+      "eventCount": 10,
       "eventPreview": [
         {
           "kind": "speech",
@@ -22225,6 +22670,12 @@
         },
         {
           "kind": "speech",
+          "speaker": "Elven Soldier",
+          "speakerTag": 25,
+          "text": "Consul, I see some Buster! Proxies, too!"
+        },
+        {
+          "kind": "speech",
           "speaker": "Theon",
           "speakerTag": 12,
           "text": "Oh no, we we're right."
@@ -22240,12 +22691,6 @@
           "speaker": "Juno",
           "speakerTag": 11,
           "text": "Soldiers! The enemies has desecrated our land and families!"
-        },
-        {
-          "kind": "speech",
-          "speaker": "Juno",
-          "speakerTag": 11,
-          "text": "In the honor of our lost loved ones..."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_eng/1110.zt1.bin",
@@ -27437,8 +27882,14 @@
         "게다가, 이 버스터들은 이상한 점이 한두가지가 아닙니다.",
         "빈센트, 쫓아가보자! 크실 사건과 관련이 있을지 몰라!"
       ],
-      "eventCount": 6,
+      "eventCount": 7,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "의문의 남자",
+          "speakerTag": 16,
+          "text": "후퇴하라!"
+        },
         {
           "kind": "speech",
           "speaker": "마틴",
@@ -31327,7 +31778,7 @@
         "이봐! 자네 괜찮나!",
         "크아아앙!"
       ],
-      "eventCount": 9,
+      "eventCount": 11,
       "eventPreview": [
         {
           "kind": "speech",
@@ -31400,13 +31851,19 @@
         "이들에게 무슨 짓을 한게냐!!",
         "킥킥킥! 네 손으로 네 친구의 피를 맛 보거라!"
       ],
-      "eventCount": 5,
+      "eventCount": 6,
       "eventPreview": [
         {
           "kind": "speech",
           "speaker": "헬바",
           "speakerTag": 6,
           "text": "이보게! 자네 대체 왜 그러는건가!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "잡혀간 놀",
+          "speakerTag": 26,
+          "text": "크아아앙!"
         },
         {
           "kind": "speech",
@@ -32182,7 +32639,7 @@
         "숏헤어",
         "캬앙! 헬바님! 도망가라냥!"
       ],
-      "eventCount": 14,
+      "eventCount": 13,
       "eventPreview": [
         {
           "kind": "speech",
@@ -32998,7 +33455,7 @@
         "더 반항한다면.. 죽이겠다..",
         "가만히 당할 줄 알아!"
       ],
-      "eventCount": 16,
+      "eventCount": 20,
       "eventPreview": [
         {
           "kind": "speech",
@@ -33044,9 +33501,9 @@
         },
         {
           "kind": "speech",
-          "speaker": "로즈",
-          "speakerTag": 8,
-          "text": "누가 우릴 만들어달라고 했어!? 누가 이런 꼴로 만들어달랬냐구!"
+          "speaker": "수상한 자",
+          "speakerTag": 16,
+          "text": "너흰 우리가 만든 창조물이다. 감히 주인에게서 도망가다니.."
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_kor/0550.zt1.bin",
@@ -33265,8 +33722,14 @@
         "다시는.. 너희들에게 이용 당하지 않겠어!",
         "너희들은 반드시 내가 응징하리라!"
       ],
-      "eventCount": 2,
+      "eventCount": 3,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "수상한 자",
+          "speakerTag": 16,
+          "text": "실험체들 얌전히 잡혀라.."
+        },
         {
           "kind": "speech",
           "speaker": "로즈",
@@ -36765,8 +37228,7 @@
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_kor/0814.zt1.bin",
-      "eventsPath": "decoded/zt1/assets/script_kor/0814.zt1.events.json",
-      "webEventsPath": "/recovery/analysis/zt1_events/0814.zt1.events.json"
+      "eventsPath": "decoded/zt1/assets/script_kor/0814.zt1.events.json"
     },
     {
       "path": "assets/script_kor/0820.zt1",
@@ -38349,8 +38811,32 @@
         "정체를 밝혀라!",
         "도망쳐!"
       ],
-      "eventCount": 2,
+      "eventCount": 7,
       "eventPreview": [
+        {
+          "kind": "speech",
+          "speaker": "수상한 자1",
+          "speakerTag": 16,
+          "text": "어디서 갑자기 나타난 군대야.. 젠장.."
+        },
+        {
+          "kind": "speech",
+          "speaker": "수상한 자2",
+          "speakerTag": 16,
+          "text": "빨리 움직여!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "수상한 자1",
+          "speakerTag": 16,
+          "text": "!cff0005로간!cffffff님에게 한소리 듣겠군.."
+        },
+        {
+          "kind": "speech",
+          "speaker": "수상한 자2",
+          "speakerTag": 16,
+          "text": "들키기 전에 빠져 나가야해.!"
+        },
         {
           "kind": "speech",
           "speaker": "유노",
@@ -38362,6 +38848,12 @@
           "speaker": "유노",
           "speakerTag": 11,
           "text": "정체를 밝혀라!"
+        },
+        {
+          "kind": "speech",
+          "speaker": "수상한 자2",
+          "speakerTag": 16,
+          "text": "도망쳐!"
         }
       ],
       "decodedPath": "decoded/zt1/assets/script_kor/0892.zt1.bin",
@@ -38513,7 +39005,7 @@
         "아직도 그 소리인가!",
         "곧.. 날 믿게 될거요."
       ],
-      "eventCount": 16,
+      "eventCount": 18,
       "eventPreview": [
         {
           "kind": "speech",
@@ -40079,7 +40571,7 @@
         "크아앙!!",
         "병사들! 전투 준비!"
       ],
-      "eventCount": 3,
+      "eventCount": 5,
       "eventPreview": [
         {
           "kind": "speech",
@@ -40089,9 +40581,21 @@
         },
         {
           "kind": "speech",
+          "speaker": "괴이한 버스터",
+          "speakerTag": 24,
+          "text": "그르르.."
+        },
+        {
+          "kind": "speech",
           "speaker": "유노",
           "speakerTag": 11,
           "text": "정체를 말하지 않으면, 적으로 알겠다."
+        },
+        {
+          "kind": "speech",
+          "speaker": "괴이한 버스터",
+          "speakerTag": 24,
+          "text": "크아앙!!"
         },
         {
           "kind": "speech",
