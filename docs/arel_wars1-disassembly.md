@@ -169,9 +169,16 @@ animation:
   - `BeginDecodeFrame`가 `subFrameCount`와 bounding-box 관련 count byte를 먼저 읽고
   - count가 0이 아닐 때는 `DecodeBoundingBoxFromBAR/FILE` 계열이 먼저 stream을 소비한 뒤
   - 마지막에 `EndDecodeFrameFromBAR/FILE`가 subframe list를 읽는 구조로 보인다.
+- `CGxPZxFrameBB::GetTotalBoundingBoxCount / GetBoundingBoxCount / GetBoundingBox`가 이 bbox block 해석을 다시 확인해 준다.
+  - frame `+0x20/+0x21`은 bbox group count byte
+  - frame `+0x22`는 bbox format variant
+  - frame `+0x1c`는 bbox record array
+  - variant `1/3` bbox record는 사실상 `x:s16, y:s16, w:u16, h:u16`
+  - variant `0`은 packed 4-byte form을 8-byte record로 확장하고, variant `3`은 두 group count를 합산한다.
 - 따라서 raw `PZF` payload는 "항상 frame header 직후에 subframe record가 온다"고 가정하면 안 된다.
-  - `010.pzx`처럼 count byte가 0인 샘플은 바로 subframe list가 시작되지만
-  - `082.pzx` 같은 샘플은 bounding-box block이 끼어 있어서 payload head만 보고는 subframe index가 바로 안 보일 수 있다.
+  - `010.pzx`처럼 bbox count가 0인 샘플은 바로 subframe list가 시작되지만
+  - `004.pzx` 같은 variant `1` 샘플은 bbox record가 먼저 나오고
+  - `082.pzx` 같은 variant `3` 샘플은 bbox 이후 subframe record 중간에 control-like extra payload가 섞여 보인다.
 
 ## Asset Cross-check
 
@@ -191,6 +198,31 @@ animation:
   - `field12`의 `PZA` segment는 `header:u8`, `clipCount:u16`, `u32 clipOffset[clipCount]`를 가진다.
   - compressed mode일 때는 index table 뒤에 `unpackedSize:u32`, `packedSize:u32`, 그리고 하나의 zlib blob이 붙는다.
 - 즉 later zlib stream 일부는 독립 포맷이 아니라, raw `PZF/PZA` subresource payload가 다시 노출된 결과일 가능성이 높다.
+- 실제로 raw `PZF` frame parser를 자산측에 내리면:
+  - `253/253` stems에서 raw embedded `PZF`가 frame 단위로 exact-parse 된다.
+  - `216` stems는 raw `PZF` payload가 zlib stream index `1`과 byte-identical 하다.
+  - 즉 다수 stem에서 두 번째 zlib stream은 “frame-record 후보”가 아니라 native `PZF` payload 그 자체다.
+- 현재 working `PZF` frame shape는 다음과 같다.
+
+```text
+frame:
+  subFrameCount:u8
+  bboxCount0:u8
+  bboxCount1:u8?   // formatVariant == 3 only
+  bboxRecords[...] // formatVariant dependent
+  repeat subFrameCount times:
+    subFrameIndex:u16
+    x:s16
+    y:s16
+    extraFlag:u8
+    extraPayload: variable
+```
+
+- 여기서 `extraPayload`는 자산측 exact-fit inference다.
+  - 일부 record는 `extraFlag` 바이트만큼 short payload를 붙인다. 예: `... 01 03`
+  - 일부 record는 `extraFlag + 4` 바이트 payload를 붙이며, 흔한 모양은 `66 xx 00 00 00` / `67 xx 00 00 00`
+  - 전체 집계상 nonzero `extraPayload`는 `6004`개 subframe에 나타나고, dominant family는 `67+u32` / `66+u32` marker형이다.
+  - 이 hybrid length rule은 asset exact-fit 기준으로는 닫히지만, 아직 `EndDecodeFrame*` 디스어셈블 단독으로는 완전히 설명되지 않는다.
 - `tools/arel_wars1/inspect_binary_assets.py`는 이제 exact-fit animation clip stream을 인식한다.
 - 현재 휴리스틱은 다음이다.
   - stream 전체가 `frameCount:u8 + frameCount * 8-byte frame record`의 clip 연속체로 끝까지 정확히 소진될 것
@@ -223,25 +255,34 @@ animation:
   - raw `PZF frameCount = 86`
   - raw `PZA frameIndex range = 0..85`
   - 즉 이전의 “visible frame-record 수보다 `frameIndex`가 크다”는 현상은 그 frame-record stream이 실제 `PZF` frame pool이 아니었기 때문에 생긴 오해다.
+- 더 나아가, 예전 `frame-record` heuristic도 native `PZF` 재해석으로 정리된다.
+  - `51` stems는 old frame-record parser의 `recordOffsetsPreview`가 raw `PZF` frame offset table prefix와 정확히 맞는다.
+  - 즉 disassemble 브랜치 관점에서 그 stream을 별도 timeline format으로 볼 이유는 크게 줄었다.
+  - 남는 문제는 “tail이 시간축인가?”가 아니라 `PZF extraPayload`와 `PZD subframe`가 각각 무엇을 의미하느냐로 바뀌었다.
 
 ## Working Hypothesis
 
 현재 데이터 기반 분석에서 `frame-record`와 tail block을 `PZX` 내부 타임라인 후보로 보고 있었지만, 네이티브 심볼은 다른 해석을 강하게 시사한다.
 
-- `PZX` later stream은 "프레임 조각/서브프레임/보조 배치" 계층일 수 있다.
-- 실제 재생 순서, delay, clip index, loop 같은 시간축 정보는 `CGxPZAParser::DecodeAnimationData`가 해석하는 별도 구조일 수 있다.
+- `PZX` later stream은 "프레임 조각/서브프레임/보조 배치" 계층일 가능성이 높다.
+- 실제 재생 순서, delay, clip index, loop 같은 시간축 정보는 `CGxPZAParser::DecodeAnimationData`가 해석하는 별도 구조다.
 - 첫 번째 조각 stream을 `PZF` 계층, 이후 animation stream을 `PZA` 계층으로 대응시키면 현재까지 관찰된 "placement는 보이는데 시간축이 안 보인다"는 현상을 자연스럽게 설명할 수 있다.
 - 특히 현재는:
   - 루트 `.pzx` 헤더에서 `PZF/PZA` subresource offset을 직접 잡을 수 있고
   - raw `PZA` index table이 animation clip offsets와 정확히 맞고
-  - raw `PZF frameCount`가 `frameIndex` 풀 범위를 설명한다.
-- 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라, `PZF frame`과 `PZD subframe/image`를 실제 first-stream 조각 구조와 어떻게 연결하느냐로 더 좁혀졌다.
+  - raw `PZF frameCount`가 `frameIndex` 풀 범위를 설명하고
+  - raw `PZF` stream 자체가 frame/subframe/extraPayload 계층으로 exact-fit 된다.
+- 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라:
+  - `PZF subFrameIndex -> PZD image` 연결
+  - `PZF extraPayload(66/67...)` 소비처
+  - bbox group 의미(att/dam/reference point)를 어떻게 런타임과 대응시키느냐
+  로 더 좁혀졌다.
 - 따라서 다음 reverse path의 우선순위는 `PZX tail` 일반화보다 `PZA parser -> PZx animation object` 연결 해체다.
 
 ## Next Reverse Steps
 
-1. `CGxPZFParser::BeginDecodeFrame / EndDecodeFrameFromBAR/FILE`를 바탕으로 raw `PZF` payload를 자산측에서도 frame 단위로 파싱한다.
-2. 그 `PZF frame`의 `subFrameIndex[]`가 raw `PZD` / first-stream chunk 계층과 어떻게 이어지는지 확정한다.
-3. `082/083/084.pzx`와 `198/208/240.pzx`를 기준 샘플로 삼아, raw `PZF/PZA`와 기존 `frame-record/tail` 해석을 어떻게 분리해야 하는지 정리한다.
-4. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, parser 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
+1. `CGxPZDPackage / CGxPZDMgr::LoadImage*`를 더 깨서 `PZF subFrameIndex[]`가 raw `PZD` / first-stream chunk 어느 단위로 내려가는지 확정한다.
+2. `CGxPZxFrame::Draw`와 `CGxPZxFrameBB::*` consumer를 더 따라가서 `extraPayload(66/67...)`와 bbox group이 렌더/충돌에서 어떤 의미를 가지는지 붙인다.
+3. `082/083/084.pzx`와 `198/208/240.pzx`를 기준 샘플로 삼아, old frame-record/tail heuristic이 native `PZF`의 어느 subset을 잘못 읽은 것인지 정리한다.
+4. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, `PZA` 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
 5. 마지막에 later stream/tail 중 무엇이 truly native `PZF/PZA`이고, 무엇이 별도 overlay / placement metadata인지 결론을 낸다.

@@ -33,6 +33,11 @@
 - `CGxPZxMgr::SetSource`
   - `CGxPZxResource` 하나를 만든 뒤 `PZFMgr`와 `PZAMgr`에 공유한다.
   - 따라서 `PZF/PZA`는 별도 파일이 아니라 같은 `.pzx` 내부 typed subresource다.
+- `CGxPZxFrameBB::GetTotalBoundingBoxCount / GetBoundingBoxCount / GetBoundingBox`
+  - bbox count byte는 frame `+0x20/+0x21`
+  - bbox format variant는 frame `+0x22`
+  - bbox record array는 frame `+0x1c`
+  - variant `1/3` bbox record는 `x, y, w, h` 4-word shape로 소비된다.
 
 ### Asset-side Validation
 
@@ -57,6 +62,16 @@
   - count가 nonzero인 프레임은 `DecodeBoundingBoxFromBAR/FILE`가 먼저 stream을 소비한 뒤
   - `EndDecodeFrameFromBAR/FILE`가 subframe list를 읽는 구조로 보인다.
   - 그래서 `010`처럼 count가 0인 샘플은 record head가 바로 보이지만, `082` 같은 샘플은 payload head만 보고는 subframe index가 안 보일 수 있다.
+- raw `PZF` frame parser도 자산측에 내렸다.
+  - `253/253` stems에서 raw embedded `PZF`가 frame 단위로 exact-fit 된다.
+  - `216` stems는 raw `PZF` payload가 zlib stream index `1`과 byte-identical 하다.
+  - `51` stems는 old frame-record parser의 `recordOffsetsPreview`가 raw `PZF` frame offset table prefix와 정확히 맞는다.
+  - 즉 stream `1`과 frame-record heuristic은 native `PZF`의 partial/misaligned read로 보는 쪽이 맞다.
+- `PZF` subframe record의 현재 working shape:
+  - `subFrameIndex:u16`, `x:s16`, `y:s16`, `extraFlag:u8`, `extraPayload`
+  - `extraPayload`는 자산 exact-fit 기준으로 `extraFlag` 또는 `extraFlag + 4` 바이트로 닫힌다.
+  - marker형 payload는 `66 xx 00 00 00` / `67 xx 00 00 00`가 우세하다.
+  - 이 hybrid rule은 asset 쪽 exact-fit은 주지만, 아직 `EndDecodeFrame*` 디스어셈블만으로는 설명이 완전히 닫히지 않았다.
 
 ### Resolved
 
@@ -69,9 +84,9 @@
 
 ### Next Focus
 
-1. raw `PZF` payload를 native 함수 시그니처대로 frame/subframe 단위로 파싱한다.
-2. `subFrameIndex[]`와 raw `PZD` / first-stream chunk의 연결을 찾는다.
-3. `082/083/084`와 `198/208/240`을 기준 샘플로 잡고, raw `PZF/PZA`와 기존 frame-record/tail 해석을 분리 정리한다.
+1. `CGxPZDPackage / CGxPZDMgr::LoadImage*`를 따라 `subFrameIndex[] -> PZD image -> first-stream chunk` 연결을 확정한다.
+2. `CGxPZxFrame::Draw`와 `CGxPZxFrameBB::*` consumer를 더 따라가서 `extraPayload(66/67...)`와 bbox group 의미를 런타임 동작에 붙인다.
+3. `082/083/084`와 `198/208/240`을 기준 샘플로, old frame-record/tail heuristic이 native `PZF`의 어느 subset을 잘못 읽은 것인지 정리한다.
 
 ### Refresh Commands
 

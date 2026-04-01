@@ -15,6 +15,7 @@ from formats import (
     read_pzx_frame_record_stream,
     read_pzx_first_stream,
     read_pzx_indexed_animation_clip_stream,
+    read_pzx_indexed_pzf_frame_stream,
     read_pzx_meta_sections,
     read_pzx_row_stream,
     read_pzx_root_resource_offsets,
@@ -212,6 +213,7 @@ def summarize_embedded_resource(resource) -> dict[str, object]:
         "packedSize": resource.packed_size,
         "unpackedSize": resource.unpacked_size,
         "payloadOffset": resource.payload_offset,
+        "payloadSha1": hashlib.sha1(resource.payload).hexdigest(),
         "payloadHeadHex": resource.payload[:24].hex(),
     }
 
@@ -231,10 +233,93 @@ def summarize_embedded_pza_resource(resource, streams: list) -> dict[str, object
     }
 
 
-def summarize_embedded_pzf_resource(resource) -> dict[str, object]:
+def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
+    subframe_index_range = decoded.subframe_index_range
+    x_range = decoded.x_range
+    y_range = decoded.y_range
+    extra_marker_counts = Counter()
+    for frame in decoded.frames:
+        for subframe in frame.subframes:
+            if not subframe.extra:
+                continue
+            if subframe.extra.startswith(b"\x66") and subframe.extra[-3:] == b"\x00\x00\x00":
+                extra_marker_counts["66+u32"] += 1
+            elif len(subframe.extra) >= 2 and subframe.extra[1] == 0x66 and subframe.extra[-3:] == b"\x00\x00\x00":
+                extra_marker_counts["x+66+u32"] += 1
+            elif subframe.extra.startswith(b"\x67") and subframe.extra[-3:] == b"\x00\x00\x00":
+                extra_marker_counts["67+u32"] += 1
+            else:
+                extra_marker_counts["other"] += 1
+
     return {
+        "frameParseOk": True,
+        "frameCount": decoded.frame_count,
+        "totalSubFrameCount": decoded.total_subframe_count,
+        "frameLengthRange": list(decoded.frame_length_range),
+        "subFrameCountRange": list(decoded.subframe_count_range),
+        "bboxTotalRange": list(decoded.bbox_total_range),
+        "bboxFrameCount": sum(1 for frame in decoded.frames if frame.bbox_total_count > 0),
+        "bboxRecordCount": sum(len(frame.bboxes) for frame in decoded.frames),
+        "subFrameIndexRange": list(subframe_index_range) if subframe_index_range is not None else None,
+        "xRange": list(x_range) if x_range is not None else None,
+        "yRange": list(y_range) if y_range is not None else None,
+        "extraFlagValues": list(decoded.extra_flag_values),
+        "nonzeroExtraCount": decoded.nonzero_extra_count,
+        "maxExtraLen": decoded.max_extra_len,
+        "extraMarkerCounts": dict(sorted(extra_marker_counts.items())),
+        "frameOffsetsPreview": [frame.offset for frame in decoded.frames[:12]],
+        "frameOffsetsTail": [frame.offset for frame in decoded.frames[-6:]],
+        "framePreview": [
+            {
+                "offset": frame.offset,
+                "length": frame.length,
+                "subFrameCount": frame.subframe_count,
+                "bboxToken0": frame.bbox_token0,
+                "bboxToken1": frame.bbox_token1,
+                "bboxTotalCount": frame.bbox_total_count,
+                "bboxPreview": [
+                    {
+                        "rawHex": record.raw.hex(),
+                        "values": list(record.values),
+                    }
+                    for record in frame.bboxes[:4]
+                ],
+                "subFramesPreview": [
+                    {
+                        "subFrameIndex": subframe.subframe_index,
+                        "x": subframe.x,
+                        "y": subframe.y,
+                        "extraFlag": subframe.extra_flag,
+                        "extraHex": subframe.extra.hex(),
+                    }
+                    for subframe in frame.subframes[:8]
+                ],
+            }
+            for frame in decoded.frames[:6]
+        ],
+    }
+
+
+def summarize_embedded_pzf_resource(resource, streams: list) -> dict[str, object]:
+    matched_stream_indices = [
+        index for index, stream in enumerate(streams[:12]) if stream.decoded == resource.payload
+    ]
+    summary = {
         **summarize_embedded_resource(resource),
         "frameCount": resource.content_count,
+        "matchedZlibStreamIndices": matched_stream_indices,
+    }
+
+    decoded = read_pzx_indexed_pzf_frame_stream(resource.payload, resource.index_offsets, resource.format_variant)
+    if decoded is None:
+        return {
+            **summary,
+            "frameParseOk": False,
+        }
+
+    return {
+        **summary,
+        **summarize_pzf_frame_stream_data(decoded),
     }
 
 
@@ -459,6 +544,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     embedded_pzf_summary: dict[str, object] | None = None
     embedded_pza_summary: dict[str, object] | None = None
     embedded_pzf_animation_relation: dict[str, object] | None = None
+    embedded_pzf_frame_record_relation: dict[str, object] | None = None
 
     for index, item in enumerate(streams[:12]):
         entry = {
@@ -466,6 +552,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
             "offset": item.offset,
             "consumed": item.consumed,
             "decodedLen": len(item.decoded),
+            "sha1": hashlib.sha1(item.decoded).hexdigest(),
             "headHex": item.decoded[:32].hex(),
             "tailHex": item.decoded[-16:].hex(),
         }
@@ -523,7 +610,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     if root_resource_offsets is not None:
         embedded_pzf = read_pzx_embedded_resource(data, root_resource_offsets[1], "pzf")
         if embedded_pzf is not None:
-            embedded_pzf_summary = summarize_embedded_pzf_resource(embedded_pzf)
+            embedded_pzf_summary = summarize_embedded_pzf_resource(embedded_pzf, streams)
             embedded_resource_summaries.append(embedded_pzf_summary)
 
         embedded_pza = read_pzx_embedded_resource(data, root_resource_offsets[2], "pza")
@@ -545,6 +632,23 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
                 "relation": relation,
                 "pzfFrameCount": frame_count,
                 "maxFrameIndex": max_frame_index,
+            }
+
+        if embedded_pzf_summary is not None:
+            matched_stream_indices = [int(index) for index in embedded_pzf_summary.get("matchedZlibStreamIndices", [])]
+            offset_prefix_matches = [
+                int(stream["streamIndex"])
+                for stream in frame_record_summaries
+                if stream.get("recordOffsetsPreview") == embedded_pzf_summary.get("frameOffsetsPreview", [])[: len(stream.get("recordOffsetsPreview", []))]
+            ]
+            embedded_pzf_frame_record_relation = {
+                "matchedZlibStreamIndices": matched_stream_indices,
+                "matchedFrameRecordStreamIndices": [
+                    int(stream["streamIndex"])
+                    for stream in frame_record_summaries
+                    if int(stream["streamIndex"]) in matched_stream_indices
+                ],
+                "offsetPrefixFrameRecordStreamIndices": offset_prefix_matches,
             }
 
     return {
@@ -578,6 +682,7 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
         "embeddedPzf": embedded_pzf_summary,
         "embeddedPza": embedded_pza_summary,
         "embeddedPzfAnimationRelation": embedded_pzf_animation_relation,
+        "embeddedPzfFrameRecordRelation": embedded_pzf_frame_record_relation,
     }
 
 
@@ -769,10 +874,113 @@ def main() -> None:
             "frameCount": entry["embeddedPzf"]["frameCount"],
             "packedSize": entry["embeddedPzf"]["packedSize"],
             "unpackedSize": entry["embeddedPzf"]["unpackedSize"],
+            "matchedZlibStreamIndices": entry["embeddedPzf"].get("matchedZlibStreamIndices", []),
+            "frameParseOk": entry["embeddedPzf"].get("frameParseOk", False),
+            "totalSubFrameCount": entry["embeddedPzf"].get("totalSubFrameCount"),
+            "subFrameCountRange": entry["embeddedPzf"].get("subFrameCountRange"),
+            "subFrameIndexRange": entry["embeddedPzf"].get("subFrameIndexRange"),
+            "xRange": entry["embeddedPzf"].get("xRange"),
+            "yRange": entry["embeddedPzf"].get("yRange"),
+            "extraFlagValues": entry["embeddedPzf"].get("extraFlagValues", []),
+            "nonzeroExtraCount": entry["embeddedPzf"].get("nonzeroExtraCount"),
+            "maxExtraLen": entry["embeddedPzf"].get("maxExtraLen"),
+            "extraMarkerCounts": entry["embeddedPzf"].get("extraMarkerCounts", {}),
+            "bboxFrameCount": entry["embeddedPzf"].get("bboxFrameCount"),
+            "bboxTotalRange": entry["embeddedPzf"].get("bboxTotalRange"),
+            "frameRecordMatchedStreamIndices": (
+                entry.get("embeddedPzfFrameRecordRelation", {}).get("matchedFrameRecordStreamIndices", [])
+            ),
+            "frameRecordOffsetPrefixStreamIndices": (
+                entry.get("embeddedPzfFrameRecordRelation", {}).get("offsetPrefixFrameRecordStreamIndices", [])
+            ),
         }
         for entry in pzx_entries
         if entry.get("embeddedPzf") is not None
     ]
+    embedded_pzf_parsed_entries = [entry for entry in embedded_pzf_entries if bool(entry["frameParseOk"])]
+    embedded_pzf_match_index_counts = Counter(
+        stream_index
+        for entry in embedded_pzf_entries
+        for stream_index in entry["matchedZlibStreamIndices"]
+    )
+    embedded_pzf_frame_record_match_stems = sorted(
+        {
+            entry["stem"]
+            for entry in embedded_pzf_entries
+            if entry["frameRecordMatchedStreamIndices"]
+        }
+    )
+    embedded_pzf_offset_prefix_stems = sorted(
+        {
+            entry["stem"]
+            for entry in embedded_pzf_entries
+            if entry["frameRecordOffsetPrefixStreamIndices"]
+        }
+    )
+    embedded_pzf_extra_flag_values = sorted(
+        {
+            int(value)
+            for entry in embedded_pzf_parsed_entries
+            for value in entry["extraFlagValues"]
+        }
+    )
+    embedded_pzf_nonzero_extra_count = sum(
+        int(entry["nonzeroExtraCount"])
+        for entry in embedded_pzf_parsed_entries
+        if entry["nonzeroExtraCount"] is not None
+    )
+    embedded_pzf_max_extra_len = max(
+        (int(entry["maxExtraLen"]) for entry in embedded_pzf_parsed_entries if entry["maxExtraLen"] is not None),
+        default=0,
+    )
+    embedded_pzf_extra_marker_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_extra_marker_counts.update(entry["extraMarkerCounts"])
+    embedded_pzf_subframe_count_range = (
+        [
+            min(int(entry["subFrameCountRange"][0]) for entry in embedded_pzf_parsed_entries if entry["subFrameCountRange"]),
+            max(int(entry["subFrameCountRange"][1]) for entry in embedded_pzf_parsed_entries if entry["subFrameCountRange"]),
+        ]
+        if embedded_pzf_parsed_entries
+        else None
+    )
+    embedded_pzf_subframe_index_range = (
+        [
+            min(int(entry["subFrameIndexRange"][0]) for entry in embedded_pzf_parsed_entries if entry["subFrameIndexRange"]),
+            max(int(entry["subFrameIndexRange"][1]) for entry in embedded_pzf_parsed_entries if entry["subFrameIndexRange"]),
+        ]
+        if any(entry["subFrameIndexRange"] is not None for entry in embedded_pzf_parsed_entries)
+        else None
+    )
+    embedded_pzf_x_range = (
+        [
+            min(int(entry["xRange"][0]) for entry in embedded_pzf_parsed_entries if entry["xRange"]),
+            max(int(entry["xRange"][1]) for entry in embedded_pzf_parsed_entries if entry["xRange"]),
+        ]
+        if any(entry["xRange"] is not None for entry in embedded_pzf_parsed_entries)
+        else None
+    )
+    embedded_pzf_y_range = (
+        [
+            min(int(entry["yRange"][0]) for entry in embedded_pzf_parsed_entries if entry["yRange"]),
+            max(int(entry["yRange"][1]) for entry in embedded_pzf_parsed_entries if entry["yRange"]),
+        ]
+        if any(entry["yRange"] is not None for entry in embedded_pzf_parsed_entries)
+        else None
+    )
+    embedded_pzf_bbox_total_range = (
+        [
+            min(int(entry["bboxTotalRange"][0]) for entry in embedded_pzf_parsed_entries if entry["bboxTotalRange"]),
+            max(int(entry["bboxTotalRange"][1]) for entry in embedded_pzf_parsed_entries if entry["bboxTotalRange"]),
+        ]
+        if embedded_pzf_parsed_entries
+        else None
+    )
+    embedded_pzf_total_bbox_frame_count = sum(
+        int(entry["bboxFrameCount"])
+        for entry in embedded_pzf_parsed_entries
+        if entry["bboxFrameCount"] is not None
+    )
     embedded_pza_entries = [
         {
             "stem": Path(str(entry["path"])).stem,
@@ -978,6 +1186,23 @@ def main() -> None:
             "animationClipPreview": animation_entries[:12],
             "embeddedPzfPzxCount": len(embedded_pzf_entries),
             "embeddedPzfPreview": embedded_pzf_entries[:12],
+            "embeddedPzfParsedPzxCount": len(embedded_pzf_parsed_entries),
+            "embeddedPzfMatchedStreamIndexCounts": dict(sorted(embedded_pzf_match_index_counts.items())),
+            "embeddedPzfMatchedSecondStreamCount": int(embedded_pzf_match_index_counts.get(1, 0)),
+            "embeddedPzfFrameRecordMatchCount": len(embedded_pzf_frame_record_match_stems),
+            "embeddedPzfFrameRecordMatchPreview": embedded_pzf_frame_record_match_stems[:20],
+            "embeddedPzfFrameRecordOffsetPrefixCount": len(embedded_pzf_offset_prefix_stems),
+            "embeddedPzfFrameRecordOffsetPrefixPreview": embedded_pzf_offset_prefix_stems[:20],
+            "embeddedPzfSubFrameCountRange": embedded_pzf_subframe_count_range,
+            "embeddedPzfSubFrameIndexRange": embedded_pzf_subframe_index_range,
+            "embeddedPzfXRange": embedded_pzf_x_range,
+            "embeddedPzfYRange": embedded_pzf_y_range,
+            "embeddedPzfExtraFlagValues": embedded_pzf_extra_flag_values,
+            "embeddedPzfNonzeroExtraCount": embedded_pzf_nonzero_extra_count,
+            "embeddedPzfMaxExtraLen": embedded_pzf_max_extra_len,
+            "embeddedPzfExtraMarkerCounts": dict(sorted(embedded_pzf_extra_marker_counts.items())),
+            "embeddedPzfBboxTotalRange": embedded_pzf_bbox_total_range,
+            "embeddedPzfBboxFrameTotal": embedded_pzf_total_bbox_frame_count,
             "embeddedPzaPzxCount": len(embedded_pza_stems),
             "embeddedPzaPreview": embedded_pza_entries[:12],
             "embeddedPzaMatchedStreamIndexCounts": dict(sorted(embedded_pza_match_index_counts.items())),
@@ -1016,8 +1241,11 @@ def main() -> None:
             "179.pzx still does not map directly to the 47-color shared palette, which suggests its byte values pack extra shading or effect bits above the base color index.",
             f"Auxiliary frame-record streams are now recognized for {len(frame_record_stems)} stems ({len(frame_record_entries)} streams), with each item encoded as chunkIndex(u16), x(i16), y(i16), flag(u8).",
             f"{len(frame_record_control_stems)} of those stems also carry embedded 5-byte control chunks inside or between frame records; observed markers include 66 05 00 00 00, 66 0A 00 00 00, 66 0C 00 00 00, 67 78 00 00 00, and 67 FF 00 00 00.",
-            "198.pzx parses as a clean frame-record prefix, while 208.pzx and 240.pzx both continue into a second metadata tail after the frame-record section. 208 also inserts 66 0C 00 00 00 inside individual records.",
-            "084.pzx, 208.pzx, and 240.pzx all leave trailing sections beginning with 67 FF 00 00 00, which is the current best candidate separator for a secondary animation or timeline metadata layer.",
+            f"Raw embedded PZF containers now exact-parse for {len(embedded_pzf_parsed_entries)} stems. {embedded_pzf_match_index_counts.get(1, 0)} payloads are byte-identical to zlib stream index 1, which makes stream 1 the native PZF frame blob in most samples.",
+            f"Each raw PZF frame reads as subFrameCount(u8), bbox count byte(s), a variant-dependent bbox block, then repeated subFrameIndex(u16), x(i16), y(i16), extraFlag(u8), extraPayload. Across the parsed set, subFrameCount ranges {embedded_pzf_subframe_count_range[0] if embedded_pzf_subframe_count_range else 'n/a'}..{embedded_pzf_subframe_count_range[1] if embedded_pzf_subframe_count_range else 'n/a'}.",
+            f"Nonzero PZF extraPayloads are common ({embedded_pzf_nonzero_extra_count} subframes total). Observed extraFlag values are {embedded_pzf_extra_flag_values[:20]}, max extra length is {embedded_pzf_max_extra_len}, and the dominant payload families are {dict(sorted(embedded_pzf_extra_marker_counts.items()))}.",
+            f"Bounding-box metadata is native PZF frame-local data rather than a separate tail track: parsed bbox totals range {embedded_pzf_bbox_total_range[0] if embedded_pzf_bbox_total_range else 'n/a'}..{embedded_pzf_bbox_total_range[1] if embedded_pzf_bbox_total_range else 'n/a'} and appear in {embedded_pzf_total_bbox_frame_count} frames overall.",
+            f"The previous frame-record heuristic overlaps the native PZF index table directly: {len(embedded_pzf_offset_prefix_stems)} stems already have frame-record offset previews that prefix-match the raw PZF frame offsets.",
             f"The trailing tails now split into {frame_meta_section_count} marker-delimited sections. {frame_meta_marker_counts.get('67ff000000', 0)} use 67 FF 00 00 00 and {frame_meta_marker_counts.get('6778000000', 0)} use 67 78 00 00 00.",
             f"{len(frame_meta_exact_stems)} stems already expose exact-fit tail subsections that decode as 7-byte flagged tuples or simple 6-byte tuples, so at least part of the secondary metadata is structured placement data rather than opaque blobs.",
             f"Those sections cluster into {frame_meta_group_count} opaque-led tail groups. {frame_meta_linked_group_count} groups already have an exact tuple overlap with at least one base frame record, while {frame_meta_tail_only_group_count} groups use only chunk indices that never appear in the base frame stream.",

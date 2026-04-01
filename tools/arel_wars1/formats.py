@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 import struct
 import zlib
 
@@ -209,6 +210,107 @@ class PzxAnimationClipStream:
     @property
     def nonzero_control_count(self) -> int:
         return sum(1 for clip in self.clips for frame in clip.frames if frame.control != 0)
+
+
+@dataclass(frozen=True)
+class PzxPzfBoundingBoxRecord:
+    raw: bytes
+    values: tuple[int, ...]
+
+
+@dataclass(frozen=True)
+class PzxPzfSubFrame:
+    subframe_index: int
+    x: int
+    y: int
+    extra_flag: int
+    extra: bytes
+
+
+@dataclass(frozen=True)
+class PzxPzfFrame:
+    offset: int
+    length: int
+    subframe_count: int
+    bbox_token0: int
+    bbox_token1: int
+    bbox_total_count: int
+    bboxes: tuple[PzxPzfBoundingBoxRecord, ...]
+    subframes: tuple[PzxPzfSubFrame, ...]
+
+
+@dataclass(frozen=True)
+class PzxPzfFrameStream:
+    format_variant: int
+    frames: tuple[PzxPzfFrame, ...]
+
+    @property
+    def frame_count(self) -> int:
+        return len(self.frames)
+
+    @property
+    def total_subframe_count(self) -> int:
+        return sum(frame.subframe_count for frame in self.frames)
+
+    @property
+    def frame_length_range(self) -> tuple[int, int]:
+        lengths = [frame.length for frame in self.frames]
+        return (min(lengths), max(lengths))
+
+    @property
+    def subframe_count_range(self) -> tuple[int, int]:
+        counts = [frame.subframe_count for frame in self.frames]
+        return (min(counts), max(counts))
+
+    @property
+    def bbox_total_range(self) -> tuple[int, int]:
+        counts = [frame.bbox_total_count for frame in self.frames]
+        return (min(counts), max(counts))
+
+    @property
+    def subframe_index_range(self) -> tuple[int, int] | None:
+        values = [subframe.subframe_index for frame in self.frames for subframe in frame.subframes]
+        if not values:
+            return None
+        return (min(values), max(values))
+
+    @property
+    def x_range(self) -> tuple[int, int] | None:
+        values = [subframe.x for frame in self.frames for subframe in frame.subframes]
+        if not values:
+            return None
+        return (min(values), max(values))
+
+    @property
+    def y_range(self) -> tuple[int, int] | None:
+        values = [subframe.y for frame in self.frames for subframe in frame.subframes]
+        if not values:
+            return None
+        return (min(values), max(values))
+
+    @property
+    def extra_flag_values(self) -> tuple[int, ...]:
+        return tuple(
+            sorted(
+                {
+                    subframe.extra_flag
+                    for frame in self.frames
+                    for subframe in frame.subframes
+                    if subframe.extra_flag != 0
+                }
+            )
+        )
+
+    @property
+    def nonzero_extra_count(self) -> int:
+        return sum(1 for frame in self.frames for subframe in frame.subframes if subframe.extra)
+
+    @property
+    def max_extra_len(self) -> int:
+        lengths = [len(subframe.extra) for frame in self.frames for subframe in frame.subframes]
+        if not lengths:
+            return 0
+        return max(lengths)
 
 
 @dataclass(frozen=True)
@@ -713,6 +815,144 @@ def _read_pzx_animation_clip_exact(payload: bytes, start: int, end: int) -> PzxA
     return PzxAnimationClip(offset=start, frame_count=frame_count, frames=tuple(frames))
 
 
+def _read_pzx_pzf_bbox_total(format_variant: int, bbox_token0: int, bbox_token1: int) -> int | None:
+    if format_variant == 0:
+        return (bbox_token0 >> 4) + (bbox_token0 & 0x0F)
+    if format_variant in (1, 2):
+        return bbox_token0
+    if format_variant == 3:
+        return bbox_token0 + bbox_token1
+    return None
+
+
+def _read_pzx_pzf_bbox_record(
+    payload: bytes,
+    cursor: int,
+    format_variant: int,
+) -> tuple[PzxPzfBoundingBoxRecord, int] | None:
+    if format_variant == 0:
+        if cursor + 4 > len(payload):
+            return None
+        raw = payload[cursor : cursor + 4]
+        values = struct.unpack("<bbBB", raw)
+        return (PzxPzfBoundingBoxRecord(raw=raw, values=values), cursor + 4)
+
+    if format_variant == 2:
+        if cursor + 4 > len(payload):
+            return None
+        raw = payload[cursor : cursor + 4]
+        values = struct.unpack("<hh", raw)
+        return (PzxPzfBoundingBoxRecord(raw=raw, values=values), cursor + 4)
+
+    if format_variant in (1, 3):
+        if cursor + 8 > len(payload):
+            return None
+        raw = payload[cursor : cursor + 8]
+        values = struct.unpack("<hhhh", raw)
+        return (PzxPzfBoundingBoxRecord(raw=raw, values=values), cursor + 8)
+
+    return None
+
+
+def _read_pzx_pzf_frame_exact(
+    payload: bytes,
+    start: int,
+    end: int,
+    format_variant: int,
+) -> PzxPzfFrame | None:
+    if not (0 <= start < end <= len(payload)):
+        return None
+
+    cursor = start
+    if cursor + 2 > end:
+        return None
+
+    subframe_count = payload[cursor]
+    cursor += 1
+    bbox_token0 = payload[cursor]
+    cursor += 1
+    bbox_token1 = 0
+
+    if format_variant == 3:
+        if cursor >= end:
+            return None
+        bbox_token1 = payload[cursor]
+        cursor += 1
+
+    bbox_total = _read_pzx_pzf_bbox_total(format_variant, bbox_token0, bbox_token1)
+    if bbox_total is None:
+        return None
+
+    bboxes: list[PzxPzfBoundingBoxRecord] = []
+    for _ in range(bbox_total):
+        parsed_bbox = _read_pzx_pzf_bbox_record(payload, cursor, format_variant)
+        if parsed_bbox is None:
+            return None
+        bbox, cursor = parsed_bbox
+        if cursor > end:
+            return None
+        bboxes.append(bbox)
+
+    @lru_cache(maxsize=None)
+    def parse_subframes(index: int, position: int) -> tuple[PzxPzfSubFrame, ...] | None:
+        if index == subframe_count:
+            if position == end:
+                return ()
+            return None
+
+        if position + 7 > end:
+            return None
+
+        subframe_index = struct.unpack("<H", payload[position : position + 2])[0]
+        x = struct.unpack("<h", payload[position + 2 : position + 4])[0]
+        y = struct.unpack("<h", payload[position + 4 : position + 6])[0]
+        extra_flag = payload[position + 6]
+        body_start = position + 7
+
+        extra_len_candidates = (0,) if extra_flag == 0 else tuple(
+            sorted(
+                candidate
+                for candidate in {extra_flag, extra_flag + 4}
+                if body_start + candidate <= end
+            )
+        )
+        if not extra_len_candidates:
+            return None
+
+        for extra_len in extra_len_candidates:
+            tail = parse_subframes(index + 1, body_start + extra_len)
+            if tail is None:
+                continue
+            extra = payload[body_start : body_start + extra_len]
+            return (
+                PzxPzfSubFrame(
+                    subframe_index=subframe_index,
+                    x=x,
+                    y=y,
+                    extra_flag=extra_flag,
+                    extra=extra,
+                ),
+                *tail,
+            )
+
+        return None
+
+    subframes = parse_subframes(0, cursor)
+    if subframes is None:
+        return None
+
+    return PzxPzfFrame(
+        offset=start,
+        length=end - start,
+        subframe_count=subframe_count,
+        bbox_token0=bbox_token0,
+        bbox_token1=bbox_token1,
+        bbox_total_count=bbox_total,
+        bboxes=tuple(bboxes),
+        subframes=subframes,
+    )
+
+
 def read_pzx_animation_clip_stream(stream: bytes) -> PzxAnimationClipStream | None:
     if len(stream) < 9:
         return None
@@ -788,6 +1028,31 @@ def read_pzx_indexed_animation_clip_stream(
         clips.append(clip)
 
     return PzxAnimationClipStream(clips=tuple(clips))
+
+
+def read_pzx_indexed_pzf_frame_stream(
+    payload: bytes,
+    frame_offsets: tuple[int, ...] | list[int],
+    format_variant: int,
+) -> PzxPzfFrameStream | None:
+    if not frame_offsets:
+        return None
+
+    offsets = tuple(int(offset) for offset in frame_offsets)
+    if any(offset < 0 or offset > len(payload) for offset in offsets):
+        return None
+    if any(offsets[index] > offsets[index + 1] for index in range(len(offsets) - 1)):
+        return None
+
+    frames: list[PzxPzfFrame] = []
+    for index, start in enumerate(offsets):
+        end = offsets[index + 1] if index + 1 < len(offsets) else len(payload)
+        frame = _read_pzx_pzf_frame_exact(payload, start, end, format_variant)
+        if frame is None:
+            return None
+        frames.append(frame)
+
+    return PzxPzfFrameStream(format_variant=format_variant, frames=tuple(frames))
 
 
 def read_pzx_root_resource_offsets(data: bytes) -> tuple[int, int, int] | None:
