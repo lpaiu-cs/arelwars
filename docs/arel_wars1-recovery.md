@@ -32,7 +32,11 @@
   - row-oriented RLE bodies where each row expands to exactly `width` bytes via alternating `skip(u16)` and `literal(0x80nn + nn bytes)` commands
   - `FE FF` row separators and an optional trailing `FF FF` sentinel after the last row
 - `.mpl`
-  Still opaque. Likely animation or render metadata paired with image assets.
+  Partially decoded by pattern. For 63 paired stems, 61 files match a strong regular form:
+  - `actualWordCount = 2 * (maxPzxIndex + 1) + 6`
+  - this strongly suggests a 6-word header followed by two palette banks sized to the indexed colors used by the paired `.pzx`
+  - heuristic `RGB565` renders from those two banks already produce sprite-like chunk previews
+  - known outliers so far: `145.mpl`, `179.mpl`
 - `.ptc`
   Still opaque. Likely particle or effect definitions.
 
@@ -54,6 +58,11 @@ python3 tools/arel_wars1/render_pzx_previews.py \
   --assets-root recovery/arel_wars1/apk_unzip/assets \
   --output recovery/arel_wars1/pzx_previews \
   --stems 145 198 208
+
+python3 tools/arel_wars1/render_mpl_palette_probes.py \
+  --assets-root recovery/arel_wars1/apk_unzip/assets \
+  --output recovery/arel_wars1/mpl_palette_probes \
+  --stems 198 208 240
 ```
 
 From `remake/arel-wars1/`:
@@ -77,30 +86,43 @@ npm run ios:sync
 
 ## Immediate Next Targets
 
-1. Use the decoded `.pzx` chunk images to infer how chunks are positioned into whole sprites and how later zlib streams participate.
-2. Reverse `.mpl` enough to recover frame lists, anchors, palette selection, and any chunk placement metadata.
+1. Use the now-complete first-stream `.pzx` decode to recover chunk placement and the role of later zlib streams.
+2. Firm up `.mpl` into a real palette parser, including the two known outliers and any bank-selection metadata.
 3. Turn extracted script data into structured event commands instead of raw string previews.
-4. Stand up a Phaser-side asset preview that can swap from synthetic placeholders to decoded `.pzx` chunks.
+4. Stand up a Phaser-side asset preview that can swap from synthetic placeholders to decoded `.pzx` and heuristic `.mpl` colors.
 
 ## PZX Findings
 
 - `headerA` is the decoded row width in bytes.
 - `headerB` is the real row count for the chunk.
 - The body length is compressed command data, not raw pixels.
-- Each non-sentinel row expands to exactly `headerA` bytes, so a chunk yields `headerA * headerB` decoded index bytes.
+- Each row expands to exactly `headerA` bytes, so a chunk yields `headerA * headerB` decoded index bytes.
+- 205/205 `variant=8` first-stream containers now decode successfully.
 - Example decoded chunk sizes:
   - `145.pzx` chunk `0`: `5 x 14`
   - `198.pzx` chunk `0`: `21 x 18`
   - `208.pzx` chunk `0`: `24 x 23`
+- Some chunk bodies begin with `FD FF` before row `0`.
+- Most chunks end with `FE FF FF FF`.
 - The row grammar currently held by the tools is:
 
 ```text
-[optional leading skip:u16]
+[optional chunk prefix marker: FD FF]
 repeat:
-  literal opcode:u16 where high bit is set and low 15 bits are literal byte count
-  literal bytes
   [optional skip:u16]
-until row width is satisfied
+  literal opcode: 0x8xxx with 14-bit length + literal bytes
+  or
+  repeat opcode: 0xCxxx with 14-bit length + one byte repeated that many times
+until row width is satisfied for the current row
+then consume FE FF as the row separator
 ```
 
 - This decoder is enough to render chunk-level pseudo-color previews even though true palettes and whole-sprite assembly are still unresolved.
+
+## MPL Findings
+
+- For 61 of 63 paired stems, `mplActualWords = 2 * (maxPzxIndex + 1) + 6`.
+- That regularity strongly suggests:
+  - `PZX` first-stream output is palette-indexed image data
+  - `MPL` carries two palette banks after a 6-word header
+- Heuristic RGB565 probes already produce sprite-like colored chunk sheets for stems such as `198`, `208`, and `240`.

@@ -34,6 +34,7 @@ def summarize_pzx_first_stream(table_span: int, stream: bytes) -> dict[str, obje
                 "index": row_index,
                 "skips": list(row.skips),
                 "runLengths": list(row.run_lengths),
+                "runKinds": list(row.run_kinds),
                 "decodedHeadHex": row.decoded[:24].hex(),
             }
             for row_index, row in enumerate(chunk.rows[:4])
@@ -50,6 +51,8 @@ def summarize_pzx_first_stream(table_span: int, stream: bytes) -> dict[str, obje
                 "declaredPayloadLen": chunk.declared_payload_len,
                 "reserved": chunk.reserved,
                 "decodedPixelCount": chunk.decoded_pixel_count,
+                "prefixMarkerHex": chunk.prefix_marker_hex,
+                "rowSeparatorCount": len(chunk.row_separator_hexes),
                 "trailingSentinelHex": chunk.trailing_sentinel_hex,
                 "bodyHeadHex": chunk.body[:24].hex(),
                 "rowPreview": row_previews,
@@ -60,6 +63,7 @@ def summarize_pzx_first_stream(table_span: int, stream: bytes) -> dict[str, obje
     heights = [chunk.height for chunk in decoded.chunks]
     total_payload = sum(chunk.declared_payload_len for chunk in decoded.chunks)
     total_pixels = sum(chunk.decoded_pixel_count for chunk in decoded.chunks)
+    max_decoded_index = max(max(row.decoded) for chunk in decoded.chunks for row in chunk.rows)
 
     return {
         "tableSpan": decoded.table_span,
@@ -68,6 +72,7 @@ def summarize_pzx_first_stream(table_span: int, stream: bytes) -> dict[str, obje
         "offsetsTail": list(decoded.offsets[-6:]),
         "chunkWidthRange": [min(widths), max(widths)],
         "chunkHeightRange": [min(heights), max(heights)],
+        "maxDecodedIndex": max_decoded_index,
         "chunkLengthStats": {
             "min": min(len(chunk.body) + 16 for chunk in decoded.chunks),
             "max": max(len(chunk.body) + 16 for chunk in decoded.chunks),
@@ -160,6 +165,17 @@ def main() -> None:
     shared_pairs = sorted({Path(entry["path"]).stem for entry in pzx_entries if entry["hasMplPair"]})
     first_stream_ready = [entry for entry in pzx_entries if entry["firstStream"] is not None]
     first_stream_failed = [entry for entry in pzx_entries if entry["firstStreamError"] is not None]
+    regular_mpl_palette_stems: list[str] = []
+
+    mpl_by_stem = {Path(entry["path"]).stem: entry for entry in mpl_entries}
+    for entry in first_stream_ready:
+        stem = Path(entry["path"]).stem
+        mpl = mpl_by_stem.get(stem)
+        if mpl is None or not entry["hasMplPair"]:
+            continue
+        color_count = int(entry["firstStream"]["maxDecodedIndex"]) + 1
+        if mpl["actualWordCount"] == 2 * color_count + 6:
+            regular_mpl_palette_stems.append(stem)
 
     variant_counts = Counter(entry["header"]["field16Low6"] for entry in pzx_entries)
     table_span_counts = Counter(
@@ -176,14 +192,17 @@ def main() -> None:
             "firstStreamDecodedCount": len(first_stream_ready),
             "firstStreamDecodeFailedCount": len(first_stream_failed),
             "firstStreamTableSpanCounts": dict(sorted(table_span_counts.items())),
+            "regularMplPaletteCount": len(regular_mpl_palette_stems),
+            "regularMplPalettePreview": regular_mpl_palette_stems[:20],
         },
         "findings": [
             "All PZX files start with magic 50 5a 58 01 ('PZX\\x01').",
             "Many PZX files contain one or more embedded zlib streams.",
             "For 205 PZX files, the first decoded zlib stream is a table of 32-bit chunk offsets followed by chunk payloads.",
             "Each chunk starts with width(u16), height(u16), 02 CD CD CD, declared payload length(u32), and reserved zero(u32).",
-            "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using alternating skip(u16) and literal(opcode 0x80nn + nn bytes) commands.",
-            "Rows are separated by FE FF, and many chunks end with a trailing FFFF sentinel after the last row.",
+            "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using skip(u16), literal(opcode 0x80nn + nn bytes), and repeat(opcode 0xC0nn + one value byte repeated nn times).",
+            "Some chunks start with FD FF before the first row. Rows are separated by FE FF, and chunks end with a trailing FFFF sentinel after the final FE FF.",
+            "For 61 paired MPL files, actualWordCount equals 2 * (maxDecodedIndex + 1) + 6, consistent with a 6-word header plus two palette banks.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",
         ],
         "pzx": pzx_entries,

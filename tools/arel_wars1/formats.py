@@ -32,6 +32,7 @@ class ZlibStreamHit:
 class PzxRow:
     skips: tuple[int, ...]
     run_lengths: tuple[int, ...]
+    run_kinds: tuple[str, ...]
     decoded: bytes
 
 
@@ -45,6 +46,8 @@ class PzxChunk:
     reserved: int
     body: bytes
     rows: tuple[PzxRow, ...]
+    prefix_marker_hex: str | None
+    row_separator_hexes: tuple[str, ...]
     trailing_sentinel_hex: str | None
 
     @property
@@ -98,70 +101,61 @@ def find_zlib_streams(data: bytes, *, min_out: int = 8, min_consumed: int = 8) -
     return hits
 
 
-def split_pzx_row_segments(body: bytes) -> list[bytes]:
-    segments: list[bytes] = []
-    start = 0
-
-    while True:
-        marker = body.find(b"\xfe\xff", start)
-        if marker == -1:
-            if start < len(body):
-                segments.append(body[start:])
-            break
-        segments.append(body[start:marker])
-        start = marker + 2
-
-    return segments
-
-
-def decode_pzx_row(segment: bytes, width: int) -> PzxRow:
-    if segment == b"\xff\xff":
-        raise ValueError("PZX row sentinel is not a decodable row")
-
+def decode_pzx_row(body: bytes, cursor: int, width: int) -> tuple[PzxRow, int]:
     decoded = bytearray()
     skips: list[int] = []
     run_lengths: list[int] = []
-    cursor = 0
+    run_kinds: list[str] = []
 
-    if cursor + 2 <= len(segment):
-        maybe_skip = struct.unpack("<H", segment[cursor : cursor + 2])[0]
-        if maybe_skip < 0x8000:
-            decoded.extend(b"\x00" * maybe_skip)
-            skips.append(maybe_skip)
-            cursor += 2
-
-    while cursor < len(segment):
-        if cursor + 2 > len(segment):
+    while len(decoded) < width:
+        if cursor + 2 > len(body):
             raise ValueError("PZX row ended mid-opcode")
-        opcode = struct.unpack("<H", segment[cursor : cursor + 2])[0]
-        if opcode < 0x8000:
-            raise ValueError(f"Expected PZX literal opcode, got {opcode:#06x}")
+        word = struct.unpack("<H", body[cursor : cursor + 2])[0]
 
-        literal_len = opcode & 0x7FFF
-        cursor += 2
-        literal = segment[cursor : cursor + literal_len]
-        if len(literal) != literal_len:
-            raise ValueError("PZX row ended mid-literal")
-        decoded.extend(literal)
-        run_lengths.append(literal_len)
-        cursor += literal_len
+        if word < 0x8000:
+            decoded.extend(b"\x00" * word)
+            skips.append(word)
+            cursor += 2
+            continue
 
-        if cursor == len(segment):
-            break
+        if 0x8000 <= word < 0xC000:
+            literal_len = word & 0x3FFF
+            cursor += 2
+            literal = body[cursor : cursor + literal_len]
+            if len(literal) != literal_len:
+                raise ValueError("PZX row ended mid-literal")
+            decoded.extend(literal)
+            run_lengths.append(literal_len)
+            run_kinds.append("literal")
+            cursor += literal_len
+        elif 0xC000 <= word < 0xFDFF:
+            repeat_len = word & 0x3FFF
+            cursor += 2
+            if cursor >= len(body):
+                raise ValueError("PZX row ended mid-repeat")
+            value = body[cursor]
+            decoded.extend(bytes([value]) * repeat_len)
+            run_lengths.append(repeat_len)
+            run_kinds.append("repeat")
+            cursor += 1
+        else:
+            raise ValueError(f"Unknown PZX opcode family: {word:#06x}")
 
-        if cursor + 2 > len(segment):
-            raise ValueError("PZX row ended mid-skip")
-        skip = struct.unpack("<H", segment[cursor : cursor + 2])[0]
-        if skip >= 0x8000:
-            raise ValueError(f"Expected PZX skip word, got {skip:#06x}")
-        decoded.extend(b"\x00" * skip)
-        skips.append(skip)
-        cursor += 2
+        if len(decoded) > width:
+            raise ValueError(f"PZX row width overflow: decoded={len(decoded)} expected={width}")
 
     if len(decoded) != width:
         raise ValueError(f"PZX row width mismatch: decoded={len(decoded)} expected={width}")
 
-    return PzxRow(skips=tuple(skips), run_lengths=tuple(run_lengths), decoded=bytes(decoded))
+    return (
+        PzxRow(
+            skips=tuple(skips),
+            run_lengths=tuple(run_lengths),
+            run_kinds=tuple(run_kinds),
+            decoded=bytes(decoded),
+        ),
+        cursor,
+    )
 
 
 def read_pzx_first_stream(stream: bytes, table_span: int) -> PzxFirstStream | None:
@@ -189,14 +183,34 @@ def read_pzx_first_stream(stream: bytes, table_span: int) -> PzxFirstStream | No
         width = struct.unpack("<H", chunk[:2])[0]
         height = struct.unpack("<H", chunk[2:4])[0]
         body = chunk[16:]
+        cursor = 0
         rows: list[PzxRow] = []
+        prefix_marker_hex: str | None = None
+        row_separator_hexes: list[str] = []
         trailing_sentinel_hex: str | None = None
 
-        for segment in split_pzx_row_segments(body):
-            if segment == b"\xff\xff":
-                trailing_sentinel_hex = segment.hex()
-                continue
-            rows.append(decode_pzx_row(segment, width))
+        if body[:2] in (b"\xfd\xff", b"\xfe\xff"):
+            prefix_marker_hex = body[:2].hex()
+            cursor = 2
+
+        for row_index in range(height):
+            row, cursor = decode_pzx_row(body, cursor, width)
+            rows.append(row)
+
+            marker = body[cursor : cursor + 2]
+            if marker == b"\xfe\xff":
+                row_separator_hexes.append(marker.hex())
+                cursor += 2
+            elif row_index + 1 < height:
+                raise ValueError(
+                    f"PZX row separator missing before row {row_index + 1}: got {marker.hex() or '<eof>'}"
+                )
+
+        if body[cursor : cursor + 2] == b"\xff\xff":
+            trailing_sentinel_hex = body[cursor : cursor + 2].hex()
+            cursor += 2
+        elif cursor != len(body):
+            raise ValueError(f"Unexpected trailing PZX bytes: {body[cursor:].hex()}")
 
         if len(rows) != height:
             raise ValueError(f"PZX chunk row count mismatch: rows={len(rows)} height={height}")
@@ -213,6 +227,8 @@ def read_pzx_first_stream(stream: bytes, table_span: int) -> PzxFirstStream | No
                 reserved=struct.unpack("<I", chunk[12:16])[0],
                 body=body,
                 rows=tuple(rows),
+                prefix_marker_hex=prefix_marker_hex,
+                row_separator_hexes=tuple(row_separator_hexes),
                 trailing_sentinel_hex=trailing_sentinel_hex,
             )
         )
