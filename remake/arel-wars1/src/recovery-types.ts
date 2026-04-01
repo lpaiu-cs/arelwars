@@ -56,6 +56,8 @@ export interface RecoveryPreviewFrame {
   durationHintMs: number | null
   playbackDurationMs: number | null
   playbackSource: string | null
+  playbackDonorStem?: string | null
+  playbackDonorScore?: number | null
   timingMarkers: string[] | null
   timingValues: number[] | null
   timingExplicitValues: number[] | null

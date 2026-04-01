@@ -3,7 +3,7 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 2,
-  "stemDefaultDurationMs": null,
+  "stemDefaultDurationMs": 120,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 1,
@@ -28,7 +28,7 @@
       ],
       "durationHintMs": 255,
       "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -42,7 +42,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/238/00-g07-overlay.png"
+      "framePath": "frames/238/00-g07-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 186
     },
     {
       "groupIndex": 11,
@@ -56,8 +58,8 @@
         41
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 100,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -71,7 +73,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/238/01-g11-overlay.png"
+      "framePath": "frames/238/01-g11-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 186
     }
   ]
 }

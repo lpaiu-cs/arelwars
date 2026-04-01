@@ -3,7 +3,7 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 5,
-  "stemDefaultDurationMs": null,
+  "stemDefaultDurationMs": 120,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 4,
@@ -31,7 +31,7 @@
       ],
       "durationHintMs": 255,
       "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -47,7 +47,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/240/00-g00-overlay.png"
+      "framePath": "frames/240/00-g00-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 203
     },
     {
       "groupIndex": 1,
@@ -61,8 +63,8 @@
         47
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 200,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -78,7 +80,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/240/01-g01-overlay.png"
+      "framePath": "frames/240/01-g01-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 203
     },
     {
       "groupIndex": 2,
@@ -92,8 +96,8 @@
         48
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 200,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -117,7 +121,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/240/02-g02-overlay.png"
+      "framePath": "frames/240/02-g02-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 203
     },
     {
       "groupIndex": 3,
@@ -131,8 +137,8 @@
         50
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 200,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -160,7 +166,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/240/03-g03-overlay.png"
+      "framePath": "frames/240/03-g03-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 203
     },
     {
       "groupIndex": 4,
@@ -174,8 +182,8 @@
         51
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 100,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -215,7 +223,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/240/04-g04-overlay.png"
+      "framePath": "frames/240/04-g04-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 203
     }
   ]
 }

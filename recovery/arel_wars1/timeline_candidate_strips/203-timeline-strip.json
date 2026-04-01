@@ -3,7 +3,7 @@
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 1,
-  "stemDefaultDurationMs": null,
+  "stemDefaultDurationMs": 70,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 0,
@@ -26,8 +26,8 @@
         32
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 70,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -45,7 +45,9 @@
       "anchorRecordTimingValues": [
         255
       ],
-      "framePath": "frames/203/00-g01-linked.png"
+      "framePath": "frames/203/00-g01-linked.png",
+      "playbackDonorStem": "236",
+      "playbackDonorScore": 30
     }
   ]
 }

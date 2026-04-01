@@ -3,7 +3,7 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 3,
-  "stemDefaultDurationMs": null,
+  "stemDefaultDurationMs": 120,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 2,
@@ -29,7 +29,7 @@
       ],
       "durationHintMs": 255,
       "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000"
@@ -41,7 +41,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/219/00-g02-overlay.png"
+      "framePath": "frames/219/00-g02-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 181
     },
     {
       "groupIndex": 3,
@@ -55,8 +57,8 @@
         34
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 200,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000"
@@ -68,7 +70,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/219/01-g03-overlay.png"
+      "framePath": "frames/219/01-g03-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 181
     },
     {
       "groupIndex": 5,
@@ -82,8 +86,8 @@
         35
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 100,
+      "playbackSource": "donor-stem",
       "timingMarkers": [
         "67ff000000",
         "67ff000000"
@@ -95,7 +99,9 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
-      "framePath": "frames/219/02-g05-overlay.png"
+      "framePath": "frames/219/02-g05-overlay.png",
+      "playbackDonorStem": "226",
+      "playbackDonorScore": 181
     }
   ]
 }

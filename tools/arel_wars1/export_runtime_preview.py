@@ -173,25 +173,28 @@ def main() -> None:
                     web_path = f"/recovery/analysis/timeline_event_frames/{frame_rel_path.as_posix()}"
                     event_frame_paths.append(web_path)
                     raw_event = raw_events[index] if isinstance(raw_events, list) and index < len(raw_events) and isinstance(raw_events[index], dict) else {}
-                    event_frames.append(
-                        {
-                            "framePath": web_path,
-                            "groupIndex": raw_event.get("groupIndex"),
-                            "eventType": raw_event.get("eventType"),
-                            "linkType": raw_event.get("linkType"),
-                            "anchorFrameIndex": raw_event.get("anchorFrameIndex"),
-                            "relation": raw_event.get("relation"),
-                            "tupleCount": raw_event.get("tupleCount"),
-                            "durationHintMs": raw_event.get("durationHintMs"),
-                            "playbackDurationMs": raw_event.get("playbackDurationMs"),
-                            "playbackSource": raw_event.get("playbackSource"),
-                            "timingMarkers": raw_event.get("timingMarkers"),
-                            "timingValues": raw_event.get("timingValues"),
-                            "timingExplicitValues": raw_event.get("timingExplicitValues"),
-                            "anchorRecordMarkers": raw_event.get("anchorRecordMarkers"),
-                            "anchorRecordTimingValues": raw_event.get("anchorRecordTimingValues"),
-                        }
-                    )
+                    event_frame = {
+                        "framePath": web_path,
+                        "groupIndex": raw_event.get("groupIndex"),
+                        "eventType": raw_event.get("eventType"),
+                        "linkType": raw_event.get("linkType"),
+                        "anchorFrameIndex": raw_event.get("anchorFrameIndex"),
+                        "relation": raw_event.get("relation"),
+                        "tupleCount": raw_event.get("tupleCount"),
+                        "durationHintMs": raw_event.get("durationHintMs"),
+                        "playbackDurationMs": raw_event.get("playbackDurationMs"),
+                        "playbackSource": raw_event.get("playbackSource"),
+                        "timingMarkers": raw_event.get("timingMarkers"),
+                        "timingValues": raw_event.get("timingValues"),
+                        "timingExplicitValues": raw_event.get("timingExplicitValues"),
+                        "anchorRecordMarkers": raw_event.get("anchorRecordMarkers"),
+                        "anchorRecordTimingValues": raw_event.get("anchorRecordTimingValues"),
+                    }
+                    if raw_event.get("playbackDonorStem") is not None:
+                        event_frame["playbackDonorStem"] = raw_event.get("playbackDonorStem")
+                    if raw_event.get("playbackDonorScore") is not None:
+                        event_frame["playbackDonorScore"] = raw_event.get("playbackDonorScore")
+                    event_frames.append(event_frame)
 
         copy_file(Path(entry["timelineStripSourcePng"]), timeline_target_root / timeline_png_name)
         copy_file(Path(entry["timelineStripSourceJson"]), timeline_target_root / timeline_json_name)

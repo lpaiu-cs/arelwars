@@ -226,6 +226,16 @@ optional 5-byte control chunks may appear:
   - `230` now derives a consistent `120`-unit late-frame loop by borrowing non-`ff` control markers from anchor frames `13` and `14`.
   - `240` and most of `084` still have no trustworthy local non-`ff` duration source. They now fall back to a separate `global-record-default=120`, which is derived from the dominant non-`ff` frame-record control value across the APK, instead of being silently flattened to `255`.
   - `084` still keeps one explicit `0`-unit instant event (`6700`) as a genuine zero-duration marker; that value is no longer propagated into neighboring events.
+  - A second timing pass now borrows cadence only for stems that are still fully unresolved after the local pass, and only when a close donor stem exists inside the same `timelineKind`.
+  - The current donor-backed overlay cadence set is `219`, `238`, `239`, and `240`, all of which now borrow from `226`:
+    - `219`: `120 -> 200 -> 100`
+    - `238`: `120 -> 100`
+    - `239`: `120 -> 200 -> 100`
+    - `240`: `120 -> 200 -> 200 -> 200 -> 100`
+  - The same donor pass now also resolves two previously flat single-event linked stems:
+    - `203`: `70` via donor `236`
+    - `214`: `100` via donor `193`
+  - `228` is intentionally still left on `global-record-default=120`; its nearest donor candidate is structurally weaker, so the current pass keeps it conservative instead of overfitting the timing.
   - `230` and `084` now export explicit loop windows based on their strongest contiguous anchor runs:
     - `230`: event loop `1-3`
     - `084`: event loop `5-8`
@@ -235,6 +245,7 @@ optional 5-byte control chunks may appear:
   - Current featured stems are `084`, `230`, `209`, `215`, `226`, `082`, and `203`.
   - The manifest currently summarizes `21` active stems and `7` timeline classes for the web preview.
   - Each featured stem now exports `eventFrames[]` with raw `timingMarkers`, derived `playbackDurationMs`, `playbackSource`, and an inferred `loopSummary`, so the Phaser preview no longer uses a single fixed playback delay.
+  - Donor-backed timings now also carry `playbackDonorStem` and `playbackDonorScore` so the runtime manifest preserves which stems still rely on borrowed cadence.
 - Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
   - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
   - `230-group00-base-frame-delta.png` confirms that one late-frame tail group is almost a direct frame delta, not a separate track.

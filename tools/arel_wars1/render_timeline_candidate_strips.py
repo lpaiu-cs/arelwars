@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import json
 from pathlib import Path
 import struct
+from typing import Any
 
 from PIL import Image, ImageDraw
 
@@ -35,6 +37,20 @@ def parse_args() -> argparse.Namespace:
 
 
 GLOBAL_RECORD_DEFAULT_DURATION_MS = 120
+MAX_DONOR_SCORE = 210
+
+
+@dataclass
+class StemRenderCandidate:
+    stem: str
+    first_stream: Any
+    frame_stream: Any
+    sequence_summary: dict[str, object]
+    events: list[dict[str, object]]
+    stem_default_duration_ms: int | None
+    loop_summary: dict[str, object] | None
+    mapper_label: str
+    mapper: Any
 
 
 def _build_event_entries(
@@ -166,6 +182,135 @@ def _derive_event_playback(events: list[dict[str, object]]) -> tuple[list[dict[s
     return (events, stem_default)
 
 
+def _has_local_timing(events: list[dict[str, object]]) -> bool:
+    for event in events:
+        if event["timingExplicitValues"]:
+            return True
+        if any(int(value) not in {0, 255} for value in event["anchorRecordTimingValues"]):
+            return True
+    return False
+
+
+def _dominant_duration(values: list[int]) -> int | None:
+    positives = [int(value) for value in values if int(value) > 0]
+    if not positives:
+        return None
+    return max(set(positives), key=positives.count)
+
+
+def _normalized_index(length: int, index: int, target_length: int) -> int:
+    if length <= 1 or target_length <= 1:
+        return 0
+    return round(index * (length - 1) / (target_length - 1))
+
+
+def _event_signature_distance(target_event: dict[str, object], donor_event: dict[str, object]) -> int:
+    distance = 0
+    if str(target_event["eventType"]) != str(donor_event["eventType"]):
+        distance += 24
+    if str(target_event.get("relation")) != str(donor_event.get("relation")):
+        distance += 10
+
+    target_tuple_count = int(target_event.get("tupleCount") or 0)
+    donor_tuple_count = int(donor_event.get("tupleCount") or 0)
+    distance += abs(target_tuple_count - donor_tuple_count)
+
+    target_chunk_range = target_event.get("chunkIndexRange")
+    donor_chunk_range = donor_event.get("chunkIndexRange")
+    if isinstance(target_chunk_range, list) and isinstance(donor_chunk_range, list):
+        target_width = int(target_chunk_range[1]) - int(target_chunk_range[0]) + 1
+        donor_width = int(donor_chunk_range[1]) - int(donor_chunk_range[0]) + 1
+        distance += abs(target_width - donor_width) * 3
+        distance += min(abs(int(target_chunk_range[0]) - int(donor_chunk_range[0])), 12)
+    elif target_chunk_range != donor_chunk_range:
+        distance += 6
+
+    return distance
+
+
+def _timing_donor_score(target: StemRenderCandidate, donor: StemRenderCandidate) -> int | None:
+    target_timeline_kind = str(target.sequence_summary.get("timelineKind"))
+    donor_timeline_kind = str(donor.sequence_summary.get("timelineKind"))
+    if target_timeline_kind != donor_timeline_kind:
+        return None
+
+    target_events = target.events
+    donor_events = donor.events
+    if not target_events or not donor_events:
+        return None
+
+    if target_timeline_kind == "overlay-track-only":
+        score = abs(len(target_events) - len(donor_events)) * 10
+        comparison_count = max(len(target_events), len(donor_events))
+        for index in range(comparison_count):
+            target_index = _normalized_index(len(target_events), index, comparison_count)
+            donor_index = _normalized_index(len(donor_events), index, comparison_count)
+            target_event = target_events[target_index]
+            donor_event = donor_events[donor_index]
+            score += abs(int(target_event.get("tupleCount") or 0) - int(donor_event.get("tupleCount") or 0))
+
+            target_chunk_range = target_event.get("chunkIndexRange")
+            donor_chunk_range = donor_event.get("chunkIndexRange")
+            if isinstance(target_chunk_range, list) and isinstance(donor_chunk_range, list):
+                target_width = int(target_chunk_range[1]) - int(target_chunk_range[0]) + 1
+                donor_width = int(donor_chunk_range[1]) - int(donor_chunk_range[0]) + 1
+                score += abs(target_width - donor_width) * 2
+        return score
+
+    score = abs(len(target_events) - len(donor_events)) * 8
+    comparison_count = max(len(target_events), len(donor_events))
+    for index in range(comparison_count):
+        target_index = _normalized_index(len(target_events), index, comparison_count)
+        donor_index = _normalized_index(len(donor_events), index, comparison_count)
+        score += _event_signature_distance(target_events[target_index], donor_events[donor_index])
+    return score
+
+
+def _resample_durations(durations: list[int], count: int) -> list[int]:
+    if not durations or count <= 0:
+        return []
+    if count == 1:
+        return [int(durations[0])]
+    return [int(durations[_normalized_index(len(durations), index, count)]) for index in range(count)]
+
+
+def _apply_donor_timings(candidates: list[StemRenderCandidate]) -> None:
+    donors = [candidate for candidate in candidates if _has_local_timing(candidate.events)]
+    for candidate in candidates:
+        if _has_local_timing(candidate.events):
+            continue
+
+        scored_donors: list[tuple[int, StemRenderCandidate]] = []
+        for donor in donors:
+            score = _timing_donor_score(candidate, donor)
+            if score is None:
+                continue
+            scored_donors.append((score, donor))
+
+        if not scored_donors:
+            continue
+
+        scored_donors.sort(key=lambda item: (item[0], item[1].stem))
+        best_score, best_donor = scored_donors[0]
+        if best_score > MAX_DONOR_SCORE:
+            continue
+
+        donor_durations = [int(event["playbackDurationMs"]) for event in best_donor.events if event["playbackDurationMs"] is not None]
+        proposed_durations = _resample_durations(donor_durations, len(candidate.events))
+        current_durations = [int(event["playbackDurationMs"]) for event in candidate.events]
+        if not proposed_durations or proposed_durations == current_durations:
+            continue
+
+        for event, duration in zip(candidate.events, proposed_durations):
+            event["playbackDurationMs"] = duration
+            event["playbackSource"] = "donor-stem"
+            event["playbackDonorStem"] = best_donor.stem
+            event["playbackDonorScore"] = best_score
+
+        if candidate.stem_default_duration_ms is None:
+            candidate.stem_default_duration_ms = best_donor.stem_default_duration_ms or _dominant_duration(proposed_durations)
+
+
 def _build_frame_panel(image: Image.Image, label: str, sublabel: str, footer: str) -> Image.Image:
     margin = 8
     text_height = 34
@@ -201,24 +346,24 @@ def _build_strip(title: str, panels: list[Image.Image]) -> Image.Image:
     return strip
 
 
-def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> list[Path]:
+def build_stem_candidate(stem: str, assets_root: Path) -> StemRenderCandidate | None:
     pzx_path = assets_root / "img" / f"{stem}.pzx"
     if not pzx_path.exists():
-        return []
+        return None
 
     data = pzx_path.read_bytes()
     streams = find_zlib_streams(data)
     if len(streams) < 2:
-        return []
+        return None
 
     table_span = struct.unpack("<H", data[16:18])[0] >> 6 if len(data) >= 18 else 0
     first_stream = read_pzx_first_stream(streams[0].decoded, table_span)
     if first_stream is None:
-        return []
+        return None
 
     frame_stream = read_pzx_frame_record_stream(streams[1].decoded, len(first_stream.chunks))
     if frame_stream is None:
-        return []
+        return None
 
     meta_groups = group_meta_sections(read_pzx_meta_sections(frame_stream.trailing, len(first_stream.chunks)))
     meta_group_summaries = summarize_meta_groups(
@@ -228,21 +373,36 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
     sequence_summary = summarize_sequence_candidates(meta_group_summaries)
     events = _build_event_entries(meta_groups, meta_group_summaries, sequence_summary, list(frame_stream.records))
     if not events:
-        return []
+        return None
     events, stem_default_duration = _derive_event_playback(events)
     loop_summary = infer_loop_summary(events, sequence_summary)
 
     mapper_label, mapper = choose_mapper(stem, assets_root, first_stream)
+    return StemRenderCandidate(
+        stem=stem,
+        first_stream=first_stream,
+        frame_stream=frame_stream,
+        sequence_summary=sequence_summary,
+        events=events,
+        stem_default_duration_ms=stem_default_duration,
+        loop_summary=loop_summary,
+        mapper_label=mapper_label,
+        mapper=mapper,
+    )
+
+
+def render_candidate(candidate: StemRenderCandidate, output_root: Path, scale: int) -> list[Path]:
+    stem = candidate.stem
     panels: list[Image.Image] = []
     event_summaries: list[dict[str, object]] = []
     event_frame_paths: list[str] = []
     event_frame_root = output_root / "frames" / stem
-    for event in events:
+    for event in candidate.events:
         tail_items = list(event["tailItems"])
         anchor = event["anchorFrameIndex"]
-        base_items = list(frame_stream.records[anchor].items) if anchor is not None else []
-        bounds = collect_positions(base_items or tail_items, tail_items if base_items else [], first_stream.chunks)
-        combined = render_composite([*base_items, *tail_items], first_stream.chunks, mapper, scale, bounds=bounds)
+        base_items = list(candidate.frame_stream.records[anchor].items) if anchor is not None else []
+        bounds = collect_positions(base_items or tail_items, tail_items if base_items else [], candidate.first_stream.chunks)
+        combined = render_composite([*base_items, *tail_items], candidate.first_stream.chunks, candidate.mapper, scale, bounds=bounds)
 
         label = f"g{event['groupIndex']:02d} {event['eventType']}"
         if anchor is None:
@@ -261,29 +421,32 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         combined.save(frame_path)
         event_frame_paths.append(str(Path("frames") / stem / frame_name))
 
-        event_summaries.append(
-            {
-                "groupIndex": event["groupIndex"],
-                "eventType": event["eventType"],
-                "linkType": event["linkType"],
-                "anchorFrameIndex": anchor,
-                "relation": event["relation"],
-                "tupleCount": event["tupleCount"],
-                "chunkIndexRange": event["chunkIndexRange"],
-                "durationHintMs": event["durationHintMs"],
-                "playbackDurationMs": event["playbackDurationMs"],
-                "playbackSource": event["playbackSource"],
-                "timingMarkers": event["timingMarkers"],
-                "timingValues": event["timingValues"],
-                "timingExplicitValues": event["timingExplicitValues"],
-                "anchorRecordMarkers": event["anchorRecordMarkers"],
-                "anchorRecordTimingValues": event["anchorRecordTimingValues"],
-                "framePath": str(Path("frames") / stem / frame_name),
-            }
-        )
+        summary = {
+            "groupIndex": event["groupIndex"],
+            "eventType": event["eventType"],
+            "linkType": event["linkType"],
+            "anchorFrameIndex": anchor,
+            "relation": event["relation"],
+            "tupleCount": event["tupleCount"],
+            "chunkIndexRange": event["chunkIndexRange"],
+            "durationHintMs": event["durationHintMs"],
+            "playbackDurationMs": event["playbackDurationMs"],
+            "playbackSource": event["playbackSource"],
+            "timingMarkers": event["timingMarkers"],
+            "timingValues": event["timingValues"],
+            "timingExplicitValues": event["timingExplicitValues"],
+            "anchorRecordMarkers": event["anchorRecordMarkers"],
+            "anchorRecordTimingValues": event["anchorRecordTimingValues"],
+            "framePath": str(Path("frames") / stem / frame_name),
+        }
+        if event.get("playbackDonorStem") is not None:
+            summary["playbackDonorStem"] = event["playbackDonorStem"]
+        if event.get("playbackDonorScore") is not None:
+            summary["playbackDonorScore"] = event["playbackDonorScore"]
+        event_summaries.append(summary)
 
     output_root.mkdir(parents=True, exist_ok=True)
-    title = f"{stem} timeline strip ({sequence_summary['timelineKind']}, mapper={mapper_label})"
+    title = f"{stem} timeline strip ({candidate.sequence_summary['timelineKind']}, mapper={candidate.mapper_label})"
     strip = _build_strip(title, panels)
     png_path = output_root / f"{stem}-timeline-strip.png"
     strip.save(png_path)
@@ -293,11 +456,11 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         json.dumps(
             {
                 "stem": stem,
-                "timelineKind": sequence_summary["timelineKind"],
-                "sequenceKind": sequence_summary["sequenceKind"],
+                "timelineKind": candidate.sequence_summary["timelineKind"],
+                "sequenceKind": candidate.sequence_summary["sequenceKind"],
                 "eventCount": len(event_summaries),
-                "stemDefaultDurationMs": stem_default_duration,
-                "loopSummary": loop_summary,
+                "stemDefaultDurationMs": candidate.stem_default_duration_ms,
+                "loopSummary": candidate.loop_summary,
                 "eventFramePaths": event_frame_paths,
                 "events": event_summaries,
             },
@@ -321,9 +484,17 @@ def main() -> None:
     if stems:
         pzx_paths = [path for path in pzx_paths if path.stem in stems]
 
-    rendered = 0
+    candidates: list[StemRenderCandidate] = []
     for path in pzx_paths:
-        outputs = render_stem(path.stem, assets_root, output_root, args.scale)
+        candidate = build_stem_candidate(path.stem, assets_root)
+        if candidate is not None:
+            candidates.append(candidate)
+
+    _apply_donor_timings(candidates)
+
+    rendered = 0
+    for candidate in candidates:
+        outputs = render_candidate(candidate, output_root, args.scale)
         for output in outputs:
             print(output)
             rendered += 1
