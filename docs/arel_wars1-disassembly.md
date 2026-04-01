@@ -248,6 +248,9 @@ frame:
   - `+0x04/+0x06` local x/y
   - `+0x08/+0x0C` extra pointer/length은 plain draw path에서 소비되지 않는다.
 - 실제 consumer는 effect-aware `PZD` loader다.
+  - `CGxEffectPZDMgr::LoadImage` / `CGxEffectExPZDMgr::LoadImage`는 cache miss 시 `subframe + 0x08`을 그대로 `tagEffect*`로 넘겨 `CGxEffectPZD::GetBitmap`을 호출한다.
+  - `CGxEffectPZD::GetBitmap`은 그 `tagEffect*`를 다시 `ApplyEffect`로 그대로 넘긴다.
+  - 즉 asset parser가 보는 `extraPtr + extraLen` 구조가 runtime effect bytecode input과 직접 대응된다.
   - `CGxEffectPZDMgr::FindEffectedImage` / `CGxEffectExPZDMgr::FindEffectedImage`는 두 subframe의 `extraPtr/extraLen`을 비교할 때 바이트값 `<= 4`만 opcode로 취급한다.
   - 현재 전체 asset 집계에서 이 filtered cache-key histogram은 `0:13746, 1:4, 2:24, 3:2278, 4:68`다.
   - 즉 `extraPayload`는 cache/reuse key로도 쓰이지만, 이 집계는 "실행되는 effect bytecode" 전체와는 다르다.
@@ -267,6 +270,15 @@ frame:
   - 하지만 `PZD.contentCount` bound를 다시 넣은 corrected parse 기준으로는 이 single-byte family가 실제 asset에서 더 이상 남지 않는다.
   - 즉 이전 `66:15, 67:57, 71:1`은 parse artifact였고, native fast path 자체만 남아 있는 상태다.
   - 따라서 `66/67` marker류는 executable opcode가 아니라 envelope / selector 계층으로 보는 쪽이 맞다.
+- cache node 쪽도 확인됐다.
+  - `CGxEffectPZDMgr::AddNewEFFECTED_BITMAP` / `CGxEffectExPZDMgr::AddNewEFFECTED_BITMAP`는 effect mode flag가 켜진 경우 source subframe의 `extraLen + extraPtr`를 새 cache entry에 통째로 복제한다.
+  - 반면 cache lookup(`FindEffectedImage`)은 여전히 `<= 4` 바이트만 비교한다.
+  - 따라서 non-executed envelope byte는 runtime cache object에는 남지만, 적어도 primary cache-match key는 아니다.
+- asset-side 교차검증도 이 해석을 지지한다.
+  - runtime sequence `(3)`은 실제 raw payload `19`종에서 나온다. 대표형은 `03`, `0367ff000000`, `6603000000`, `67ff00000003`, `037100000000`이다.
+  - runtime sequence `(4,3)`도 `8`종 payload(`0403`, `040367ff000000`, `660400000003`, `67eb0000000403`, ...)에서 공통으로 나온다.
+  - 반대로 `(7) -> 6607000000`, `(10) -> 660a000000`, `(100) -> 6764000000`, `(44,99) -> 702c630000`처럼 특정 envelope family에만 묶인 opcode sequence도 있다.
+  - 즉 envelope byte는 effect semantics를 바꾸는 실행 opcode는 아니지만, payload family 구분에는 계속 남아 있다.
 - `tools/arel_wars1/inspect_binary_assets.py`는 이제 exact-fit animation clip stream을 인식한다.
 - 현재 휴리스틱은 다음이다.
   - stream 전체가 `frameCount:u8 + frameCount * 8-byte frame record`의 clip 연속체로 끝까지 정확히 소진될 것

@@ -103,6 +103,9 @@
   - `extraPayload`는 effect cache key다.
   - 비교 시 모든 바이트를 쓰지 않고, `<= 4`인 값만 opcode sequence로 추출해서 비교한다.
   - corrected parse 기준 filtered cache-key histogram은 `0:13746, 1:4, 2:24, 3:2278, 4:68`이다.
+- `CGxEffectPZDMgr::LoadImage*` -> `CGxEffectPZD::GetBitmap` -> `ApplyEffect`
+  - cache miss 시 `subframe + 0x08`이 그대로 `tagEffect*`로 넘어간다.
+  - 즉 raw subframe `extraPtr + extraLen` 구조가 runtime effect bytecode input과 직접 대응된다.
 - `CGxEffectPZDMgr::LoadImage*`
   - `extraLen == 1`이고 그 1-byte 값이 `0x65..0x74`이면 effected-bitmap 경로 대신 normal image load로 빠진다.
   - longer payload는 `FindEffectedImage -> AddNewEFFECTED_BITMAP` 경로로 들어가고, 그 과정에서 subframe의 `extraPayload`가 그대로 복제된다.
@@ -131,6 +134,8 @@
   - runtime opcode histogram (`1..100`만 실행): `1:4, 2:24, 3:2278, 4:68, 5:261, 6:11, 7:280, 8:68, 9:4, 10:93, 11:14, 12:43, 13:7, 14:16, 15:9, 20:4, 24:1, 28:1, 30:6, 40:8, 44:7, 50:14, 57:1, 60:4, 70:20, 72:4, 80:31, 86:1, 89:7, 99:15, 100:89`
   - corrected parse 기준 single-byte `0x65..0x74` family는 `{}`로 비었다.
   - payload length 분포는 여전히 `5-byte`가 우세하고, marker family도 `67+u32 / 66+u32`가 우세하다.
+  - runtime sequence `(3)`은 raw payload `19`종 (`03`, `0367ff000000`, `6603000000`, `67ff00000003`, ...)에서 나오고, `(4,3)`도 `8`종 payload에서 나온다.
+  - 반면 `(7) -> 6607000000`, `(10) -> 660a000000`, `(100) -> 6764000000`, `(44,99) -> 702c630000`처럼 특정 envelope family에 고정된 sequence도 있다.
 - 즉 현재 `PZF extraPayload`는 두 층으로 읽는 게 맞다.
   - outer envelope / selector bytes (`66/67/70...`, non-executed)
   - inner executable effect opcode sequence (`1..100`)
