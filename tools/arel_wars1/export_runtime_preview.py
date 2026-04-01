@@ -156,6 +156,9 @@ def main() -> None:
         event_frame_paths: list[str] = []
         event_frames: list[dict[str, object]] = []
         loop_summary = timeline_strip_data.get("loopSummary") if isinstance(timeline_strip_data, dict) else None
+        stem_default_duration = (
+            timeline_strip_data.get("stemDefaultDurationMs") if isinstance(timeline_strip_data, dict) else None
+        )
         if isinstance(timeline_strip_data, dict):
             raw_frame_paths = timeline_strip_data.get("eventFramePaths", [])
             raw_events = timeline_strip_data.get("events", [])
@@ -180,8 +183,13 @@ def main() -> None:
                             "relation": raw_event.get("relation"),
                             "tupleCount": raw_event.get("tupleCount"),
                             "durationHintMs": raw_event.get("durationHintMs"),
+                            "playbackDurationMs": raw_event.get("playbackDurationMs"),
+                            "playbackSource": raw_event.get("playbackSource"),
                             "timingMarkers": raw_event.get("timingMarkers"),
                             "timingValues": raw_event.get("timingValues"),
+                            "timingExplicitValues": raw_event.get("timingExplicitValues"),
+                            "anchorRecordMarkers": raw_event.get("anchorRecordMarkers"),
+                            "anchorRecordTimingValues": raw_event.get("anchorRecordTimingValues"),
                         }
                     )
 
@@ -208,6 +216,7 @@ def main() -> None:
                 },
                 "eventFramePaths": event_frame_paths,
                 "eventFrames": event_frames,
+                "stemDefaultDurationMs": stem_default_duration,
                 "loopSummary": loop_summary,
                 "sequenceSummaryPath": f"/recovery/analysis/frame_sequence_candidates/{sequence_json_name}",
                 "linkedSequencePngPath": (

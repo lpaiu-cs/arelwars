@@ -219,9 +219,13 @@ optional 5-byte control chunks may appear:
   - `240-timeline-strip.png` confirms `overlay-track-only`: every event is unanchored and the chunk ranges expand from `46-47` to `49-51` without touching any base frame.
 - Strip JSON exports now also carry recovered timing and loop hints.
   - Every marker block is normalized into a raw timing value; the current histogram across active frame-record assets is `0`, `50`, `70`, `80`, `100`, `120`, `150`, `180`, `200`, and `255`.
-  - `209` currently resolves to a short `50`-unit linked intro followed by a `255`-unit overlay tail loop.
-  - `215` shows a `120`-unit cadence opener and repeated `255`-unit linked deltas around anchor frame `10`.
-  - `226` exposes mixed timing markers directly in the tail: `120`, `200`, `100`, and `255`.
+  - The runtime no longer treats `255` (`67ff`) as a direct duration when a non-`ff` marker is present in the same event. It is now treated as a sentinel/default hold, and the event duration is derived from non-`ff` tail markers first, then anchor-record control markers, then local forward/back-fill.
+  - `209` now resolves to a short `50`-unit linked intro, a `100`-unit overlay run, and a `70`-unit tail close.
+  - `215` now reads as a real cadence pattern instead of a flat `255` hold: `120 -> 70 -> 70 -> 80 -> 70 -> 120 -> 70`.
+  - `226` now exposes a more plausible overlay timeline: `120`, then `200`, then a long `200`-unit run, ending on a `100`-unit close.
+  - `230` now derives a consistent `120`-unit late-frame loop by borrowing non-`ff` control markers from anchor frames `13` and `14`.
+  - `240` and most of `084` still have no trustworthy local non-`ff` duration source. They now fall back to a separate `global-record-default=120`, which is derived from the dominant non-`ff` frame-record control value across the APK, instead of being silently flattened to `255`.
+  - `084` still keeps one explicit `0`-unit instant event (`6700`) as a genuine zero-duration marker; that value is no longer propagated into neighboring events.
   - `230` and `084` now export explicit loop windows based on their strongest contiguous anchor runs:
     - `230`: event loop `1-3`
     - `084`: event loop `5-8`
@@ -230,7 +234,7 @@ optional 5-byte control chunks may appear:
 - The runtime export now packages those results into `public/recovery/analysis/preview_manifest.json`.
   - Current featured stems are `084`, `230`, `209`, `215`, `226`, `082`, and `203`.
   - The manifest currently summarizes `21` active stems and `7` timeline classes for the web preview.
-  - Each featured stem now exports `eventFrames[]` with `durationHintMs`, raw `timingMarkers`, and an inferred `loopSummary`, so the Phaser preview no longer uses a single fixed playback delay.
+  - Each featured stem now exports `eventFrames[]` with raw `timingMarkers`, derived `playbackDurationMs`, `playbackSource`, and an inferred `loopSummary`, so the Phaser preview no longer uses a single fixed playback delay.
 - Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
   - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
   - `230-group00-base-frame-delta.png` confirms that one late-frame tail group is almost a direct frame delta, not a separate track.

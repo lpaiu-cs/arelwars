@@ -3,6 +3,7 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 2,
+  "stemDefaultDurationMs": null,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 1,
@@ -26,6 +27,8 @@
         37
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "global-record-default",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -36,6 +39,9 @@
         255,
         255
       ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
       "framePath": "frames/238/00-g07-overlay.png"
     },
     {
@@ -50,6 +56,8 @@
         41
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "global-record-default",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -60,6 +68,9 @@
         255,
         255
       ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [],
+      "anchorRecordTimingValues": [],
       "framePath": "frames/238/01-g11-overlay.png"
     }
   ]

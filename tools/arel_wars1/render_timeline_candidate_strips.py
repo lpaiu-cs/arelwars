@@ -8,7 +8,13 @@ import struct
 
 from PIL import Image, ImageDraw
 
-from formats import find_zlib_streams, read_pzx_first_stream, read_pzx_frame_record_stream, read_pzx_meta_sections
+from formats import (
+    decode_pzx_marker_timing_ms,
+    find_zlib_streams,
+    read_pzx_first_stream,
+    read_pzx_frame_record_stream,
+    read_pzx_meta_sections,
+)
 from pzx_meta import (
     group_meta_sections,
     infer_group_timing,
@@ -28,10 +34,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+GLOBAL_RECORD_DEFAULT_DURATION_MS = 120
+
+
 def _build_event_entries(
     meta_groups: list[list],
     meta_group_summaries: list[dict[str, object]],
     sequence_summary: dict[str, object],
+    frame_records: list,
 ) -> list[dict[str, object]]:
     overlay_attachment_by_group = {
         int(item["groupIndex"]): item for item in sequence_summary.get("overlayAttachmentsPreview", [])
@@ -61,6 +71,16 @@ def _build_event_entries(
 
         chunk_range = sorted({item.chunk_index for item in tail_items})
         timing = infer_group_timing(group)
+        anchor_record_markers: list[str] = []
+        anchor_record_values: list[int] = []
+        if anchor_frame_index is not None:
+            anchor_record = frame_records[anchor_frame_index]
+            anchor_record_markers = [chunk.hex() for chunk in anchor_record.control_chunks]
+            anchor_record_values = [
+                value
+                for value in (decode_pzx_marker_timing_ms(marker_hex) for marker_hex in anchor_record_markers)
+                if value is not None
+            ]
         events.append(
             {
                 "groupIndex": group_index,
@@ -73,12 +93,77 @@ def _build_event_entries(
                 "durationHintMs": timing["durationHintMs"],
                 "timingMarkers": timing["markerHexes"],
                 "timingValues": timing["markerValues"],
+                "timingExplicitValues": timing["explicitMarkerValues"],
+                "timingHasFfSentinel": timing["hasFfSentinel"],
+                "anchorRecordMarkers": anchor_record_markers,
+                "anchorRecordTimingValues": anchor_record_values,
                 "tailItems": tail_items,
             }
         )
 
     events.sort(key=lambda item: int(item["groupIndex"]))
     return events
+
+
+def _derive_event_playback(events: list[dict[str, object]]) -> tuple[list[dict[str, object]], int | None]:
+    explicit_pool: list[int] = []
+    for event in events:
+        explicit_pool.extend(int(value) for value in event["timingExplicitValues"])
+        explicit_pool.extend(
+            int(value) for value in event["anchorRecordTimingValues"] if int(value) not in {0, 255}
+        )
+
+    stem_default = max(set(explicit_pool), key=explicit_pool.count) if explicit_pool else None
+
+    for event in events:
+        explicit_values = [int(value) for value in event["timingExplicitValues"]]
+        anchor_values = [int(value) for value in event["anchorRecordTimingValues"] if int(value) not in {0, 255}]
+        if explicit_values:
+            event["playbackDurationMs"] = max(explicit_values)
+            event["playbackSource"] = "tail-marker"
+            continue
+        if anchor_values:
+            event["playbackDurationMs"] = max(anchor_values)
+            event["playbackSource"] = "anchor-record"
+            continue
+        if 0 in event["timingValues"]:
+            event["playbackDurationMs"] = 0
+            event["playbackSource"] = "zero-marker"
+            continue
+        event["playbackDurationMs"] = None
+        event["playbackSource"] = "unresolved"
+
+    last_explicit: int | None = None
+    for event in events:
+        playback_duration = event["playbackDurationMs"]
+        if isinstance(playback_duration, int) and playback_duration > 0:
+            last_explicit = playback_duration
+            continue
+        if last_explicit is not None:
+            event["playbackDurationMs"] = last_explicit
+            event["playbackSource"] = "forward-fill"
+
+    next_explicit: int | None = None
+    for event in reversed(events):
+        playback_duration = event["playbackDurationMs"]
+        if isinstance(playback_duration, int) and playback_duration > 0:
+            next_explicit = playback_duration
+            continue
+        if next_explicit is not None:
+            event["playbackDurationMs"] = next_explicit
+            event["playbackSource"] = "back-fill"
+
+    for event in events:
+        if event["playbackDurationMs"] is None and stem_default is not None:
+            event["playbackDurationMs"] = stem_default
+            event["playbackSource"] = "stem-default"
+
+    for event in events:
+        if event["playbackDurationMs"] is None:
+            event["playbackDurationMs"] = GLOBAL_RECORD_DEFAULT_DURATION_MS
+            event["playbackSource"] = "global-record-default"
+
+    return (events, stem_default)
 
 
 def _build_frame_panel(image: Image.Image, label: str, sublabel: str, footer: str) -> Image.Image:
@@ -141,9 +226,10 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         frame_stream.records,
     )
     sequence_summary = summarize_sequence_candidates(meta_group_summaries)
-    events = _build_event_entries(meta_groups, meta_group_summaries, sequence_summary)
+    events = _build_event_entries(meta_groups, meta_group_summaries, sequence_summary, list(frame_stream.records))
     if not events:
         return []
+    events, stem_default_duration = _derive_event_playback(events)
     loop_summary = infer_loop_summary(events, sequence_summary)
 
     mapper_label, mapper = choose_mapper(stem, assets_root, first_stream)
@@ -163,7 +249,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
             sublabel = f"anchor=None chunks={event['chunkIndexRange'][0]}-{event['chunkIndexRange'][1]}"
         else:
             sublabel = f"anchor={anchor} chunks={event['chunkIndexRange'][0]}-{event['chunkIndexRange'][1]}"
-        duration_hint = event["durationHintMs"]
+        duration_hint = event["playbackDurationMs"]
         footer = event["relation"] or event["linkType"]
         if duration_hint is not None:
             footer = f"{footer} / {duration_hint}ms"
@@ -185,8 +271,13 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
                 "tupleCount": event["tupleCount"],
                 "chunkIndexRange": event["chunkIndexRange"],
                 "durationHintMs": event["durationHintMs"],
+                "playbackDurationMs": event["playbackDurationMs"],
+                "playbackSource": event["playbackSource"],
                 "timingMarkers": event["timingMarkers"],
                 "timingValues": event["timingValues"],
+                "timingExplicitValues": event["timingExplicitValues"],
+                "anchorRecordMarkers": event["anchorRecordMarkers"],
+                "anchorRecordTimingValues": event["anchorRecordTimingValues"],
                 "framePath": str(Path("frames") / stem / frame_name),
             }
         )
@@ -205,6 +296,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
                 "timelineKind": sequence_summary["timelineKind"],
                 "sequenceKind": sequence_summary["sequenceKind"],
                 "eventCount": len(event_summaries),
+                "stemDefaultDurationMs": stem_default_duration,
                 "loopSummary": loop_summary,
                 "eventFramePaths": event_frame_paths,
                 "events": event_summaries,

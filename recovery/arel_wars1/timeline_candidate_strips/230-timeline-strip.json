@@ -3,6 +3,7 @@
   "timelineKind": "rising-anchor-run",
   "sequenceKind": "has-contiguous-rise",
   "eventCount": 8,
+  "stemDefaultDurationMs": 120,
   "loopSummary": {
     "startEventIndex": 1,
     "endEventIndex": 3,
@@ -32,6 +33,8 @@
         34
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "back-fill",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -40,6 +43,17 @@
       ],
       "timingValues": [
         255,
+        255,
+        255,
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         255,
         255,
         255
@@ -58,6 +72,8 @@
         34
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "anchor-record",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -69,6 +85,17 @@
         255,
         255,
         255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6778000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        120
       ],
       "framePath": "frames/230/01-g01-linked.png"
     },
@@ -84,6 +111,8 @@
         34
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "anchor-record",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -94,6 +123,19 @@
         255,
         255,
         255,
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6778000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        120,
         255
       ],
       "framePath": "frames/230/02-g02-linked.png"
@@ -110,6 +152,8 @@
         34
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "forward-fill",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -118,6 +162,17 @@
       ],
       "timingValues": [
         255,
+        255,
+        255,
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         255,
         255,
         255
@@ -136,6 +191,8 @@
         34
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "anchor-record",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -147,6 +204,17 @@
         255,
         255,
         255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6778000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        120
       ],
       "framePath": "frames/230/04-g04-linked.png"
     },
@@ -162,6 +230,8 @@
         34
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "anchor-record",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -172,6 +242,19 @@
         255,
         255,
         255,
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6778000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        120,
         255
       ],
       "framePath": "frames/230/05-g05-linked.png"
@@ -187,7 +270,9 @@
         3,
         34
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 120,
+      "playbackDurationMs": 120,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -196,6 +281,19 @@
       ],
       "timingValues": [
         255,
+        255,
+        255,
+        120
+      ],
+      "timingExplicitValues": [
+        120
+      ],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6778000000"
+      ],
+      "anchorRecordTimingValues": [
         255,
         255,
         120
@@ -214,6 +312,8 @@
         34
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "anchor-record",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -222,6 +322,19 @@
       "timingValues": [
         255,
         255,
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000",
+        "67ff000000",
+        "6778000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255,
+        255,
+        120,
         255
       ],
       "framePath": "frames/230/07-g07-linked.png"

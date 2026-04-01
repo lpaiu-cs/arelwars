@@ -234,7 +234,7 @@ function describeAnchors(entry: RecoveryPreviewStem): string {
 
 function describeTiming(entry: RecoveryPreviewStem): string {
   const durations = entry.eventFrames
-    .map((frame) => frame.durationHintMs)
+    .map((frame) => frame.playbackDurationMs)
     .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
   if (durations.length === 0) {
     return 'unresolved'

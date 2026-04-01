@@ -3,6 +3,7 @@
   "timelineKind": "single-anchor-cadence",
   "sequenceKind": "single-anchor-repeat",
   "eventCount": 5,
+  "stemDefaultDurationMs": 120,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 4,
@@ -29,6 +30,8 @@
         24
       ],
       "durationHintMs": 180,
+      "playbackDurationMs": 180,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "6778000000",
         "67b4000000"
@@ -36,6 +39,16 @@
       "timingValues": [
         120,
         180
+      ],
+      "timingExplicitValues": [
+        120,
+        180
+      ],
+      "anchorRecordMarkers": [
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255
       ],
       "framePath": "frames/206/00-g00-linked.png"
     },
@@ -50,7 +63,9 @@
         26,
         26
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 150,
+      "playbackDurationMs": 150,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6796000000"
@@ -58,6 +73,15 @@
       "timingValues": [
         255,
         150
+      ],
+      "timingExplicitValues": [
+        150
+      ],
+      "anchorRecordMarkers": [
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255
       ],
       "framePath": "frames/206/01-g01-linked.png"
     },
@@ -72,13 +96,24 @@
         23,
         23
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 120,
+      "playbackDurationMs": 120,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "6778000000",
         "67ff000000"
       ],
       "timingValues": [
         120,
+        255
+      ],
+      "timingExplicitValues": [
+        120
+      ],
+      "anchorRecordMarkers": [
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         255
       ],
       "framePath": "frames/206/02-g02-overlay.png"
@@ -95,6 +130,8 @@
         23
       ],
       "durationHintMs": 180,
+      "playbackDurationMs": 180,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "6778000000",
         "67b4000000"
@@ -102,6 +139,16 @@
       "timingValues": [
         120,
         180
+      ],
+      "timingExplicitValues": [
+        120,
+        180
+      ],
+      "anchorRecordMarkers": [
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255
       ],
       "framePath": "frames/206/03-g03-overlay.png"
     },
@@ -116,7 +163,9 @@
         23,
         23
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 120,
+      "playbackDurationMs": 120,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6778000000"
@@ -124,6 +173,15 @@
       "timingValues": [
         255,
         120
+      ],
+      "timingExplicitValues": [
+        120
+      ],
+      "anchorRecordMarkers": [
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        255
       ],
       "framePath": "frames/206/04-g04-overlay.png"
     }

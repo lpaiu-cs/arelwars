@@ -3,6 +3,7 @@
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 1,
+  "stemDefaultDurationMs": null,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 0,
@@ -25,6 +26,8 @@
         32
       ],
       "durationHintMs": 255,
+      "playbackDurationMs": 120,
+      "playbackSource": "global-record-default",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -33,6 +36,13 @@
       "timingValues": [
         255,
         255,
+        255
+      ],
+      "timingExplicitValues": [],
+      "anchorRecordMarkers": [
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         255
       ],
       "framePath": "frames/203/00-g01-linked.png"

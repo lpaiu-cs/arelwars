@@ -166,7 +166,7 @@ export class RecoveryBootScene extends Phaser.Scene {
 
       const scheduleNextFrame = (): void => {
         const current = entry.eventFrames[Math.min(frameIndex, entry.eventFrames.length - 1)]
-        const delay = Math.max(current?.durationHintMs ?? 180, 70)
+        const delay = Math.max(current?.playbackDurationMs ?? entry.stemDefaultDurationMs ?? 160, 40)
         frameTimer = this.time.delayedCall(delay, () => {
           const loopStart = resolveLoopStart(entry)
           const loopEnd = resolveLoopEnd(entry)
@@ -275,7 +275,7 @@ export class RecoveryBootScene extends Phaser.Scene {
 
   private describeTiming(entry: RecoveryPreviewStem): string {
     const durations = entry.eventFrames
-      .map((frame) => frame.durationHintMs)
+      .map((frame) => frame.playbackDurationMs)
       .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
     if (durations.length === 0) {
       return 'timing unresolved'

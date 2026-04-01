@@ -54,8 +54,13 @@ export interface RecoveryPreviewFrame {
   relation: string | null
   tupleCount: number | null
   durationHintMs: number | null
+  playbackDurationMs: number | null
+  playbackSource: string | null
   timingMarkers: string[] | null
   timingValues: number[] | null
+  timingExplicitValues: number[] | null
+  anchorRecordMarkers: string[] | null
+  anchorRecordTimingValues: number[] | null
 }
 
 export interface RecoveryPreviewStem {
@@ -72,6 +77,7 @@ export interface RecoveryPreviewStem {
   }
   eventFramePaths: string[]
   eventFrames: RecoveryPreviewFrame[]
+  stemDefaultDurationMs: number | null
   loopSummary: RecoveryLoopSummary | null
   sequenceSummaryPath: string
   linkedSequencePngPath: string | null

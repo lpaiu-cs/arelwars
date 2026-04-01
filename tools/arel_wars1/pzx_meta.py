@@ -105,6 +105,7 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
         layout_counts = Counter(section.layout for section in sections)
         marker_counts = Counter(section.marker_hex or "prefix" for section in sections)
         timing_markers = [int(section.timing_ms) for section in sections if section.timing_ms is not None]
+        explicit_timing_markers, _, has_ff_sentinel = _split_timing_values(timing_markers)
         summaries.append(
             {
                 "groupIndex": group_index,
@@ -112,8 +113,10 @@ def summarize_meta_groups(meta_sections: Sequence[Any], frame_records: Sequence[
                 "sectionCount": len(sections),
                 "layoutCounts": dict(sorted(layout_counts.items())),
                 "markerCounts": dict(sorted(marker_counts.items())),
-                "timingHintMs": max(timing_markers) if timing_markers else None,
+                "timingHintMs": max(explicit_timing_markers) if explicit_timing_markers else (255 if has_ff_sentinel else None),
                 "timingMarkerValues": timing_markers,
+                "timingExplicitValues": explicit_timing_markers,
+                "timingHasFfSentinel": has_ff_sentinel,
                 "sectionOffsets": [section.offset for section in sections[:12]],
                 "tupleCount": len(tuple_keys),
                 "uniqueChunkCount": len(unique_chunks),
@@ -310,14 +313,25 @@ def _marker_timing_values(sections: Sequence[Any]) -> list[int]:
     return [int(section.timing_ms) for section in sections if section.timing_ms is not None]
 
 
+def _split_timing_values(timing_values: Sequence[int]) -> tuple[list[int], list[int], bool]:
+    explicit = [int(value) for value in timing_values if int(value) not in {0, 255}]
+    zero_values = [int(value) for value in timing_values if int(value) == 0]
+    has_ff = any(int(value) == 255 for value in timing_values)
+    return (explicit, zero_values, has_ff)
+
+
 def infer_group_timing(sections: Sequence[Any]) -> dict[str, object]:
     markers = [str(section.marker_hex) for section in sections if section.marker_hex is not None]
     timing_values = _marker_timing_values(sections)
+    explicit_values, zero_values, has_ff = _split_timing_values(timing_values)
+    duration_hint = max(explicit_values) if explicit_values else (0 if zero_values else (255 if has_ff else None))
     return {
         "markerHexes": markers,
         "markerCount": len(markers),
         "markerValues": timing_values,
-        "durationHintMs": max(timing_values) if timing_values else None,
+        "explicitMarkerValues": explicit_values,
+        "hasFfSentinel": has_ff,
+        "durationHintMs": duration_hint,
     }
 
 

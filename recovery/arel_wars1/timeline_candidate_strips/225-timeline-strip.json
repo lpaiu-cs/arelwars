@@ -3,6 +3,7 @@
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "linked-mixed",
   "eventCount": 12,
+  "stemDefaultDurationMs": 50,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 11,
@@ -35,7 +36,9 @@
         0,
         15
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -45,6 +48,22 @@
       ],
       "timingValues": [
         255,
+        50,
+        50,
+        255,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         50,
         50,
         255,
@@ -63,7 +82,9 @@
         0,
         15
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -75,6 +96,22 @@
       "timingValues": [
         255,
         255,
+        50,
+        50,
+        255,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         50,
         50,
         255,
@@ -93,7 +130,9 @@
         0,
         16
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -105,6 +144,22 @@
       "timingValues": [
         255,
         255,
+        50,
+        50,
+        255,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         50,
         50,
         255,
@@ -123,7 +178,9 @@
         0,
         17
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
@@ -135,6 +192,22 @@
       "timingValues": [
         255,
         255,
+        50,
+        50,
+        255,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         50,
         50,
         255,
@@ -153,7 +226,9 @@
         12,
         13
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -164,6 +239,22 @@
         255,
         50,
         50,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        50,
+        50,
+        255,
         255
       ],
       "framePath": "frames/225/04-g04-linked.png"
@@ -179,7 +270,9 @@
         0,
         14
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 70,
+      "playbackDurationMs": 70,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6607000000",
@@ -194,6 +287,24 @@
         70,
         50,
         50,
+        255
+      ],
+      "timingExplicitValues": [
+        70,
+        70,
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        50,
+        50,
+        255,
         255
       ],
       "framePath": "frames/225/05-g05-linked.png"
@@ -209,7 +320,9 @@
         12,
         13
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -220,6 +333,22 @@
         255,
         50,
         50,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        50,
+        50,
+        255,
         255
       ],
       "framePath": "frames/225/06-g06-linked.png"
@@ -235,7 +364,9 @@
         4,
         18
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -245,6 +376,22 @@
       ],
       "timingValues": [
         255,
+        50,
+        50,
+        255,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         50,
         50,
         255,
@@ -263,7 +410,9 @@
         4,
         18
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -273,6 +422,22 @@
       ],
       "timingValues": [
         255,
+        50,
+        50,
+        255,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         50,
         50,
         255,
@@ -291,7 +456,9 @@
         9,
         19
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -301,6 +468,22 @@
       ],
       "timingValues": [
         255,
+        50,
+        50,
+        255,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
         50,
         50,
         255,
@@ -319,7 +502,9 @@
         9,
         14
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -330,6 +515,22 @@
         255,
         50,
         50,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        50,
+        50,
+        255,
         255
       ],
       "framePath": "frames/225/10-g10-linked.png"
@@ -345,7 +546,9 @@
         12,
         13
       ],
-      "durationHintMs": 255,
+      "durationHintMs": 50,
+      "playbackDurationMs": 50,
+      "playbackSource": "tail-marker",
       "timingMarkers": [
         "67ff000000",
         "6605000000",
@@ -356,6 +559,22 @@
         255,
         50,
         50,
+        255
+      ],
+      "timingExplicitValues": [
+        50,
+        50
+      ],
+      "anchorRecordMarkers": [
+        "6605000000",
+        "6605000000",
+        "67ff000000",
+        "67ff000000"
+      ],
+      "anchorRecordTimingValues": [
+        50,
+        50,
+        255,
         255
       ],
       "framePath": "frames/225/11-g11-linked.png"
