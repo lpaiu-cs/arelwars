@@ -16,6 +16,9 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     this.featuredEntries.forEach((entry) => {
       this.load.image(this.previewKey(entry.stem), entry.timelineStrip.pngPath)
+      entry.eventFramePaths.slice(0, 16).forEach((path, index) => {
+        this.load.image(this.frameKey(entry.stem, index), path)
+      })
     })
   }
 
@@ -111,7 +114,7 @@ export class RecoveryBootScene extends Phaser.Scene {
   }
 
   private createPreviewCarousel(frame: Phaser.GameObjects.Rectangle): void {
-    const previewImage = this.add.image(frame.x, frame.y - 14, this.previewKey(this.featuredEntries[0].stem))
+    const previewImage = this.add.image(frame.x, frame.y - 14, this.resolvePreviewTexture(this.featuredEntries[0], 0))
     this.fitImageToBox(previewImage, 316, 176)
 
     const label = this.add
@@ -139,12 +142,35 @@ export class RecoveryBootScene extends Phaser.Scene {
       })
       .setAlpha(0.9)
 
-    const applyEntry = (entry: RecoveryPreviewStem): void => {
-      previewImage.setTexture(this.previewKey(entry.stem))
+    let frameTimer: Phaser.Time.TimerEvent | null = null
+
+    const startFramePlayback = (entry: RecoveryPreviewStem): void => {
+      frameTimer?.remove(false)
+      if (entry.eventFramePaths.length < 2) {
+        previewImage.setTexture(this.resolvePreviewTexture(entry, 0))
+        this.fitImageToBox(previewImage, 316, 176)
+        return
+      }
+
+      let frameIndex = 0
+      previewImage.setTexture(this.resolvePreviewTexture(entry, frameIndex))
       this.fitImageToBox(previewImage, 316, 176)
+      frameTimer = this.time.addEvent({
+        delay: 260,
+        loop: true,
+        callback: () => {
+          frameIndex = (frameIndex + 1) % entry.eventFramePaths.length
+          previewImage.setTexture(this.resolvePreviewTexture(entry, frameIndex))
+          this.fitImageToBox(previewImage, 316, 176)
+        },
+      })
+    }
+
+    const applyEntry = (entry: RecoveryPreviewStem): void => {
+      startFramePlayback(entry)
       label.setText(`Stem ${entry.stem}`)
       detail.setText(`${this.formatKind(entry.timelineKind)} / anchors ${this.describeAnchors(entry)}`)
-      footer.setText(`${entry.linkedGroupCount} linked groups, ${entry.overlayGroupCount} overlays`)
+      footer.setText(`${entry.linkedGroupCount} linked groups, ${entry.overlayGroupCount} overlays, ${Math.max(entry.eventFramePaths.length, 1)} frames`)
     }
 
     applyEntry(this.featuredEntries[0])
@@ -192,6 +218,17 @@ export class RecoveryBootScene extends Phaser.Scene {
 
   private previewKey(stem: string): string {
     return `timeline-preview-${stem}`
+  }
+
+  private frameKey(stem: string, index: number): string {
+    return `timeline-frame-${stem}-${index}`
+  }
+
+  private resolvePreviewTexture(entry: RecoveryPreviewStem, index: number): string {
+    if (entry.eventFramePaths.length === 0) {
+      return this.previewKey(entry.stem)
+    }
+    return this.frameKey(entry.stem, Math.min(index, entry.eventFramePaths.length - 1))
   }
 
   private fitImageToBox(image: Phaser.GameObjects.Image, maxWidth: number, maxHeight: number): void {

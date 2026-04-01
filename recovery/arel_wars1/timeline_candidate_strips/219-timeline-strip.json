@@ -3,6 +3,11 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 3,
+  "eventFramePaths": [
+    "frames/219/00-g02-overlay.png",
+    "frames/219/01-g03-overlay.png",
+    "frames/219/02-g05-overlay.png"
+  ],
   "events": [
     {
       "groupIndex": 2,
@@ -14,7 +19,8 @@
       "chunkIndexRange": [
         35,
         35
-      ]
+      ],
+      "framePath": "frames/219/00-g02-overlay.png"
     },
     {
       "groupIndex": 3,
@@ -26,7 +32,8 @@
       "chunkIndexRange": [
         34,
         34
-      ]
+      ],
+      "framePath": "frames/219/01-g03-overlay.png"
     },
     {
       "groupIndex": 5,
@@ -38,7 +45,8 @@
       "chunkIndexRange": [
         35,
         35
-      ]
+      ],
+      "framePath": "frames/219/02-g05-overlay.png"
     }
   ]
 }

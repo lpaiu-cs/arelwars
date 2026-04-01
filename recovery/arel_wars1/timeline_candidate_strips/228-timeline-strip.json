@@ -3,6 +3,10 @@
   "timelineKind": "single-anchor-with-overlays",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 2,
+  "eventFramePaths": [
+    "frames/228/00-g01-overlay.png",
+    "frames/228/01-g03-linked.png"
+  ],
   "events": [
     {
       "groupIndex": 1,
@@ -14,7 +18,8 @@
       "chunkIndexRange": [
         51,
         52
-      ]
+      ],
+      "framePath": "frames/228/00-g01-overlay.png"
     },
     {
       "groupIndex": 3,
@@ -26,7 +31,8 @@
       "chunkIndexRange": [
         0,
         58
-      ]
+      ],
+      "framePath": "frames/228/01-g03-linked.png"
     }
   ]
 }

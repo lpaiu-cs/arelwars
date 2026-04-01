@@ -3,6 +3,17 @@
   "timelineKind": "single-anchor-with-overlays",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 9,
+  "eventFramePaths": [
+    "frames/209/00-g00-linked.png",
+    "frames/209/01-g01-overlay.png",
+    "frames/209/02-g02-overlay.png",
+    "frames/209/03-g03-overlay.png",
+    "frames/209/04-g04-overlay.png",
+    "frames/209/05-g05-overlay.png",
+    "frames/209/06-g06-overlay.png",
+    "frames/209/07-g07-overlay.png",
+    "frames/209/08-g08-overlay.png"
+  ],
   "events": [
     {
       "groupIndex": 0,
@@ -14,7 +25,8 @@
       "chunkIndexRange": [
         7,
         34
-      ]
+      ],
+      "framePath": "frames/209/00-g00-linked.png"
     },
     {
       "groupIndex": 1,
@@ -26,7 +38,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/01-g01-overlay.png"
     },
     {
       "groupIndex": 2,
@@ -38,7 +51,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/02-g02-overlay.png"
     },
     {
       "groupIndex": 3,
@@ -50,7 +64,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/03-g03-overlay.png"
     },
     {
       "groupIndex": 4,
@@ -62,7 +77,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/04-g04-overlay.png"
     },
     {
       "groupIndex": 5,
@@ -74,7 +90,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/05-g05-overlay.png"
     },
     {
       "groupIndex": 6,
@@ -86,7 +103,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/06-g06-overlay.png"
     },
     {
       "groupIndex": 7,
@@ -98,7 +116,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/07-g07-overlay.png"
     },
     {
       "groupIndex": 8,
@@ -110,7 +129,8 @@
       "chunkIndexRange": [
         18,
         34
-      ]
+      ],
+      "framePath": "frames/209/08-g08-overlay.png"
     }
   ]
 }

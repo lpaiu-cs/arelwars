@@ -3,6 +3,40 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 32,
+  "eventFramePaths": [
+    "frames/083/00-g09-overlay.png",
+    "frames/083/01-g11-overlay.png",
+    "frames/083/02-g12-overlay.png",
+    "frames/083/03-g13-overlay.png",
+    "frames/083/04-g14-overlay.png",
+    "frames/083/05-g15-overlay.png",
+    "frames/083/06-g16-overlay.png",
+    "frames/083/07-g17-overlay.png",
+    "frames/083/08-g18-overlay.png",
+    "frames/083/09-g19-overlay.png",
+    "frames/083/10-g20-overlay.png",
+    "frames/083/11-g21-overlay.png",
+    "frames/083/12-g22-overlay.png",
+    "frames/083/13-g23-overlay.png",
+    "frames/083/14-g25-overlay.png",
+    "frames/083/15-g26-overlay.png",
+    "frames/083/16-g27-overlay.png",
+    "frames/083/17-g28-overlay.png",
+    "frames/083/18-g30-overlay.png",
+    "frames/083/19-g32-overlay.png",
+    "frames/083/20-g34-overlay.png",
+    "frames/083/21-g36-overlay.png",
+    "frames/083/22-g37-overlay.png",
+    "frames/083/23-g38-overlay.png",
+    "frames/083/24-g40-overlay.png",
+    "frames/083/25-g41-overlay.png",
+    "frames/083/26-g42-overlay.png",
+    "frames/083/27-g43-overlay.png",
+    "frames/083/28-g50-overlay.png",
+    "frames/083/29-g51-overlay.png",
+    "frames/083/30-g56-overlay.png",
+    "frames/083/31-g62-overlay.png"
+  ],
   "events": [
     {
       "groupIndex": 9,
@@ -14,7 +48,8 @@
       "chunkIndexRange": [
         80,
         80
-      ]
+      ],
+      "framePath": "frames/083/00-g09-overlay.png"
     },
     {
       "groupIndex": 11,
@@ -26,7 +61,8 @@
       "chunkIndexRange": [
         79,
         80
-      ]
+      ],
+      "framePath": "frames/083/01-g11-overlay.png"
     },
     {
       "groupIndex": 12,
@@ -38,7 +74,8 @@
       "chunkIndexRange": [
         80,
         81
-      ]
+      ],
+      "framePath": "frames/083/02-g12-overlay.png"
     },
     {
       "groupIndex": 13,
@@ -50,7 +87,8 @@
       "chunkIndexRange": [
         34,
         79
-      ]
+      ],
+      "framePath": "frames/083/03-g13-overlay.png"
     },
     {
       "groupIndex": 14,
@@ -62,7 +100,8 @@
       "chunkIndexRange": [
         79,
         80
-      ]
+      ],
+      "framePath": "frames/083/04-g14-overlay.png"
     },
     {
       "groupIndex": 15,
@@ -74,7 +113,8 @@
       "chunkIndexRange": [
         79,
         79
-      ]
+      ],
+      "framePath": "frames/083/05-g15-overlay.png"
     },
     {
       "groupIndex": 16,
@@ -86,7 +126,8 @@
       "chunkIndexRange": [
         80,
         82
-      ]
+      ],
+      "framePath": "frames/083/06-g16-overlay.png"
     },
     {
       "groupIndex": 17,
@@ -98,7 +139,8 @@
       "chunkIndexRange": [
         34,
         79
-      ]
+      ],
+      "framePath": "frames/083/07-g17-overlay.png"
     },
     {
       "groupIndex": 18,
@@ -110,7 +152,8 @@
       "chunkIndexRange": [
         79,
         80
-      ]
+      ],
+      "framePath": "frames/083/08-g18-overlay.png"
     },
     {
       "groupIndex": 19,
@@ -122,7 +165,8 @@
       "chunkIndexRange": [
         79,
         79
-      ]
+      ],
+      "framePath": "frames/083/09-g19-overlay.png"
     },
     {
       "groupIndex": 20,
@@ -134,7 +178,8 @@
       "chunkIndexRange": [
         80,
         83
-      ]
+      ],
+      "framePath": "frames/083/10-g20-overlay.png"
     },
     {
       "groupIndex": 21,
@@ -146,7 +191,8 @@
       "chunkIndexRange": [
         34,
         79
-      ]
+      ],
+      "framePath": "frames/083/11-g21-overlay.png"
     },
     {
       "groupIndex": 22,
@@ -158,7 +204,8 @@
       "chunkIndexRange": [
         79,
         80
-      ]
+      ],
+      "framePath": "frames/083/12-g22-overlay.png"
     },
     {
       "groupIndex": 23,
@@ -170,7 +217,8 @@
       "chunkIndexRange": [
         79,
         79
-      ]
+      ],
+      "framePath": "frames/083/13-g23-overlay.png"
     },
     {
       "groupIndex": 25,
@@ -182,7 +230,8 @@
       "chunkIndexRange": [
         80,
         80
-      ]
+      ],
+      "framePath": "frames/083/14-g25-overlay.png"
     },
     {
       "groupIndex": 26,
@@ -194,7 +243,8 @@
       "chunkIndexRange": [
         34,
         79
-      ]
+      ],
+      "framePath": "frames/083/15-g26-overlay.png"
     },
     {
       "groupIndex": 27,
@@ -206,7 +256,8 @@
       "chunkIndexRange": [
         79,
         80
-      ]
+      ],
+      "framePath": "frames/083/16-g27-overlay.png"
     },
     {
       "groupIndex": 28,
@@ -218,7 +269,8 @@
       "chunkIndexRange": [
         79,
         79
-      ]
+      ],
+      "framePath": "frames/083/17-g28-overlay.png"
     },
     {
       "groupIndex": 30,
@@ -230,7 +282,8 @@
       "chunkIndexRange": [
         80,
         80
-      ]
+      ],
+      "framePath": "frames/083/18-g30-overlay.png"
     },
     {
       "groupIndex": 32,
@@ -242,7 +295,8 @@
       "chunkIndexRange": [
         79,
         80
-      ]
+      ],
+      "framePath": "frames/083/19-g32-overlay.png"
     },
     {
       "groupIndex": 34,
@@ -254,7 +308,8 @@
       "chunkIndexRange": [
         80,
         80
-      ]
+      ],
+      "framePath": "frames/083/20-g34-overlay.png"
     },
     {
       "groupIndex": 36,
@@ -266,7 +321,8 @@
       "chunkIndexRange": [
         80,
         80
-      ]
+      ],
+      "framePath": "frames/083/21-g36-overlay.png"
     },
     {
       "groupIndex": 37,
@@ -278,7 +334,8 @@
       "chunkIndexRange": [
         66,
         66
-      ]
+      ],
+      "framePath": "frames/083/22-g37-overlay.png"
     },
     {
       "groupIndex": 38,
@@ -290,7 +347,8 @@
       "chunkIndexRange": [
         67,
         67
-      ]
+      ],
+      "framePath": "frames/083/23-g38-overlay.png"
     },
     {
       "groupIndex": 40,
@@ -302,7 +360,8 @@
       "chunkIndexRange": [
         66,
         66
-      ]
+      ],
+      "framePath": "frames/083/24-g40-overlay.png"
     },
     {
       "groupIndex": 41,
@@ -314,7 +373,8 @@
       "chunkIndexRange": [
         66,
         67
-      ]
+      ],
+      "framePath": "frames/083/25-g41-overlay.png"
     },
     {
       "groupIndex": 42,
@@ -326,7 +386,8 @@
       "chunkIndexRange": [
         67,
         67
-      ]
+      ],
+      "framePath": "frames/083/26-g42-overlay.png"
     },
     {
       "groupIndex": 43,
@@ -338,7 +399,8 @@
       "chunkIndexRange": [
         77,
         78
-      ]
+      ],
+      "framePath": "frames/083/27-g43-overlay.png"
     },
     {
       "groupIndex": 50,
@@ -350,7 +412,8 @@
       "chunkIndexRange": [
         66,
         68
-      ]
+      ],
+      "framePath": "frames/083/28-g50-overlay.png"
     },
     {
       "groupIndex": 51,
@@ -362,7 +425,8 @@
       "chunkIndexRange": [
         67,
         67
-      ]
+      ],
+      "framePath": "frames/083/29-g51-overlay.png"
     },
     {
       "groupIndex": 56,
@@ -374,7 +438,8 @@
       "chunkIndexRange": [
         68,
         68
-      ]
+      ],
+      "framePath": "frames/083/30-g56-overlay.png"
     },
     {
       "groupIndex": 62,
@@ -386,7 +451,8 @@
       "chunkIndexRange": [
         58,
         58
-      ]
+      ],
+      "framePath": "frames/083/31-g62-overlay.png"
     }
   ]
 }

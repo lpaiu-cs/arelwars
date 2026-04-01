@@ -123,7 +123,7 @@ npm run ios:sync
 - Web Runtime
   `sync:recovery` now exports `preview_manifest.json`, sequence summaries, and timeline strips into `remake/arel-wars1/public/recovery/analysis/`.
   The Vite runtime reads those files to render:
-  - a Phaser-side rotating strip carousel for representative stems
+  - a Phaser-side rotating timeline carousel for representative stems, now backed by per-event candidate frame playback
   - a DOM-side featured timeline gallery fed from the same manifest
 
 ## Immediate Next Targets
@@ -217,6 +217,8 @@ optional 5-byte control chunks may appear:
   - `215-timeline-strip.png` shows `single-anchor-cadence`: the same anchor frame `10` reused across a long sequence of tiny linked deltas before a final overlay event.
   - `226-timeline-strip.png` shows `mixed-anchor-overlay`: a long prefix of overlay-only events tied to frame `0`, then two linked anchor updates (`0`, then `5`).
   - `240-timeline-strip.png` confirms `overlay-track-only`: every event is unanchored and the chunk ranges expand from `46-47` to `49-51` without touching any base frame.
+- Each timeline strip export now also writes per-event combined frames under `recovery/arel_wars1/timeline_candidate_strips/frames/<stem>/`.
+  - Those event frames are now copied into the web runtime and used by the Phaser scene as lightweight candidate playback.
 - The runtime export now packages those results into `public/recovery/analysis/preview_manifest.json`.
   - Current featured stems are `084`, `230`, `209`, `215`, `226`, `082`, and `203`.
   - The manifest currently summarizes `21` active stems and `7` timeline classes for the web preview.

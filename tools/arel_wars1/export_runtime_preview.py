@@ -119,6 +119,7 @@ def main() -> None:
                     "bestContiguousRun": sequence_summary.get("bestContiguousRun"),
                     "timelineStripSourcePng": timeline_strip_png,
                     "timelineStripSourceJson": timeline_strip_json,
+                    "timelineStripData": read_json(timeline_strip_json),
                     "sequenceSummarySourceJson": sequence_summary_json,
                     "linkedSourcePng": linked_png if linked_png.exists() else None,
                     "overlaySourcePng": overlay_png if overlay_png.exists() else None,
@@ -130,8 +131,9 @@ def main() -> None:
 
     analysis_root = web_root / "analysis"
     timeline_target_root = analysis_root / "timeline_candidate_strips"
+    event_target_root = analysis_root / "timeline_event_frames"
     sequence_target_root = analysis_root / "frame_sequence_candidates"
-    ensure_paths = [timeline_target_root, sequence_target_root]
+    ensure_paths = [timeline_target_root, event_target_root, sequence_target_root]
     for path in ensure_paths:
         path.mkdir(parents=True, exist_ok=True)
 
@@ -150,6 +152,19 @@ def main() -> None:
         sequence_json_name = f"{stem}-sequence-summary.json"
         linked_name = f"{stem}-linked-sequence.png"
         overlay_name = f"{stem}-overlay-sequence.png"
+        timeline_strip_data = entry["timelineStripData"]
+        event_frame_paths: list[str] = []
+        if isinstance(timeline_strip_data, dict):
+            raw_frame_paths = timeline_strip_data.get("eventFramePaths", [])
+            if isinstance(raw_frame_paths, list):
+                for raw_path in raw_frame_paths:
+                    src = timeline_root / str(raw_path)
+                    if not src.exists():
+                        continue
+                    frame_rel_path = Path(stem) / Path(str(raw_path)).name
+                    dst = event_target_root / frame_rel_path
+                    copy_file(src, dst)
+                    event_frame_paths.append(f"/recovery/analysis/timeline_event_frames/{frame_rel_path.as_posix()}")
 
         copy_file(Path(entry["timelineStripSourcePng"]), timeline_target_root / timeline_png_name)
         copy_file(Path(entry["timelineStripSourceJson"]), timeline_target_root / timeline_json_name)
@@ -172,6 +187,7 @@ def main() -> None:
                     "pngPath": f"/recovery/analysis/timeline_candidate_strips/{timeline_png_name}",
                     "jsonPath": f"/recovery/analysis/timeline_candidate_strips/{timeline_json_name}",
                 },
+                "eventFramePaths": event_frame_paths,
                 "sequenceSummaryPath": f"/recovery/analysis/frame_sequence_candidates/{sequence_json_name}",
                 "linkedSequencePngPath": (
                     f"/recovery/analysis/frame_sequence_candidates/{linked_name}" if entry["linkedSourcePng"] is not None else None

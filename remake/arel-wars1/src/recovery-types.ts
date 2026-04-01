@@ -50,6 +50,7 @@ export interface RecoveryPreviewStem {
     pngPath: string
     jsonPath: string
   }
+  eventFramePaths: string[]
   sequenceSummaryPath: string
   linkedSequencePngPath: string | null
   overlaySequencePngPath: string | null

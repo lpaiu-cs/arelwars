@@ -138,6 +138,8 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
     mapper_label, mapper = choose_mapper(stem, assets_root, first_stream)
     panels: list[Image.Image] = []
     event_summaries: list[dict[str, object]] = []
+    event_frame_paths: list[str] = []
+    event_frame_root = output_root / "frames" / stem
     for event in events:
         tail_items = list(event["tailItems"])
         anchor = event["anchorFrameIndex"]
@@ -153,6 +155,12 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         footer = event["relation"] or event["linkType"]
         panels.append(_build_frame_panel(combined, label, sublabel, footer))
 
+        event_frame_root.mkdir(parents=True, exist_ok=True)
+        frame_name = f"{len(event_frame_paths):02d}-g{event['groupIndex']:02d}-{event['eventType']}.png"
+        frame_path = event_frame_root / frame_name
+        combined.save(frame_path)
+        event_frame_paths.append(str(Path("frames") / stem / frame_name))
+
         event_summaries.append(
             {
                 "groupIndex": event["groupIndex"],
@@ -162,6 +170,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
                 "relation": event["relation"],
                 "tupleCount": event["tupleCount"],
                 "chunkIndexRange": event["chunkIndexRange"],
+                "framePath": str(Path("frames") / stem / frame_name),
             }
         )
 
@@ -179,6 +188,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
                 "timelineKind": sequence_summary["timelineKind"],
                 "sequenceKind": sequence_summary["sequenceKind"],
                 "eventCount": len(event_summaries),
+                "eventFramePaths": event_frame_paths,
                 "events": event_summaries,
             },
             ensure_ascii=False,
@@ -187,7 +197,7 @@ def render_stem(stem: str, assets_root: Path, output_root: Path, scale: int) -> 
         encoding="utf-8",
     )
 
-    return [png_path, json_path]
+    return [png_path, json_path, *[output_root / path for path in event_frame_paths]]
 
 
 def main() -> None:

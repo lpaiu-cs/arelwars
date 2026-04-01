@@ -3,6 +3,9 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 1,
+  "eventFramePaths": [
+    "frames/231/00-g00-overlay.png"
+  ],
   "events": [
     {
       "groupIndex": 0,
@@ -14,7 +17,8 @@
       "chunkIndexRange": [
         49,
         49
-      ]
+      ],
+      "framePath": "frames/231/00-g00-overlay.png"
     }
   ]
 }

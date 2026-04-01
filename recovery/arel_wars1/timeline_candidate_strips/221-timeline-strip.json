@@ -3,6 +3,9 @@
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 1,
+  "eventFramePaths": [
+    "frames/221/00-g06-linked.png"
+  ],
   "events": [
     {
       "groupIndex": 6,
@@ -14,7 +17,8 @@
       "chunkIndexRange": [
         6,
         45
-      ]
+      ],
+      "framePath": "frames/221/00-g06-linked.png"
     }
   ]
 }

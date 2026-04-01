@@ -3,6 +3,26 @@
   "timelineKind": "overlay-track-only",
   "sequenceKind": "overlay-only",
   "eventCount": 18,
+  "eventFramePaths": [
+    "frames/082/00-g04-overlay.png",
+    "frames/082/01-g05-overlay.png",
+    "frames/082/02-g16-overlay.png",
+    "frames/082/03-g18-overlay.png",
+    "frames/082/04-g22-overlay.png",
+    "frames/082/05-g28-overlay.png",
+    "frames/082/06-g30-overlay.png",
+    "frames/082/07-g36-overlay.png",
+    "frames/082/08-g39-overlay.png",
+    "frames/082/09-g45-overlay.png",
+    "frames/082/10-g47-overlay.png",
+    "frames/082/11-g48-overlay.png",
+    "frames/082/12-g50-overlay.png",
+    "frames/082/13-g51-overlay.png",
+    "frames/082/14-g52-overlay.png",
+    "frames/082/15-g54-overlay.png",
+    "frames/082/16-g55-overlay.png",
+    "frames/082/17-g56-overlay.png"
+  ],
   "events": [
     {
       "groupIndex": 4,
@@ -14,7 +34,8 @@
       "chunkIndexRange": [
         78,
         78
-      ]
+      ],
+      "framePath": "frames/082/00-g04-overlay.png"
     },
     {
       "groupIndex": 5,
@@ -26,7 +47,8 @@
       "chunkIndexRange": [
         80,
         80
-      ]
+      ],
+      "framePath": "frames/082/01-g05-overlay.png"
     },
     {
       "groupIndex": 16,
@@ -38,7 +60,8 @@
       "chunkIndexRange": [
         40,
         41
-      ]
+      ],
+      "framePath": "frames/082/02-g16-overlay.png"
     },
     {
       "groupIndex": 18,
@@ -50,7 +73,8 @@
       "chunkIndexRange": [
         44,
         44
-      ]
+      ],
+      "framePath": "frames/082/03-g18-overlay.png"
     },
     {
       "groupIndex": 22,
@@ -62,7 +86,8 @@
       "chunkIndexRange": [
         44,
         44
-      ]
+      ],
+      "framePath": "frames/082/04-g22-overlay.png"
     },
     {
       "groupIndex": 28,
@@ -74,7 +99,8 @@
       "chunkIndexRange": [
         84,
         84
-      ]
+      ],
+      "framePath": "frames/082/05-g28-overlay.png"
     },
     {
       "groupIndex": 30,
@@ -86,7 +112,8 @@
       "chunkIndexRange": [
         84,
         84
-      ]
+      ],
+      "framePath": "frames/082/06-g30-overlay.png"
     },
     {
       "groupIndex": 36,
@@ -98,7 +125,8 @@
       "chunkIndexRange": [
         97,
         97
-      ]
+      ],
+      "framePath": "frames/082/07-g36-overlay.png"
     },
     {
       "groupIndex": 39,
@@ -110,7 +138,8 @@
       "chunkIndexRange": [
         97,
         97
-      ]
+      ],
+      "framePath": "frames/082/08-g39-overlay.png"
     },
     {
       "groupIndex": 45,
@@ -122,7 +151,8 @@
       "chunkIndexRange": [
         97,
         97
-      ]
+      ],
+      "framePath": "frames/082/09-g45-overlay.png"
     },
     {
       "groupIndex": 47,
@@ -134,7 +164,8 @@
       "chunkIndexRange": [
         92,
         97
-      ]
+      ],
+      "framePath": "frames/082/10-g47-overlay.png"
     },
     {
       "groupIndex": 48,
@@ -146,7 +177,8 @@
       "chunkIndexRange": [
         97,
         97
-      ]
+      ],
+      "framePath": "frames/082/11-g48-overlay.png"
     },
     {
       "groupIndex": 50,
@@ -158,7 +190,8 @@
       "chunkIndexRange": [
         84,
         92
-      ]
+      ],
+      "framePath": "frames/082/12-g50-overlay.png"
     },
     {
       "groupIndex": 51,
@@ -170,7 +203,8 @@
       "chunkIndexRange": [
         89,
         97
-      ]
+      ],
+      "framePath": "frames/082/13-g51-overlay.png"
     },
     {
       "groupIndex": 52,
@@ -182,7 +216,8 @@
       "chunkIndexRange": [
         97,
         97
-      ]
+      ],
+      "framePath": "frames/082/14-g52-overlay.png"
     },
     {
       "groupIndex": 54,
@@ -194,7 +229,8 @@
       "chunkIndexRange": [
         84,
         92
-      ]
+      ],
+      "framePath": "frames/082/15-g54-overlay.png"
     },
     {
       "groupIndex": 55,
@@ -206,7 +242,8 @@
       "chunkIndexRange": [
         90,
         97
-      ]
+      ],
+      "framePath": "frames/082/16-g55-overlay.png"
     },
     {
       "groupIndex": 56,
@@ -218,7 +255,8 @@
       "chunkIndexRange": [
         97,
         97
-      ]
+      ],
+      "framePath": "frames/082/17-g56-overlay.png"
     }
   ]
 }

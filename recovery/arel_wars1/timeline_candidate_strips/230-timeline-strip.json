@@ -3,6 +3,16 @@
   "timelineKind": "rising-anchor-run",
   "sequenceKind": "has-contiguous-rise",
   "eventCount": 8,
+  "eventFramePaths": [
+    "frames/230/00-g00-linked.png",
+    "frames/230/01-g01-linked.png",
+    "frames/230/02-g02-linked.png",
+    "frames/230/03-g03-linked.png",
+    "frames/230/04-g04-linked.png",
+    "frames/230/05-g05-linked.png",
+    "frames/230/06-g06-linked.png",
+    "frames/230/07-g07-linked.png"
+  ],
   "events": [
     {
       "groupIndex": 0,
@@ -14,7 +24,8 @@
       "chunkIndexRange": [
         2,
         34
-      ]
+      ],
+      "framePath": "frames/230/00-g00-linked.png"
     },
     {
       "groupIndex": 1,
@@ -26,7 +37,8 @@
       "chunkIndexRange": [
         3,
         34
-      ]
+      ],
+      "framePath": "frames/230/01-g01-linked.png"
     },
     {
       "groupIndex": 2,
@@ -38,7 +50,8 @@
       "chunkIndexRange": [
         0,
         34
-      ]
+      ],
+      "framePath": "frames/230/02-g02-linked.png"
     },
     {
       "groupIndex": 3,
@@ -50,7 +63,8 @@
       "chunkIndexRange": [
         2,
         34
-      ]
+      ],
+      "framePath": "frames/230/03-g03-linked.png"
     },
     {
       "groupIndex": 4,
@@ -62,7 +76,8 @@
       "chunkIndexRange": [
         3,
         34
-      ]
+      ],
+      "framePath": "frames/230/04-g04-linked.png"
     },
     {
       "groupIndex": 5,
@@ -74,7 +89,8 @@
       "chunkIndexRange": [
         0,
         34
-      ]
+      ],
+      "framePath": "frames/230/05-g05-linked.png"
     },
     {
       "groupIndex": 6,
@@ -86,7 +102,8 @@
       "chunkIndexRange": [
         3,
         34
-      ]
+      ],
+      "framePath": "frames/230/06-g06-linked.png"
     },
     {
       "groupIndex": 7,
@@ -98,7 +115,8 @@
       "chunkIndexRange": [
         0,
         34
-      ]
+      ],
+      "framePath": "frames/230/07-g07-linked.png"
     }
   ]
 }

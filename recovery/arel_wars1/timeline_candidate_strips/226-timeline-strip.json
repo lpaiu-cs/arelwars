@@ -3,6 +3,19 @@
   "timelineKind": "mixed-anchor-overlay",
   "sequenceKind": "linked-mixed",
   "eventCount": 11,
+  "eventFramePaths": [
+    "frames/226/00-g05-overlay.png",
+    "frames/226/01-g07-overlay.png",
+    "frames/226/02-g09-overlay.png",
+    "frames/226/03-g11-overlay.png",
+    "frames/226/04-g13-overlay.png",
+    "frames/226/05-g15-overlay.png",
+    "frames/226/06-g17-overlay.png",
+    "frames/226/07-g19-overlay.png",
+    "frames/226/08-g21-overlay.png",
+    "frames/226/09-g22-linked.png",
+    "frames/226/10-g24-linked.png"
+  ],
   "events": [
     {
       "groupIndex": 5,
@@ -14,7 +27,8 @@
       "chunkIndexRange": [
         31,
         31
-      ]
+      ],
+      "framePath": "frames/226/00-g05-overlay.png"
     },
     {
       "groupIndex": 7,
@@ -26,7 +40,8 @@
       "chunkIndexRange": [
         31,
         31
-      ]
+      ],
+      "framePath": "frames/226/01-g07-overlay.png"
     },
     {
       "groupIndex": 9,
@@ -38,7 +53,8 @@
       "chunkIndexRange": [
         27,
         31
-      ]
+      ],
+      "framePath": "frames/226/02-g09-overlay.png"
     },
     {
       "groupIndex": 11,
@@ -50,7 +66,8 @@
       "chunkIndexRange": [
         27,
         31
-      ]
+      ],
+      "framePath": "frames/226/03-g11-overlay.png"
     },
     {
       "groupIndex": 13,
@@ -62,7 +79,8 @@
       "chunkIndexRange": [
         27,
         31
-      ]
+      ],
+      "framePath": "frames/226/04-g13-overlay.png"
     },
     {
       "groupIndex": 15,
@@ -74,7 +92,8 @@
       "chunkIndexRange": [
         27,
         31
-      ]
+      ],
+      "framePath": "frames/226/05-g15-overlay.png"
     },
     {
       "groupIndex": 17,
@@ -86,7 +105,8 @@
       "chunkIndexRange": [
         27,
         31
-      ]
+      ],
+      "framePath": "frames/226/06-g17-overlay.png"
     },
     {
       "groupIndex": 19,
@@ -98,7 +118,8 @@
       "chunkIndexRange": [
         27,
         31
-      ]
+      ],
+      "framePath": "frames/226/07-g19-overlay.png"
     },
     {
       "groupIndex": 21,
@@ -110,7 +131,8 @@
       "chunkIndexRange": [
         27,
         31
-      ]
+      ],
+      "framePath": "frames/226/08-g21-overlay.png"
     },
     {
       "groupIndex": 22,
@@ -122,7 +144,8 @@
       "chunkIndexRange": [
         28,
         28
-      ]
+      ],
+      "framePath": "frames/226/09-g22-linked.png"
     },
     {
       "groupIndex": 24,
@@ -134,7 +157,8 @@
       "chunkIndexRange": [
         28,
         28
-      ]
+      ],
+      "framePath": "frames/226/10-g24-linked.png"
     }
   ]
 }

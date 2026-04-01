@@ -3,6 +3,19 @@
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "linked-mixed",
   "eventCount": 11,
+  "eventFramePaths": [
+    "frames/225/00-g00-linked.png",
+    "frames/225/01-g01-linked.png",
+    "frames/225/02-g02-linked.png",
+    "frames/225/03-g03-linked.png",
+    "frames/225/04-g04-linked.png",
+    "frames/225/05-g06-linked.png",
+    "frames/225/06-g07-linked.png",
+    "frames/225/07-g08-linked.png",
+    "frames/225/08-g09-linked.png",
+    "frames/225/09-g10-linked.png",
+    "frames/225/10-g11-linked.png"
+  ],
   "events": [
     {
       "groupIndex": 0,
@@ -14,7 +27,8 @@
       "chunkIndexRange": [
         0,
         15
-      ]
+      ],
+      "framePath": "frames/225/00-g00-linked.png"
     },
     {
       "groupIndex": 1,
@@ -26,7 +40,8 @@
       "chunkIndexRange": [
         0,
         15
-      ]
+      ],
+      "framePath": "frames/225/01-g01-linked.png"
     },
     {
       "groupIndex": 2,
@@ -38,7 +53,8 @@
       "chunkIndexRange": [
         0,
         16
-      ]
+      ],
+      "framePath": "frames/225/02-g02-linked.png"
     },
     {
       "groupIndex": 3,
@@ -50,7 +66,8 @@
       "chunkIndexRange": [
         0,
         17
-      ]
+      ],
+      "framePath": "frames/225/03-g03-linked.png"
     },
     {
       "groupIndex": 4,
@@ -62,7 +79,8 @@
       "chunkIndexRange": [
         12,
         13
-      ]
+      ],
+      "framePath": "frames/225/04-g04-linked.png"
     },
     {
       "groupIndex": 6,
@@ -74,7 +92,8 @@
       "chunkIndexRange": [
         12,
         13
-      ]
+      ],
+      "framePath": "frames/225/05-g06-linked.png"
     },
     {
       "groupIndex": 7,
@@ -86,7 +105,8 @@
       "chunkIndexRange": [
         4,
         18
-      ]
+      ],
+      "framePath": "frames/225/06-g07-linked.png"
     },
     {
       "groupIndex": 8,
@@ -98,7 +118,8 @@
       "chunkIndexRange": [
         4,
         18
-      ]
+      ],
+      "framePath": "frames/225/07-g08-linked.png"
     },
     {
       "groupIndex": 9,
@@ -110,7 +131,8 @@
       "chunkIndexRange": [
         9,
         19
-      ]
+      ],
+      "framePath": "frames/225/08-g09-linked.png"
     },
     {
       "groupIndex": 10,
@@ -122,7 +144,8 @@
       "chunkIndexRange": [
         9,
         14
-      ]
+      ],
+      "framePath": "frames/225/09-g10-linked.png"
     },
     {
       "groupIndex": 11,
@@ -134,7 +157,8 @@
       "chunkIndexRange": [
         12,
         13
-      ]
+      ],
+      "framePath": "frames/225/10-g11-linked.png"
     }
   ]
 }

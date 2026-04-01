@@ -3,6 +3,18 @@
   "timelineKind": "single-anchor-cadence",
   "sequenceKind": "single-anchor-repeat",
   "eventCount": 10,
+  "eventFramePaths": [
+    "frames/215/00-g02-linked.png",
+    "frames/215/01-g06-linked.png",
+    "frames/215/02-g09-linked.png",
+    "frames/215/03-g14-linked.png",
+    "frames/215/04-g17-linked.png",
+    "frames/215/05-g22-linked.png",
+    "frames/215/06-g25-linked.png",
+    "frames/215/07-g29-linked.png",
+    "frames/215/08-g32-linked.png",
+    "frames/215/09-g33-overlay.png"
+  ],
   "events": [
     {
       "groupIndex": 2,
@@ -14,7 +26,8 @@
       "chunkIndexRange": [
         22,
         22
-      ]
+      ],
+      "framePath": "frames/215/00-g02-linked.png"
     },
     {
       "groupIndex": 6,
@@ -26,7 +39,8 @@
       "chunkIndexRange": [
         23,
         23
-      ]
+      ],
+      "framePath": "frames/215/01-g06-linked.png"
     },
     {
       "groupIndex": 9,
@@ -38,7 +52,8 @@
       "chunkIndexRange": [
         22,
         22
-      ]
+      ],
+      "framePath": "frames/215/02-g09-linked.png"
     },
     {
       "groupIndex": 14,
@@ -50,7 +65,8 @@
       "chunkIndexRange": [
         23,
         23
-      ]
+      ],
+      "framePath": "frames/215/03-g14-linked.png"
     },
     {
       "groupIndex": 17,
@@ -62,7 +78,8 @@
       "chunkIndexRange": [
         22,
         22
-      ]
+      ],
+      "framePath": "frames/215/04-g17-linked.png"
     },
     {
       "groupIndex": 22,
@@ -74,7 +91,8 @@
       "chunkIndexRange": [
         23,
         23
-      ]
+      ],
+      "framePath": "frames/215/05-g22-linked.png"
     },
     {
       "groupIndex": 25,
@@ -86,7 +104,8 @@
       "chunkIndexRange": [
         22,
         22
-      ]
+      ],
+      "framePath": "frames/215/06-g25-linked.png"
     },
     {
       "groupIndex": 29,
@@ -98,7 +117,8 @@
       "chunkIndexRange": [
         22,
         22
-      ]
+      ],
+      "framePath": "frames/215/07-g29-linked.png"
     },
     {
       "groupIndex": 32,
@@ -110,7 +130,8 @@
       "chunkIndexRange": [
         21,
         23
-      ]
+      ],
+      "framePath": "frames/215/08-g32-linked.png"
     },
     {
       "groupIndex": 33,
@@ -122,7 +143,8 @@
       "chunkIndexRange": [
         26,
         26
-      ]
+      ],
+      "framePath": "frames/215/09-g33-overlay.png"
     }
   ]
 }
