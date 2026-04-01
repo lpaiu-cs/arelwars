@@ -106,6 +106,27 @@
       "196",
       "197",
       "198"
+    ],
+    "sharedMplGroupCount": 2,
+    "sharedMplGroupPreview": [
+      {
+        "sha1": "20e79c13befa9d25b6e86dc2381c84b8f5cdfd1a",
+        "stems": [
+          "145",
+          "146"
+        ],
+        "regularPaletteStems": [
+          "146"
+        ]
+      },
+      {
+        "sha1": "f8524b65e4808c1faa575ba411d3eb86b1705cb2",
+        "stems": [
+          "179",
+          "180"
+        ],
+        "regularPaletteStems": []
+      }
     ]
   },
   "findings": [
@@ -116,6 +137,7 @@
     "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using skip(u16), literal(opcode 0x80nn + nn bytes), and repeat(opcode 0xC0nn + one value byte repeated nn times).",
     "Some chunks start with FD FF before the first row. Rows are separated by FE FF, and chunks end with a trailing FFFF sentinel after the final FE FF.",
     "For 61 paired MPL files, actualWordCount equals 2 * (maxDecodedIndex + 1) + 6, consistent with a 6-word header plus two palette banks.",
+    "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
     "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5."
   ],
   "pzx": [
@@ -56268,7 +56290,11 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [
+        "146"
+      ],
+      "mplRegularPaletteMatch": false
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/146.pzx",
@@ -56586,7 +56612,11 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [
+        "145"
+      ],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/147.pzx",
@@ -57133,7 +57163,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/148.pzx",
@@ -68087,7 +68119,11 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [
+        "180"
+      ],
+      "mplRegularPaletteMatch": false
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/180.pzx",
@@ -68909,7 +68945,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/182.pzx",
@@ -69617,7 +69655,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/183.pzx",
@@ -70276,7 +70316,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/184.pzx",
@@ -70980,7 +71022,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/185.pzx",
@@ -71673,7 +71717,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/186.pzx",
@@ -72282,7 +72328,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/187.pzx",
@@ -72947,7 +72995,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/188.pzx",
@@ -73588,7 +73638,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/189.pzx",
@@ -74247,7 +74299,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/190.pzx",
@@ -74938,7 +74992,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/191.pzx",
@@ -75651,7 +75707,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/192.pzx",
@@ -76304,7 +76362,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/193.pzx",
@@ -76963,7 +77023,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/194.pzx",
@@ -77633,7 +77695,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/195.pzx",
@@ -78287,7 +78351,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/196.pzx",
@@ -78921,7 +78987,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/197.pzx",
@@ -79579,7 +79647,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/198.pzx",
@@ -80266,7 +80336,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/199.pzx",
@@ -80953,7 +81025,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/200.pzx",
@@ -81644,7 +81718,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/201.pzx",
@@ -82301,7 +82377,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/202.pzx",
@@ -83011,7 +83089,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/203.pzx",
@@ -83675,7 +83755,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/204.pzx",
@@ -84370,7 +84452,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/205.pzx",
@@ -85026,7 +85110,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/206.pzx",
@@ -85741,7 +85827,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/207.pzx",
@@ -86445,7 +86533,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/208.pzx",
@@ -87150,7 +87240,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/209.pzx",
@@ -87830,7 +87922,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/210.pzx",
@@ -88503,7 +88597,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/211.pzx",
@@ -89199,7 +89295,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/212.pzx",
@@ -89871,7 +89969,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/213.pzx",
@@ -90536,7 +90636,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/214.pzx",
@@ -91211,7 +91313,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/215.pzx",
@@ -91882,7 +91986,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/216.pzx",
@@ -92548,7 +92654,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/217.pzx",
@@ -93249,7 +93357,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/218.pzx",
@@ -93928,7 +94038,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/219.pzx",
@@ -94598,7 +94710,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/220.pzx",
@@ -95276,7 +95390,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/221.pzx",
@@ -95950,7 +96066,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/222.pzx",
@@ -96615,7 +96733,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/223.pzx",
@@ -97291,7 +97411,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/224.pzx",
@@ -97950,7 +98072,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/225.pzx",
@@ -98617,7 +98741,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/226.pzx",
@@ -99270,7 +99396,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/227.pzx",
@@ -99920,7 +100048,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/228.pzx",
@@ -100559,7 +100689,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/229.pzx",
@@ -101298,7 +101430,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/231.pzx",
@@ -102019,7 +102153,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/232.pzx",
@@ -102732,7 +102868,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/233.pzx",
@@ -103410,7 +103548,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/234.pzx",
@@ -104109,7 +104249,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/235.pzx",
@@ -104713,7 +104855,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/236.pzx",
@@ -105355,7 +105499,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/237.pzx",
@@ -106058,7 +106204,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/238.pzx",
@@ -106731,7 +106879,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/239.pzx",
@@ -107402,7 +107552,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/240.pzx",
@@ -108043,7 +108195,9 @@
           }
         ]
       },
-      "firstStreamError": null
+      "firstStreamError": null,
+      "sharedMplWith": [],
+      "mplRegularPaletteMatch": true
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/241.pzx",
@@ -111197,6 +111351,7 @@
       "size": 100,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "20e79c13befa9d25b6e86dc2381c84b8f5cdfd1a",
       "declaredWordCount": 55,
       "actualWordCount": 50,
       "declaredMinusActual": 5,
@@ -111217,6 +111372,9 @@
         17752,
         34787,
         51965
+      ],
+      "sharedWith": [
+        "146"
       ]
     },
     {
@@ -111224,6 +111382,7 @@
       "size": 100,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "20e79c13befa9d25b6e86dc2381c84b8f5cdfd1a",
       "declaredWordCount": 55,
       "actualWordCount": 50,
       "declaredMinusActual": 5,
@@ -111244,6 +111403,9 @@
         17752,
         34787,
         51965
+      ],
+      "sharedWith": [
+        "145"
       ]
     },
     {
@@ -111251,6 +111413,7 @@
       "size": 184,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "39c7deac087cc38da7183beadae840e0373b08d4",
       "declaredWordCount": 97,
       "actualWordCount": 92,
       "declaredMinusActual": 5,
@@ -111271,13 +111434,15 @@
         17891,
         18915,
         37441
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/179.mpl",
       "size": 200,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "f8524b65e4808c1faa575ba411d3eb86b1705cb2",
       "declaredWordCount": 105,
       "actualWordCount": 100,
       "declaredMinusActual": 5,
@@ -111298,6 +111463,9 @@
         18113,
         59121,
         43513
+      ],
+      "sharedWith": [
+        "180"
       ]
     },
     {
@@ -111305,6 +111473,7 @@
       "size": 200,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "f8524b65e4808c1faa575ba411d3eb86b1705cb2",
       "declaredWordCount": 105,
       "actualWordCount": 100,
       "declaredMinusActual": 5,
@@ -111325,6 +111494,9 @@
         18113,
         59121,
         43513
+      ],
+      "sharedWith": [
+        "179"
       ]
     },
     {
@@ -111332,6 +111504,7 @@
       "size": 392,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "2798e2da3e8c6c27c7ce4c431cdd912e90acd061",
       "declaredWordCount": 201,
       "actualWordCount": 196,
       "declaredMinusActual": 5,
@@ -111352,13 +111525,15 @@
         47137,
         16499,
         61569
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/182.mpl",
       "size": 496,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "106895eb7ca892fe63f5ddd9f20c698964d2262f",
       "declaredWordCount": 253,
       "actualWordCount": 248,
       "declaredMinusActual": 5,
@@ -111379,13 +111554,15 @@
         34780,
         23268,
         461
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/183.mpl",
       "size": 416,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "94a248a4f77cfdb841b393313e59dbdb08f3bbd2",
       "declaredWordCount": 213,
       "actualWordCount": 208,
       "declaredMinusActual": 5,
@@ -111406,13 +111583,15 @@
         42636,
         53041,
         35963
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/184.mpl",
       "size": 372,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "fd0a6ac0a1b5c0c3e8f7be61eb90504dbc81dd3a",
       "declaredWordCount": 191,
       "actualWordCount": 186,
       "declaredMinusActual": 5,
@@ -111433,13 +111612,15 @@
         57118,
         65284,
         41631
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/185.mpl",
       "size": 404,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "be6931947b60026a6f8ef5f59af156b1d6b7277c",
       "declaredWordCount": 207,
       "actualWordCount": 202,
       "declaredMinusActual": 5,
@@ -111460,13 +111641,15 @@
         2385,
         59299,
         34088
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/186.mpl",
       "size": 452,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "bcd482120bf25037eef721c39c3e8886c85842e1",
       "declaredWordCount": 231,
       "actualWordCount": 226,
       "declaredMinusActual": 5,
@@ -111487,13 +111670,15 @@
         41471,
         59900,
         18943
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/187.mpl",
       "size": 264,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "3cedd374e6913dbc2441542555881fa5d39ba5f9",
       "declaredWordCount": 137,
       "actualWordCount": 132,
       "declaredMinusActual": 5,
@@ -111514,13 +111699,15 @@
         18552,
         2265,
         12538
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/188.mpl",
       "size": 308,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "e1ffff729021d18e6f63e7e949f1e76b2e3fbb56",
       "declaredWordCount": 159,
       "actualWordCount": 154,
       "declaredMinusActual": 5,
@@ -111541,13 +111728,15 @@
         4426,
         52067,
         65321
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/189.mpl",
       "size": 388,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "ecd7c7d2bbe96eba8d852815066e418e37395b94",
       "declaredWordCount": 199,
       "actualWordCount": 194,
       "declaredMinusActual": 5,
@@ -111568,13 +111757,15 @@
         59364,
         53896,
         10186
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/190.mpl",
       "size": 220,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "441f8e04c3fb2258357127fb52a989e4f8f0d539",
       "declaredWordCount": 115,
       "actualWordCount": 110,
       "declaredMinusActual": 5,
@@ -111595,13 +111786,15 @@
         19792,
         52444,
         44178
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/191.mpl",
       "size": 348,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "df75c13bbf7f921e6071f266d4860587e25dfc44",
       "declaredWordCount": 179,
       "actualWordCount": 174,
       "declaredMinusActual": 5,
@@ -111622,13 +111815,15 @@
         35416,
         43514,
         12513
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/192.mpl",
       "size": 308,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "66c1b0c54e5f1557793afbb54f59b2fad37fc493",
       "declaredWordCount": 159,
       "actualWordCount": 154,
       "declaredMinusActual": 5,
@@ -111649,13 +111844,15 @@
         8644,
         20776,
         1021
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/193.mpl",
       "size": 264,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "e0bcf69861eb3e9de874228fc28cd46075332661",
       "declaredWordCount": 137,
       "actualWordCount": 132,
       "declaredMinusActual": 5,
@@ -111676,13 +111873,15 @@
         65288,
         39935,
         57550
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/194.mpl",
       "size": 476,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "86fd50a62e54e5fb60b236066a4b15a2ecb0f159",
       "declaredWordCount": 243,
       "actualWordCount": 238,
       "declaredMinusActual": 5,
@@ -111703,13 +111902,15 @@
         1989,
         42089,
         19784
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/195.mpl",
       "size": 424,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "342eb8c25c67b3ff569cb8adc53d14f4167a47c6",
       "declaredWordCount": 217,
       "actualWordCount": 212,
       "declaredMinusActual": 5,
@@ -111730,13 +111931,15 @@
         59408,
         8249,
         32808
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/196.mpl",
       "size": 132,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "7e8e7f2f67d43480ce26a5b3106aa96372778b2c",
       "declaredWordCount": 71,
       "actualWordCount": 66,
       "declaredMinusActual": 5,
@@ -111757,13 +111960,15 @@
         141,
         41520,
         65384
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/197.mpl",
       "size": 420,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "0a2204a94c226433ae497bd208712acdbc1bb71f",
       "declaredWordCount": 215,
       "actualWordCount": 210,
       "declaredMinusActual": 5,
@@ -111784,13 +111989,15 @@
         41980,
         50008,
         59208
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/198.mpl",
       "size": 188,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "88452304cdc1acd68e989f5d3759b93157ca0278",
       "declaredWordCount": 99,
       "actualWordCount": 94,
       "declaredMinusActual": 5,
@@ -111811,13 +112018,15 @@
         5689,
         63883,
         20387
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/199.mpl",
       "size": 308,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "0b30d07ebf7bd65b57976699afb31e0c2774c46e",
       "declaredWordCount": 159,
       "actualWordCount": 154,
       "declaredMinusActual": 5,
@@ -111838,13 +112047,15 @@
         65344,
         5119,
         61182
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/200.mpl",
       "size": 228,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "ef22c59524baa6f5f60e22cea377fb0f1246a1e3",
       "declaredWordCount": 119,
       "actualWordCount": 114,
       "declaredMinusActual": 5,
@@ -111865,13 +112076,15 @@
         27019,
         3712,
         21969
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/201.mpl",
       "size": 280,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "5f870550b7e0e8c412d70e786228119d1b508819",
       "declaredWordCount": 145,
       "actualWordCount": 140,
       "declaredMinusActual": 5,
@@ -111892,13 +112105,15 @@
         61889,
         62462,
         32956
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/202.mpl",
       "size": 168,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "257dceacd72cb7bf6b1d003f3da3c6ebaf571bf8",
       "declaredWordCount": 89,
       "actualWordCount": 84,
       "declaredMinusActual": 5,
@@ -111919,13 +112134,15 @@
         44483,
         6986,
         14237
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/203.mpl",
       "size": 252,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "014aa284d69516314b99c74ea2049716a5094633",
       "declaredWordCount": 131,
       "actualWordCount": 126,
       "declaredMinusActual": 5,
@@ -111946,13 +112163,15 @@
         9466,
         17073,
         529
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/204.mpl",
       "size": 300,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "1cca66f5fca166a2b499936c15a38b0e9e2f417f",
       "declaredWordCount": 155,
       "actualWordCount": 150,
       "declaredMinusActual": 5,
@@ -111973,13 +112192,15 @@
         36424,
         13819,
         3326
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/205.mpl",
       "size": 256,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "9f1ad88aef7a79d4add044323ca1770dae02628d",
       "declaredWordCount": 133,
       "actualWordCount": 128,
       "declaredMinusActual": 5,
@@ -112000,13 +112221,15 @@
         45105,
         50076,
         50760
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/206.mpl",
       "size": 312,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "eb07d371640d538ed18dd48b9216262312167ebe",
       "declaredWordCount": 161,
       "actualWordCount": 156,
       "declaredMinusActual": 5,
@@ -112027,13 +112250,15 @@
         24920,
         9896,
         201
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/207.mpl",
       "size": 228,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "f6f81f11720bfca170ccd9b0852ee8d27b43ed59",
       "declaredWordCount": 119,
       "actualWordCount": 114,
       "declaredMinusActual": 5,
@@ -112054,13 +112279,15 @@
         20733,
         63059,
         55692
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/208.mpl",
       "size": 332,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "ad12618fc100a7ad454b78767f09b47c43710bba",
       "declaredWordCount": 171,
       "actualWordCount": 166,
       "declaredMinusActual": 5,
@@ -112081,13 +112308,15 @@
         32709,
         8438,
         52240
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/209.mpl",
       "size": 468,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "416265cf94d9feff6b56f3bda33fa0bed6dcdc09",
       "declaredWordCount": 239,
       "actualWordCount": 234,
       "declaredMinusActual": 5,
@@ -112108,13 +112337,15 @@
         60070,
         49879,
         100
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/210.mpl",
       "size": 172,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "1973583ec95a058e8b753f145bc12a681524f847",
       "declaredWordCount": 91,
       "actualWordCount": 86,
       "declaredMinusActual": 5,
@@ -112135,13 +112366,15 @@
         58077,
         50065,
         65532
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/211.mpl",
       "size": 452,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "967060ef7f5f7801297692408ca573a30d144423",
       "declaredWordCount": 231,
       "actualWordCount": 226,
       "declaredMinusActual": 5,
@@ -112162,13 +112395,15 @@
         13823,
         510,
         3202
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/212.mpl",
       "size": 188,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "fa5976d47c9315aeb39144cbdba39cb2c7b4bf18",
       "declaredWordCount": 99,
       "actualWordCount": 94,
       "declaredMinusActual": 5,
@@ -112189,13 +112424,15 @@
         41692,
         59432,
         62626
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/213.mpl",
       "size": 244,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "bd0952ef884cce3dbe37d432e1cd4b39e579fef2",
       "declaredWordCount": 127,
       "actualWordCount": 122,
       "declaredMinusActual": 5,
@@ -112216,13 +112453,15 @@
         16851,
         57873,
         59537
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/214.mpl",
       "size": 332,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "14b5d2a5e2b6db2ea1806fc6476d597b6d66974d",
       "declaredWordCount": 171,
       "actualWordCount": 166,
       "declaredMinusActual": 5,
@@ -112243,13 +112482,15 @@
         58177,
         30753,
         20611
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/215.mpl",
       "size": 344,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "6d1cb87a0f59e6f62418aa86e7f2d0a76c9a25c5",
       "declaredWordCount": 177,
       "actualWordCount": 172,
       "declaredMinusActual": 5,
@@ -112270,13 +112511,15 @@
         33864,
         43308,
         42078
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/216.mpl",
       "size": 312,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "c9c659c0985bd2ac71edd9e09ec5a02958282bfb",
       "declaredWordCount": 161,
       "actualWordCount": 156,
       "declaredMinusActual": 5,
@@ -112297,13 +112540,15 @@
         36607,
         44483,
         2898
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/217.mpl",
       "size": 328,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "6f5168e651091b46621f7f06aaed41b83afb7573",
       "declaredWordCount": 169,
       "actualWordCount": 164,
       "declaredMinusActual": 5,
@@ -112324,13 +112569,15 @@
         41824,
         18809,
         25
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/218.mpl",
       "size": 324,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "7a21bbe06c72989f566d5dff5c5a03ac1a398887",
       "declaredWordCount": 167,
       "actualWordCount": 162,
       "declaredMinusActual": 5,
@@ -112351,13 +112598,15 @@
         58104,
         58001,
         16720
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/219.mpl",
       "size": 452,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "eb89fb259e1b59169b11c80134b5ecbff59f6f77",
       "declaredWordCount": 231,
       "actualWordCount": 226,
       "declaredMinusActual": 5,
@@ -112378,13 +112627,15 @@
         20488,
         32850,
         30897
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/220.mpl",
       "size": 372,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "f4a00d9e2506d3168e85e5c9645694889270f2c6",
       "declaredWordCount": 191,
       "actualWordCount": 186,
       "declaredMinusActual": 5,
@@ -112405,13 +112656,15 @@
         32516,
         65286,
         59399
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/221.mpl",
       "size": 484,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "21ecc70bb50d12c202c6c5eb5ffadb1ea80d9aa6",
       "declaredWordCount": 247,
       "actualWordCount": 242,
       "declaredMinusActual": 5,
@@ -112432,13 +112685,15 @@
         46842,
         56572,
         16596
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/222.mpl",
       "size": 384,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "eeae253c6e91ab555af20057f9028230d1dd36e9",
       "declaredWordCount": 197,
       "actualWordCount": 192,
       "declaredMinusActual": 5,
@@ -112459,13 +112714,15 @@
         28305,
         47946,
         46013
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/223.mpl",
       "size": 340,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "af2f573d23e01c99a98be5796b8a183fcf8bc91a",
       "declaredWordCount": 175,
       "actualWordCount": 170,
       "declaredMinusActual": 5,
@@ -112486,13 +112743,15 @@
         88,
         1022,
         57580
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/224.mpl",
       "size": 320,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "0002d32dd242802d61b6f0ec03bfc4ccc4e5cf33",
       "declaredWordCount": 165,
       "actualWordCount": 160,
       "declaredMinusActual": 5,
@@ -112513,13 +112772,15 @@
         25585,
         192,
         45832
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/225.mpl",
       "size": 468,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "25957158c4146dbd802f54d1ab7fdade25c6e356",
       "declaredWordCount": 239,
       "actualWordCount": 234,
       "declaredMinusActual": 5,
@@ -112540,13 +112801,15 @@
         7423,
         47046,
         45980
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/226.mpl",
       "size": 412,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "cd61e43b8797c2ffd686a108351ee1884d2032f7",
       "declaredWordCount": 211,
       "actualWordCount": 206,
       "declaredMinusActual": 5,
@@ -112567,13 +112830,15 @@
         25371,
         65491,
         42239
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/227.mpl",
       "size": 452,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "ecce11b9a38ed3aef87f369618361f4a2de5aef0",
       "declaredWordCount": 231,
       "actualWordCount": 226,
       "declaredMinusActual": 5,
@@ -112594,13 +112859,15 @@
         50430,
         25768,
         25608
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/228.mpl",
       "size": 552,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "abe3ca8b13311f382e717d004ba16ae97f5a7ce6",
       "declaredWordCount": 281,
       "actualWordCount": 276,
       "declaredMinusActual": 5,
@@ -112621,13 +112888,15 @@
         6408,
         808,
         8172
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/229.mpl",
       "size": 604,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "492cc60865ec19e47302ac8ba29aad2de1e68f97",
       "declaredWordCount": 307,
       "actualWordCount": 302,
       "declaredMinusActual": 5,
@@ -112648,13 +112917,15 @@
         28349,
         51786,
         3506
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/230.mpl",
       "size": 436,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "130ea1a2b75766a5901c53f3ade0178266087a69",
       "declaredWordCount": 223,
       "actualWordCount": 218,
       "declaredMinusActual": 5,
@@ -112675,13 +112946,15 @@
         1072,
         43264,
         59998
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/231.mpl",
       "size": 412,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "7bc274bf8c7b680c281b70c7fd96d204695b10fb",
       "declaredWordCount": 211,
       "actualWordCount": 206,
       "declaredMinusActual": 5,
@@ -112702,13 +112975,15 @@
         32513,
         64316,
         49442
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/232.mpl",
       "size": 512,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "c762b9096899997e98c7292a350910784415adbd",
       "declaredWordCount": 261,
       "actualWordCount": 256,
       "declaredMinusActual": 5,
@@ -112729,13 +113004,15 @@
         30216,
         26499,
         4688
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/233.mpl",
       "size": 272,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "e67814f53da7cc3f6db1fb3419cafbbf8cfdf375",
       "declaredWordCount": 141,
       "actualWordCount": 136,
       "declaredMinusActual": 5,
@@ -112756,13 +113033,15 @@
         32768,
         8192,
         15105
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/234.mpl",
       "size": 348,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "03523398f79cb0f7477288dc2561728a9ea2f87a",
       "declaredWordCount": 179,
       "actualWordCount": 174,
       "declaredMinusActual": 5,
@@ -112783,13 +113062,15 @@
         65535,
         50175,
         32
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/235.mpl",
       "size": 352,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "a0721848e260ee278af92dcb39eca715fff11952",
       "declaredWordCount": 181,
       "actualWordCount": 176,
       "declaredMinusActual": 5,
@@ -112810,13 +113091,15 @@
         49994,
         35344,
         34394
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/236.mpl",
       "size": 316,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "59128b84d0f40004815d8f3b9d600ebe74e1f249",
       "declaredWordCount": 163,
       "actualWordCount": 158,
       "declaredMinusActual": 5,
@@ -112837,13 +113120,15 @@
         4189,
         3580,
         1755
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/237.mpl",
       "size": 484,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "c7f986fa16ebfef4e2015c472ea783c349a85d59",
       "declaredWordCount": 247,
       "actualWordCount": 242,
       "declaredMinusActual": 5,
@@ -112864,13 +113149,15 @@
         2812,
         58366,
         3266
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/238.mpl",
       "size": 496,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "7234b26c7acf0adb5aad263a3448e85228c30033",
       "declaredWordCount": 253,
       "actualWordCount": 248,
       "declaredMinusActual": 5,
@@ -112891,13 +113178,15 @@
         64,
         8328,
         24656
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/239.mpl",
       "size": 424,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "adc3907e9997e4a838e8c5c4e5a9de495ac9c015",
       "declaredWordCount": 217,
       "actualWordCount": 212,
       "declaredMinusActual": 5,
@@ -112918,13 +113207,15 @@
         48894,
         33023,
         27001
-      ]
+      ],
+      "sharedWith": []
     },
     {
       "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/apk_unzip/assets/img/240.mpl",
       "size": 440,
       "signatureHex": "30020a00",
       "signatureU32": 655920,
+      "sha1": "fb224998749e26269ae5b172f59170ad7808e66a",
       "declaredWordCount": 225,
       "actualWordCount": 220,
       "declaredMinusActual": 5,
@@ -112945,7 +113236,8 @@
         17825,
         34787,
         253
-      ]
+      ],
+      "sharedWith": []
     }
   ]
 }

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+import hashlib
 import json
 from pathlib import Path
 import struct
@@ -143,6 +144,7 @@ def parse_mpl(path: Path) -> dict[str, object]:
         "size": len(data),
         "signatureHex": data[:4].hex(),
         "signatureU32": struct.unpack("<I", data[:4])[0] if len(data) >= 4 else None,
+        "sha1": hashlib.sha1(data).hexdigest(),
         "declaredWordCount": field >> 16,
         "actualWordCount": len(data) // 2,
         "declaredMinusActual": (field >> 16) - (len(data) // 2),
@@ -161,13 +163,24 @@ def main() -> None:
 
     pzx_entries = [parse_pzx(path, path.stem in mpl_stems) for path in pzx_paths]
     mpl_entries = [parse_mpl(path) for path in mpl_paths]
+    mpl_by_stem = {Path(entry["path"]).stem: entry for entry in mpl_entries}
+
+    shared_mpl_groups: dict[str, list[str]] = {}
+    shared_mpl_by_sha1: dict[str, list[str]] = {}
+    for mpl_entry in mpl_entries:
+        shared_mpl_by_sha1.setdefault(str(mpl_entry["sha1"]), []).append(Path(str(mpl_entry["path"])).stem)
+    for sha1, stems in shared_mpl_by_sha1.items():
+        if len(stems) > 1:
+            shared_mpl_groups[sha1] = sorted(stems)
+    for mpl_entry in mpl_entries:
+        shared = shared_mpl_groups.get(str(mpl_entry["sha1"]), [])
+        mpl_entry["sharedWith"] = [stem for stem in shared if stem != Path(str(mpl_entry["path"])).stem]
 
     shared_pairs = sorted({Path(entry["path"]).stem for entry in pzx_entries if entry["hasMplPair"]})
     first_stream_ready = [entry for entry in pzx_entries if entry["firstStream"] is not None]
     first_stream_failed = [entry for entry in pzx_entries if entry["firstStreamError"] is not None]
     regular_mpl_palette_stems: list[str] = []
-
-    mpl_by_stem = {Path(entry["path"]).stem: entry for entry in mpl_entries}
+    regular_mpl_palette_set: set[str] = set()
     for entry in first_stream_ready:
         stem = Path(entry["path"]).stem
         mpl = mpl_by_stem.get(stem)
@@ -176,6 +189,20 @@ def main() -> None:
         color_count = int(entry["firstStream"]["maxDecodedIndex"]) + 1
         if mpl["actualWordCount"] == 2 * color_count + 6:
             regular_mpl_palette_stems.append(stem)
+            regular_mpl_palette_set.add(stem)
+        if mpl is not None:
+            entry["sharedMplWith"] = mpl.get("sharedWith", [])
+            entry["mplRegularPaletteMatch"] = stem in regular_mpl_palette_set
+
+    shared_mpl_group_entries: list[dict[str, object]] = []
+    for sha1, stems in sorted(shared_mpl_groups.items(), key=lambda item: item[1]):
+        shared_mpl_group_entries.append(
+            {
+                "sha1": sha1,
+                "stems": stems,
+                "regularPaletteStems": [stem for stem in stems if stem in regular_mpl_palette_set],
+            }
+        )
 
     variant_counts = Counter(entry["header"]["field16Low6"] for entry in pzx_entries)
     table_span_counts = Counter(
@@ -194,6 +221,8 @@ def main() -> None:
             "firstStreamTableSpanCounts": dict(sorted(table_span_counts.items())),
             "regularMplPaletteCount": len(regular_mpl_palette_stems),
             "regularMplPalettePreview": regular_mpl_palette_stems[:20],
+            "sharedMplGroupCount": len(shared_mpl_group_entries),
+            "sharedMplGroupPreview": shared_mpl_group_entries[:8],
         },
         "findings": [
             "All PZX files start with magic 50 5a 58 01 ('PZX\\x01').",
@@ -203,6 +232,7 @@ def main() -> None:
             "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using skip(u16), literal(opcode 0x80nn + nn bytes), and repeat(opcode 0xC0nn + one value byte repeated nn times).",
             "Some chunks start with FD FF before the first row. Rows are separated by FE FF, and chunks end with a trailing FFFF sentinel after the final FE FF.",
             "For 61 paired MPL files, actualWordCount equals 2 * (maxDecodedIndex + 1) + 6, consistent with a 6-word header plus two palette banks.",
+            "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",
         ],
         "pzx": pzx_entries,
