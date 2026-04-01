@@ -45,6 +45,7 @@ class StemRenderCandidate:
     stem: str
     first_stream: Any
     frame_stream: Any
+    meta_group_summaries: list[dict[str, object]]
     sequence_summary: dict[str, object]
     events: list[dict[str, object]]
     stem_default_duration_ms: int | None
@@ -184,11 +185,15 @@ def _derive_event_playback(events: list[dict[str, object]]) -> tuple[list[dict[s
 
 def _has_local_timing(events: list[dict[str, object]]) -> bool:
     for event in events:
-        if event["timingExplicitValues"]:
-            return True
-        if any(int(value) not in {0, 255} for value in event["anchorRecordTimingValues"]):
+        if _event_has_explicit_local_timing(event):
             return True
     return False
+
+
+def _event_has_explicit_local_timing(event: dict[str, object]) -> bool:
+    if event["timingExplicitValues"]:
+        return True
+    return any(int(value) not in {0, 255} for value in event["anchorRecordTimingValues"])
 
 
 def _dominant_duration(values: list[int]) -> int | None:
@@ -272,6 +277,92 @@ def _resample_durations(durations: list[int], count: int) -> list[int]:
     if count == 1:
         return [int(durations[0])]
     return [int(durations[_normalized_index(len(durations), index, count)]) for index in range(count)]
+
+
+def _median_duration(values: list[int]) -> int | None:
+    if not values:
+        return None
+    ordered = sorted(int(value) for value in values)
+    center = len(ordered) // 2
+    if len(ordered) % 2 == 1:
+        return ordered[center]
+    return round((ordered[center - 1] + ordered[center]) / 2)
+
+
+def _build_overlay_prototypes(candidates: list[StemRenderCandidate]) -> dict[tuple[int, int], int]:
+    buckets: dict[tuple[int, int], list[int]] = {}
+    for candidate in candidates:
+        for event in candidate.events:
+            if str(event["eventType"]) != "overlay" or not _event_has_explicit_local_timing(event):
+                continue
+            key = (int(event.get("tupleCount") or 0), len(event.get("timingMarkers") or []))
+            buckets.setdefault(key, []).append(int(event["playbackDurationMs"]))
+
+    prototypes: dict[tuple[int, int], int] = {}
+    for key, durations in buckets.items():
+        if not durations:
+            continue
+        spread = max(durations) - min(durations)
+        if spread > 20:
+            continue
+        median = _median_duration(durations)
+        if median is not None:
+            prototypes[key] = median
+    return prototypes
+
+
+def _apply_overlay_prototypes(candidates: list[StemRenderCandidate]) -> None:
+    prototypes = _build_overlay_prototypes(candidates)
+    for candidate in candidates:
+        for event in candidate.events:
+            if str(event["eventType"]) != "overlay":
+                continue
+            if _event_has_explicit_local_timing(event):
+                continue
+            if str(event["playbackSource"]) not in {"global-record-default", "stem-default"}:
+                continue
+
+            key = (int(event.get("tupleCount") or 0), len(event.get("timingMarkers") or []))
+            duration = prototypes.get(key)
+            if duration is None or int(event["playbackDurationMs"]) == duration:
+                continue
+
+            event["playbackDurationMs"] = duration
+            event["playbackSource"] = "overlay-prototype"
+            event["playbackPrototypeKey"] = f"{key[0]}x{key[1]}"
+
+
+def _apply_opaque_timing_cues(candidates: list[StemRenderCandidate]) -> None:
+    for candidate in candidates:
+        cues: list[tuple[int, int]] = []
+        for group in candidate.meta_group_summaries:
+            if str(group.get("linkType")) != "opaque-only":
+                continue
+            explicit_values = [int(value) for value in group.get("timingExplicitValues", [])]
+            if not explicit_values:
+                continue
+            cues.append((int(group["groupIndex"]), max(explicit_values)))
+
+        if not cues:
+            continue
+
+        for event in candidate.events:
+            if str(event["playbackSource"]) not in {"global-record-default", "stem-default"}:
+                continue
+            preceding = [
+                (int(event["groupIndex"]) - cue_group_index, cue_duration)
+                for cue_group_index, cue_duration in cues
+                if cue_group_index < int(event["groupIndex"])
+            ]
+            if not preceding:
+                continue
+            preceding.sort(key=lambda item: item[0])
+            gap, cue_duration = preceding[0]
+            if gap > 2:
+                continue
+
+            event["playbackDurationMs"] = cue_duration
+            event["playbackSource"] = "opaque-cue"
 
 
 def _apply_donor_timings(candidates: list[StemRenderCandidate]) -> None:
@@ -382,6 +473,7 @@ def build_stem_candidate(stem: str, assets_root: Path) -> StemRenderCandidate | 
         stem=stem,
         first_stream=first_stream,
         frame_stream=frame_stream,
+        meta_group_summaries=meta_group_summaries,
         sequence_summary=sequence_summary,
         events=events,
         stem_default_duration_ms=stem_default_duration,
@@ -490,6 +582,8 @@ def main() -> None:
         if candidate is not None:
             candidates.append(candidate)
 
+    _apply_overlay_prototypes(candidates)
+    _apply_opaque_timing_cues(candidates)
     _apply_donor_timings(candidates)
 
     rendered = 0

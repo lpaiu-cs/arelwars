@@ -27,8 +27,8 @@
         52
       ],
       "durationHintMs": 255,
-      "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackDurationMs": 70,
+      "playbackSource": "overlay-prototype",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",
