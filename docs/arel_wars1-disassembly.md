@@ -76,6 +76,9 @@ python tools/arel_wars1/disassemble_libgameDSO.py --function _ZN12CGxPZAParser19
   - `GxUncompress` caller: `CGxPZFParser::UncompressAllDataFromBAR`, `CGxPZFParser::UncompressAllDataFromFILE`, `CGxPZDParser::DecodeImageData`
   - `GxUncompressZT1` caller: `LoadResource`, `LoadFile`
 - 따라서 `.zt1` 복호 경로와 `.pzx`/`.pza`/`.pzf` 복호 경로는 네이티브에서도 이미 분리되어 있다.
+- `CGxPZxResource::AttachResource`는 parser에 APK 전체 파일 handle을 넘기는 게 아니라, 메모리로 적재한 `.pzx` blob을 `CGxStream` memory stream으로 감싼다.
+  - `CGxStream::Attach` / `SeekMem` 기준으로 parser seek는 이 memory blob 안의 relative offset이다.
+  - 따라서 root `field4/field8/field12`와 `PZA/PZF` index table entry는 `.pzx` file-local offset으로 읽는 쪽이 맞다.
 
 ## Current Structure
 
@@ -222,7 +225,23 @@ frame:
   - 일부 record는 `extraFlag` 바이트만큼 short payload를 붙인다. 예: `... 01 03`
   - 일부 record는 `extraFlag + 4` 바이트 payload를 붙이며, 흔한 모양은 `66 xx 00 00 00` / `67 xx 00 00 00`
   - 전체 집계상 nonzero `extraPayload`는 `6004`개 subframe에 나타나고, dominant family는 `67+u32` / `66+u32` marker형이다.
-  - 이 hybrid length rule은 asset exact-fit 기준으로는 닫히지만, 아직 `EndDecodeFrame*` 디스어셈블 단독으로는 완전히 설명되지 않는다.
+  - 이 hybrid length rule은 asset exact-fit 기준으로는 닫히고, `EndDecodeFrameFromBAR/FILE`가 실제로 `extraLen:u8`와 heap-allocated `extraPtr`를 native frame record에 저장한다.
+- `EndDecodeFrameFromBAR/FILE`는 normal path에서 정확히 다음을 수행한다.
+  - caller가 넘긴 별도 `u16 subFrameIndex[]` 배열에 image index를 저장
+  - frame-local `subframe[0x10]` record에 `bitmap*=0`, `x:s16`, `y:s16`, `extraPtr`, `extraLen`를 채움
+  - 즉 `extraPayload`는 parser artifact가 아니라, native runtime이 보존하는 정식 per-subframe field다.
+- `CGxPZxFrame::Draw`와 `GsPZxSubFrame`는 이 `0x10-byte` record의 앞쪽만 쓴다.
+  - `+0x00` bitmap pointer
+  - `+0x04/+0x06` local x/y
+  - `+0x08/+0x0C` extra pointer/length은 plain draw path에서 소비되지 않는다.
+- 실제 consumer는 effect-aware `PZD` loader다.
+  - `CGxEffectPZDMgr::FindEffectedImage` / `CGxEffectExPZDMgr::FindEffectedImage`는 두 subframe의 `extraPtr/extraLen`을 비교할 때 바이트값 `<= 4`만 opcode로 취급한다.
+  - 현재 전체 asset 집계에서 이 filtered opcode histogram은 `0:13473, 1:102, 2:55, 3:2254, 4:79`다.
+  - 즉 `extraPayload`는 적어도 effect opcode stream을 포함하며, cache/reuse key로 쓰인다.
+- 별도 fast path도 보인다.
+  - `CGxEffectPZDMgr::LoadImage*`는 `extraLen == 1`이고 그 1-byte 값이 `0x65..0x74`이면 effected-bitmap 생성 경로 대신 normal image load 쪽으로 빠진다.
+  - parsed asset 기준으로 이 single-byte family는 `66:15, 67:57, 71:1`이 확인된다.
+  - 따라서 `66/67` marker류는 pure effect opcode라기보다 module/effect selector envelope일 가능성이 높다.
 - `tools/arel_wars1/inspect_binary_assets.py`는 이제 exact-fit animation clip stream을 인식한다.
 - 현재 휴리스틱은 다음이다.
   - stream 전체가 `frameCount:u8 + frameCount * 8-byte frame record`의 clip 연속체로 끝까지 정확히 소진될 것
@@ -274,7 +293,7 @@ frame:
   - raw `PZF` stream 자체가 frame/subframe/extraPayload 계층으로 exact-fit 된다.
 - 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라:
   - `PZF subFrameIndex -> PZD image` 연결
-  - `PZF extraPayload(66/67...)` 소비처
+  - `PZF extraPayload(66/67...)`의 envelope semantics
   - bbox group 의미(att/dam/reference point)를 어떻게 런타임과 대응시키느냐
   로 더 좁혀졌다.
 - 따라서 다음 reverse path의 우선순위는 `PZX tail` 일반화보다 `PZA parser -> PZx animation object` 연결 해체다.

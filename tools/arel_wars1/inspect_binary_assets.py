@@ -238,10 +238,17 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
     x_range = decoded.x_range
     y_range = decoded.y_range
     extra_marker_counts = Counter()
+    effect_opcode_counts = Counter()
+    single_byte_module_counts = Counter()
     for frame in decoded.frames:
         for subframe in frame.subframes:
             if not subframe.extra:
                 continue
+            for value in subframe.extra:
+                if value <= 4:
+                    effect_opcode_counts[str(value)] += 1
+            if len(subframe.extra) == 1 and 0x65 <= subframe.extra[0] <= 0x74:
+                single_byte_module_counts[f"{subframe.extra[0]:02x}"] += 1
             if subframe.extra.startswith(b"\x66") and subframe.extra[-3:] == b"\x00\x00\x00":
                 extra_marker_counts["66+u32"] += 1
             elif len(subframe.extra) >= 2 and subframe.extra[1] == 0x66 and subframe.extra[-3:] == b"\x00\x00\x00":
@@ -267,6 +274,8 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
         "nonzeroExtraCount": decoded.nonzero_extra_count,
         "maxExtraLen": decoded.max_extra_len,
         "extraMarkerCounts": dict(sorted(extra_marker_counts.items())),
+        "effectOpcodeCounts": dict(sorted(effect_opcode_counts.items())),
+        "singleByteModuleCounts": dict(sorted(single_byte_module_counts.items())),
         "frameOffsetsPreview": [frame.offset for frame in decoded.frames[:12]],
         "frameOffsetsTail": [frame.offset for frame in decoded.frames[-6:]],
         "framePreview": [
@@ -885,6 +894,8 @@ def main() -> None:
             "nonzeroExtraCount": entry["embeddedPzf"].get("nonzeroExtraCount"),
             "maxExtraLen": entry["embeddedPzf"].get("maxExtraLen"),
             "extraMarkerCounts": entry["embeddedPzf"].get("extraMarkerCounts", {}),
+            "effectOpcodeCounts": entry["embeddedPzf"].get("effectOpcodeCounts", {}),
+            "singleByteModuleCounts": entry["embeddedPzf"].get("singleByteModuleCounts", {}),
             "bboxFrameCount": entry["embeddedPzf"].get("bboxFrameCount"),
             "bboxTotalRange": entry["embeddedPzf"].get("bboxTotalRange"),
             "frameRecordMatchedStreamIndices": (
@@ -936,6 +947,12 @@ def main() -> None:
     embedded_pzf_extra_marker_counts = Counter()
     for entry in embedded_pzf_parsed_entries:
         embedded_pzf_extra_marker_counts.update(entry["extraMarkerCounts"])
+    embedded_pzf_effect_opcode_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_effect_opcode_counts.update(entry["effectOpcodeCounts"])
+    embedded_pzf_single_byte_module_counts = Counter()
+    for entry in embedded_pzf_parsed_entries:
+        embedded_pzf_single_byte_module_counts.update(entry["singleByteModuleCounts"])
     embedded_pzf_subframe_count_range = (
         [
             min(int(entry["subFrameCountRange"][0]) for entry in embedded_pzf_parsed_entries if entry["subFrameCountRange"]),
@@ -1201,6 +1218,8 @@ def main() -> None:
             "embeddedPzfNonzeroExtraCount": embedded_pzf_nonzero_extra_count,
             "embeddedPzfMaxExtraLen": embedded_pzf_max_extra_len,
             "embeddedPzfExtraMarkerCounts": dict(sorted(embedded_pzf_extra_marker_counts.items())),
+            "embeddedPzfEffectOpcodeCounts": dict(sorted(embedded_pzf_effect_opcode_counts.items())),
+            "embeddedPzfSingleByteModuleCounts": dict(sorted(embedded_pzf_single_byte_module_counts.items())),
             "embeddedPzfBboxTotalRange": embedded_pzf_bbox_total_range,
             "embeddedPzfBboxFrameTotal": embedded_pzf_total_bbox_frame_count,
             "embeddedPzaPzxCount": len(embedded_pza_stems),
@@ -1244,6 +1263,8 @@ def main() -> None:
             f"Raw embedded PZF containers now exact-parse for {len(embedded_pzf_parsed_entries)} stems. {embedded_pzf_match_index_counts.get(1, 0)} payloads are byte-identical to zlib stream index 1, which makes stream 1 the native PZF frame blob in most samples.",
             f"Each raw PZF frame reads as subFrameCount(u8), bbox count byte(s), a variant-dependent bbox block, then repeated subFrameIndex(u16), x(i16), y(i16), extraFlag(u8), extraPayload. Across the parsed set, subFrameCount ranges {embedded_pzf_subframe_count_range[0] if embedded_pzf_subframe_count_range else 'n/a'}..{embedded_pzf_subframe_count_range[1] if embedded_pzf_subframe_count_range else 'n/a'}.",
             f"Nonzero PZF extraPayloads are common ({embedded_pzf_nonzero_extra_count} subframes total). Observed extraFlag values are {embedded_pzf_extra_flag_values[:20]}, max extra length is {embedded_pzf_max_extra_len}, and the dominant payload families are {dict(sorted(embedded_pzf_extra_marker_counts.items()))}.",
+            f"Disassembly now matches those PZF extras to native frame fields: EndDecodeFrame stores extraLen + extraPtr per subframe, effect loaders compare only opcode bytes <= 4, and the parsed opcode histogram is {dict(sorted(embedded_pzf_effect_opcode_counts.items()))}.",
+            f"Single-byte PZF extras in the 0x65..0x74 range also occur as their own family ({dict(sorted(embedded_pzf_single_byte_module_counts.items()))}); native effect loaders treat len=1 values in that range as a separate fast path from the longer effect-payload path.",
             f"Bounding-box metadata is native PZF frame-local data rather than a separate tail track: parsed bbox totals range {embedded_pzf_bbox_total_range[0] if embedded_pzf_bbox_total_range else 'n/a'}..{embedded_pzf_bbox_total_range[1] if embedded_pzf_bbox_total_range else 'n/a'} and appear in {embedded_pzf_total_bbox_frame_count} frames overall.",
             f"The previous frame-record heuristic overlaps the native PZF index table directly: {len(embedded_pzf_offset_prefix_stems)} stems already have frame-record offset previews that prefix-match the raw PZF frame offsets.",
             f"The trailing tails now split into {frame_meta_section_count} marker-delimited sections. {frame_meta_marker_counts.get('67ff000000', 0)} use 67 FF 00 00 00 and {frame_meta_marker_counts.get('6778000000', 0)} use 67 78 00 00 00.",

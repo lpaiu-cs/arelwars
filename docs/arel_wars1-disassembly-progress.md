@@ -88,6 +88,48 @@
 2. `CGxPZxFrame::Draw`와 `CGxPZxFrameBB::*` consumer를 더 따라가서 `extraPayload(66/67...)`와 bbox group 의미를 런타임 동작에 붙인다.
 3. `082/083/084`와 `198/208/240`을 기준 샘플로, old frame-record/tail heuristic이 native `PZF`의 어느 subset을 잘못 읽은 것인지 정리한다.
 
+## 2026-04-02 Session
+
+### Confirmed
+
+- `CGxPZFParser::EndDecodeFrameFromBAR/FILE`
+  - asset-side exact-fit parser가 맞았다.
+  - native도 실제로 per-subframe에 `u16 subFrameIndex`, `x:s16`, `y:s16`, `extraLen:u8`, `extraPtr`를 읽어 넣는다.
+  - `subFrameIndex`는 caller가 준 별도 `u16[]`로 빠지고, `CGxPZxFrame` 내부 subframe record는 `stride = 0x10`이다.
+- `GsPZxSubFrame` / `CGxPZxFrame::Draw`
+  - plain draw path는 `bitmap pointer + x/y`만 소비한다.
+  - `extraPtr/extraLen`은 normal render path에서 직접 쓰이지 않는다.
+- `CGxEffectPZDMgr::FindEffectedImage` / `CGxEffectExPZDMgr::FindEffectedImage`
+  - `extraPayload`는 effect cache key다.
+  - 비교 시 모든 바이트를 쓰지 않고, `<= 4`인 값만 opcode sequence로 추출해서 비교한다.
+  - 즉 `extraPayload`는 단순 tail marker가 아니라 native effect opcode stream을 포함한다.
+- `CGxEffectPZDMgr::LoadImage*`
+  - `extraLen == 1`이고 그 1-byte 값이 `0x65..0x74`이면 effected-bitmap 경로 대신 normal image load로 빠진다.
+  - longer payload는 `FindEffectedImage -> AddNewEFFECTED_BITMAP` 경로로 들어가고, 그 과정에서 subframe의 `extraPayload`가 그대로 복제된다.
+
+### Asset-side Validation
+
+- full parsed `PZF` set 기준으로 effect-relevant extra 통계가 닫혔다.
+  - single-byte `0x65..0x74` family: `66:15, 67:57, 71:1`
+  - filtered opcode histogram (`<= 4`만 집계): `0:13473, 1:102, 2:55, 3:2254, 4:79`
+  - payload length 분포는 `1-byte`와 `5-byte`가 압도적이고, marker family는 여전히 `67+u32 / 66+u32`가 우세하다.
+- 즉 현재 `PZF extraPayload`는 두 층으로 읽는 게 맞다.
+  - outer marker / module selector (`66/67...`, single-byte `0x65..0x74`)
+  - inner effect opcode sequence (`<= 4` bytes)
+
+### Open
+
+- `PZD` 쪽은 아직 완전히 닫히지 않았다.
+  - `header=07` 계열 (`180.pzx`)은 palette block 뒤 table entry를 `entry >> 8`로 읽으면 file 내부의 image-like block 위치가 나오는 흔적이 있다.
+  - 하지만 `header=08` 계열 (`010/082/208`)은 같은 규칙으로 바로 닫히지 않는다.
+  - 즉 `PZD` resource는 variant별 index encoding이나 stream-wrapper semantics 차이가 남아 있다.
+
+### Next Focus
+
+1. `header=07` vs `header=08` `PZD` resource를 분리해서 index table encoding을 고정한다.
+2. `subFrameIndex -> PZD image -> first-stream chunk` 연결을 variant별로 닫는다.
+3. `66/67 + u32` marker family가 effect opcode envelope인지 module selector인지, `ChangeModule` / effect loaders를 기준으로 더 정리한다.
+
 ### Refresh Commands
 
 ```powershell
