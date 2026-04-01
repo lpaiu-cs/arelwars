@@ -56,6 +56,7 @@ code {
 .hero-panel,
 .canvas-panel,
 .intel-panel,
+.scenario-panel,
 .analysis-panel {
   position: relative;
   overflow: hidden;
@@ -74,6 +75,7 @@ code {
 
 .hero-panel::after,
 .intel-panel::after,
+.scenario-panel::after,
 .analysis-panel::after {
   content: '';
   position: absolute;
@@ -197,6 +199,11 @@ h2 {
   padding-bottom: 20px;
 }
 
+.scenario-panel {
+  margin-top: 18px;
+  padding-bottom: 20px;
+}
+
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -270,6 +277,83 @@ h2 {
   display: grid;
   gap: 14px;
   padding: 18px 22px 0;
+}
+
+.storyboard-panel {
+  padding: 18px 22px 0;
+}
+
+.story-card {
+  border: 1px solid rgba(220, 194, 135, 0.14);
+  background: linear-gradient(180deg, rgba(10, 14, 17, 0.72), rgba(8, 12, 15, 0.92));
+  padding: 16px;
+}
+
+.story-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.story-card-header strong {
+  display: block;
+  color: #f4ead7;
+  font-size: 1.08rem;
+}
+
+.story-card-header p {
+  margin: 6px 0 0;
+  color: rgba(231, 223, 204, 0.74);
+}
+
+.story-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  color: rgba(231, 223, 204, 0.68);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.story-dialogue {
+  margin-top: 16px;
+  border: 1px solid rgba(220, 194, 135, 0.14);
+  background: rgba(6, 9, 12, 0.72);
+  padding: 14px 16px;
+}
+
+.story-speaker {
+  margin: 0 0 8px;
+  color: #d6a55c;
+  font-size: 0.84rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.story-text {
+  margin: 0;
+  color: #f1e7d4;
+  font-size: 1.1rem;
+  line-height: 1.45;
+}
+
+.story-strip {
+  margin-top: 16px;
+  overflow-x: auto;
+  border: 1px solid rgba(220, 194, 135, 0.14);
+  background: rgba(6, 9, 12, 0.86);
+  padding: 10px;
+}
+
+.story-strip img {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: auto;
 }
 
 .timeline-card {
@@ -385,6 +469,7 @@ h2 {
   .panel-header,
   .stat-grid,
   .script-list,
+  .storyboard-panel,
   .timeline-stats,
   .timeline-gallery {
     padding-left: 18px;

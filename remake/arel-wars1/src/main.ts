@@ -1,7 +1,8 @@
 import Phaser from 'phaser'
 import './style.css'
 import { RecoveryBootScene } from './scenes/RecoveryBootScene'
-import type { RecoveryCatalog, RecoveryPreviewManifest, RecoveryPreviewStem } from './recovery-types'
+import type { RecoveryCatalog, RecoveryPreviewManifest, RecoveryPreviewStem, RecoveryStageSnapshot } from './recovery-types'
+import { RecoveryStageSystem } from './systems/recoveryStageSystem'
 
 const app = document.querySelector<HTMLDivElement>('#app')
 
@@ -37,7 +38,7 @@ app.innerHTML = `
       <div class="canvas-panel">
         <div class="panel-header">
           <h2>Recovery Stage</h2>
-          <p>Recovered PNG assets are usable already. Core battle art remains locked in \`.pzx\`.</p>
+          <p>Recovered sprite timelines and structured dialogue now share one playback state.</p>
         </div>
         <div id="game-root" class="game-root"></div>
       </div>
@@ -55,6 +56,14 @@ app.innerHTML = `
         </div>
         <div id="scripts" class="script-list"></div>
       </aside>
+    </section>
+
+    <section class="scenario-panel">
+      <div class="panel-header">
+        <h2>Recovered Storyboard</h2>
+        <p id="story-summary">Recovered stage state is not available yet.</p>
+      </div>
+      <div id="storyboard-panel" class="storyboard-panel"></div>
     </section>
 
     <section class="analysis-panel">
@@ -80,8 +89,10 @@ async function bootstrap(): Promise<void> {
   const timelineSummary = document.querySelector<HTMLElement>('#timeline-summary')
   const timelineStats = document.querySelector<HTMLElement>('#timeline-stats')
   const timelineGallery = document.querySelector<HTMLElement>('#timeline-gallery')
+  const storySummary = document.querySelector<HTMLElement>('#story-summary')
+  const storyboardPanel = document.querySelector<HTMLElement>('#storyboard-panel')
 
-  if (!stage || !summary || !inventory || !scripts || !timelineSummary || !timelineStats || !timelineGallery) {
+  if (!stage || !summary || !inventory || !scripts || !timelineSummary || !timelineStats || !timelineGallery || !storySummary || !storyboardPanel) {
     return
   }
 
@@ -91,12 +102,16 @@ async function bootstrap(): Promise<void> {
   ])
 
   const previewManifest = previewResult.status === 'fulfilled' ? previewResult.value : null
-  game = createGame(previewManifest)
+  let stageSystem: RecoveryStageSystem | null = null
 
   if (catalogResult.status === 'fulfilled') {
     const catalog = catalogResult.value
+    if (previewManifest) {
+      stageSystem = new RecoveryStageSystem(catalog, previewManifest)
+    }
+    game = createGame(stageSystem)
     stage.textContent = previewManifest
-      ? `Timeline candidates indexed (${previewManifest.activeStemCount} stems)`
+      ? `Recovered stage online (${previewManifest.activeStemCount} stems)`
       : 'ZT1 decoded, runtime shell online'
     summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}`
 
@@ -125,6 +140,7 @@ async function bootstrap(): Promise<void> {
       )
       .join('')
   } else {
+    game = createGame(null)
     const message = catalogResult.reason instanceof Error ? catalogResult.reason.message : 'Unknown error'
     stage.textContent = 'Catalog load failed'
     summary.textContent = message
@@ -132,22 +148,52 @@ async function bootstrap(): Promise<void> {
     scripts.innerHTML = `<article class="script-card error-card"><p>${escapeHtml(message)}</p></article>`
   }
 
+  renderStoryboard(stageSystem, storySummary, storyboardPanel)
   renderTimelinePreview(previewManifest, timelineSummary, timelineStats, timelineGallery)
 }
 
-function createGame(previewManifest: RecoveryPreviewManifest | null): Phaser.Game {
+function createGame(stageSystem: RecoveryStageSystem | null): Phaser.Game {
   return new Phaser.Game({
     type: Phaser.AUTO,
     parent: 'game-root',
     width: 960,
     height: 540,
     backgroundColor: '#0e1418',
-    scene: [new RecoveryBootScene(previewManifest)],
+    scene: [new RecoveryBootScene(stageSystem)],
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
     },
   })
+}
+
+function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLElement, panel: HTMLElement): void {
+  if (!system?.isReady()) {
+    summary.textContent = 'Need both the catalog and the preview manifest before storyboard playback can start.'
+    panel.innerHTML = `<article class="story-card error-card"><p>Storyboard state unavailable.</p></article>`
+    return
+  }
+
+  const render = (): void => {
+    const snapshot = system.getSnapshot()
+    if (!snapshot) {
+      return
+    }
+    summary.textContent = `${system.getStoryboards().length} paired storyboards, ${snapshot.currentStoryboard.previewStem.eventFrames.length} sprite frames on the active stem, ${snapshot.currentStoryboard.scriptEventCount} recovered script beats in the source scene.`
+    panel.innerHTML = storyboardMarkup(snapshot)
+  }
+
+  let lastVersion = -1
+  const loop = (timestamp: number): void => {
+    if (system.advance(timestamp) || system.getVersion() !== lastVersion) {
+      lastVersion = system.getVersion()
+      render()
+    }
+    window.requestAnimationFrame(loop)
+  }
+
+  render()
+  window.requestAnimationFrame(loop)
 }
 
 function renderTimelinePreview(
@@ -228,6 +274,35 @@ function describeScriptPreview(entry: RecoveryCatalog['featuredScripts'][number]
       .join(' / ')
   }
   return entry.stringsPreview.slice(0, 2).join(' / ') || 'Recoverable text not found'
+}
+
+function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
+  const activeEvent = snapshot.currentStoryboard.scriptEvents[snapshot.dialogueIndex]
+  const previewStem = snapshot.currentStoryboard.previewStem
+  const speakerLine = activeEvent.speaker ? `${activeEvent.speaker} · tag ${activeEvent.speakerTag ?? 'n/a'}` : 'Narration'
+  return `
+    <article class="story-card">
+      <header class="story-card-header">
+        <div>
+          <strong>${escapeHtml(snapshot.currentStoryboard.scriptPath)}</strong>
+          <p>${escapeHtml(formatKind(previewStem.timelineKind))} / stem ${previewStem.stem}</p>
+        </div>
+        <span class="pill">${escapeHtml(snapshot.currentStoryboard.locale ?? 'n/a')}</span>
+      </header>
+      <div class="story-meta">
+        <span>Storyboard ${snapshot.storyboardIndex + 1}</span>
+        <span>Dialogue ${snapshot.dialogueIndex + 1}/${snapshot.currentStoryboard.scriptEvents.length}</span>
+        <span>Frame ${snapshot.frameIndex + 1}/${Math.max(previewStem.eventFrames.length, 1)}</span>
+      </div>
+      <div class="story-dialogue">
+        <p class="story-speaker">${escapeHtml(speakerLine)}</p>
+        <p class="story-text">${escapeHtml(activeEvent.text)}</p>
+      </div>
+      <div class="story-strip">
+        <img src="${previewStem.timelineStrip.pngPath}" alt="Timeline strip for stem ${previewStem.stem}" loading="lazy" />
+      </div>
+    </article>
+  `
 }
 
 function formatKind(value: string): string {

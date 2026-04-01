@@ -15,13 +15,15 @@ export interface RecoveryScriptEntry {
   stringCount: number
   stringsPreview: string[]
   eventCount?: number
-  eventPreview?: Array<{
-    kind: string
-    speaker: string | null
-    speakerTag: number | null
-    text: string
-  }>
+  eventPreview?: RecoveryDialogueEvent[]
   decodedPath: string
+}
+
+export interface RecoveryDialogueEvent {
+  kind: string
+  speaker: string | null
+  speakerTag: number | null
+  text: string
 }
 
 export interface RecoveryCatalog {
@@ -105,4 +107,20 @@ export interface RecoveryPreviewManifest {
   featuredStems: string[]
   featuredEntries: RecoveryPreviewStem[]
   stems: RecoveryPreviewStem[]
+}
+
+export interface RecoveryStageStoryboard {
+  id: string
+  scriptPath: string
+  locale: string | null
+  scriptEventCount: number
+  scriptEvents: RecoveryDialogueEvent[]
+  previewStem: RecoveryPreviewStem
+}
+
+export interface RecoveryStageSnapshot {
+  storyboardIndex: number
+  dialogueIndex: number
+  frameIndex: number
+  currentStoryboard: RecoveryStageStoryboard
 }

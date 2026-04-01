@@ -100,6 +100,14 @@ python3 tools/arel_wars1/export_runtime_preview.py \
   --sequence-root recovery/arel_wars1/frame_sequence_candidates \
   --timeline-root recovery/arel_wars1/timeline_candidate_strips \
   --web-root remake/arel-wars1/public/recovery
+
+python3 tools/arel_wars1/analyze_script_events.py \
+  --catalog recovery/arel_wars1/catalog.json \
+  --output recovery/arel_wars1/script_event_report.json
+
+python3 tools/arel_wars_shared/inspect_apk_inventory.py \
+  --apk arel_wars1/arel_wars_1.apk \
+  --output recovery/arel_wars1/apk_inventory.json
 ```
 
 From `remake/arel-wars1/`:
@@ -123,8 +131,9 @@ npm run ios:sync
 - Web Runtime
   `sync:recovery` now exports `preview_manifest.json`, sequence summaries, and timeline strips into `remake/arel-wars1/public/recovery/analysis/`.
   The Vite runtime reads those files to render:
-  - a Phaser-side rotating timeline carousel for representative stems, now backed by per-event candidate frame playback
-  - a DOM-side featured timeline gallery fed from the same manifest
+  - a Phaser-side recovered stage scene driven by a shared playback system instead of a passive strip carousel
+  - a DOM-side storyboard panel that advances structured `ZT1` dialogue and recovered sprite timelines from the same state source
+  - a DOM-side featured timeline gallery fed from the preview manifest
 
 ## Immediate Next Targets
 

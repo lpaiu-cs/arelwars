@@ -1,14 +1,28 @@
 import Phaser from 'phaser'
-import type { RecoveryPreviewManifest, RecoveryPreviewStem } from '../recovery-types'
+import type { RecoveryPreviewStem, RecoveryStageSnapshot } from '../recovery-types'
+import { RecoveryStageSystem } from '../systems/recoveryStageSystem'
 
 const ICON_KEY = 'recovery-icon'
 
 export class RecoveryBootScene extends Phaser.Scene {
+  private readonly stageSystem: RecoveryStageSystem | null
+
   private readonly featuredEntries: RecoveryPreviewStem[]
 
-  constructor(previewManifest: RecoveryPreviewManifest | null = null) {
+  private previewImage: Phaser.GameObjects.Image | null = null
+
+  private spriteLabel: Phaser.GameObjects.Text | null = null
+
+  private spriteDetail: Phaser.GameObjects.Text | null = null
+
+  private spriteFooter: Phaser.GameObjects.Text | null = null
+
+  private currentSnapshotKey = ''
+
+  constructor(stageSystem: RecoveryStageSystem | null = null) {
     super('RecoveryBootScene')
-    this.featuredEntries = previewManifest?.featuredEntries.slice(0, 3) ?? []
+    this.stageSystem = stageSystem
+    this.featuredEntries = stageSystem?.getPreviewEntries().slice(0, 6) ?? []
   }
 
   preload(): void {
@@ -40,9 +54,9 @@ export class RecoveryBootScene extends Phaser.Scene {
       .setAlpha(0.95)
 
     this.add
-      .text(80, 100, 'Arel Wars 1 runtime shell', {
+      .text(80, 100, 'Arel Wars 1 reconstruction playback', {
         fontFamily: 'Georgia, serif',
-        fontSize: '40px',
+        fontSize: '38px',
         color: '#f3ecdf',
       })
       .setAlpha(0.98)
@@ -51,7 +65,9 @@ export class RecoveryBootScene extends Phaser.Scene {
       .text(
         80,
         148,
-        'Confirmed recoveries: PZX tail timelines, sequence candidates, and runtime strip previews.',
+        this.stageSystem?.isReady()
+          ? 'Recovered sprite timelines and structured dialogue now drive a shared stage state.'
+          : 'Confirmed recoveries: PZX tail timelines, sequence candidates, and runtime strip previews.',
         {
           fontFamily: 'Trebuchet MS, sans-serif',
           fontSize: '16px',
@@ -60,11 +76,13 @@ export class RecoveryBootScene extends Phaser.Scene {
       )
       .setAlpha(0.9)
 
-    const frame = this.add.rectangle(width * 0.72, height * 0.58, 356, 286, 0x131d22, 0.9)
+    const frame = this.add.rectangle(width * 0.72, height * 0.56, 372, 304, 0x131d22, 0.9)
     frame.setStrokeStyle(2, 0xc09a5a, 0.3)
 
-    if (this.featuredEntries.length > 0) {
-      this.createPreviewCarousel(frame)
+    if (this.stageSystem?.isReady()) {
+      this.createStagePlayback(frame)
+    } else if (this.featuredEntries.length > 0) {
+      this.createFallbackStrip(frame)
     } else {
       const icon = this.add.image(frame.x, frame.y - 18, ICON_KEY)
       icon.setScale(3.2)
@@ -76,22 +94,13 @@ export class RecoveryBootScene extends Phaser.Scene {
         repeat: -1,
         ease: 'Sine.InOut',
       })
-
-      this.add
-        .text(frame.x, frame.y + 104, 'Native sprite archives (.pzx)\nremain the main reverse-engineering target.', {
-          align: 'center',
-          fontFamily: 'Trebuchet MS, sans-serif',
-          fontSize: '16px',
-          color: '#cab892',
-        })
-        .setOrigin(0.5)
     }
 
     const milestones = [
-      '1. Export runtime timeline manifests',
-      '2. Resolve packed pixel semantics in 179',
-      '3. Decode MPL bank switching and raw timing directives',
-      '4. Promote recovered loop windows into runtime playback',
+      '1. PZX first-stream, frame-record, and tail groups recovered',
+      '2. MPL palette banks normalized into runtime render rules',
+      '3. ZT1 scripts elevated from raw strings to caption/speech events',
+      '4. Shared stage state now drives both sprite playback and narrative HUD',
     ]
 
     milestones.forEach((line, index) => {
@@ -105,124 +114,90 @@ export class RecoveryBootScene extends Phaser.Scene {
     })
 
     this.add
-      .text(84, height - 52, 'The canvas stays deliberately thin. Simulation and content recovery will live outside Phaser scenes.', {
+      .text(84, height - 52, 'This remains a reconstruction layer, not a claim of 1:1 engine parity. Unknown opcodes and battle state semantics are still being recovered.', {
         fontFamily: 'Trebuchet MS, sans-serif',
         fontSize: '15px',
         color: '#7f908e',
+        wordWrap: { width: 540 },
       })
       .setAlpha(0.94)
   }
 
-  private createPreviewCarousel(frame: Phaser.GameObjects.Rectangle): void {
-    const previewImage = this.add.image(frame.x, frame.y - 14, this.resolvePreviewTexture(this.featuredEntries[0], 0))
-    this.fitImageToBox(previewImage, 316, 176)
+  update(): void {
+    if (!this.stageSystem?.isReady()) {
+      return
+    }
 
-    const label = this.add
-      .text(frame.x - 148, frame.y + 96, '', {
+    const snapshot = this.stageSystem.getSnapshot()
+    if (!snapshot) {
+      return
+    }
+
+    const snapshotKey = `${this.stageSystem.getVersion()}:${snapshot.storyboardIndex}:${snapshot.dialogueIndex}:${snapshot.frameIndex}`
+    if (snapshotKey === this.currentSnapshotKey) {
+      return
+    }
+    this.currentSnapshotKey = snapshotKey
+    this.applySnapshot(snapshot)
+  }
+
+  private createStagePlayback(frame: Phaser.GameObjects.Rectangle): void {
+    const snapshot = this.stageSystem?.getSnapshot()
+    if (!snapshot) {
+      return
+    }
+
+    this.previewImage = this.add.image(frame.x, frame.y - 18, this.resolvePreviewTexture(snapshot.currentStoryboard.previewStem, snapshot.frameIndex))
+    this.fitImageToBox(this.previewImage, 320, 188)
+
+    this.spriteLabel = this.add
+      .text(frame.x - 156, frame.y + 96, '', {
         fontFamily: 'Georgia, serif',
         fontSize: '18px',
         color: '#f0dfc0',
       })
       .setAlpha(0.98)
 
-    const detail = this.add
-      .text(frame.x - 148, frame.y + 124, '', {
+    this.spriteDetail = this.add
+      .text(frame.x - 156, frame.y + 124, '', {
         fontFamily: 'Trebuchet MS, sans-serif',
         fontSize: '14px',
         color: '#cab892',
-        wordWrap: { width: 300 },
+        wordWrap: { width: 312 },
       })
       .setAlpha(0.94)
 
-    const footer = this.add
-      .text(frame.x - 148, frame.y + 166, '', {
+    this.spriteFooter = this.add
+      .text(frame.x - 156, frame.y + 168, '', {
         fontFamily: 'Trebuchet MS, sans-serif',
         fontSize: '13px',
         color: '#92a09d',
+        wordWrap: { width: 320 },
       })
       .setAlpha(0.9)
 
-    let frameTimer: Phaser.Time.TimerEvent | null = null
+    this.applySnapshot(snapshot)
+  }
 
-    const resolveLoopStart = (entry: RecoveryPreviewStem): number => entry.loopSummary?.startEventIndex ?? 0
-    const resolveLoopEnd = (entry: RecoveryPreviewStem): number => {
-      if (entry.eventFrames.length === 0) {
-        return 0
-      }
-      return Math.min(entry.loopSummary?.endEventIndex ?? entry.eventFrames.length - 1, entry.eventFrames.length - 1)
-    }
+  private createFallbackStrip(frame: Phaser.GameObjects.Rectangle): void {
+    const previewImage = this.add.image(frame.x, frame.y - 14, this.previewKey(this.featuredEntries[0].stem))
+    this.fitImageToBox(previewImage, 316, 176)
+  }
 
-    const startFramePlayback = (entry: RecoveryPreviewStem): void => {
-      frameTimer?.remove(false)
-      if (entry.eventFrames.length === 0) {
-        previewImage.setTexture(this.resolvePreviewTexture(entry, 0))
-        this.fitImageToBox(previewImage, 316, 176)
-        return
-      }
-
-      let frameIndex = 0
-      previewImage.setTexture(this.resolvePreviewTexture(entry, frameIndex))
-      this.fitImageToBox(previewImage, 316, 176)
-
-      const scheduleNextFrame = (): void => {
-        const current = entry.eventFrames[Math.min(frameIndex, entry.eventFrames.length - 1)]
-        const delay = Math.max(current?.playbackDurationMs ?? entry.stemDefaultDurationMs ?? 160, 40)
-        frameTimer = this.time.delayedCall(delay, () => {
-          const loopStart = resolveLoopStart(entry)
-          const loopEnd = resolveLoopEnd(entry)
-          if (frameIndex >= loopEnd) {
-            frameIndex = loopStart
-          } else {
-            frameIndex += 1
-          }
-          previewImage.setTexture(this.resolvePreviewTexture(entry, frameIndex))
-          this.fitImageToBox(previewImage, 316, 176)
-          scheduleNextFrame()
-        })
-      }
-
-      if (entry.eventFrames.length > 1) {
-        scheduleNextFrame()
-      }
-    }
-
-    const applyEntry = (entry: RecoveryPreviewStem): void => {
-      startFramePlayback(entry)
-      label.setText(`Stem ${entry.stem}`)
-      detail.setText(`${this.formatKind(entry.timelineKind)} / anchors ${this.describeAnchors(entry)}`)
-      footer.setText(
-        `${entry.linkedGroupCount} linked, ${entry.overlayGroupCount} overlays, ${Math.max(entry.eventFrames.length, 1)} frames / ${this.describeTiming(entry)} / ${this.describeLoop(entry)}`,
-      )
-    }
-
-    applyEntry(this.featuredEntries[0])
-
-    if (this.featuredEntries.length < 2) {
+  private applySnapshot(snapshot: RecoveryStageSnapshot): void {
+    if (!this.previewImage || !this.spriteLabel || !this.spriteDetail || !this.spriteFooter) {
       return
     }
 
-    let currentIndex = 0
-    this.time.addEvent({
-      delay: 2600,
-      loop: true,
-      callback: () => {
-        currentIndex = (currentIndex + 1) % this.featuredEntries.length
-        this.tweens.add({
-          targets: [previewImage, label, detail, footer],
-          alpha: 0.08,
-          duration: 180,
-          yoyo: false,
-          onComplete: () => {
-            applyEntry(this.featuredEntries[currentIndex])
-            this.tweens.add({
-              targets: [previewImage, label, detail, footer],
-              alpha: 1,
-              duration: 220,
-            })
-          },
-        })
-      },
-    })
+    const previewStem = snapshot.currentStoryboard.previewStem
+    this.previewImage.setTexture(this.resolvePreviewTexture(previewStem, snapshot.frameIndex))
+    this.fitImageToBox(this.previewImage, 320, 188)
+
+    this.spriteLabel.setText(`Stem ${previewStem.stem} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)
+    this.spriteDetail.setText(`${this.formatKind(previewStem.timelineKind)} / ${snapshot.currentStoryboard.scriptPath.replace('assets/', '')}`)
+    this.spriteFooter.setText(
+      `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)}`,
+    )
   }
 
   private drawGrid(width: number, height: number): void {
@@ -264,31 +239,10 @@ export class RecoveryBootScene extends Phaser.Scene {
     return value.replaceAll('-', ' ')
   }
 
-  private describeAnchors(entry: RecoveryPreviewStem): string {
-    if (entry.anchorFrameSequence.length === 0) {
-      return 'overlay only'
-    }
-
-    const preview = entry.anchorFrameSequence.slice(0, 4).join(' / ')
-    return entry.anchorFrameSequence.length > 4 ? `${preview} ...` : preview
-  }
-
-  private describeTiming(entry: RecoveryPreviewStem): string {
-    const durations = entry.eventFrames
-      .map((frame) => frame.playbackDurationMs)
-      .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
-    if (durations.length === 0) {
-      return 'timing unresolved'
-    }
-
-    const unique = Array.from(new Set(durations)).sort((left, right) => left - right)
-    return unique.length === 1 ? `${unique[0]}ms cadence` : `${unique[0]}-${unique[unique.length - 1]}ms cadence`
-  }
-
   private describeLoop(entry: RecoveryPreviewStem): string {
     if (!entry.loopSummary) {
-      return 'loop unresolved'
+      return 'none'
     }
-    return `loop ${entry.loopSummary.startEventIndex}-${entry.loopSummary.endEventIndex}`
+    return `${entry.loopSummary.startEventIndex}-${entry.loopSummary.endEventIndex} (${entry.loopSummary.reason})`
   }
 }
