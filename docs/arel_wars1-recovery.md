@@ -79,6 +79,11 @@ python3 tools/arel_wars1/render_composite_probes.py \
   --assets-root recovery/arel_wars1/apk_unzip/assets \
   --output recovery/arel_wars1/analysis_preview2 \
   --stems 179
+
+python3 tools/arel_wars1/render_frame_meta_group_probes.py \
+  --assets-root recovery/arel_wars1/apk_unzip/assets \
+  --output recovery/arel_wars1/frame_meta_group_probes \
+  --stems 208 230 240 225 084
 ```
 
 From `remake/arel-wars1/`:
@@ -176,6 +181,11 @@ optional 5-byte control chunks may appear:
   - `240.pzx` tail sections collapse into `5` groups, all tail-only. Their chunk ranges advance as `46-47`, `46-47`, `47-48`, `48-50`, `49-51`, which strongly suggests a separate overlay/effect track layered on top of the base sprite animation.
   - `225.pzx` mostly lands in `chunk-linked-reuse`: its groups share many chunk indices with base frames but rarely the exact same `(chunk, x, y, flag)` tuples, suggesting a reusable secondary pose/effect layer.
   - `084.pzx` has mixed behavior: some groups are tail-only (`52`-`61`), others are `chunk-linked-reuse`, and several central groups become `base-frame-delta` with `7`-`8` exact overlaps against frames `9`-`12`.
+- Visual probes now exist for representative stems in `recovery/arel_wars1/frame_meta_group_probes/`.
+  - `208-group00-base-frame-delta.png` shows the `66 0c` tail group sitting on top of anchor frame `16`.
+  - `230-group00-base-frame-delta.png` confirms that one late-frame tail group is almost a direct frame delta, not a separate track.
+  - `240-group00-overlay-track.png` shows the tail as a standalone star/cross overlay with no matching base-frame chunk positions.
+  - `084-group06-base-frame-delta.png` and `225-group06-base-frame-delta.png` give mixed-character examples where the tail is smaller than the full base frame but still composes coherently.
 - This means the tail is not one monolithic blob. It is a stream of smaller metadata blocks, some of which are already structured enough to drive placement/state transitions once the block-to-frame relationship is recovered.
 - The row grammar currently held by the tools is:
 
