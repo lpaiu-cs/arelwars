@@ -106,6 +106,8 @@ These steps are now complete:
    - [`binary_asset_report.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/binary_asset_report.json)
 4. First visual proof on `PZD`
    - preview sheets under `recovery/arel_wars2/pzd_previews/`
+5. First `PZF -> PZD` anchor probe overlays
+   - probe renders under [`pzf_anchor_probes`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_anchor_probes)
 
 ## Recommended Order For AW2 From Here
 
@@ -152,6 +154,12 @@ python3 tools/arel_wars2/inspect_binary_assets.py \
 python3 tools/arel_wars2/render_pzd_previews.py \
   --assets-root recovery/arel_wars2/apk_unzip/assets \
   --output recovery/arel_wars2/pzd_previews
+```
+
+```bash
+python3 tools/arel_wars2/render_pzf_anchor_probes.py \
+  --assets-root recovery/arel_wars2/apk_unzip/assets \
+  --output recovery/arel_wars2/pzf_anchor_probes
 ```
 
 For quick script sanity checks, reuse AW1 helpers in a one-off Python session:
