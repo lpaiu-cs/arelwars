@@ -1,0 +1,173 @@
+{
+  "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/decoded/zt1/assets/data_eng/XlsTower.zt1.bin",
+  "field1": 2,
+  "headerExtraSize": 2,
+  "field3": 10,
+  "rowSizeGuess": 2,
+  "rowCountGuess": 10,
+  "headerHex": "47584c01020002000a000000",
+  "headerAsciiStrings": [],
+  "payloadAsciiStrings": [],
+  "rows": [
+    {
+      "index": 0,
+      "hex": "0000",
+      "u8": [
+        0,
+        0
+      ],
+      "u16le": [
+        0
+      ],
+      "i16le": [
+        0
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 1,
+      "hex": "0003",
+      "u8": [
+        0,
+        3
+      ],
+      "u16le": [
+        768
+      ],
+      "i16le": [
+        768
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 2,
+      "hex": "0000",
+      "u8": [
+        0,
+        0
+      ],
+      "u16le": [
+        0
+      ],
+      "i16le": [
+        0
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 3,
+      "hex": "0102",
+      "u8": [
+        1,
+        2
+      ],
+      "u16le": [
+        513
+      ],
+      "i16le": [
+        513
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 4,
+      "hex": "0105",
+      "u8": [
+        1,
+        5
+      ],
+      "u16le": [
+        1281
+      ],
+      "i16le": [
+        1281
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 5,
+      "hex": "0102",
+      "u8": [
+        1,
+        2
+      ],
+      "u16le": [
+        513
+      ],
+      "i16le": [
+        513
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 6,
+      "hex": "0201",
+      "u8": [
+        2,
+        1
+      ],
+      "u16le": [
+        258
+      ],
+      "i16le": [
+        258
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 7,
+      "hex": "0204",
+      "u8": [
+        2,
+        4
+      ],
+      "u16le": [
+        1026
+      ],
+      "i16le": [
+        1026
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 8,
+      "hex": "0201",
+      "u8": [
+        2,
+        1
+      ],
+      "u16le": [
+        258
+      ],
+      "i16le": [
+        258
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    },
+    {
+      "index": 9,
+      "hex": "0306",
+      "u8": [
+        3,
+        6
+      ],
+      "u16le": [
+        1539
+      ],
+      "i16le": [
+        1539
+      ],
+      "u32le": [],
+      "asciiStrings": []
+    }
+  ]
+}

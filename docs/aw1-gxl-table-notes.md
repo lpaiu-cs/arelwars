@@ -5,10 +5,12 @@ This note tracks the fixed-layout `GXL` table family used under `assets/data_eng
 Primary outputs:
 
 - [gxl_table_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_table_report.json)
+- [AW1.gxl.summary.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.gxl.summary.json)
 - [XlsHero.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsHero.eng.json)
 - [XlsMap.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsMap.eng.json)
 - [XlsLevelDesign.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsLevelDesign.eng.json)
 - [XlsAi.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsAi.eng.json)
+- parsed exports under [parsed_tables](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables)
 
 ## Current Header Model
 
@@ -60,6 +62,13 @@ Evidence:
   - row `1`: `10..1f`
   - row `2`: `20..2f`
   These are likely references to related asset ids, skills, or progression slots.
+- Parsed English roster currently resolves to:
+  - `0 Vincent`
+  - `1 Helba`
+  - `2 Juno`
+  - `3 Manos`
+  - `4 Caesar`
+  - `5 Rogan`
 
 ### XlsMap
 
@@ -73,6 +82,15 @@ Evidence:
 - Current candidate shape:
   - a small map or world id in the first byte or first `u16`
   - one or two compact coordinate / offset fields in the remaining bytes
+- Current parsed `groupId -> pair(valueU16)` clusters are:
+  - `0 -> [994, 738]`
+  - `1 -> [728, 984]`
+  - `2 -> [994, 738]`
+  - `3 -> [1250, 482]`
+  - `4 -> [1526, 1014]`
+  - `5 -> [0, 0]`
+  - `6 -> [0, 0]`
+  - `7 -> [0, 0]`
 - Best next step:
   - compare against `assets/map/000..015.zt1` ordering and the `XlsWorldmap` table
 
@@ -89,6 +107,9 @@ Evidence:
 - This is likely not a whole stage row by itself.
 - Stronger current guess:
   - `XlsLevelDesign` is a compact scalar table referenced by another table rather than a full human-readable stage definition on its own.
+- The first parsed values are:
+  - `600, 2100, 4000, 10000, 22000, 36000, 65000, 150000, 8000, 30000, 75000, 200000, 500000, 900000, 2000000, 5000000`
+- This looks more like progression thresholds or costs than stage-by-stage map metadata.
 
 ### XlsAi
 
@@ -100,23 +121,68 @@ Evidence:
   - bonus reward text
   - tactical hint text
 - Row `0` structure is already visibly segmented:
-  - offset `0x000`: `u16 titleLen` + title string
+  - offset `0x000`: unknown `u16`
   - title text starts at `0x002`: `First Battle`
   - reward text starts at `0x08d`: `Clear the stage in 3 minutes...`
   - hint text starts at `0x117`: `!cffffffThe enemy Knolls...`
 - The title block is heavily zero-padded after the first string, which suggests a fixed title slot rather than a free-form string pool.
+- Current English slot model used by the parsed export is:
+  - `0x000..0x001`: unknown `u16`
+  - `0x002..0x01f`: title slot
+  - `0x020..0x08c`: numeric block
+  - `0x08d..0x116`: reward slot
+  - `0x117..0x1d4`: hint slot
+  - `0x1d5..0x1f4`: tail slot
 - This table is now the best candidate source for:
   - stage names
   - bonus conditions
   - hint text
   - at least part of stage progression metadata
+- Parsed English summary currently reports:
+  - `130` titled rows
+  - `61` rows with a non-empty hint slot
+  - first titles include `First Battle`, `Buster Hunt`, `Seize Veril`, `Into the Enemy Camp`, `Arang's Challenge`, `Seize Kaleck`
+
+### XlsWorldmap
+
+- `rowSize=4`
+- `rowCount=16`
+- Parsed rows are strongly consistent with a small world-graph adjacency table.
+- Current high-confidence reading:
+  - each row stores up to `4` neighbor slots
+  - `0xff` means empty
+- Current graph is a simple linear chain:
+  - `0 <-> 1 <-> 2 <-> 3 <-> ... <-> 15`
+
+### XlsUnit
+
+- English parsed export now exists under [`XlsUnit.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsUnit.eng.parsed.json).
+- Current practical slot model:
+  - byte `0`: unknown lead byte
+  - bytes `1..76`: name slot plus pre-description numeric fields
+  - bytes `77..end`: description slot
+- The first parsed unit names are:
+  - `Infantry`
+  - `Panzer`
+  - `Cavalry`
+  - `Hunter`
+  - `Gliders`
+  - `Thief`
+
+### XlsTower
+
+- English parsed export now exists under [`XlsTower.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsTower.eng.parsed.json).
+- Current rows are only `2` bytes wide and look like compact pair records:
+  - `[0, 0]`
+  - `[0, 3]`
+  - `[0, 0]`
+  - `[1, 2]`
+  - `[1, 5]`
+  - `[1, 2]`
 
 ## Immediate Next Steps
 
 1. Compare `XlsAi` English/Korean rows to isolate localized byte spans from numeric byte spans.
 2. Correlate `XlsAi` row order with story/stage order from script files.
 3. Cross-reference `XlsMap`, `XlsLevelDesign`, and `XlsWorldmap` to recover stage-to-map binding.
-4. Build typed parsers for the easiest tables first:
-   - `XlsHero`
-   - `XlsMap`
-   - `XlsAi`
+4. Promote the current parsed exports into stronger typed schemas instead of `candidate` / `unknown` fields.

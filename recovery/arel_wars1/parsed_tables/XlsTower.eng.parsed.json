@@ -1,0 +1,77 @@
+{
+  "table": "XlsTower",
+  "rowSize": 2,
+  "rowCount": 10,
+  "records": [
+    {
+      "index": 0,
+      "pair": [
+        0,
+        0
+      ]
+    },
+    {
+      "index": 1,
+      "pair": [
+        0,
+        3
+      ]
+    },
+    {
+      "index": 2,
+      "pair": [
+        0,
+        0
+      ]
+    },
+    {
+      "index": 3,
+      "pair": [
+        1,
+        2
+      ]
+    },
+    {
+      "index": 4,
+      "pair": [
+        1,
+        5
+      ]
+    },
+    {
+      "index": 5,
+      "pair": [
+        1,
+        2
+      ]
+    },
+    {
+      "index": 6,
+      "pair": [
+        2,
+        1
+      ]
+    },
+    {
+      "index": 7,
+      "pair": [
+        2,
+        4
+      ]
+    },
+    {
+      "index": 8,
+      "pair": [
+        2,
+        1
+      ]
+    },
+    {
+      "index": 9,
+      "pair": [
+        3,
+        6
+      ]
+    }
+  ]
+}

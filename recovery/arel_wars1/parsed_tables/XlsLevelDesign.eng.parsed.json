@@ -1,0 +1,259 @@
+{
+  "table": "XlsLevelDesign",
+  "rowSize": 4,
+  "rowCount": 63,
+  "records": [
+    {
+      "index": 0,
+      "valueU32": 600
+    },
+    {
+      "index": 1,
+      "valueU32": 2100
+    },
+    {
+      "index": 2,
+      "valueU32": 4000
+    },
+    {
+      "index": 3,
+      "valueU32": 10000
+    },
+    {
+      "index": 4,
+      "valueU32": 22000
+    },
+    {
+      "index": 5,
+      "valueU32": 36000
+    },
+    {
+      "index": 6,
+      "valueU32": 65000
+    },
+    {
+      "index": 7,
+      "valueU32": 150000
+    },
+    {
+      "index": 8,
+      "valueU32": 8000
+    },
+    {
+      "index": 9,
+      "valueU32": 30000
+    },
+    {
+      "index": 10,
+      "valueU32": 75000
+    },
+    {
+      "index": 11,
+      "valueU32": 200000
+    },
+    {
+      "index": 12,
+      "valueU32": 500000
+    },
+    {
+      "index": 13,
+      "valueU32": 900000
+    },
+    {
+      "index": 14,
+      "valueU32": 2000000
+    },
+    {
+      "index": 15,
+      "valueU32": 5000000
+    },
+    {
+      "index": 16,
+      "valueU32": 500
+    },
+    {
+      "index": 17,
+      "valueU32": 1100
+    },
+    {
+      "index": 18,
+      "valueU32": 2300
+    },
+    {
+      "index": 19,
+      "valueU32": 4700
+    },
+    {
+      "index": 20,
+      "valueU32": 5000
+    },
+    {
+      "index": 21,
+      "valueU32": 11000
+    },
+    {
+      "index": 22,
+      "valueU32": 23000
+    },
+    {
+      "index": 23,
+      "valueU32": 47000
+    },
+    {
+      "index": 24,
+      "valueU32": 10
+    },
+    {
+      "index": 25,
+      "valueU32": 20
+    },
+    {
+      "index": 26,
+      "valueU32": 40
+    },
+    {
+      "index": 27,
+      "valueU32": 60
+    },
+    {
+      "index": 28,
+      "valueU32": 100
+    },
+    {
+      "index": 29,
+      "valueU32": 160
+    },
+    {
+      "index": 30,
+      "valueU32": 260
+    },
+    {
+      "index": 31,
+      "valueU32": 420
+    },
+    {
+      "index": 32,
+      "valueU32": 680
+    },
+    {
+      "index": 33,
+      "valueU32": 1
+    },
+    {
+      "index": 34,
+      "valueU32": 2
+    },
+    {
+      "index": 35,
+      "valueU32": 4
+    },
+    {
+      "index": 36,
+      "valueU32": 7
+    },
+    {
+      "index": 37,
+      "valueU32": 11
+    },
+    {
+      "index": 38,
+      "valueU32": 16
+    },
+    {
+      "index": 39,
+      "valueU32": 22
+    },
+    {
+      "index": 40,
+      "valueU32": 29
+    },
+    {
+      "index": 41,
+      "valueU32": 37
+    },
+    {
+      "index": 42,
+      "valueU32": 32
+    },
+    {
+      "index": 43,
+      "valueU32": 32
+    },
+    {
+      "index": 44,
+      "valueU32": 2
+    },
+    {
+      "index": 45,
+      "valueU32": 2
+    },
+    {
+      "index": 46,
+      "valueU32": 2
+    },
+    {
+      "index": 47,
+      "valueU32": 60
+    },
+    {
+      "index": 48,
+      "valueU32": 80
+    },
+    {
+      "index": 49,
+      "valueU32": 40
+    },
+    {
+      "index": 50,
+      "valueU32": 11
+    },
+    {
+      "index": 51,
+      "valueU32": 10
+    },
+    {
+      "index": 52,
+      "valueU32": 20
+    },
+    {
+      "index": 53,
+      "valueU32": 15
+    },
+    {
+      "index": 54,
+      "valueU32": 11
+    },
+    {
+      "index": 55,
+      "valueU32": 6
+    },
+    {
+      "index": 56,
+      "valueU32": 20
+    },
+    {
+      "index": 57,
+      "valueU32": 10
+    },
+    {
+      "index": 58,
+      "valueU32": 4
+    },
+    {
+      "index": 59,
+      "valueU32": 20
+    },
+    {
+      "index": 60,
+      "valueU32": 25
+    },
+    {
+      "index": 61,
+      "valueU32": 1
+    },
+    {
+      "index": 62,
+      "valueU32": 0
+    }
+  ]
+}

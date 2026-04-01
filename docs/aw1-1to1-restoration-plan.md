@@ -110,6 +110,12 @@ References:
     - `XlsHero`
     - `XlsProjectile`
     - `XlsParticle`
+  - current parsed-table outputs now exist for:
+    - `XlsAi.eng`
+    - `XlsWorldmap.eng`
+    - `XlsMap.eng`
+    - `XlsLevelDesign.eng`
+    - `XlsHero.eng`
 
 ### Phase 4. Build Deterministic Runtime Systems
 

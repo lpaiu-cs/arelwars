@@ -85,6 +85,15 @@ This document captures the parts of the recovery work that are likely to stay us
   - `headerSize = 10 + headerExtraSize`
   - `payloadSize = rowSize * rowCount`
   This already holds for all currently inspected AW1 and AW2 data tables.
+- AW1 now also has first parsed-table exports built on top of that model:
+  - `XlsAi.eng`
+  - `XlsWorldmap.eng`
+  - `XlsMap.eng`
+  - `XlsLevelDesign.eng`
+  - `XlsHero.eng`
+- Two especially useful AW1 table findings:
+  - `XlsWorldmap` is already strong enough to read as a linear `16`-node adjacency graph
+  - `XlsAi.eng` now has a practical slot model with separate title, numeric, reward, hint, and tail regions
 
 - `179.pzx` in Arel Wars 1 now has a usable `shadeBand * 47 + paletteResidue` preview heuristic, but the original blend equation is still unproven.
 - `PTC` is structurally parsed but semantically heuristic.
