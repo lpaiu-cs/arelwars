@@ -123,6 +123,14 @@
   - 즉 runtime-equivalent 기준으로 `subFrameIndex -> PZD image` 연결은 정리됐다.
     - `type 8`: `subFrameIndex == first-stream chunk index`
     - `type 7`: `subFrameIndex == file-order row-stream index`
+  - raw byte layout도 정리됐다.
+    - `type 7 flags=0`: `field4 + 4`에서 시작하는 direct `u32 imageOffset[contentCount]` table이 있고, 각 entry는 `.pzx` file-local absolute offset으로 per-image block 시작을 가리킨다.
+      - block = `localPaletteCount:u8`, `localPalette16[count]:u16`, `16-byte descriptor`, `zlib rowstream`
+    - `type 7 flags=1`: root header 뒤 `globalPaletteCount:u8 + globalPalette16[count]:u16`가 먼저 오고, 그 다음 `u32 imageOffset[contentCount]` table이 온다.
+      - 각 entry는 `.pzx` file-local absolute offset이고, 바로 `16-byte descriptor + zlib rowstream`을 가리킨다.
+    - `type 8`: root header 뒤 optional global palette, `unpackedSize:u32`, `packedSize:u32`, zlib blob이 붙는다.
+      - inflate된 memory stream 안에는 decoded-relative `u32 imageOffset[contentCount]` table이 있고, 각 entry는 `16-byte chunk header + rowstream body`를 가리킨다.
+      - 이 chunk header의 raw byte `+5`는 보통 `0xCD`지만, `CGxZeroPZDParser::DecodeImageData`는 `1`이 아닌 값을 모두 `0`으로 정규화한다.
 - `PZxFrameBB`
   - `GetAttCount = token >> 4`, `GetDamCount = token & 0x0f`로 확인됐다.
   - bbox mode는 `PZF formatVariant`와 대응한다.
@@ -155,17 +163,16 @@
 
 ### Open
 
-- raw `PZD` index table entry encoding은 아직 완전히 닫히지 않았다.
-  - `type 7 flags=0`은 direct `u32` table이 맞고, 각 entry는 bare rowstream zlib start가 아니라 "single-chunk first-stream header + zlib row body" prefix 앞쪽을 가리킨다.
-  - `type 7 flags=1`은 direct rowstream 쪽과 더 가깝지만, header/table alignment를 아직 더 봐야 한다.
-  - `type 8`은 raw region 안에서 direct/shifted `u32`, `u16`, `u24` table 패턴이 아직 안 잡힌다.
-  - 즉 native runtime-equivalent decode는 끝났지만, `SeekIndexTable`가 읽는 raw table 자체는 여전히 `type 8` 중심으로 열려 있다.
+- `PZF extraPayload`의 non-executed envelope byte(`66/67/70...`)가 정확히 어디서 추가 의미를 갖는지는 아직 남아 있다.
+  - 현재까지는 `FindEffectedImage`의 primary cache-hit key는 아니고, raw payload family를 나누는 secondary metadata 쪽으로 기운다.
+- bbox mode 자체는 닫혔지만, `CollisionDetect` filter 비트와 attack/damage/reference point의 실제 gameplay 의미는 더 따라갈 여지가 있다.
+- `PZA -> CGxPZxAni -> CSpriteIns::DoAnimate` 소비축을 더 따라가야 시간축 해독을 “재생기 기준”으로 끝낼 수 있다.
 
 ### Next Focus
 
-1. `type 8` raw `PZD` index table / descriptor layout을 `SeekIndexTable` 기준으로 고정한다.
-2. `type 7 flags=0/1`의 raw prefix가 각각 어떤 palette/descriptor block인지 byte-level로 마저 정리한다.
-3. `66/67/70...` envelope byte가 effect cache selector인지 module selector인지, `ChangeModule*` / effect loaders를 기준으로 더 정리한다.
+1. `66/67/70...` envelope byte가 effect cache selector인지 module selector인지, `ChangeModule*` / effect loaders를 기준으로 더 정리한다.
+2. `CGxPZxFrameBB::*`와 `CollisionDetect` consumer를 더 따라가서 bbox group의 gameplay 의미를 붙인다.
+3. `CGxPZxAni::DoPlay` / `GetCurrentDelayFrameCount`와 `CSpriteIns` 소비축을 따라 실제 시간축 반영을 끝낸다.
 
 ### Refresh Commands
 

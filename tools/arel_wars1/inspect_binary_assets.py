@@ -241,6 +241,14 @@ def summarize_embedded_pzd_resource(resource) -> dict[str, object]:
         "contentCount": resource.content_count,
         "layout": resource.layout,
         "paletteProbe": resource.palette_probe,
+        "tableStart": resource.table_start,
+        "indexOffsetMode": resource.index_offset_mode,
+        "indexOffsetsPreview": list(resource.index_offsets[:12]),
+        "indexOffsetsTail": list(resource.index_offsets[-6:]),
+        "globalPaletteCount": resource.global_palette_count,
+        "rawPackedSize": resource.packed_size,
+        "rawUnpackedSize": resource.unpacked_size,
+        "rawPayloadOffset": resource.payload_offset,
         "zlibCount": len(resource.zlib_streams),
         "zlibOffsetsPreview": [stream.offset for stream in resource.zlib_streams[:12]],
         "zlibOffsetsTail": [stream.offset for stream in resource.zlib_streams[-6:]],
@@ -252,6 +260,23 @@ def summarize_embedded_pzd_resource(resource) -> dict[str, object]:
             if resource.zlib_streams
             else None
         ),
+        "imageDescriptorPreview": [
+            {
+                "index": record.index,
+                "indexOffset": record.index_offset,
+                "blockOffset": record.block_offset,
+                "descriptorOffset": record.descriptor_offset,
+                "payloadOffset": record.payload_offset,
+                "paletteCount": record.palette_count,
+                "width": record.width,
+                "height": record.height,
+                "mode": record.mode,
+                "extraFlag": record.extra_flag,
+                "unpackedSize": record.unpacked_size,
+                "packedSize": record.packed_size,
+            }
+            for record in resource.image_records[:10]
+        ],
     }
 
     if resource.type_code == 7:
@@ -1527,6 +1552,8 @@ def main() -> None:
             f"PZD splits into two native layouts with no leftovers: type 7 = {embedded_pzd_type_counts.get(7, 0)} stems and type 8 = {embedded_pzd_type_counts.get(8, 0)} stems.",
             f"Every type 8 PZD region contains exactly one zlib stream, and its decoded first-stream chunk count always equals contentCount ({embedded_pzd_type_counts.get(8, 0)} / {embedded_pzd_type_counts.get(8, 0)} stems).",
             f"Every type 7 PZD region contains exactly contentCount standalone rowstreams in file order ({embedded_pzd_type_counts.get(7, 0)} / {embedded_pzd_type_counts.get(7, 0)} stems).",
+            "Raw type 7 PZD tables are file-local absolute offsets: flags=0 entries land on per-image local-palette blocks, while flags=1 inserts one global 16-bit palette block before the table and makes each entry point directly at a 16-byte image descriptor.",
+            "Raw type 8 PZD uses the native zero-parser whole-stream-compressed path: optional global 16-bit palette, unpackedSize(u32), packedSize(u32), one zlib blob, then an inflated decoded-relative u32 image-offset table whose first entry is contentCount * 4.",
             "Decoded variant=8 chunk records start with width(u16), height(u16), a CD-CD-CD tagged mode word (usually 02 or 04), declared payload length(u32), and reserved zero(u32).",
             "Chunk bodies are row-oriented RLE: each row expands to exactly chunk width bytes using skip(u16), literal(opcode 0x80nn + nn bytes), and repeat(opcode 0xC0nn + one value byte repeated nn times).",
             "Some chunks start with FD FF before the first row. Rows are separated by FE FF, and chunks end with a trailing FFFF sentinel after the final FE FF.",

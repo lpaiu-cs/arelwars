@@ -337,6 +337,22 @@ class PzxPzdZlibStream:
 
 
 @dataclass(frozen=True)
+class PzxPzdImageRecord:
+    index: int
+    index_offset: int
+    block_offset: int
+    descriptor_offset: int
+    payload_offset: int
+    palette_count: int | None
+    width: int
+    height: int
+    mode: int
+    extra_flag: int
+    unpacked_size: int
+    packed_size: int
+
+
+@dataclass(frozen=True)
 class PzxPzdResource:
     offset: int
     end_offset: int
@@ -344,9 +360,17 @@ class PzxPzdResource:
     content_count: int
     flags: int
     palette_probe: int | None
+    table_start: int | None
+    index_offset_mode: str | None
+    index_offsets: tuple[int, ...]
+    global_palette_count: int | None
+    packed_size: int | None
+    unpacked_size: int | None
+    payload_offset: int | None
     zlib_streams: tuple[PzxPzdZlibStream, ...]
     row_streams: tuple[PzxRowStream, ...]
     first_stream: PzxFirstStream | None
+    image_records: tuple[PzxPzdImageRecord, ...]
 
     @property
     def layout(self) -> str:
@@ -1112,6 +1136,23 @@ def read_pzx_root_resource_offsets(data: bytes) -> tuple[int, int, int] | None:
     )
 
 
+def _read_pzd_image_descriptor(
+    block: bytes, descriptor_offset: int
+) -> tuple[int, int, int, int, int, int] | None:
+    if descriptor_offset < 0 or descriptor_offset + 16 > len(block):
+        return None
+    descriptor = block[descriptor_offset : descriptor_offset + 16]
+    width = struct.unpack("<H", descriptor[:2])[0]
+    height = struct.unpack("<H", descriptor[2:4])[0]
+    mode = descriptor[4]
+    extra_flag = descriptor[5]
+    if struct.unpack("<H", descriptor[6:8])[0] != 0xCDCD:
+        return None
+    unpacked_size = struct.unpack("<I", descriptor[8:12])[0]
+    packed_size = struct.unpack("<I", descriptor[12:16])[0]
+    return (width, height, mode, extra_flag, unpacked_size, packed_size)
+
+
 def read_pzx_pzd_resource(data: bytes, offset: int, end_offset: int) -> PzxPzdResource | None:
     if offset < 0 or offset + 4 > len(data) or end_offset > len(data) or offset >= end_offset:
         return None
@@ -1136,14 +1177,80 @@ def read_pzx_pzd_resource(data: bytes, offset: int, end_offset: int) -> PzxPzdRe
     palette_probe = data[offset + 4] if offset + 4 < end_offset else None
 
     if type_code == 7:
-        if len(hits) != content_count:
+        global_palette_count = None
+        if flags != 0:
+            global_palette_count = palette_probe
+            if global_palette_count is None:
+                return None
+            table_start = offset + 5 + global_palette_count * 2
+        else:
+            table_start = offset + 4
+        table_end = table_start + content_count * 4
+        if table_end > end_offset:
             return None
+
+        index_offsets = tuple(
+            struct.unpack("<I", data[table_start + index * 4 : table_start + index * 4 + 4])[0]
+            for index in range(content_count)
+        )
+
         row_streams: list[PzxRowStream] = []
-        for hit in hits:
-            row_stream = read_pzx_row_stream(hit.decoded)
+        image_records: list[PzxPzdImageRecord] = []
+        raw_zlib_streams: list[PzxPzdZlibStream] = []
+        for index, index_offset in enumerate(index_offsets):
+            if index_offset < offset or index_offset >= end_offset:
+                return None
+            block_offset = index_offset - offset
+            descriptor_offset = block_offset
+            palette_count: int | None = None
+            if flags == 0:
+                palette_count = region[block_offset]
+                descriptor_offset = block_offset + 1 + palette_count * 2
+            descriptor = _read_pzd_image_descriptor(region, descriptor_offset)
+            if descriptor is None:
+                return None
+            width, height, mode, extra_flag, unpacked_size, packed_size = descriptor
+            payload_offset = descriptor_offset + 16
+            payload_end = payload_offset + packed_size
+            if packed_size <= 0 or payload_end > len(region):
+                return None
+            payload = region[payload_offset:payload_end]
+            try:
+                decoded = zlib.decompress(payload)
+            except zlib.error:
+                return None
+            if len(decoded) != unpacked_size:
+                return None
+            row_stream = read_pzx_row_stream(decoded)
             if row_stream is None:
                 return None
+            if row_stream.width != width or row_stream.height != height:
+                return None
             row_streams.append(row_stream)
+            raw_zlib_streams.append(
+                PzxPzdZlibStream(
+                    index=index,
+                    offset=offset + payload_offset,
+                    consumed=packed_size,
+                    decoded_len=len(decoded),
+                )
+            )
+            image_records.append(
+                PzxPzdImageRecord(
+                    index=index,
+                    index_offset=index_offset,
+                    block_offset=offset + block_offset,
+                    descriptor_offset=offset + descriptor_offset,
+                    payload_offset=offset + payload_offset,
+                    palette_count=palette_count,
+                    width=width,
+                    height=height,
+                    mode=mode,
+                    extra_flag=extra_flag,
+                    unpacked_size=unpacked_size,
+                    packed_size=packed_size,
+                )
+            )
         return PzxPzdResource(
             offset=offset,
             end_offset=end_offset,
@@ -1151,21 +1258,66 @@ def read_pzx_pzd_resource(data: bytes, offset: int, end_offset: int) -> PzxPzdRe
             content_count=content_count,
             flags=flags,
             palette_probe=palette_probe,
-            zlib_streams=zlib_streams,
+            table_start=table_start,
+            index_offset_mode="file-absolute",
+            index_offsets=index_offsets,
+            global_palette_count=global_palette_count,
+            packed_size=None,
+            unpacked_size=None,
+            payload_offset=None,
+            zlib_streams=tuple(raw_zlib_streams),
             row_streams=tuple(row_streams),
             first_stream=None,
+            image_records=tuple(image_records),
         )
 
     if type_code == 8:
-        if len(hits) != 1:
+        global_palette_count = None
+        compressed_header_offset = offset + 4
+        if flags != 0:
+            global_palette_count = palette_probe
+            if global_palette_count is None:
+                return None
+            compressed_header_offset = offset + 5 + global_palette_count * 2
+        if compressed_header_offset + 8 > end_offset:
             return None
-        hit = hits[0]
-        if len(hit.decoded) < 4:
+        unpacked_size = struct.unpack("<I", data[compressed_header_offset : compressed_header_offset + 4])[0]
+        packed_size = struct.unpack("<I", data[compressed_header_offset + 4 : compressed_header_offset + 8])[0]
+        payload_offset = compressed_header_offset + 8
+        payload_end = payload_offset + packed_size
+        if payload_end > end_offset or packed_size <= 0:
             return None
-        table_span = struct.unpack("<I", hit.decoded[:4])[0]
-        first_stream = read_pzx_first_stream(hit.decoded, table_span)
+        payload = data[payload_offset:payload_end]
+        try:
+            decoded = zlib.decompress(payload)
+        except zlib.error:
+            return None
+        if len(decoded) != unpacked_size or len(decoded) < 4:
+            return None
+        table_span = struct.unpack("<I", decoded[:4])[0]
+        first_stream = read_pzx_first_stream(decoded, table_span)
         if first_stream is None or len(first_stream.chunks) != content_count:
             return None
+        image_records_list: list[PzxPzdImageRecord] = []
+        for index, (chunk_offset, chunk) in enumerate(zip(first_stream.offsets, first_stream.chunks)):
+            magic = bytes.fromhex(chunk.magic_hex)
+            image_records_list.append(
+                PzxPzdImageRecord(
+                    index=index,
+                    index_offset=chunk_offset,
+                    block_offset=chunk_offset,
+                    descriptor_offset=chunk_offset,
+                    payload_offset=chunk_offset + 16,
+                    palette_count=None,
+                    width=chunk.width,
+                    height=chunk.height,
+                    mode=magic[0],
+                    extra_flag=magic[1],
+                    unpacked_size=chunk.declared_payload_len,
+                    packed_size=chunk.reserved,
+                )
+            )
+        image_records = tuple(image_records_list)
         return PzxPzdResource(
             offset=offset,
             end_offset=end_offset,
@@ -1173,9 +1325,24 @@ def read_pzx_pzd_resource(data: bytes, offset: int, end_offset: int) -> PzxPzdRe
             content_count=content_count,
             flags=flags,
             palette_probe=palette_probe,
-            zlib_streams=zlib_streams,
+            table_start=0,
+            index_offset_mode="decoded-relative",
+            index_offsets=first_stream.offsets,
+            global_palette_count=global_palette_count,
+            packed_size=packed_size,
+            unpacked_size=unpacked_size,
+            payload_offset=payload_offset,
+            zlib_streams=(
+                PzxPzdZlibStream(
+                    index=0,
+                    offset=payload_offset,
+                    consumed=packed_size,
+                    decoded_len=len(decoded),
+                ),
+            ),
             row_streams=(),
             first_stream=first_stream,
+            image_records=image_records,
         )
 
     return None

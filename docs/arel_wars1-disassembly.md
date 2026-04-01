@@ -209,6 +209,15 @@ animation:
   - sample:
     - `010/082/208/004.pzx`: `type 8`
     - `000/020/030/041/107/180.pzx`: `type 7`
+  - raw byte layout도 이제 native parser 기준으로 정리된다.
+    - `type 7 flags=0`: root `field4` 바로 뒤에 `u32 imageOffset[contentCount]`가 오고, 각 entry는 `.pzx` file-local absolute offset으로 per-image block 시작을 가리킨다.
+      - block = `localPaletteCount:u8`, `localPalette16[count]:u16`, `width:u16`, `height:u16`, `mode:u8`, `rawExtra:u8`, `0xCDCD:u16`, `unpackedSize:u32`, `packedSize:u32`, `zlib rowstream`
+    - `type 7 flags=1`: root header 뒤에 `globalPaletteCount:u8 + globalPalette16[count]:u16`가 먼저 오고, 그 다음 `u32 imageOffset[contentCount]`가 온다.
+      - 각 entry는 역시 `.pzx` file-local absolute offset이고, 이번에는 바로 `16-byte descriptor + zlib rowstream`을 가리킨다.
+    - `type 8`: root header 뒤에 optional `globalPaletteCount:u8 + globalPalette16[count]:u16`, `unpackedSize:u32`, `packedSize:u32`, zlib blob이 붙는다.
+      - inflate된 memory stream의 시작은 decoded-relative `u32 imageOffset[contentCount]` table이고, 첫 entry는 항상 `contentCount * 4`다.
+      - 각 entry는 `width:u16`, `height:u16`, `mode:u8`, `rawExtra:u8`, `0xCDCD:u16`, `payloadLen:u32`, `reserved:u32`, `rowstream body`로 시작하는 chunk header를 가리킨다.
+      - `rawExtra`는 raw header에서는 `0xCD`로 보이지만, `CGxZeroPZDParser::DecodeImageData`는 `1`이 아닌 값을 모두 `0`으로 정규화한다.
 - 즉 later zlib stream 일부는 독립 포맷이 아니라, raw `PZF/PZA` subresource payload가 다시 노출된 결과일 가능성이 높다.
 - 실제로 raw `PZF` frame parser를 자산측에 내리면:
   - `253/253` stems에서 raw embedded `PZF`가 frame 단위로 exact-parse 된다.
@@ -294,10 +303,13 @@ frame:
   - 반대로 `(7) -> 6607000000`, `(10) -> 660a000000`, `(100) -> 6764000000`, `(44,99) -> 702c630000`처럼 특정 envelope family에만 묶인 opcode sequence도 있다.
   - 즉 envelope byte는 effect semantics를 바꾸는 실행 opcode는 아니지만, payload family 구분에는 계속 남아 있다.
 - raw `PZD type 7`도 한 단계 더 보인다.
-  - `flags = 0` stems는 root header 뒤 direct `u32` table을 가지고, 각 entry는 bare rowstream zlib가 아니라 "single-chunk first-stream header + zlib row body" 앞쪽을 가리킨다.
-  - 즉 이 계열은 runtime-equivalent rowstream으로는 읽히지만, raw byte layout 관점에서는 per-image prefix가 더 있다.
-  - `flags = 1` 계열은 전형적으로 direct zlib rowstream start 쪽에 더 가깝다.
-  - 반면 raw `type 8` index table은 아직 native `SeekIndexTable` 수준으로 닫히지 않았다.
+  - `SeekIndexTable`가 읽는 entry는 subresource-relative가 아니라 `.pzx` file-local absolute offset이다.
+  - 그래서 `type 7 flags=0`의 table 값 `64`는 `field4` 안에서의 `64`가 아니라, 파일 절대 offset `0x40`을 가리킨다.
+  - 이 관점으로 다시 읽으면 `020/029/033/000` 계열의 local palette block과 `180` 계열의 global palette + direct descriptor block이 모두 네이티브 `DecodeImageData`와 맞는다.
+  - `type 8`은 raw region 안에 table이 보이지 않는 이유가 whole-stream compressed `CGxZeroPZDParser` path였기 때문이다.
+    - raw region에서는 `unpackedSize + packedSize + zlib`
+    - inflate 이후 memory stream에서는 decoded-relative index table
+  - 즉 raw `PZD` index / descriptor encoding 자체는 이제 닫혔다.
 - `tools/arel_wars1/inspect_binary_assets.py`는 이제 exact-fit animation clip stream을 인식한다.
 - 현재 휴리스틱은 다음이다.
   - stream 전체가 `frameCount:u8 + frameCount * 8-byte frame record`의 clip 연속체로 끝까지 정확히 소진될 것
@@ -346,18 +358,18 @@ frame:
   - 루트 `.pzx` 헤더에서 `PZF/PZA` subresource offset을 직접 잡을 수 있고
   - raw `PZA` index table이 animation clip offsets와 정확히 맞고
   - raw `PZF frameCount`가 `frameIndex` 풀 범위를 설명하고
-  - raw `PZF` stream 자체가 frame/subframe/extraPayload 계층으로 exact-fit 된다.
+  - raw `PZF` stream 자체가 frame/subframe/extraPayload 계층으로 exact-fit 되고
+  - raw `PZD`도 `type 7/8` 모두 native `SeekIndexTable` / `DecodeImageData` 기준으로 byte-level layout이 닫힌다.
 - 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라:
-  - raw `PZD` index table entry가 native `SeekIndexTable` 기준으로 어떤 encoding인지
   - `PZF extraPayload`에서 `66/67/70...` 같은 non-executed envelope byte가 cache key / selector로 어떻게 쓰이는지
   - bbox group 의미(att/dam/reference point)를 어떻게 런타임과 대응시키느냐
+  - `PZA` 출력이 `CGxPZxAni::DoPlay` / `GetCurrentDelayFrameCount`에서 실제 재생 시간축으로 어떻게 소비되는지
   로 더 좁혀졌다.
 - 따라서 다음 reverse path의 우선순위는 `PZX tail` 일반화보다 `PZA parser -> PZx animation object` 연결 해체다.
 
 ## Next Reverse Steps
 
 1. `CGxEffectPZDMgr::LoadImage*`, `CGxEffectPZFMgr::LoadFrame`, `ChangeModule*`를 더 따라가서 non-executed envelope byte(`66/67/70...`)가 cache selector인지 module selector인지 고정한다.
-2. `CGxPZDPackage / CGxPZDMgr::LoadImage*`를 더 깨서 `type 7/8`별 raw `PZD` index table entry encoding을 확정한다.
-3. `CGxPZxFrameBB::*` consumer를 더 따라가서 bbox group이 충돌/reference point/attack box 중 무엇인지 붙인다.
-4. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, `PZA` 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
-5. 마지막에 later stream/tail 중 무엇이 truly native `PZF/PZA`이고, 무엇이 별도 overlay / placement metadata인지 결론을 낸다.
+2. `CGxPZxFrameBB::*` consumer를 더 따라가서 bbox group이 충돌/reference point/attack box 중 무엇인지 붙인다.
+3. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, `PZA` 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
+4. 마지막에 later stream/tail 중 무엇이 truly native `PZF/PZA`이고, 무엇이 별도 overlay / placement metadata인지 결론을 낸다.
