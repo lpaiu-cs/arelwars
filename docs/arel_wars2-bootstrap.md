@@ -111,6 +111,7 @@ These steps are now complete:
    - [`script_event_report.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/script_event_report.json)
 3. Binary format scan
    - [`binary_asset_report.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/binary_asset_report.json)
+   - [`gxl_table_report.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/gxl_table_report.json)
 4. First visual proof on `PZD`
    - preview sheets under `recovery/arel_wars2/pzd_previews/`
 5. First `PZF -> PZD` anchor probe overlays
@@ -119,6 +120,8 @@ These steps are now complete:
    - point-cloud renders under [`pzf_marker_scatter`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_marker_scatter)
 7. First body-part sequence candidate sheets
    - composite sheets and JSON summaries under [`pzf_sequence_candidates`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_sequence_candidates)
+8. Shared table-family validation
+   - `42/42` AW2 decoded `GXL` tables now satisfy the same fixed-size row layout seen in AW1
 
 ## Recommended Order For AW2 From Here
 

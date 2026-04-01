@@ -6,6 +6,8 @@ This document captures the parts of the recovery work that are likely to stay us
 
 - [`inspect_apk_inventory.py`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars_shared/inspect_apk_inventory.py)
   Fast APK inventory summary. Use it before writing any extractor so path/layout assumptions are explicit.
+- [`inspect_gxl_tables.py`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars_shared/inspect_gxl_tables.py)
+  Fast inspector for decoded `GXL` table payloads from `catalog.json`.
 - [`read_zt1()`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/formats.py)
   Stable `ZT1` header + zlib decoder. This already works on both `arel_wars_1.apk` and sampled `arel_wars_2.apk` script/table files.
 - [`extract_script_events()`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/formats.py)
@@ -73,6 +75,16 @@ This document captures the parts of the recovery work that are likely to stay us
 - Do not assume those exact rules apply unchanged to later games.
 
 ## Known Limits
+
+- `GXL` tables are now structurally recognized, but column-level schema recovery is still open.
+  Current high-confidence header model is:
+  - `magic = GXL\x01`
+  - `rowCount(u16)`
+  - `headerExtraSize(u16)`
+  - `rowSize(u16)`
+  - `headerSize = 10 + headerExtraSize`
+  - `payloadSize = rowCount * rowSize`
+  This already holds for all currently inspected AW1 and AW2 data tables.
 
 - `179.pzx` in Arel Wars 1 now has a usable `shadeBand * 47 + paletteResidue` preview heuristic, but the original blend equation is still unproven.
 - `PTC` is structurally parsed but semantically heuristic.

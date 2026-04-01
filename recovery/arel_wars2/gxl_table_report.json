@@ -1,0 +1,1450 @@
+{
+  "summary": {
+    "tableCount": 42,
+    "validCount": 42,
+    "payloadLayoutMatchCount": 42,
+    "headerExtraSizes": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14,
+      17,
+      19,
+      20,
+      21,
+      22,
+      25,
+      28,
+      29,
+      31,
+      45,
+      58,
+      66,
+      109,
+      161
+    ],
+    "rowSizes": [
+      3,
+      4,
+      5,
+      6,
+      9,
+      11,
+      12,
+      15,
+      16,
+      21,
+      24,
+      31,
+      33,
+      38,
+      40,
+      42,
+      48,
+      50,
+      51,
+      60,
+      65,
+      75,
+      80,
+      83,
+      97,
+      121,
+      135,
+      156,
+      172,
+      235,
+      2803
+    ]
+  },
+  "tables": [
+    {
+      "path": "assets/table/XlsAi.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsAi.zt1.bin",
+      "rowCount": 219,
+      "headerExtraSize": 161,
+      "rowSize": 235,
+      "headerSize": 171,
+      "payloadSize": 51465,
+      "expectedPayloadSize": 51465,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01db00a100eb00021e000404010402000000040402000004020002000000000202000000000000000000000000000000020000000000000000000000020000000000000000000000020000000000000000000000020000000000000000000000020000000000000000000000020000000000000000000000020000000000000000000000020000000000000000000000000000000000000202020200020002000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000b5f0bdbac6aeb7cec0cec0c720c7e0b9e600000001000000006400000000c01200000a000101010000000064000000000000007017000000000a0a000101013280070000ff01ffff0c010000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff0000000000000000000000003232000000640003010103010109010103010100e803e803e803007017040000000c010401ffffffff0100c3dfb0ddc0c720bdc3c0db000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00000000000001000000006400000000b01300000a000202010000000064000000000000009c1800000a000a04000102013280070000ff01ffff0c0100000000000000000000000c010000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff0000000000000000000000003c2800140a643201020701020709030103030100e803e803e80303ffff0164000000010500000105000000b8f0bfacc7d120c7e0b9e600000000000000000001000000006400000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "a01400000a00020205000000006400000000000000c81900000a000a0a000102023280070000ff01ffff0c0200000000000001000064000c01000000000000000000000018010000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff000000000000000000000000ff0000000000000000000000001e4600140a643201020701020709030103030100e803e803e80309010000320000ffffffffffffffff0100b0e8bcd3b5c7b4c220c0fcc5f50000000000000001000000006400000000901500000a0001020500000000640000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsBalance.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsBalance.zt1.bin",
+      "rowCount": 3,
+      "headerExtraSize": 3,
+      "rowSize": 4,
+      "headerSize": 13,
+      "payloadSize": 12,
+      "expectedPayloadSize": 12,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01030003000400000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0500ff05",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00ff0301",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00030200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsBaseAttack.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsBaseAttack.zt1.bin",
+      "rowCount": 42,
+      "headerExtraSize": 31,
+      "rowSize": 156,
+      "headerSize": 41,
+      "payloadSize": 6552,
+      "expectedPayloadSize": 6552,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c012a001f009c0000000000020000000000020102020001010000000202020202000000000202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "020000ff08000000000201ffff7864003c0006090c02010000001000f6ff1800200000ff00ff2f00ffff0200010008000000000001ffff6464005000080c100000000000d200f6fffa00300000ff00ff2f00ffff0200010008000000000002ffff64640064000a0f140000000000d2000a00fa00300001ff00ff3000ffff020100ff08000000000201ffff7864005a00090e120c060000001000f6ff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "180040000cff00ff3a00ffff0200010108000002000001ffff64640082000d141a0000000000f000f6ff1801200003ff00ff3200ffff0200010108000001000001ffff64640082000d141a0000000000c800f6fff000200003ff00ff3200ffff0200010208000002000001ffff646400aa00111a220000000000d200f6fffa00200000ff00ff2f00ffff020001020000000200000108006464003c00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "06090c0000000000d200f6fffa000a0001ff00ff3000ffff030001020000000200000109006464004600070b0e0000000000d200f6fffa000a0001ff00ff3000ffff0400010200000002000001ffff6464005000080c100000000000d200f6fffa000a0001ff002f3000ffff0200010208000000000001ffff646400aa00111a220000000000d200f6fffa00200000ff00ff2f00ffff020001020000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsBerserkMix.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsBerserkMix.zt1.bin",
+      "rowCount": 87,
+      "headerExtraSize": 19,
+      "rowSize": 42,
+      "headerSize": 29,
+      "payloadSize": 3654,
+      "expectedPayloadSize": 3654,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01570013002a0019040404040404040404040404040404040404",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "b8d3b9cc0000000000000000000000c0e0ffff5ce0fffff8dfffff94dfffff30dfffffccdeffff68deff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ff04deffffa0ddffff282300008c230000f023000054240000b82400001c25000080250000e425000048",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "260000baf1c8a6b4f5000000000000000000d8dcffff74dcffff10dcffffacdbffff48dbffffe4daffff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsBuff.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsBuff.zt1.bin",
+      "rowCount": 11,
+      "headerExtraSize": 9,
+      "rowSize": 31,
+      "headerSize": 19,
+      "payloadSize": 341,
+      "expectedPayloadSize": 341,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010b0009001f00000002020000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000c800c800000028010100010a000a00000028010100000a000a00000028",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0101000101000100000028010100020a000a0000012801010102f6fff6ff00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0128010100030a000a0000012801010103f6fff6ff00012801010103000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsCoin.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsCoin.zt1.bin",
+      "rowCount": 32,
+      "headerExtraSize": 8,
+      "rowSize": 6,
+      "headerSize": 18,
+      "payloadSize": 192,
+      "expectedPayloadSize": 192,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c012000080006000404040404040404",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "b80b00000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000e8030000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "4c0400001e00",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsCorrespondence.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsCorrespondence.zt1.bin",
+      "rowCount": 7,
+      "headerExtraSize": 7,
+      "rowSize": 5,
+      "headerSize": 17,
+      "payloadSize": 35,
+      "expectedPayloadSize": 35,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0107000700050000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ffffffff01",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ff01ffffff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0101010101",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsDef_Weight.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsDef_Weight.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 2,
+      "rowSize": 60,
+      "headerSize": 12,
+      "payloadSize": 240,
+      "expectedPayloadSize": 240,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040002003c000202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ffff8c00ffff2c01ffffbe008200aa0082008200ffffb400fffff401fffffa00ffff2201ffff000000004a010e01ffffffff9a01ffff5401ffff8601",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ffff8601ffff9e02fffff401ffff2b0212024a01ffff8200fffff000ffff8c00ffffc800ffffb40082008200ffff2404ffff6801ffff0e012800dc00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ffffc201ffff2201fffff000ffff5e01ffff0e01ffffe001aa008200ffff7201ffff43035e01e600ffff4303ffff4303ffff4303ffff4303ffff4303",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsDropItem.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsDropItem.zt1.bin",
+      "rowCount": 20,
+      "headerExtraSize": 4,
+      "rowSize": 11,
+      "headerSize": 14,
+      "payloadSize": 220,
+      "expectedPayloadSize": 220,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01140004000b001b000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "bfb5bff5c8b8bab9b9b0be",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "e028bcd22900001e00bfb5",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "bff5c8b8bab9b9b0bee028",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsEffect.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsEffect.zt1.bin",
+      "rowCount": 15,
+      "headerExtraSize": 13,
+      "rowSize": 65,
+      "headerSize": 23,
+      "payloadSize": 975,
+      "expectedPayloadSize": 975,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010f000d00410000000000000000000002000200",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00000001010000ff00ffff00ffff0000010001010000ff00ffff00ffff0000020001010000ff00ffff00ffff0000030001010000ff00ffff00ffff000004000101",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000ff00ffff00ffff0000050001010000ff00ffff00ffff0000060001010000ff00ffff00ffff0000070001010000ff00ffff00ffff0000080001010000ff00ff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ff00ffff0000090001010000ff00ffff00ffff00000a0001010000ff00ffff00ffff00000b0001010000ff00ffff00ffff00000c0001010000ff00ffff00ffff00",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsGearStrengthen.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsGearStrengthen.zt1.bin",
+      "rowCount": 21,
+      "headerExtraSize": 20,
+      "rowSize": 9,
+      "headerSize": 30,
+      "payloadSize": 189,
+      "expectedPayloadSize": 189,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c011500140009000000000001000000000100000000010000000002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000000000646464",
+          "asciiStrings": [
+            "ddd"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "6464000103060c1a01",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHero.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHero.zt1.bin",
+      "rowCount": 76,
+      "headerExtraSize": 58,
+      "rowSize": 3,
+      "headerSize": 68,
+      "payloadSize": 228,
+      "expectedPayloadSize": 228,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c014c003a00030000000000000013000000010002000100020000000000000002000200000202000202000202000000000000000000000000000000000000000100",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "040400",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "bec6b5",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHeroActiveSkill.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHeroActiveSkill.zt1.bin",
+      "rowCount": 36,
+      "headerExtraSize": 25,
+      "rowSize": 51,
+      "headerSize": 35,
+      "payloadSize": 1836,
+      "expectedPayloadSize": 1836,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0124001900330000000002020202020200000200020000000000000002020200",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000140078001e000800040002000dffffff00ffff00011bff0400010c0006000000000003003200fa003200040002000100",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "02ff05000206000c0236ff12000114000000e7030001ffff000000000000000000000000ffffffff00ffff00ffffffff000100",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0000000000000001001e00f401640000000000000000ff05000206000c011eff0c00015a0000000000000001000a00dc052c01",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHeroBuffSkill.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHeroBuffSkill.zt1.bin",
+      "rowCount": 51,
+      "headerExtraSize": 28,
+      "rowSize": 51,
+      "headerSize": 38,
+      "payloadSize": 2601,
+      "expectedPayloadSize": 2601,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0133001c0033001b000000020202020000000000000000000000000000000200020002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "b5a5baecc5a9b6f3c0cc0000000000000001000000000000c8001400040101011a010101ff00000127313705000206000c5700",
+          "asciiStrings": [
+            "'17"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "b0ddb3ebc0c7c5f5b1e200000000000000010300000000009001280004050201ff000001ff000001ff33ff1300001400015700",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "c4a7b9ac00000000000000000000000000000002900128002c011e001c0101011b010101ff00000113ff3a11000312000c5800",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHeroEquipCard.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHeroEquipCard.zt1.bin",
+      "rowCount": 52,
+      "headerExtraSize": 21,
+      "rowSize": 135,
+      "headerSize": 31,
+      "payloadSize": 7020,
+      "expectedPayloadSize": 7020,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01340015008700190200000000000004040002020202020202020202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "b8b6b0cbbbe7c0c7b9eab5e500000000000000010001006400000090010000000000010001000100000008000100010000000100b8b6b0cbbbe7c0c7b9eab5e50000000000000001000100640000001c020000000000020002000200000009000100010000000100b8b6b0cbbbe7c0c7b9eab5e500000000000000010001006400000094020000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00000003000300030000000a000100010000000100b4d9c5a9c0ae0000000000000000000100010000000a0a6400000052030000000000010002000000020012000100000001000100b4d9c5a9c0ae0000000000000000000100010001000a0a6400000074040000000000020003000000030013000100000001000100b4d9c5a9c0ae00000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00000000000100010001000a0a640000006e050000000000030004000000040014000100000001000100b9d9b7bcbab8c8a3b8f00000000000020002000000141464000000f406000000000001000300020001001c000100010000000200b9d9b7bcbab8c8a3b8f000000000000200020001001414640000006009000000000002000400030001",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHeroPassiveSkill.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHeroPassiveSkill.zt1.bin",
+      "rowCount": 13,
+      "headerExtraSize": 8,
+      "rowSize": 21,
+      "headerSize": 18,
+      "payloadSize": 273,
+      "expectedPayloadSize": 273,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010d00080015000002020002020002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0114000a00011400140000ffff01f401c800000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000ffffff0005000500000100010000ffff01f401",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "c8000000000000ffffff01ffffffff0000000000ff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHeroSkill.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHeroSkill.zt1.bin",
+      "rowCount": 38,
+      "headerExtraSize": 22,
+      "rowSize": 42,
+      "headerSize": 32,
+      "payloadSize": 1596,
+      "expectedPayloadSize": 1596,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01260016002a0000001700000000000200000202000002000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000baedb6f3c0ceb5e5c4b3b3ed000000000001900103000a0002000000e8030008080401000000b6f3",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "c0ccc6aeb4d700000000000501000001000005010f000300000078050009080402010000bab9b1cd0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "000000000000000a020000ff00000002050001000000b004d8ff080401020000b5a5baecc5a9b6f3c0cc",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHeroStatUP.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHeroStatUP.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 4,
+      "rowSize": 24,
+      "headerSize": 14,
+      "payloadSize": 96,
+      "expectedPayloadSize": 96,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0104000400180000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "020000000000050000005a000000000000140000001e0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000000200000006000200000500000000005a0000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "001400002800000000000002000000050300000005000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsHero_Ai.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsHero_Ai.zt1.bin",
+      "rowCount": 32,
+      "headerExtraSize": 31,
+      "rowSize": 38,
+      "headerSize": 41,
+      "payloadSize": 1216,
+      "expectedPayloadSize": 1216,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0120001f00260000000000000000000100000000000000000000000000000000000000000002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0007100e140f010f1e01000000000000000201010201ffff461e0a141432a807000f18121c13",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "02112002020100000000000301020302ffff461e0a141432a807001d24182b1c031221030202",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "02000000000401050401ffff461e0a141432e0060020271a2d1e061524030204030200000502",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsIndexVC.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsIndexVC.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 1,
+      "rowSize": 2803,
+      "headerSize": 11,
+      "payloadSize": 11212,
+      "expectedPayloadSize": 11212,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0104000100f30a04",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "102700001127000012270000132700001427000015270000162700001727000018270000192700001a2700001b2700001c2700001d2700001e2700001f270000202700002127000022270000232700002427000025270000262700002727000028270000292700002a2700002b2700002c2700002d2700002e2700002f27000030270000312700003227000033270000342700003527000036270000372700003827000039270000204e0000214e0000224e0000234e0000244e0000254e0000264e0000274e0000284e0000294e00002a4e00002b4e00002c4e00002d4e00002e4e00002f4e0000304e0000314e0000324e0000334e0000344e0000354e0000364e0000374e0000384e0000394e00003a4e00003b4e00003c4e00003d4e00003e4e00003f4e0000404e0000414e0000424e0000434e0000444e000018790000197900001a790000409c0000419c0000429c0000439c0000449c0000459c0000469c000038c7000060ea000061ea000062ea000063ea000064ea000065ea000066ea000067ea000068ea000069ea00006aea00006bea00006cea00006dea00006eea00006fea000070ea000071ea000072ea000073ea000074ea000075ea000076ea000077ea000078ea000079ea00007aea00007bea00007cea00007dea00007eea00007fea000080ea000081ea000082ea000083ea000084ea000085ea000086ea000087ea000088ea000089ea00008aea00008bea00008cea00008dea00008eea00008fea000090ea000091ea000092ea000093ea000094ea000095ea000096ea000097ea000098ea000099ea00009aea00009bea00009cea00009dea00009eea00009fea0000a0ea0000a1ea0000a2ea0000a3ea0000a4ea0000a5ea0000a6ea0000a7ea0000a8ea0000a9ea0000aaea0000abea0000acea0000adea0000aeea0000afea0000b0ea0000b1ea0000b2ea0000b3ea0000b4ea0000b5ea0000b6ea0000b7ea0000b8ea0000b9ea0000baea0000bbea0000bcea0000bdea0000beea0000bfea0000c0ea0000c1ea0000c2ea0000c3ea0000c4ea0000c5ea0000c6ea0000c7ea0000c8ea0000c9ea0000caea0000cbea0000ccea0000cdea0000ceea0000cfea0000d0ea0000d1ea0000d2ea0000d3ea0000d4ea0000d5ea0000d6ea0000d7ea0000d8ea0000d9ea0000daea0000dbea0000dcea0000ddea0000deea0000dfea0000e0ea0000e1ea0000e2ea0000e3ea0000e4ea0000e5ea0000e6ea0000e7ea0000e8ea0000e9ea0000eaea0000ebea0000ecea0000edea0000eeea0000efea0000f0ea0000f1ea0000f2ea0000f3ea0000f4ea0000f5ea0000f6ea0000f7ea0000f8ea0000f9ea0000faea0000fbea0000fcea0000fdea0000feea0000ffea000000eb000001eb000002eb000003eb000004eb000005eb000006eb000007eb000008eb000009eb00000aeb00000beb00000ceb00000deb00000eeb00000feb000010eb000011eb000012eb000013eb000014eb000015eb000016eb000017eb000018eb000019eb00001aeb00001beb00001ceb00001deb00001eeb00001feb000020eb000021eb000022eb000023eb000024eb000025eb000026eb000027eb000028eb000029eb00002aeb00002beb00002ceb00002deb00002eeb00002feb000030eb000031eb000032eb000033eb000034eb000035eb000036eb000037eb000038eb000039eb00003aeb00003beb00003ceb00003deb00003eeb00003feb000040eb000041eb000042eb000043eb000044eb000045eb000046eb000047eb000048eb000049eb00004aeb00004beb00004ceb00004deb00004eeb00004feb000050eb000051eb000052eb000053eb000054eb000055eb000056eb000057eb000058eb000059eb00005aeb00005beb00005ceb00005deb00005eeb00005feb000060eb000061eb000062eb000063eb000064eb000065eb000066eb000067eb000068eb000069eb00006aeb00006beb00006ceb00006deb00006eeb00006feb000070eb000071eb000072eb000073eb000074eb000075eb000076eb000077eb000078eb000079eb00007aeb00007beb00007ceb00007deb00007eeb00007feb000080eb000081eb000082eb000083eb000084eb000085eb000086eb000087eb000088eb000089eb00008aeb00008beb00008ceb00008deb00008eeb00008feb000090eb000091eb000092eb000093eb000094eb000095eb000096eb000097eb000098eb000099eb00009aeb00009beb00009ceb00009deb00009eeb00009feb0000a0eb0000a1eb0000a2eb0000a3eb0000a4eb0000a5eb0000a6eb0000a7eb0000a8eb0000a9eb0000aaeb0000abeb0000aceb0000adeb0000aeeb0000afeb0000b0eb0000b1eb0000b2eb0000b3eb0000b4eb0000b5eb0000b6eb0000b7eb0000b8eb0000b9eb0000baeb0000bbeb0000bceb0000bdeb0000beeb0000bfeb0000c0eb0000c1eb0000c2eb0000c3eb0000c4eb0000c5eb0000c6eb0000c7eb0000c8eb0000c9eb0000caeb0000cbeb0000cceb0000cdeb0000ceeb0000cfeb0000d0eb0000d1eb0000d2eb0000d3eb0000d4eb0000d5eb0000d6eb0000d7eb0000d8eb0000d9eb0000daeb0000dbeb0000dceb0000ddeb0000deeb0000dfeb0000e0eb0000e1eb0000e2eb0000e3eb0000e4eb0000e5eb0000e6eb0000e7eb0000e8eb0000e9eb0000eaeb0000ebeb0000eceb0000edeb0000eeeb0000efeb0000f0eb0000f1eb0000f2eb0000f3eb0000f4eb0000f5eb0000f6eb0000f7eb0000f8eb0000f9eb0000faeb0000fbeb0000fceb0000fdeb0000feeb0000ffeb000000ec000001ec000002ec000003ec000004ec000005ec000006ec000007ec000008ec000009ec00000aec00000bec00000cec00000dec00000eec00000fec000010ec000011ec000012ec000013ec000014ec000015ec000016ec000017ec000018ec000019ec00001aec00001bec00001cec00001dec00001eec00001fec000020ec000021ec000022ec000023ec000024ec000025ec000026ec000027ec000028ec000029ec00002aec00002bec00002cec00002dec00002eec00002fec000030ec000031ec000032ec000033ec000034ec000035ec000036ec000037ec000038ec000039ec00003aec00003bec00003cec00003dec00003eec00003fec000040ec000041ec000042ec000043ec000044ec000045ec000046ec000047ec000048ec000049ec00004aec00004bec00004cec00004dec00004eec00004fec000050ec000051ec000052ec000053ec000054ec000055ec000056ec000057ec000058ec000059ec00005aec00005bec00005cec00005dec00005eec00005fec000060ec000061ec000062ec000063ec000064ec000065ec000066ec000067ec000068ec000069ec00006aec00006bec00006cec00006dec00006eec00006fec000070ec000071ec000072ec000073ec000074ec000075ec000076ec000077ec000078ec000079ec00007aec00007bec00007cec00007dec00007eec00007fec000080ec000081ec000082ec000083ec000084ec000085ec000086ec000087ec000088ec000089ec00008aec00008bec00008cec00008dec00008eec00008fec000090ec000091ec000092ec000093ec000094ec000095ec000096ec000097ec000098ec000099ec00009aec00009bec00009cec00009dec00009eec00009fec0000a0ec0000a1ec0000a2ec0000a3ec0000a4ec0000a5ec0000a6ec0000a7ec0000a8ec0000a9ec0000aaec0000abec0000acec0000adec0000aeec0000afec0000b0ec0000b1ec0000b2ec0000b3ec0000b4ec0000b5ec0000b6ec0000b7ec0000b8ec0000b9ec0000baec0000bbec0000bcec0000bdec0000beec0000bfec0000c0ec0000c1ec0000c2ec00",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00c3ec0000c4ec0000c5ec0000c6ec0000c7ec0000c8ec0000c9ec0000caec0000cbec0000ccec0000cdec0000ceec0000cfec0000d0ec0000d1ec0000d2ec0000d3ec0000d4ec0000d5ec0000d6ec0000d7ec0000d8ec0000d9ec0000daec0000dbec0000dcec0000ddec0000deec0000dfec0000e0ec0000e1ec0000e2ec0000e3ec0000e4ec0000e5ec0000e6ec0000e7ec0000e8ec0000e9ec0000eaec0000ebec0000ecec0000edec0000eeec0000efec0000f0ec0000f1ec0000f2ec0000f3ec0000f4ec0000f5ec0000f6ec0000f7ec0000f8ec0000f9ec0000faec0000fbec0000fcec0000fdec0000feec0000ffec000000ed000001ed000002ed000003ed000004ed000005ed000006ed000007ed000008ed000009ed00000aed00000bed00000ced00000ded00000eed00000fed000010ed000011ed000012ed000013ed000014ed000015ed000016ed000017ed000018ed000019ed00001aed00001bed00001ced00001ded00001eed00001fed000020ed000021ed000022ed000023ed000024ed000025ed000026ed000027ed000028ed000029ed00002aed00002bed00002ced00002ded00002eed00002fed000030ed000031ed000032ed000033ed000034ed000035ed000036ed000037ed000038ed000039ed00003aed00003bed00003ced00003ded00003eed00003fed000040ed000041ed000042ed000043ed000044ed000045ed000046ed000047ed000048ed000049ed00004aed00004bed00004ced00004ded00004eed00004fed000050ed000051ed000052ed000053ed000054ed000055ed000056ed000057ed000058ed000059ed00005aed00005bed00005ced00005ded00005eed00005fed000060ed000061ed000062ed000063ed000064ed000065ed000066ed000067ed000068ed000069ed00006aed00006bed00006ced00006ded00006eed00006fed000070ed000071ed000072ed000073ed000074ed000075ed000076ed000077ed000078ed000079ed00007aed00007bed00007ced00007ded00007eed00007fed000080ed000081ed000082ed000083ed000084ed000085ed000086ed000087ed000088ed000089ed00008aed00008bed00008ced00008ded00008eed00008fed000090ed000091ed000092ed000093ed000094ed000095ed000096ed000097ed000098ed000099ed00009aed00009bed00009ced00009ded00009eed00009fed0000a0ed0000a1ed0000a2ed0000a3ed0000a4ed0000a5ed0000a6ed0000a7ed0000a8ed0000a9ed0000aaed0000abed0000aced0000aded0000aeed0000afed0000b0ed0000b1ed0000b2ed0000b3ed0000b4ed0000b5ed0000b6ed0000b7ed0000b8ed0000b9ed0000baed0000bbed0000bced0000bded0000beed0000bfed0000c0ed0000c1ed0000c2ed0000c3ed0000c4ed0000c5ed0000c6ed0000c7ed0000c8ed0000c9ed0000caed0000cbed0000cced0000cded0000ceed0000cfed0000d0ed0000d1ed0000d2ed0000d3ed0000d4ed0000d5ed0000d6ed0000d7ed0000d8ed0000d9ed0000daed0000dbed0000dced0000dded0000deed0000dfed0000e0ed0000e1ed0000e2ed0000e3ed0000e4ed0000e5ed0000e6ed0000e7ed0000e8ed0000e9ed0000eaed0000ebed0000eced0000eded0000eeed0000efed0000f0ed0000f1ed0000f2ed0000f3ed0000f4ed0000f5ed0000f6ed0000f7ed0000f8ed0000f9ed0000faed0000fbed0000fced0000fded0000feed0000ffed000000ee000001ee000002ee000003ee000004ee000005ee000006ee000007ee000008ee000009ee00000aee00000bee00000cee00000dee00000eee00000fee000010ee000011ee000012ee000013ee000014ee000015ee000016ee000017ee000018ee000019ee00001aee00001bee00001cee00001dee00001eee00001fee000020ee000021ee000022ee000023ee000024ee000025ee000026ee000027ee000028ee000029ee00002aee00002bee00002cee00002dee00002eee00002fee000030ee000031ee000032ee000033ee000034ee000035ee000036ee000037ee000038ee000039ee00003aee00003bee00003cee00003dee00003eee00003fee000040ee000041ee000042ee000043ee000044ee000045ee000046ee000047ee000048ee000049ee00004aee00004bee00004cee00004dee00004eee00004fee000050ee000051ee000052ee000053ee000054ee000055ee000056ee000057ee000058ee000059ee00005aee00005bee00005cee00005dee00005eee00005fee000060ee000061ee000062ee000063ee000064ee000065ee000066ee000067ee000068ee000069ee00006aee00006bee00006cee00006dee00006eee00006fee000070ee000071ee000072ee000073ee000074ee000075ee000076ee000077ee000078ee000079ee00007aee00007bee00007cee00007dee00007eee00007fee000080ee000081ee000082ee000083ee000084ee000085ee000086ee000087ee000088ee000089ee00008aee00008bee00008cee00008dee00008eee00008fee000090ee000091ee000092ee000093ee000094ee000095ee000096ee000097ee000098ee000099ee00009aee00009bee00009cee00009dee00009eee00009fee0000a0ee0000a1ee0000a2ee0000a3ee0000a4ee0000a5ee0000a6ee0000a7ee0000a8ee0000a9ee0000aaee0000abee0000acee0000adee0000aeee0000afee0000b0ee0000b1ee0000b2ee0000b3ee0000b4ee0000b5ee0000b6ee0000b7ee0000b8ee0000b9ee0000baee0000bbee0000bcee0000bdee0000beee0000bfee0000c0ee0000c1ee0000c2ee0000c3ee0000c4ee0000c5ee0000c6ee0000c7ee0000c8ee0000c9ee0000caee0000cbee0000ccee0000cdee0000ceee0000cfee0000d0ee0000d1ee0000d2ee0000d3ee0000d4ee0000d5ee0000d6ee0000d7ee0000d8ee0000d9ee0000daee0000dbee0000dcee0000ddee0000deee0000dfee0000e0ee0000e1ee0000e2ee0000e3ee0000e4ee0000e5ee0000e6ee0000e7ee0000e8ee0000e9ee0000eaee0000ebee0000ecee0000edee0000eeee0000efee0000f0ee0000f1ee0000f2ee0000f3ee0000f4ee0000f5ee0000f6ee0000f7ee0000f8ee0000f9ee0000faee0000fbee0000fcee0000fdee0000feee0000ffee000000ef000001ef000002ef000003ef000004ef000005ef000006ef000007ef000008ef000009ef00000aef00000bef00000cef00000def00000eef00000fef000010ef000011ef000012ef000013ef000014ef000015ef000016ef000017ef000018ef000019ef00001aef00001bef00001cef00001def00001eef00001fef000020ef000021ef000022ef000023ef000024ef000025ef000026ef000027ef000028ef000029ef00002aef00002bef00002cef00002def00002eef00002fef000030ef000031ef000032ef000033ef000034ef000035ef000036ef000037ef000038ef000039ef00003aef00003bef00003cef00003def00003eef00003fef000040ef000041ef000042ef000043ef000044ef000045ef000046ef000047ef000048ef000049ef00004aef00004bef00004cef00004def00004eef00004fef000050ef000051ef000052ef000053ef000054ef000055ef000056ef000057ef000058ef000059ef00005aef00005bef00005cef00005def00005eef00005fef000060ef000061ef000062ef000063ef000064ef000065ef000066ef000067ef000068ef000069ef00006aef00006bef00006cef00006def00006eef00006fef000070ef000071ef000072ef000073ef000074ef000075ef000076ef000077ef000078ef000079ef00007aef00007bef00007cef00007def00007eef00007fef",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "000080ef000081ef000082ef000083ef000084ef000085ef000086ef000087ef000088ef000089ef00008aef00008bef00008cef00008def00008eef00008fef000090ef000091ef000092ef000093ef000094ef000095ef000096ef000097ef000098ef000099ef00009aef00009bef00009cef00009def00009eef00009fef0000a0ef0000a1ef0000a2ef0000a3ef0000a4ef0000a5ef0000a6ef0000a7ef0000a8ef0000a9ef0000aaef0000abef0000acef0000adef0000aeef0000afef0000b0ef0000b1ef0000b2ef0000b3ef0000b4ef0000b5ef0000b6ef0000b7ef0000b8ef0000b9ef0000baef0000bbef0000bcef0000bdef0000beef0000bfef0000c0ef0000c1ef0000c2ef0000c3ef0000c4ef0000c5ef0000c6ef0000c7ef0000c8ef0000c9ef0000caef0000cbef0000ccef0000cdef0000ceef0000cfef0000d0ef0000d1ef0000d2ef0000d3ef0000d4ef0000d5ef0000d6ef0000d7ef0000d8ef0000d9ef0000daef0000dbef0000dcef0000ddef0000deef0000dfef0000e0ef0000e1ef0000e2ef0000e3ef0000e4ef0000e5ef0000e6ef0000e7ef0000e8ef0000e9ef0000eaef0000ebef0000ecef0000edef0000eeef0000efef0000f0ef0000f1ef0000f2ef0000f3ef0000f4ef0000f5ef0000f6ef0000f7ef0000f8ef0000f9ef0000faef0000fbef0000fcef0000fdef0000feef0000ffef000000f0000001f0000002f0000003f0000004f0000005f0000006f0000007f0000008f0000009f000000af000000bf000000cf000000df000000ef000000ff0000010f0000011f0000012f0000013f0000014f0000015f0000016f0000017f0000018f0000019f000001af000001bf000001cf000001df000001ef000001ff0000020f0000021f0000022f0000023f0000024f0000025f0000026f0000027f0000028f0000029f000002af000002bf000002cf000002df000002ef000002ff0000030f0000031f0000032f0000033f0000034f0000035f0000036f0000037f0000038f0000039f000003af000003bf000003cf000003df000003ef000003ff0000040f0000041f0000042f0000043f0000044f0000045f0000046f0000047f0000048f0000049f000004af000004bf000004cf000004df000004ef000004ff0000050f0000051f0000052f0000053f0000054f0000055f0000056f0000057f0000058f0000059f000005af000005bf000005cf000005df000005ef000005ff0000060f0000061f0000062f0000063f0000064f0000065f0000066f0000067f0000068f0000069f000006af000006bf000006cf000006df000006ef000006ff0000070f0000071f0000072f0000073f0000074f0000075f0000076f0000077f0000078f0000079f000007af000007bf000007cf000007df000007ef000007ff0000080f0000081f0000082f0000083f0000084f0000085f0000086f0000087f0000088f0000089f000008af000008bf000008cf000008df000008ef000008ff0000090f0000091f0000092f0000093f0000094f0000095f0000096f0000097f0000098f0000099f000009af000009bf000009cf000009df000009ef000009ff00000a0f00000a1f00000a2f00000a3f00000a4f00000a5f00000a6f00000a7f00000a8f00000a9f00000aaf00000abf00000acf00000adf00000aef00000aff00000b0f00000b1f00000b2f00000b3f00000b4f00000b5f00000b6f00000b7f00000b8f00000b9f00000baf00000bbf00000bcf00000bdf00000bef00000bff00000c0f00000c1f00000c2f00000c3f00000c4f00000c5f00000c6f00000c7f00000c8f00000c9f00000caf00000cbf00000ccf00000cdf00000cef00000cff00000d0f00000d1f00000d2f00000d3f00000d4f00000d5f00000d6f00000d7f00000d8f00000d9f00000daf00000dbf00000dcf00000ddf00000def00000dff00000e0f00000e1f00000e2f00000e3f00000e4f00000e5f00000e6f00000e7f00000e8f00000e9f00000eaf00000ebf00000ecf00000edf00000eef00000eff00000f0f00000f1f00000f2f00000f3f00000f4f00000f5f00000f6f00000f7f00000f8f00000f9f00000faf00000fbf00000fcf00000fdf00000fef00000fff0000000f1000001f1000002f1000003f1000004f1000005f1000006f1000007f1000008f1000009f100000af100000bf100000cf100000df100000ef100000ff1000010f1000011f1000012f1000013f1000014f1000015f1000016f1000017f1000018f1000019f100001af100001bf100001cf100001df100001ef100001ff1000020f1000021f1000022f1000023f1000024f1000025f1000026f1000027f1000028f1000029f100002af100002bf100002cf100002df100002ef100002ff1000030f1000031f1000032f1000033f1000034f1000035f1000036f1000037f1000038f1000039f100003af100003bf100003cf100003df100003ef100003ff1000040f1000041f1000042f1000043f1000044f1000045f1000046f1000047f1000048f1000049f100004af100004bf100004cf100004df100004ef100004ff1000050f1000051f1000052f1000053f1000054f1000055f1000056f1000057f1000058f1000059f100005af100005bf100005cf100005df100005ef100005ff1000060f1000061f1000062f1000063f1000064f1000065f1000066f1000067f1000068f1000069f100006af100006bf100006cf100006df100006ef100006ff1000070f1000071f1000072f1000073f1000074f1000075f1000076f1000077f1000078f1000079f100007af100007bf100007cf100007df100007ef100007ff1000080f1000081f1000082f1000083f1000084f1000085f1000086f1000087f1000088f1000089f100008af100008bf100008cf100008df100008ef100008ff1000090f1000091f1000092f1000093f1000094f1000095f1000096f1000097f1000098f1000099f100009af100009bf100009cf100009df100009ef100009ff10000a0f10000a1f10000a2f10000a3f10000a4f10000a5f10000a6f10000a7f10000a8f10000a9f10000aaf10000abf10000acf10000adf10000aef10000aff10000b0f10000b1f10000b2f10000b3f10000b4f10000b5f10000b6f10000b7f10000b8f10000b9f10000baf10000bbf10000bcf10000bdf10000bef10000bff10000c0f10000c1f10000c2f10000c3f10000c4f10000c5f10000c6f10000c7f10000c8f10000c9f10000caf10000cbf10000ccf10000cdf10000cef10000cff10000d0f10000d1f10000d2f10000d3f10000d4f10000d5f10000d6f10000d7f10000d8f10000d9f10000daf10000dbf10000dcf10000ddf10000def10000dff10000e0f10000e1f10000e2f10000e3f10000e4f10000e5f10000e6f10000e7f10000e8f10000e9f10000eaf10000ebf10000ecf10000edf10000eef10000eff10000f0f10000f1f10000f2f10000f3f10000f4f10000f5f10000f6f10000f7f10000f8f10000f9f10000faf10000fbf10000fcf10000fdf10000fef10000fff1000000f2000001f2000002f2000003f2000004f2000005f2000006f2000007f2000008f2000009f200000af200000bf200000cf200000df200000ef200000ff2000010f2000011f2000012f2000013f2000014f2000015f2000016f2000017f2000018f2000019f200001af200001bf200001cf200001df200001ef200001ff2000020f2000021f2000022f2000023f2000024f2000025f2000026f2000027f2000028f2000029f200002af200002bf200002cf200002df200002ef200002ff2000030f2000031f2000032f2000033f2000034f2000035f2000036f2000037f2000038f2000039f200003af200003bf200003c",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsItem.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsItem.zt1.bin",
+      "rowCount": 35,
+      "headerExtraSize": 17,
+      "rowSize": 97,
+      "headerSize": 27,
+      "payloadSize": 3395,
+      "expectedPayloadSize": 3395,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01230011006100001b000000000000020200000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ffbde3b4f5baeab7b9c0ccc5a928bcd22900010000000c003200000000010100630400ffbde3b4f5baeab7b9c0ccc5a928c1df2900010100000d00be00000017010100630400ffbde3b4f5baeab7b9c0ccc5a928b4eb2900010200000e00020300",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0030010100630400ffbef3c0bdb3abbcae28bcd2290000000000010301000f006400000004010100630400ffbef3c0bdb3abbcae28c1df290000000000010401001000860100001a010100630400ffbef3c0bdb3abbcae28b4eb29000000000001",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "05010011000406000033010100630400ffc7a5c3a2baf128bcd229000000000000000106020012008c00000007010100630400ffc7a5c3a2baf128c1df2900000000000000010702001300440200001d010100630400ffc7a5c3a2baf128b4eb29",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsItemMix.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsItemMix.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 4,
+      "rowSize": 6,
+      "headerSize": 14,
+      "payloadSize": 24,
+      "expectedPayloadSize": 24,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0104000400060000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "1e0f05321414",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0f2d0a191928",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "052d0f230a28",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsItemSkill.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsItemSkill.zt1.bin",
+      "rowCount": 22,
+      "headerExtraSize": 21,
+      "rowSize": 40,
+      "headerSize": 31,
+      "payloadSize": 880,
+      "expectedPayloadSize": 880,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01160015002800000000020100000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000000a0000000306090c0f1215181b1e2124272aff0000000a00000104070a0d101316191c1f22",
+          "asciiStrings": [
+            "!$'*"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "25282bff0000000a00000205080b0e1114171a1d202326292cff010101010000ffffffffffffffff",
+          "asciiStrings": [
+            "%(+",
+            " #&),"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "ffffffffffffffff010101630000ffffffffffffffffffffffffffffffff010201010000ffffffff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsLevelDesign.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsLevelDesign.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 1,
+      "rowSize": 83,
+      "headerSize": 11,
+      "payloadSize": 332,
+      "expectedPayloadSize": 332,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0104000100530004",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "f40100004c040000fc0800005c1200000a00000014000000280000003c00000064000000a000000004010000a4010000a8020000010000000200000004000000070000000b00000010000000160000001d0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0025000000200000000b0000000a000000140000000f000000c800000064000000c80000006400000008000000140000000000000000000000140000001400000026020000100000000a0000000a0000000100",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00000f270000460000000100000003000000c80000001400000064000000140000001e0000009001000014000000ecffffff060000001b0000003c000000030000000900000014000000120000002d0000005a",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsMap.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsMap.zt1.bin",
+      "rowCount": 11,
+      "headerExtraSize": 10,
+      "rowSize": 16,
+      "headerSize": 20,
+      "payloadSize": 176,
+      "expectedPayloadSize": 176,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010b000a00100001000001000002000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000e20000ff72000001ff0000e20100",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ff72000001ff0100d800001b72000203",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ff0100d801001b72000203ff0200e200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsMix.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsMix.zt1.bin",
+      "rowCount": 1,
+      "headerExtraSize": 1,
+      "rowSize": 12,
+      "headerSize": 11,
+      "payloadSize": 12,
+      "expectedPayloadSize": 12,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01010001000c0000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "051423190f190a1e320a0703",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsNextExp.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsNextExp.zt1.bin",
+      "rowCount": 2,
+      "headerExtraSize": 1,
+      "rowSize": 50,
+      "headerSize": 11,
+      "payloadSize": 100,
+      "expectedPayloadSize": 100,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0102000100320002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00005000a200b100c900ea0016014a018901d10122027e02e2025103c9034a04d6046a050906b10662071e08e208b109890a",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "6a0b560c4a0d490e510fa913fe145c16c8173e19bf1a4e1ce61d8b1f3b21f62246262b281d2a1b2c252e3c305d328b34c536",
+          "asciiStrings": [
+            "\"F&+(",
+            ",%.<0]2"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsOff_Weight.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsOff_Weight.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 2,
+      "rowSize": 60,
+      "headerSize": 12,
+      "payloadSize": 240,
+      "expectedPayloadSize": 240,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040002003c000202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00009000000070000000ee00fe009a00a6000a010000b0000000700000009a000000a60000004c01000062016e0100000000620100006e010000fe00",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00000a010000ae000000d80000004701f200f2000000a600000090000000b0000000a8000000d8009a009a00000030040000140100000a014e00e400",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00009a000000ce000000dc0000000a010000a600580158010a01a6004a004a00000027020a010a019a009a000000ea000000ea00000016010000ea00",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsParticle.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsParticle.zt1.bin",
+      "rowCount": 3,
+      "headerExtraSize": 3,
+      "rowSize": 33,
+      "headerSize": 13,
+      "payloadSize": 99,
+      "expectedPayloadSize": 99,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01030003002100000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "3000ff3000ff2e22ff2f2bff2216ff0201ff2a25ff3027ff3009ff302bff1504ff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "312bff301fff302eff302bff3026ff302fff3030ff0532ff3028ff3020ff2f31ff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "1e2dff021fff300dff302bff000bff0205ff0201ff0108ff312bff1500ff162bff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsProjectile.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsProjectile.zt1.bin",
+      "rowCount": 14,
+      "headerExtraSize": 12,
+      "rowSize": 38,
+      "headerSize": 22,
+      "payloadSize": 532,
+      "expectedPayloadSize": 532,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010e000c002600000000000002000000000002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "01000014010000000001ffff3c000001011101000000000c00ffffff0002010f010000000008",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ffffffff0003010f010000000008ffffffff0004010f010000000008ffffffff0005010f0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00000008ffffffff0006010f000000000008ffffffff0007010f000000000008ffffffff0708",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsReward.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsReward.zt1.bin",
+      "rowCount": 24,
+      "headerExtraSize": 14,
+      "rowSize": 75,
+      "headerSize": 24,
+      "payloadSize": 1800,
+      "expectedPayloadSize": 1800,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0118000e004b000202020202020202020200000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "1400140014000c000c00d00778087009b80a500c190f1428150015001500120012002008d008d009200bc00c190f14281600160016001b001b0070082809300a880b300d190f1428190019",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00190024002400c0088009900af00ba00d190f14281e001e001e002d002d001009d809f00a580c100e190f1428230023002300360036006009300a500bc00c800e190f14282a002a002a00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "3f003f00b009880ab00b280df00e190f142831003100310048004800000ae00a100c900d600f190f14283a003a003a0051005100500a380b700cf80dd00f190f14284500450045005a005a",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsSkill_Ai.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsSkill_Ai.zt1.bin",
+      "rowCount": 13,
+      "headerExtraSize": 13,
+      "rowSize": 21,
+      "headerSize": 23,
+      "payloadSize": 273,
+      "expectedPayloadSize": 273,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010d000d00150000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000003250cee2001e32fd0301000a0a1e32000a",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0a1e320003020000001e320000001e32fe03030000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "001e320000001e32fd03040000001e320000001e32",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsSound.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsSound.zt1.bin",
+      "rowCount": 2,
+      "headerExtraSize": 2,
+      "rowSize": 121,
+      "headerSize": 12,
+      "payloadSize": 242,
+      "expectedPayloadSize": 242,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010200020079000101",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "650066016702680369046a056b066c076d086e096f0a700b710c720d730e740f7510761177127613781479157a167b177c187e197f1a801b751c821d831e841f6a20862186228723862488256a2696278a288b298c2a8d2b8e2c8f2d902e912f923093319432953396349735983699379a389b399c3a9d3b9e",
+          "asciiStrings": [
+            "%j&"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "3c9f3da03ea13fa240a341a442a543a644a745a846a947aa48ab49ac4aad4bae4caf4db04eb14fb250b351b452b553b654b755b856b957ba58bb59bc5abd5bbe5cbf5dc05ec15fc260c361c462c563c664c765ca66cb67cc68cd69ce6acf6b0100020103020403050406050706080709080a09920a080b000c",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsSummon.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsSummon.zt1.bin",
+      "rowCount": 6,
+      "headerExtraSize": 6,
+      "rowSize": 3,
+      "headerSize": 16,
+      "payloadSize": 18,
+      "expectedPayloadSize": 18,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01060006000300000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "02095a",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "030405",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "07ff50",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsSynastry.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsSynastry.zt1.bin",
+      "rowCount": 45,
+      "headerExtraSize": 45,
+      "rowSize": 42,
+      "headerSize": 55,
+      "payloadSize": 1890,
+      "expectedPayloadSize": 1890,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c012d002d002a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00fffffefffefffe00fdfdfd0100fffe00fefefdfe01fdfd0100fffefefefefefd01fdfd000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000010000ff00fe01fe00fefdfd010000fe00fffefeff01fdfd0101ff00fffefffefd01fdfd000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "000000000000010100ff00fffffe00fdfdfd010100fe00fffefdff01fdfd0101fffffffefffefd01fdfd",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsSynastry_mine.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsSynastry_mine.zt1.bin",
+      "rowCount": 45,
+      "headerExtraSize": 45,
+      "rowSize": 42,
+      "headerSize": 55,
+      "payloadSize": 1890,
+      "expectedPayloadSize": 1890,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c012d002d002a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsTower.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsTower.zt1.bin",
+      "rowCount": 11,
+      "headerExtraSize": 8,
+      "rowSize": 48,
+      "headerSize": 18,
+      "payloadSize": 528,
+      "expectedPayloadSize": 528,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010b00080030000000000200020200",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00002a000000000000000100002a0a00025e01fa000800002a0c0002950122010a00002a0e0002cc0154010d00002a10",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0003030290011000002a1300033a02d6011300002a160004710226021600002a1a0004a80280021900002a1e00041304",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "e4021c00002a2200056e0452031f00002a270005c904ca032200002a2c000624054c042500002a3200067f05d8042800",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsUnit.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsUnit.zt1.bin",
+      "rowCount": 107,
+      "headerExtraSize": 66,
+      "rowSize": 80,
+      "headerSize": 76,
+      "payloadSize": 8560,
+      "expectedPayloadSize": 8560,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c016b0042005000001900000404020400000000000202020202000000000000000002020200000002000002000202000002010002000002000002000000000000000000000000020000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00b8d3b9cc0000000000000000000000000028000000060000000f0014000000000000000058023c005a00780014000203040d000c000005000000780006000000000000000000000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000ffff0000ffff0000ffffffffffffffffffffff03ffff000101baf1c8a6b4f5000000000000000000020046000000060000000f00140000000001010101520355008000aa0005000101010f000a",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "000007000000c800060000000000000000000000000000000000000a0100ffff0100ffff0100ffff02ffff02ffff02ffff03ffff000102bdbac4ccb7b9c5e60000000000000004008200000006000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsUnitDrop.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsUnitDrop.zt1.bin",
+      "rowCount": 22,
+      "headerExtraSize": 22,
+      "rowSize": 42,
+      "headerSize": 32,
+      "payloadSize": 924,
+      "expectedPayloadSize": 924,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01160016002a0000000100000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "050a050a000a030a060aff00ff00ff00ff00ff00ff00050a0a0a000a030a060aff00ff00ff00ff00ff00",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ff000a0a0f0a000a030a060aff00ff00ff00ff00ff00ff000a0a140a000a030a060aff00ff00ff00ff00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ff00ff000f0a230a000301070303040706030707ff00ff00ff00190a320a000301070303040706030707",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsUnitMixLVUP.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsUnitMixLVUP.zt1.bin",
+      "rowCount": 10,
+      "headerExtraSize": 10,
+      "rowSize": 172,
+      "headerSize": 20,
+      "payloadSize": 1720,
+      "expectedPayloadSize": 1720,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010a000a00ac0000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "01000000000000000000020100000000000000000200000001000000000002000000000000010000020000000100000000000200000000000001000003020000000000000000030000000200000000000300000000000002000003010000010000000000030000000100000100000301000000000001000003000000020000000000030000000000000200000402010000000000000004000000020100000000040000000000000201000401",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00000101000000000401010001000000000004000000010100010000040000000100000101000401000000000001010005020200000000000000050000000202000000000500000000000002020005000000020200000000050000000000000202000501010001010000000005000000010100010100050101000000000101000502000000020000000005000200020000000000050200000000000002000500020000000002000005000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00020002000005000000020000000200050101000100000001000501010000010001000005000100010100010000050100000101000001000501000000010001010005000100010000010100060203000000000000000600000002030000000006000000000000020300060200000002000001000602000000010000020006000200020000000100060001000200000002000600010000020002000006000200000100020000060101000101",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsUnitStrengthen.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsUnitStrengthen.zt1.bin",
+      "rowCount": 60,
+      "headerExtraSize": 29,
+      "rowSize": 15,
+      "headerSize": 39,
+      "payloadSize": 900,
+      "expectedPayloadSize": 900,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c013c001d000f000202020202020202020202020202020202020202020202020202020402",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "030003000300030003000300060006",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000600060006000600060006000600",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "060006000600060006000600060006",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/table/XlsUserUnit.zt1",
+      "kind": "table",
+      "locale": null,
+      "decodedPath": "decoded/zt1/assets/table/XlsUserUnit.zt1.bin",
+      "rowCount": 113,
+      "headerExtraSize": 109,
+      "rowSize": 75,
+      "headerSize": 119,
+      "payloadSize": 8475,
+      "expectedPayloadSize": 8475,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0171006d004b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000202020000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000100000000000000000000ff0000000000000000000000ff0000000000000000000000ff0000000000000000000000ff0000000000000000000000ff0000000000000000000000ff0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000000000000000ff000000000000000000000040060b3c003200280001ff00ff00ff0000000100000000000000000000000100000000000000000000ff0000000000000000000000ff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0000000000000000000000ff0000000000000000000000ff0000000000000000000000ff0000000000000000000000ff0000000000000000000000e0060c420037002c0001ff00ff00ff00",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    }
+  ]
+}

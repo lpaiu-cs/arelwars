@@ -93,6 +93,22 @@ References:
   - AI or behavior rules
   - upgrade or reward tables
 - Export them into typed JSON that the new runtime can consume directly.
+- Current strongest source family is `GXL` under `assets/data_eng/*.zt1` and `assets/data_kor/*.zt1`.
+  - `54/54` decoded AW1 `GXL` tables now satisfy a fixed-size row layout.
+  - current working header model:
+    - `magic = GXL\x01`
+    - `rowCount(u16)`
+    - `headerExtraSize(u16)`
+    - `rowSize(u16)`
+    - `headerSize = 10 + headerExtraSize`
+    - `payloadSize = rowCount * rowSize`
+  - first extraction targets:
+    - `XlsLevelDesign`
+    - `XlsMap`
+    - `XlsAi`
+    - `XlsHero`
+    - `XlsProjectile`
+    - `XlsParticle`
 
 ### Phase 4. Build Deterministic Runtime Systems
 

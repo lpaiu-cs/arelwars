@@ -1,0 +1,1873 @@
+{
+  "summary": {
+    "tableCount": 54,
+    "validCount": 54,
+    "payloadLayoutMatchCount": 54,
+    "headerExtraSizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      13,
+      15,
+      22,
+      26,
+      34,
+      43,
+      49,
+      57,
+      78
+    ],
+    "rowSizes": [
+      4,
+      5,
+      6,
+      10,
+      12,
+      13,
+      16,
+      22,
+      24,
+      25,
+      35,
+      37,
+      38,
+      51,
+      54,
+      55,
+      60,
+      63,
+      76,
+      86,
+      130,
+      157
+    ]
+  },
+  "tables": [
+    {
+      "path": "assets/data_eng/XlsAi.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsAi.zt1.bin",
+      "rowCount": 501,
+      "headerExtraSize": 78,
+      "rowSize": 130,
+      "headerSize": 88,
+      "payloadSize": 65130,
+      "expectedPayloadSize": 65130,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01f5014e00820002270004040104020000000404020402000000020200000000000002000202000002000001000002000002000002000002000000000000000000000000000000000000020202020002000294e700",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0b00466972737420426174746c65000000000000000000000000000000000001010000006400000005e80300000a0001050501000000640000000000d00700000a0001050580070000ffff00ff10010000ff01000000ff010000ff0100ff010000ff010100ff010000ff0100000a500a0000640003010103010109010103010100e8",
+          "asciiStrings": [
+            "First Battle"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "03e803e80300400b040000436c6561722074686520737461676520696e2033206d696e7574657320746f2072656365697665206120626f6e7573207265776172643a204c6576656c20203120496e66616e7472796d616e20556e697420436172642e0000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": [
+            "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Infantryman Unit Card."
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "00000000000000000000000000000000000000216366666666666654686520656e656d79204b6e6f6c6c732068617665206c6f772073746174732c2062757420746865792063616e20626520746872656174656e696e6720696e2067726f7570732e20216330306666666655736520796f7572206865726f21636666666666662074",
+          "asciiStrings": [
+            "!cffffffThe enemy Knolls have low stats, but they can be threatening in groups. !c00ffffUse your hero!cffffff t"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsBalance.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsBalance.zt1.bin",
+      "rowCount": 3,
+      "headerExtraSize": 3,
+      "rowSize": 4,
+      "headerSize": 13,
+      "payloadSize": 12,
+      "expectedPayloadSize": 12,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01030003000400000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0500ff05",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00ff0301",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00030200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsBaseAttack.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsBaseAttack.zt1.bin",
+      "rowCount": 32,
+      "headerExtraSize": 26,
+      "rowSize": 86,
+      "headerSize": 36,
+      "payloadSize": 2752,
+      "expectedPayloadSize": 2752,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0120001a0056000000000200000000000002020200000002010001010000000002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0200ff08000000000201ff3c000c000600020100000008f6102000ff00ff85000200ff08000000000201ff640014000a00040200000008f6104000ff00ff85000200ff04000000000201ff32000a0005000201000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "08f6100800ff00ff850002010008000002000001ff2c013c001e00040200000054f6644000ff00ff830002010008000000000001ffc80028001400040200000054f6644000ff00ff830002010408000002000001ff64",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0014000a00020100000054f6642000ff00ff830002010408000001000001ffc80028001400020100000054f6642000ff00ff830002010208000000000201ff640014000a00020100000024f62440000001ff82000200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsBuff.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsBuff.zt1.bin",
+      "rowCount": 7,
+      "headerExtraSize": 5,
+      "rowSize": 22,
+      "headerSize": 15,
+      "payloadSize": 154,
+      "expectedPayloadSize": 154,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010700050016000002020000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00c800c8000000010a000a000000000a000a00000001",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "010001000000020a000a0000ff02f6fff6ff00ff030a",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "000a0000ff03f6fff6ff00ff030000000002ff040100",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsCardUpgrade.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsCardUpgrade.zt1.bin",
+      "rowCount": 16,
+      "headerExtraSize": 8,
+      "rowSize": 13,
+      "headerSize": 18,
+      "payloadSize": 208,
+      "expectedPayloadSize": 208,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01100008000d000202020202020202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "64006400640064006400c800c8",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "005f006400640064006400c800",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "c8002c01530064006400c800c8",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsCorrespondence.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsCorrespondence.zt1.bin",
+      "rowCount": 7,
+      "headerExtraSize": 7,
+      "rowSize": 5,
+      "headerSize": 17,
+      "payloadSize": 35,
+      "expectedPayloadSize": 35,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0107000700050000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ffffffff01",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ff01ffffff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0101010101",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsDef_Weight.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsDef_Weight.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 2,
+      "rowSize": 60,
+      "headerSize": 12,
+      "payloadSize": 240,
+      "expectedPayloadSize": 240,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040002003c000202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ffff8c00ffff2c01ffffbe008200aa0082008200ffffb400fffff401fffffa00ffff2201ffff000000004a010e01ffffffff9a01ffff5401ffff8601",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ffff8601ffff9e02fffff401ffff2b0212024a01ffff8200fffff000ffff8c00ffffc800ffffb40082008200ffff2404ffff6801ffff0e012800dc00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ffffc201ffff2201fffff000ffff5e01ffff0e01ffffe001aa008200ffff7201ffff43035e01e600ffff4303ffff4303ffff4303ffff4303ffff4303",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsEffect.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsEffect.zt1.bin",
+      "rowCount": 9,
+      "headerExtraSize": 9,
+      "rowSize": 37,
+      "headerSize": 19,
+      "payloadSize": 333,
+      "expectedPayloadSize": 333,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01090009002500000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00000006000000ff0000010001010000ff0000020001010000ff0000030001010000ff0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "040001010100ff0000050001010000ff0000060001010000ff0000070001010000ff000008",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0001010000ff0000090001010000ff0001000001010100ff0001010001010100ff00010200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsHero.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsHero.zt1.bin",
+      "rowCount": 65,
+      "headerExtraSize": 49,
+      "rowSize": 6,
+      "headerSize": 59,
+      "payloadSize": 390,
+      "expectedPayloadSize": 390,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c014100310006000000000000001202010000000000020002000002020002020002020000000000000000000000000000000000000000000b",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000040400",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "56696e63656e",
+          "asciiStrings": [
+            "Vincen"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "7400e803140a",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsHeroActiveSkill.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroActiveSkill.zt1.bin",
+      "rowCount": 24,
+      "headerExtraSize": 15,
+      "rowSize": 25,
+      "headerSize": 25,
+      "payloadSize": 600,
+      "expectedPayloadSize": 600,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0118000f001900000000020200020202020002020200",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0200000f273200050500000000000000000400010006000200",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000140064001464000a00050001000003000200ffffff0003",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00010032000a14000100010001000003000000080004ffffff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsHeroBuffSkill.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroBuffSkill.zt1.bin",
+      "rowCount": 25,
+      "headerExtraSize": 22,
+      "rowSize": 38,
+      "headerSize": 32,
+      "payloadSize": 950,
+      "expectedPayloadSize": 950,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0119001600260000000002000202000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000ffffffa000200006010101ff010101ff000001ff0aff000002a00010a00050000b0500",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "01ff000001ff000001ffff14000002a00010e001a00009030001ff000001ff000001ffff1500",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0002a00010a000100009010001041e050a08010001ffff16000100ffffff4001200011010101",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsHeroPassiveSkill.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroPassiveSkill.zt1.bin",
+      "rowCount": 28,
+      "headerExtraSize": 5,
+      "rowSize": 24,
+      "headerSize": 15,
+      "payloadSize": 672,
+      "expectedPayloadSize": 672,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c011c00050018001e02020202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "4850205570000000000000000000000000000000c800c800",
+          "asciiStrings": [
+            "HP Up"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "00000000446f646765000000000000000000000000000000",
+          "asciiStrings": [
+            "Dodge"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "190005000000000053687572696b656e0000000000000000",
+          "asciiStrings": [
+            "Shuriken"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsHeroSkill.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroSkill.zt1.bin",
+      "rowCount": 135,
+      "headerExtraSize": 11,
+      "rowSize": 51,
+      "headerSize": 21,
+      "payloadSize": 6885,
+      "expectedPayloadSize": 6885,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0187000b0033001b0000000000000202750b",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "536e617463680000000000000000000000030cff000104ffffffff55736520796f7572206865726f20746f206b696c6c20616e",
+          "asciiStrings": [
+            "Snatch",
+            "Use your hero to kill an"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "20656e656d7920616e6420737465616c206d616e612e20546865206869676865722074686520536b696c6c204c6576656c2069",
+          "asciiStrings": [
+            " enemy and steal mana. The higher the Skill Level i"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "732c20746865206d6f7265206d616e612073746f6c656e2e000000000000000000485020557000000000000000000000000007",
+          "asciiStrings": [
+            "s, the more mana stolen.",
+            "HP Up"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsHero_Ai.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsHero_Ai.zt1.bin",
+      "rowCount": 34,
+      "headerExtraSize": 34,
+      "rowSize": 12,
+      "headerSize": 44,
+      "payloadSize": 408,
+      "expectedPayloadSize": 408,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01220022000c0000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000101010101010101010101",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0001020100640a1414321414",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "001e0a00321e0a321e0a0001",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsItem.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsItem.zt1.bin",
+      "rowCount": 166,
+      "headerExtraSize": 11,
+      "rowSize": 76,
+      "headerSize": 21,
+      "payloadSize": 12616,
+      "expectedPayloadSize": 12616,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01a6000b004c00001f00000002020404008a",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "004172726f772053686f776572202853290000000000000010000001002d000000000000000153686f6f7420313030206172726f77732077697468203130302041747461636b20537472656e",
+          "asciiStrings": [
+            "Arrow Shower (S)",
+            "Shoot 100 arrows with 100 Attack Stren"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "6774682e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": [
+            "gth."
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "0000000000000000000000000000004172726f772053686f77657220284d29000000000001001100000100b4000000000000000e53686f6f7420313530206172726f77732077697468203230",
+          "asciiStrings": [
+            "Arrow Shower (M)",
+            "Shoot 150 arrows with 20"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsLevelDesign.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsLevelDesign.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 1,
+      "rowSize": 63,
+      "headerSize": 11,
+      "payloadSize": 252,
+      "expectedPayloadSize": 252,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040001003f0004",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "5802000034080000a00f000010270000f0550000a08c0000e8fd0000f0490200401f000030750000f8240100400d030020a10700a0bb0d0080841e00404b4c",
+          "asciiStrings": [
+            "@KL"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "00f40100004c040000fc0800005c12000088130000f82a0000d859000098b700000a00000014000000280000003c00000064000000a000000004010000a401",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0000a8020000010000000200000004000000070000000b00000010000000160000001d0000002500000020000000200000000200000002000000020000003c",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsMap.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsMap.zt1.bin",
+      "rowCount": 5,
+      "headerExtraSize": 5,
+      "rowSize": 16,
+      "headerSize": 15,
+      "payloadSize": 80,
+      "expectedPayloadSize": 80,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010500050010000100000101",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000e203000000e202000100d8020001",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00d803000200e203000200e202000300",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "e204000300e201000400f605000400f6",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsOff_Weight.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsOff_Weight.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 2,
+      "rowSize": 60,
+      "headerSize": 12,
+      "payloadSize": 240,
+      "expectedPayloadSize": 240,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040002003c000202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00009000000070000000ee00fe009a00a6000a010000b0000000700000009a000000a60000004c01000062016e0100000000620100006e010000fe00",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00000a010000ae000000d80000004701f200f2000000a600000090000000b0000000a8000000d8009a009a00000030040000140100000a014e00e400",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00009a000000ce000000dc0000000a010000a600580158010a01a6004a004a00000027020a010a019a009a000000ea000000ea00000016010000ea00",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsParticle.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsParticle.zt1.bin",
+      "rowCount": 3,
+      "headerExtraSize": 3,
+      "rowSize": 12,
+      "headerSize": 13,
+      "payloadSize": 36,
+      "expectedPayloadSize": 36,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01030003000c00000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "3000ff3000ff2e22ff2f2bff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "2216ff0201ff2a25ff3027ff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "3009ff302bff1504ff312bff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsProjectile.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsProjectile.zt1.bin",
+      "rowCount": 13,
+      "headerExtraSize": 11,
+      "rowSize": 35,
+      "headerSize": 21,
+      "payloadSize": 455,
+      "expectedPayloadSize": 455,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010d000b0023000000000000020000000002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000000a02ffffffffffff84000005001400ffffffffffff84000001000a00ffffffff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ffff84000002000602ffffffff00ffffff0003000800ffffffff00ff84000004010800",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ffffffffffffffff0506011400ffffffff00ff84000107011e00ffffffff00ff840000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsSkill_Ai.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsSkill_Ai.zt1.bin",
+      "rowCount": 13,
+      "headerExtraSize": 13,
+      "rowSize": 24,
+      "headerSize": 23,
+      "payloadSize": 312,
+      "expectedPayloadSize": 312,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010d000d00180000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0b0000003250cee2001e32fd0309000a0a1e32000a0a1e32",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00030f0000001e320000001e32fe03080000001e32000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "1e32fd030c0000001e320000001e32fd030a0000001e3200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsSound.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsSound.zt1.bin",
+      "rowCount": 2,
+      "headerExtraSize": 1,
+      "rowSize": 157,
+      "headerSize": 11,
+      "payloadSize": 314,
+      "expectedPayloadSize": 314,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01020001009d0002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "3d003d003e003f000200270042004300ffffffff4600ffffffff420027004b003100ffffffffffffffffffffffff53005400550056003500ffff2f003e005c005d0032003f0062003b0035002f003f00340068002f006a0035006c003100340068005c002f005c005d007400750076007700780079007a007b007c0074007e007f007d00820083000000010002000300040001000600070003000d000a",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000b000c000d000e0004000100ffff120007000c00020016001700160003001a00ffffffff1d00ffff1f0020000c001a0001000200000026003b003200260026000e0027006a00540002002700350034003300320031002c0030002f002e002d002c002b0026000200280027000e0082002c000d001d006a0027002f005500260074007b00750078007e00760079007f0077007a007d00820084008500",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsSynastry.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsSynastry.zt1.bin",
+      "rowCount": 57,
+      "headerExtraSize": 57,
+      "rowSize": 54,
+      "headerSize": 67,
+      "payloadSize": 3078,
+      "expectedPayloadSize": 3078,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01390039003600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00fffefffefffdfdfcfffe000000fc0000000000000000fd00000000000003000000fe00fd000000020000000000000000000000fb00",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000010001ffff00000000fe00000000fd0000000000000000fd0000000000000200000001fefc0000000200000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00fd0000000002ff0001fe010000ff0400000000fb0000000000000000fd000000000000020000000000020000000300000000000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsSynastry_mine.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsSynastry_mine.zt1.bin",
+      "rowCount": 57,
+      "headerExtraSize": 57,
+      "rowSize": 55,
+      "headerSize": 67,
+      "payloadSize": 3135,
+      "expectedPayloadSize": 3135,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01390039003700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000000000010003ff00000300000200fc00000000000001000000000000020003ff01000003040000000500fb00020200030000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsTower.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsTower.zt1.bin",
+      "rowCount": 2,
+      "headerExtraSize": 2,
+      "rowSize": 10,
+      "headerSize": 12,
+      "payloadSize": 20,
+      "expectedPayloadSize": 20,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01020002000a000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00000003000001020105",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "01020201020402010306",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsUnit.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsUnit.zt1.bin",
+      "rowCount": 271,
+      "headerExtraSize": 43,
+      "rowSize": 55,
+      "headerSize": 53,
+      "payloadSize": 14905,
+      "expectedPayloadSize": 14905,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010f012b003700001b00000404000000000002020200000000000000020002000000020000020202020200020201000000cc",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00496e66616e74727900000000000000000000000a000000f40100000000000000f40132000000000006000a0000050000600006000000",
+          "asciiStrings": [
+            "Infantry"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "00000000000000000072000c000662000c000700ffff5468697320626173696320756e6974206f66207468652048756d6520697320696e",
+          "asciiStrings": [
+            "This basic unit of the Hume is in"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "666572696f7220696e20636f6d6261742c2062757420636f6e73756d6573206c6974746c65206d616e612e000000000000000000000000",
+          "asciiStrings": [
+            "ferior in combat, but consumes little mana."
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_eng/XlsWorldmap.zt1",
+      "kind": "data",
+      "locale": "en",
+      "decodedPath": "decoded/zt1/assets/data_eng/XlsWorldmap.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 4,
+      "rowSize": 16,
+      "headerSize": 14,
+      "payloadSize": 64,
+      "expectedPayloadSize": 64,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0104000400100000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ff01ffff0002ffff0103ffff0204ffff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "03ffff05ffff0406ffff0507ffff0608",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ffff0709ffff080affff090bffff0a0c",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsAi.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsAi.zt1.bin",
+      "rowCount": 432,
+      "headerExtraSize": 78,
+      "rowSize": 130,
+      "headerSize": 88,
+      "payloadSize": 56160,
+      "expectedPayloadSize": 56160,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01b0014e008200021c000404010402000000040402040200000002020000000000000200020200000200000100000200000200000200000200000000000000000000000000000000000002020202000200027dc400",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0b00c3b9b9f8c2b020c0fcc5f50000000000000001010000006400000005e80300000a0001050501000000640000000000d00700000a0001050580070000ffff00ff10010000ff01000000ff010000ff0100ff010000ff010100ff010000ff0100000a500a0000640003010103010109010103010100e803e803e80300400b040000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "33bad020bec8bfa120c5acb8aebeeec7cfb8e92c20c1f6bff8bab420b7b9baa7203120c0afb4d6c4abb5e5b8a620c3dfb0a120bab8bbf3c0b8b7ce20bef2c0bb20bcf620c0d6bdc0b4cfb4d92e00000000000000000000000000000000000000000000000000000000000000000000000000002163666666666666c0fbc0b8b7ce20",
+          "asciiStrings": [
+            " 1 ",
+            "!cffffff"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "b5eec0e5c7cfb4c220b3eec0c720b4c9b7c2c4a1b4c220b3b7c1f6b8b82c20b8b9c0ba20bcfdc0dab0a120b5eec0e5c7cfb8e920c0a7c7f9c0fb20c0d4b4cfb4d92e202163303066666666bfb5bff5c0bb20c3e2c1f82163666666666666bdc3c4d120c0fbc0bb20b9b0b8aec4a1bcbcbfe42e000000000000000000000000000000",
+          "asciiStrings": [
+            ". !c00ffff",
+            "!cffffff"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsBalance.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsBalance.zt1.bin",
+      "rowCount": 3,
+      "headerExtraSize": 3,
+      "rowSize": 4,
+      "headerSize": 13,
+      "payloadSize": 12,
+      "expectedPayloadSize": 12,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01030003000400000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0500ff05",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00ff0301",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00030200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsBaseAttack.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsBaseAttack.zt1.bin",
+      "rowCount": 32,
+      "headerExtraSize": 26,
+      "rowSize": 86,
+      "headerSize": 36,
+      "payloadSize": 2752,
+      "expectedPayloadSize": 2752,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0120001a0056000000000200000000000002020200000002010001010000000002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0200ff08000000000201ff3c000c000600020100000008f6102000ff00ff85000200ff08000000000201ff640014000a00040200000008f6104000ff00ff85000200ff04000000000201ff32000a0005000201000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "08f6100800ff00ff850002010008000002000001ff2c013c001e00040200000054f6644000ff00ff830002010008000000000001ffc80028001400040200000054f6644000ff00ff830002010408000002000001ff64",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0014000a00020100000054f6642000ff00ff830002010408000001000001ffc80028001400020100000054f6642000ff00ff830002010208000000000201ff640014000a00020100000024f62440000001ff82000200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsBuff.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsBuff.zt1.bin",
+      "rowCount": 7,
+      "headerExtraSize": 5,
+      "rowSize": 22,
+      "headerSize": 15,
+      "payloadSize": 154,
+      "expectedPayloadSize": 154,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010700050016000002020000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00c800c8000000010a000a000000000a000a00000001",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "010001000000020a000a0000ff02f6fff6ff00ff030a",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "000a0000ff03f6fff6ff00ff030000000002ff040100",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsCardUpgrade.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsCardUpgrade.zt1.bin",
+      "rowCount": 16,
+      "headerExtraSize": 8,
+      "rowSize": 13,
+      "headerSize": 18,
+      "payloadSize": 208,
+      "expectedPayloadSize": 208,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01100008000d000202020202020202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "64006400640064006400c800c8",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "005f006400640064006400c800",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "c8002c01530064006400c800c8",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsCorrespondence.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsCorrespondence.zt1.bin",
+      "rowCount": 7,
+      "headerExtraSize": 7,
+      "rowSize": 5,
+      "headerSize": 17,
+      "payloadSize": 35,
+      "expectedPayloadSize": 35,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0107000700050000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ffffffff01",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ff01ffffff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0101010101",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsDef_Weight.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsDef_Weight.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 2,
+      "rowSize": 60,
+      "headerSize": 12,
+      "payloadSize": 240,
+      "expectedPayloadSize": 240,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040002003c000202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ffff8c00ffff2c01ffffbe008200aa0082008200ffffb400fffff401fffffa00ffff2201ffff000000004a010e01ffffffff9a01ffff5401ffff8601",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ffff8601ffff9e02fffff401ffff2b0212024a01ffff8200fffff000ffff8c00ffffc800ffffb40082008200ffff2404ffff6801ffff0e012800dc00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ffffc201ffff2201fffff000ffff5e01ffff0e01ffffe001aa008200ffff7201ffff43035e01e600ffff4303ffff4303ffff4303ffff4303ffff4303",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsEffect.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsEffect.zt1.bin",
+      "rowCount": 9,
+      "headerExtraSize": 9,
+      "rowSize": 37,
+      "headerSize": 19,
+      "payloadSize": 333,
+      "expectedPayloadSize": 333,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01090009002500000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00000006000000ff0000010001010000ff0000020001010000ff0000030001010000ff0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "040001010100ff0000050001010000ff0000060001010000ff0000070001010000ff000008",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0001010000ff0000090001010000ff0001000001010100ff0001010001010100ff00010200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsHero.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsHero.zt1.bin",
+      "rowCount": 64,
+      "headerExtraSize": 49,
+      "rowSize": 6,
+      "headerSize": 59,
+      "payloadSize": 384,
+      "expectedPayloadSize": 384,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c014000310006000000000000001102010000000000020002000002020002020002020000000000000000000000000000000000000000000b",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000040400",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "baf3bcbec6ae",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00e803140a00",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsHeroActiveSkill.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroActiveSkill.zt1.bin",
+      "rowCount": 24,
+      "headerExtraSize": 15,
+      "rowSize": 25,
+      "headerSize": 25,
+      "payloadSize": 600,
+      "expectedPayloadSize": 600,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0118000f001900000000020200020202020002020200",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0200000f273200050500000000000000000400010006000200",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000140064001464000a00050001000003000200ffffff0003",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00010032000a14000100010001000003000000080004ffffff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsHeroBuffSkill.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroBuffSkill.zt1.bin",
+      "rowCount": 25,
+      "headerExtraSize": 22,
+      "rowSize": 38,
+      "headerSize": 32,
+      "payloadSize": 950,
+      "expectedPayloadSize": 950,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0119001600260000000002000202000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000000ffffffa000200006010101ff010101ff000001ff0aff000002a00010a00050000b0500",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "01ff000001ff000001ffff14000002a00010e001a00009030001ff000001ff000001ffff1500",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0002a00010a000100009010001041e050a08010001ffff16000100ffffff4001200011010101",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsHeroPassiveSkill.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroPassiveSkill.zt1.bin",
+      "rowCount": 19,
+      "headerExtraSize": 5,
+      "rowSize": 24,
+      "headerSize": 15,
+      "payloadSize": 456,
+      "expectedPayloadSize": 456,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c011300050018001502020202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "485020c1f5b0a100000000c800c80000000000c8b8c7c700",
+          "asciiStrings": [
+            "HP "
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "0000000000001900050000000000c7a5c3a2b0adc8ad0000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "001400140000000000becfbbec000000000000000a000200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsHeroSkill.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroSkill.zt1.bin",
+      "rowCount": 306,
+      "headerExtraSize": 11,
+      "rowSize": 51,
+      "headerSize": 21,
+      "payloadSize": 15606,
+      "expectedPayloadSize": 15606,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0132010b00330017000000000000020258d7",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "b0adc5bb000000000000000000030cff000104ffffffffbfb5bff5c0cc20c0fbc0bb20c1d7c0ccb8e920b8b6b3aab8a620bef2",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "b4c2b4d92e20b7b9baa7c0cc20bfc0b8a6bcf6b7cf20b8b9c0cc20bba9bed1b4c2b4d92e0000000000000000000000000000c0",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "fbc0bb20c1d7bfb4c0bb20b6a720c7d8b4e720c0afb4d620bbfdbbea20baf1bfebc0c720313025b8a620b8b6b3aab7ce20bef2",
+          "asciiStrings": [
+            " 10%"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsHero_Ai.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsHero_Ai.zt1.bin",
+      "rowCount": 34,
+      "headerExtraSize": 34,
+      "rowSize": 12,
+      "headerSize": 44,
+      "payloadSize": 408,
+      "expectedPayloadSize": 408,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01220022000c0000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "000101010101010101010101",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0001020100640a1414321414",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "001e0a00321e0a321e0a0001",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsItem.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsItem.zt1.bin",
+      "rowCount": 124,
+      "headerExtraSize": 11,
+      "rowSize": 76,
+      "headerSize": 21,
+      "payloadSize": 9424,
+      "expectedPayloadSize": 9424,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c017c000b004c00001b000000020204040064",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00c8adbbecbaf128bcd22900000000000000000010000001002d0000000000000001c0fbbfa1b0d420b0f8b0ddb7c220313030c0c720c8adbbecc0bb20313030b9df20bdf0b4d92e00000000",
+          "asciiStrings": [
+            " 100",
+            " 100"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c8adbbecbaf128c1df290000000000000001001100000100b40000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00000000000ec0fbbfa1b0d420b0f8b0ddb7c220323030c0c720c8adbbecc0bb20313530b9df20bdf0b4d92e0000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": [
+            " 200",
+            " 150"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsLevelDesign.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsLevelDesign.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 1,
+      "rowSize": 63,
+      "headerSize": 11,
+      "payloadSize": 252,
+      "expectedPayloadSize": 252,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040001003f0004",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "5802000034080000a00f000010270000f0550000a08c0000e8fd0000f0490200401f000030750000f8240100400d030020a10700a0bb0d0080841e00404b4c",
+          "asciiStrings": [
+            "@KL"
+          ]
+        },
+        {
+          "index": 1,
+          "hex": "00f40100004c040000fc0800005c12000088130000f82a0000d859000098b700000a00000014000000280000003c00000064000000a000000004010000a401",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0000a8020000010000000200000004000000070000000b00000010000000160000001d0000002500000020000000200000000200000002000000020000003c",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsMap.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsMap.zt1.bin",
+      "rowCount": 5,
+      "headerExtraSize": 5,
+      "rowSize": 16,
+      "headerSize": 15,
+      "payloadSize": 80,
+      "expectedPayloadSize": 80,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010500050010000100000101",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000e203000000e202000100d8020001",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00d803000200e203000200e202000300",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "e204000300e201000400f605000400f6",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsOff_Weight.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsOff_Weight.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 2,
+      "rowSize": 60,
+      "headerSize": 12,
+      "payloadSize": 240,
+      "expectedPayloadSize": 240,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01040002003c000202",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00009000000070000000ee00fe009a00a6000a010000b0000000700000009a000000a60000004c01000062016e0100000000620100006e010000fe00",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00000a010000ae000000d80000004701f200f2000000a600000090000000b0000000a8000000d8009a009a00000030040000140100000a014e00e400",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00009a000000ce000000dc0000000a010000a600580158010a01a6004a004a00000027020a010a019a009a000000ea000000ea00000016010000ea00",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsParticle.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsParticle.zt1.bin",
+      "rowCount": 3,
+      "headerExtraSize": 3,
+      "rowSize": 12,
+      "headerSize": 13,
+      "payloadSize": 36,
+      "expectedPayloadSize": 36,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01030003000c00000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "3000ff3000ff2e22ff2f2bff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "2216ff0201ff2a25ff3027ff",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "3009ff302bff1504ff312bff",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsProjectile.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsProjectile.zt1.bin",
+      "rowCount": 13,
+      "headerExtraSize": 11,
+      "rowSize": 35,
+      "headerSize": 21,
+      "payloadSize": 455,
+      "expectedPayloadSize": 455,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010d000b0023000000000000020000000002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0000000a02ffffffffffff84000005001400ffffffffffff84000001000a00ffffffff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "ffff84000002000602ffffffff00ffffff0003000800ffffffff00ff84000004010800",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ffffffffffffffff0506011400ffffffff00ff84000107011e00ffffffff00ff840000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsSkill_Ai.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsSkill_Ai.zt1.bin",
+      "rowCount": 13,
+      "headerExtraSize": 13,
+      "rowSize": 24,
+      "headerSize": 23,
+      "payloadSize": 312,
+      "expectedPayloadSize": 312,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c010d000d00180000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "0b0000003250cee2001e32fd0309000a0a1e32000a0a1e32",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "00030f0000001e320000001e32fe03080000001e32000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "1e32fd030c0000001e320000001e32fd030a0000001e3200",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsSound.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsSound.zt1.bin",
+      "rowCount": 2,
+      "headerExtraSize": 1,
+      "rowSize": 157,
+      "headerSize": 11,
+      "payloadSize": 314,
+      "expectedPayloadSize": 314,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01020001009d0002",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "3d003d003e003f000200270042004300ffffffff4600ffffffff420027004b003100ffffffffffffffffffffffff53005400550056003500ffff2f003e005c005d0032003f0062003b0035002f003f00340068002f006a0035006c003100340068005c002f005c005d007400750076007700780079007a007b007c0074007e007f007d00820083000000010002000300040001000600070003000d000a",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000b000c000d000e0004000100ffff120007000c00020016001700160003001a00ffffffff1d00ffff1f0020000c001a0001000200000026003b003200260026000e0027006a00540002002700350034003300320031002c0030002f002e002d002c002b0026000200280027000e0082002c000d001d006a0027002f005500260074007b00750078007e00760079007f0077007a007d00820084008500",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsSynastry.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsSynastry.zt1.bin",
+      "rowCount": 57,
+      "headerExtraSize": 57,
+      "rowSize": 54,
+      "headerSize": 67,
+      "payloadSize": 3078,
+      "expectedPayloadSize": 3078,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01390039003600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00fffefffefffdfdfcfffe000000fc0000000000000000fd00000000000003000000fe00fd000000020000000000000000000000fb00",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000010001ffff00000000fe00000000fd0000000000000000fd0000000000000200000001fefc0000000200000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00fd0000000002ff0001fe010000ff0400000000fb0000000000000000fd000000000000020000000000020000000300000000000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsSynastry_mine.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsSynastry_mine.zt1.bin",
+      "rowCount": 57,
+      "headerExtraSize": 57,
+      "rowSize": 55,
+      "headerSize": 67,
+      "payloadSize": 3135,
+      "expectedPayloadSize": 3135,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01390039003700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "0000000000010003ff00000300000200fc00000000000001000000000000020003ff01000003040000000500fb00020200030000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsTower.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsTower.zt1.bin",
+      "rowCount": 2,
+      "headerExtraSize": 2,
+      "rowSize": 10,
+      "headerSize": 12,
+      "payloadSize": 20,
+      "expectedPayloadSize": 20,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01020002000a000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00000003000001020105",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "01020201020402010306",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsUnit.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsUnit.zt1.bin",
+      "rowCount": 231,
+      "headerExtraSize": 43,
+      "rowSize": 55,
+      "headerSize": 53,
+      "payloadSize": 12705,
+      "expectedPayloadSize": 12705,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c01e7002b003700001700000404000000000002020200000000000000020002000000020000020202020200020201000000a8",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "00c1f6bff8bab40000000000000000000a000000f40100000000000000f40132000000000006000a000005000060000600000000000000",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "000000000072000c000662000c000700ffffc8e2c0c720b1e2c3cabab4b7c2c0b8b7ce2c20c0fcc5f5b7c2c0ba20b3b7c1f6b8b820bcd2",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "c8af204d50b0a120c0fbb0d420b5e9beeeb0a3b4d9b4c220b0cdc0cc20c0e5c1a1c0d4b4cfb4d92e000000000000000000000000000000",
+          "asciiStrings": [
+            " MP"
+          ]
+        }
+      ],
+      "valid": true
+    },
+    {
+      "path": "assets/data_kor/XlsWorldmap.zt1",
+      "kind": "data",
+      "locale": "ko",
+      "decodedPath": "decoded/zt1/assets/data_kor/XlsWorldmap.zt1.bin",
+      "rowCount": 4,
+      "headerExtraSize": 4,
+      "rowSize": 16,
+      "headerSize": 14,
+      "payloadSize": 64,
+      "expectedPayloadSize": 64,
+      "payloadMatchesRowLayout": true,
+      "headerHex": "47584c0104000400100000000000",
+      "headerAsciiStrings": [],
+      "sampleRows": [
+        {
+          "index": 0,
+          "hex": "ff01ffff0002ffff0103ffff0204ffff",
+          "asciiStrings": []
+        },
+        {
+          "index": 1,
+          "hex": "03ffff05ffff0406ffff0507ffff0608",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "ffff0709ffff080affff090bffff0a0c",
+          "asciiStrings": []
+        }
+      ],
+      "valid": true
+    }
+  ]
+}
