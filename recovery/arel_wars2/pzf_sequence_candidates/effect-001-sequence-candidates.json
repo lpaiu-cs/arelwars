@@ -1,0 +1,174 @@
+{
+  "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/effect/001.pzf",
+  "variant": "marker-only",
+  "compactCoordinateCount": 45,
+  "anchorCount": 0,
+  "matchedPzdPath": null,
+  "matchCount": 0,
+  "indexedGroupCount": 18,
+  "controlGroupCount": 14,
+  "indexedGroups": [
+    {
+      "index": 14,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 15,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 16,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 17,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 18,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 19,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 20,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 22,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 23,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 24,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 25,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 27,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 28,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 29,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 30,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 31,
+      "pointCount": 3,
+      "controlHistogram": {
+        "0300": 3
+      }
+    }
+  ],
+  "controlGroups": [
+    {
+      "controlWordHex": "2600",
+      "pointCount": 4
+    },
+    {
+      "controlWordHex": "2700",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "2800",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "0100",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "0200",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "0400",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "0500",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "0600",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "0800",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "2100",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "2200",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "2300",
+      "pointCount": 1
+    }
+  ]
+}

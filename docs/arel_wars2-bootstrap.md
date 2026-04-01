@@ -93,6 +93,10 @@ High-level layout differences from Arel Wars 1:
     - branch `67ff` payload grammar by leading control word and section length, not just by file family
   - highest-confidence current subcase:
     - `marker-only` families such as `effect/001.pzf` and `weapon2/003.pzf` already look like small point-like control tuples
+  - current best sequence-candidate cases:
+    - `weapon2/003.pzf`: strong `index -> point cluster` grouping
+    - `weapon2/000.pzf`: `anchor+marker` case with matched `PZD` body-part overlays
+    - `effect/000.pzf`: large control-word overlay family with reusable point clouds
 - `plasma/`
   - large Samsung/Android UI asset subtree; likely not core gameplay data
 
@@ -113,6 +117,8 @@ These steps are now complete:
    - probe renders under [`pzf_anchor_probes`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_anchor_probes)
 6. First compact-marker scatter probes
    - point-cloud renders under [`pzf_marker_scatter`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_marker_scatter)
+7. First body-part sequence candidate sheets
+   - composite sheets and JSON summaries under [`pzf_sequence_candidates`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_sequence_candidates)
 
 ## Recommended Order For AW2 From Here
 
@@ -171,6 +177,12 @@ python3 tools/arel_wars2/render_pzf_anchor_probes.py \
 python3 tools/arel_wars2/render_pzf_marker_scatter.py \
   --assets-root recovery/arel_wars2/apk_unzip/assets \
   --output recovery/arel_wars2/pzf_marker_scatter
+```
+
+```bash
+python3 tools/arel_wars2/render_pzf_sequence_candidates.py \
+  --assets-root recovery/arel_wars2/apk_unzip/assets \
+  --output recovery/arel_wars2/pzf_sequence_candidates
 ```
 
 For quick script sanity checks, reuse AW1 helpers in a one-off Python session:

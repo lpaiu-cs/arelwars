@@ -1,0 +1,69 @@
+{
+  "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon2/002.pzf",
+  "variant": "anchor+marker",
+  "compactCoordinateCount": 10,
+  "anchorCount": 5,
+  "matchedPzdPath": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/weapon2/0/002.pzd",
+  "matchCount": 5,
+  "indexedGroupCount": 8,
+  "controlGroupCount": 0,
+  "indexedGroups": [
+    {
+      "index": 2,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 3,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 4,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 5,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 6,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 7,
+      "pointCount": 2,
+      "controlHistogram": {
+        "0100": 2
+      }
+    },
+    {
+      "index": 8,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0200": 1
+      }
+    },
+    {
+      "index": 9,
+      "pointCount": 2,
+      "controlHistogram": {
+        "0100": 2
+      }
+    }
+  ],
+  "controlGroups": []
+}

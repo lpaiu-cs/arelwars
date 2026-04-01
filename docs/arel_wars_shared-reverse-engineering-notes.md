@@ -114,3 +114,6 @@ This document captures the parts of the recovery work that are likely to stay us
 - A complementary point-cloud sanity check now exists for compact marker tuples:
   - [`render_pzf_marker_scatter.py`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars2/render_pzf_marker_scatter.py)
   - representative outputs under [`pzf_marker_scatter`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_marker_scatter)
+- Sequence-level candidate sheets now exist for the strongest AW2 cases:
+  - [`render_pzf_sequence_candidates.py`](/Users/lpaiu/vs/others/arelwars/tools/arel_wars2/render_pzf_sequence_candidates.py)
+  - representative outputs under [`pzf_sequence_candidates`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/pzf_sequence_candidates)

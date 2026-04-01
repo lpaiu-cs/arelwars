@@ -1,0 +1,111 @@
+{
+  "path": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars2/apk_unzip/assets/pc/effect/002.pzf",
+  "variant": "anchor+marker",
+  "compactCoordinateCount": 47,
+  "anchorCount": 5,
+  "matchedPzdPath": null,
+  "matchCount": 0,
+  "indexedGroupCount": 6,
+  "controlGroupCount": 13,
+  "indexedGroups": [
+    {
+      "index": 0,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0400": 1
+      }
+    },
+    {
+      "index": 2,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0400": 1
+      }
+    },
+    {
+      "index": 12,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0300": 1
+      }
+    },
+    {
+      "index": 20,
+      "pointCount": 5,
+      "controlHistogram": {
+        "0200": 1,
+        "0300": 2,
+        "0400": 1,
+        "0600": 1
+      }
+    },
+    {
+      "index": 21,
+      "pointCount": 3,
+      "controlHistogram": {
+        "0200": 1,
+        "0400": 1,
+        "0500": 1
+      }
+    },
+    {
+      "index": 22,
+      "pointCount": 4,
+      "controlHistogram": {
+        "0200": 1,
+        "0300": 2,
+        "0500": 1
+      }
+    }
+  ],
+  "controlGroups": [
+    {
+      "controlWordHex": "1400",
+      "pointCount": 12
+    },
+    {
+      "controlWordHex": "1700",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "1b00",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "0f00",
+      "pointCount": 2
+    },
+    {
+      "controlWordHex": "1000",
+      "pointCount": 2
+    },
+    {
+      "controlWordHex": "1100",
+      "pointCount": 2
+    },
+    {
+      "controlWordHex": "1300",
+      "pointCount": 2
+    },
+    {
+      "controlWordHex": "0600",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "0b00",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "0e00",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "1200",
+      "pointCount": 1
+    },
+    {
+      "controlWordHex": "1500",
+      "pointCount": 1
+    }
+  ]
+}
