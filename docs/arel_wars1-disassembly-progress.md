@@ -123,6 +123,15 @@
   - 즉 runtime-equivalent 기준으로 `subFrameIndex -> PZD image` 연결은 정리됐다.
     - `type 8`: `subFrameIndex == first-stream chunk index`
     - `type 7`: `subFrameIndex == file-order row-stream index`
+- `PZxFrameBB`
+  - `GetAttCount = token >> 4`, `GetDamCount = token & 0x0f`로 확인됐다.
+  - bbox mode는 `PZF formatVariant`와 대응한다.
+    - `0`: packed attack/damage counts + compact 4-byte box
+    - `1`: explicit generic count + compact 4-byte box
+    - `2`: reference point list
+    - `3`: explicit attack/token0 + damage/token1 + full 8-byte box
+  - 현재 parsed set 기준 mode 분포는 `explicit-att-dam = 251`, `compact-box-list = 2`, `reference-point-list = 0`이다.
+  - 집계 총량은 attack `1468`, damage `1260`, generic `11`, reference `0`이다.
 - `PZF`
   - `PZD image count`를 raw `PZF` parser의 `max_subframe_index` bound로 다시 넣으면 outlier가 사라진다.
   - 현재 집계는 `exact-max-plus-one = 244`, `in-range = 7`, `empty = 2`, `out-of-range = 0`이다.
@@ -147,15 +156,16 @@
 ### Open
 
 - raw `PZD` index table entry encoding은 아직 완전히 닫히지 않았다.
-  - `type 7`의 일부 샘플은 palette block 뒤 `u32 >> 8`이 plausible offset처럼 보인다.
-  - 하지만 `type 8`은 같은 방식으로 안 닫힌다.
-  - 즉 native runtime-equivalent decode는 끝났지만, `SeekIndexTable`가 읽는 raw table 자체는 variant별 encoding 차이가 남아 있다.
+  - `type 7 flags=0`은 direct `u32` table이 맞고, 각 entry는 bare rowstream zlib start가 아니라 "single-chunk first-stream header + zlib row body" prefix 앞쪽을 가리킨다.
+  - `type 7 flags=1`은 direct rowstream 쪽과 더 가깝지만, header/table alignment를 아직 더 봐야 한다.
+  - `type 8`은 raw region 안에서 direct/shifted `u32`, `u16`, `u24` table 패턴이 아직 안 잡힌다.
+  - 즉 native runtime-equivalent decode는 끝났지만, `SeekIndexTable`가 읽는 raw table 자체는 여전히 `type 8` 중심으로 열려 있다.
 
 ### Next Focus
 
-1. `66/67/70...` envelope byte가 effect cache selector인지 module selector인지, `ChangeModule*` / effect loaders를 기준으로 더 정리한다.
-2. `type 7` vs `type 8` raw `PZD` index table encoding을 고정한다.
-3. `PZDParser::Open / DecodeImageData`의 palette branch(`bit0/bit4/bit6`)를 실제 raw byte layout과 다시 맞춘다.
+1. `type 8` raw `PZD` index table / descriptor layout을 `SeekIndexTable` 기준으로 고정한다.
+2. `type 7 flags=0/1`의 raw prefix가 각각 어떤 palette/descriptor block인지 byte-level로 마저 정리한다.
+3. `66/67/70...` envelope byte가 effect cache selector인지 module selector인지, `ChangeModule*` / effect loaders를 기준으로 더 정리한다.
 
 ### Refresh Commands
 

@@ -243,6 +243,15 @@ frame:
   - raw `PZF` parser에 `max_subframe_index = PZD.contentCount - 1` 제약을 주면 `253/253` stems 모두 parse를 유지한다.
   - relation 집계는 `exact-max-plus-one = 244`, `in-range = 7`, `empty = 2`, `out-of-range = 0`이다.
   - 이전 `255/511/65296`류 outlier는 native `extraPayload` backtracking이 너무 느슨해서 생긴 잘못된 분기였다.
+- bbox token도 native getter 기준으로 해석이 닫혔다.
+  - `CGxPZFParser::GetAttCount`는 raw token의 high nibble, `GetDamCount`는 low nibble을 그대로 꺼낸다.
+  - `CGxPZxFrameBB`의 mode는 `PZF formatVariant`와 대응한다.
+    - mode `0`: packed attack/damage counts + compact 4-byte box (`x:i8, y:i8, w:u8, h:u8`)
+    - mode `1`: explicit generic count + compact 4-byte box
+    - mode `2`: reference point list (`x:s16, y:s16`)
+    - mode `3`: explicit attack count/token0 + damage count/token1 + full 8-byte box (`x:s16, y:s16, w:u16, h:u16`)
+  - 현재 parsed asset set에서는 `explicit-att-dam`이 `251` stems, `compact-box-list`가 `2` stems이고, reference-point mode는 아직 보이지 않는다.
+  - 집계 총량은 attack `1468`, damage `1260`, generic `11`, reference `0`이다.
 - `CGxPZxFrame::Draw`와 `GsPZxSubFrame`는 이 `0x10-byte` record의 앞쪽만 쓴다.
   - `+0x00` bitmap pointer
   - `+0x04/+0x06` local x/y
@@ -284,6 +293,11 @@ frame:
   - runtime sequence `(4,3)`도 `8`종 payload(`0403`, `040367ff000000`, `660400000003`, `67eb0000000403`, ...)에서 공통으로 나온다.
   - 반대로 `(7) -> 6607000000`, `(10) -> 660a000000`, `(100) -> 6764000000`, `(44,99) -> 702c630000`처럼 특정 envelope family에만 묶인 opcode sequence도 있다.
   - 즉 envelope byte는 effect semantics를 바꾸는 실행 opcode는 아니지만, payload family 구분에는 계속 남아 있다.
+- raw `PZD type 7`도 한 단계 더 보인다.
+  - `flags = 0` stems는 root header 뒤 direct `u32` table을 가지고, 각 entry는 bare rowstream zlib가 아니라 "single-chunk first-stream header + zlib row body" 앞쪽을 가리킨다.
+  - 즉 이 계열은 runtime-equivalent rowstream으로는 읽히지만, raw byte layout 관점에서는 per-image prefix가 더 있다.
+  - `flags = 1` 계열은 전형적으로 direct zlib rowstream start 쪽에 더 가깝다.
+  - 반면 raw `type 8` index table은 아직 native `SeekIndexTable` 수준으로 닫히지 않았다.
 - `tools/arel_wars1/inspect_binary_assets.py`는 이제 exact-fit animation clip stream을 인식한다.
 - 현재 휴리스틱은 다음이다.
   - stream 전체가 `frameCount:u8 + frameCount * 8-byte frame record`의 clip 연속체로 끝까지 정확히 소진될 것

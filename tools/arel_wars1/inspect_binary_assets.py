@@ -201,6 +201,18 @@ def summarize_animation_clip_stream(stream: bytes) -> dict[str, object] | None:
     return summarize_animation_clip_data(decoded)
 
 
+def describe_pzf_bbox_mode(format_variant: int) -> str:
+    if format_variant == 0:
+        return "packed-att-dam"
+    if format_variant == 1:
+        return "compact-box-list"
+    if format_variant == 2:
+        return "reference-point-list"
+    if format_variant == 3:
+        return "explicit-att-dam"
+    return "unknown"
+
+
 def summarize_embedded_resource(resource) -> dict[str, object]:
     return {
         "kind": resource.kind,
@@ -320,7 +332,22 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
     runtime_effect_counts = Counter()
     runtime_effect_sequence_counts = Counter()
     single_byte_module_counts = Counter()
+    bbox_att_total = 0
+    bbox_dam_total = 0
+    bbox_reference_total = 0
+    bbox_generic_total = 0
     for frame in decoded.frames:
+        if frame.bbox_total_count > 0:
+            if decoded.format_variant == 0:
+                bbox_att_total += frame.bbox_token0 >> 4
+                bbox_dam_total += frame.bbox_token0 & 0x0F
+            elif decoded.format_variant == 1:
+                bbox_generic_total += frame.bbox_token0
+            elif decoded.format_variant == 2:
+                bbox_reference_total += frame.bbox_token0
+            elif decoded.format_variant == 3:
+                bbox_att_total += frame.bbox_token0
+                bbox_dam_total += frame.bbox_token1
         for subframe in frame.subframes:
             if not subframe.extra:
                 continue
@@ -352,6 +379,12 @@ def summarize_pzf_frame_stream_data(decoded) -> dict[str, object]:
         "bboxTotalRange": list(decoded.bbox_total_range),
         "bboxFrameCount": sum(1 for frame in decoded.frames if frame.bbox_total_count > 0),
         "bboxRecordCount": sum(len(frame.bboxes) for frame in decoded.frames),
+        "bboxMode": decoded.format_variant,
+        "bboxModeName": describe_pzf_bbox_mode(decoded.format_variant),
+        "bboxAttackCountTotal": bbox_att_total,
+        "bboxDamageCountTotal": bbox_dam_total,
+        "bboxReferencePointTotal": bbox_reference_total,
+        "bboxGenericCountTotal": bbox_generic_total,
         "subFrameIndexRange": list(subframe_index_range) if subframe_index_range is not None else None,
         "xRange": list(x_range) if x_range is not None else None,
         "yRange": list(y_range) if y_range is not None else None,
@@ -1041,6 +1074,12 @@ def main() -> None:
             "singleByteModuleCounts": entry["embeddedPzf"].get("singleByteModuleCounts", {}),
             "bboxFrameCount": entry["embeddedPzf"].get("bboxFrameCount"),
             "bboxTotalRange": entry["embeddedPzf"].get("bboxTotalRange"),
+            "bboxMode": entry["embeddedPzf"].get("bboxMode"),
+            "bboxModeName": entry["embeddedPzf"].get("bboxModeName"),
+            "bboxAttackCountTotal": entry["embeddedPzf"].get("bboxAttackCountTotal"),
+            "bboxDamageCountTotal": entry["embeddedPzf"].get("bboxDamageCountTotal"),
+            "bboxReferencePointTotal": entry["embeddedPzf"].get("bboxReferencePointTotal"),
+            "bboxGenericCountTotal": entry["embeddedPzf"].get("bboxGenericCountTotal"),
             "frameRecordMatchedStreamIndices": (
                 entry.get("embeddedPzfFrameRecordRelation", {}).get("matchedFrameRecordStreamIndices", [])
             ),
@@ -1142,10 +1181,33 @@ def main() -> None:
         if embedded_pzf_parsed_entries
         else None
     )
+    embedded_pzf_bbox_mode_counts = Counter(
+        entry["bboxModeName"] for entry in embedded_pzf_parsed_entries if entry["bboxModeName"] is not None
+    )
     embedded_pzf_total_bbox_frame_count = sum(
         int(entry["bboxFrameCount"])
         for entry in embedded_pzf_parsed_entries
         if entry["bboxFrameCount"] is not None
+    )
+    embedded_pzf_bbox_attack_total = sum(
+        int(entry["bboxAttackCountTotal"])
+        for entry in embedded_pzf_parsed_entries
+        if entry["bboxAttackCountTotal"] is not None
+    )
+    embedded_pzf_bbox_damage_total = sum(
+        int(entry["bboxDamageCountTotal"])
+        for entry in embedded_pzf_parsed_entries
+        if entry["bboxDamageCountTotal"] is not None
+    )
+    embedded_pzf_bbox_reference_total = sum(
+        int(entry["bboxReferencePointTotal"])
+        for entry in embedded_pzf_parsed_entries
+        if entry["bboxReferencePointTotal"] is not None
+    )
+    embedded_pzf_bbox_generic_total = sum(
+        int(entry["bboxGenericCountTotal"])
+        for entry in embedded_pzf_parsed_entries
+        if entry["bboxGenericCountTotal"] is not None
     )
     embedded_pzd_entries = [
         {
@@ -1430,6 +1492,11 @@ def main() -> None:
             "embeddedPzfSingleByteModuleCounts": dict(sorted(embedded_pzf_single_byte_module_counts.items())),
             "embeddedPzfBboxTotalRange": embedded_pzf_bbox_total_range,
             "embeddedPzfBboxFrameTotal": embedded_pzf_total_bbox_frame_count,
+            "embeddedPzfBboxModeCounts": dict(sorted(embedded_pzf_bbox_mode_counts.items())),
+            "embeddedPzfBboxAttackTotal": embedded_pzf_bbox_attack_total,
+            "embeddedPzfBboxDamageTotal": embedded_pzf_bbox_damage_total,
+            "embeddedPzfBboxReferenceTotal": embedded_pzf_bbox_reference_total,
+            "embeddedPzfBboxGenericTotal": embedded_pzf_bbox_generic_total,
             "embeddedPzaPzxCount": len(embedded_pza_stems),
             "embeddedPzaPreview": embedded_pza_entries[:12],
             "embeddedPzaMatchedStreamIndexCounts": dict(sorted(embedded_pza_match_index_counts.items())),
@@ -1476,7 +1543,7 @@ def main() -> None:
             f"Nonzero PZF extraPayloads are common ({embedded_pzf_nonzero_extra_count} subframes total). Observed extraFlag values are {embedded_pzf_extra_flag_values[:20]}, max extra length is {embedded_pzf_max_extra_len}, and the dominant payload families are {dict(sorted(embedded_pzf_extra_marker_counts.items()))}.",
             f"Disassembly now matches those PZF extras to native frame fields: EndDecodeFrame stores extraLen + extraPtr per subframe, effect-cache lookup only compares bytes <= 4 ({dict(sorted(embedded_pzf_effect_opcode_counts.items()))}), but CGxEffectPZD::ApplyEffect actually executes every byte in the range 1..100 ({dict(sorted(embedded_pzf_runtime_effect_counts.items(), key=lambda item: int(item[0])))}).",
             f"That runtime dispatch splits into rotate opcodes 1/2, flip-class opcodes 3/4, and palette-change program ids 5..100. Bounded parsing no longer leaves any real single-byte 0x65..0x74 extras ({dict(sorted(embedded_pzf_single_byte_module_counts.items()))}); the earlier family was a parse artifact even though native loaders still keep a len=1 fast path for that range.",
-            f"Bounding-box metadata is native PZF frame-local data rather than a separate tail track: parsed bbox totals range {embedded_pzf_bbox_total_range[0] if embedded_pzf_bbox_total_range else 'n/a'}..{embedded_pzf_bbox_total_range[1] if embedded_pzf_bbox_total_range else 'n/a'} and appear in {embedded_pzf_total_bbox_frame_count} frames overall.",
+            f"Bounding-box metadata is native PZF frame-local data rather than a separate tail track: parsed bbox totals range {embedded_pzf_bbox_total_range[0] if embedded_pzf_bbox_total_range else 'n/a'}..{embedded_pzf_bbox_total_range[1] if embedded_pzf_bbox_total_range else 'n/a'} and appear in {embedded_pzf_total_bbox_frame_count} frames overall. Mode counts are {dict(sorted(embedded_pzf_bbox_mode_counts.items()))}, with attack={embedded_pzf_bbox_attack_total}, damage={embedded_pzf_bbox_damage_total}, reference={embedded_pzf_bbox_reference_total}, generic={embedded_pzf_bbox_generic_total}.",
             f"Once PZD image-count bounds are applied back into the raw PZF parser, subFrameIndex stays inside the native PZD image pool for every parsed stem: exact max+1 match={embedded_pzd_relation_counts.get('exact-max-plus-one', 0)}, in-range={embedded_pzd_relation_counts.get('in-range', 0)}, empty={embedded_pzd_relation_counts.get('empty', 0)}, out-of-range={embedded_pzd_relation_counts.get('out-of-range', 0)}.",
             f"The previous frame-record heuristic overlaps the native PZF index table directly: {len(embedded_pzf_offset_prefix_stems)} stems already have frame-record offset previews that prefix-match the raw PZF frame offsets.",
             f"The trailing tails now split into {frame_meta_section_count} marker-delimited sections. {frame_meta_marker_counts.get('67ff000000', 0)} use 67 FF 00 00 00 and {frame_meta_marker_counts.get('6778000000', 0)} use 67 78 00 00 00.",
