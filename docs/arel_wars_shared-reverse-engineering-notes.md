@@ -79,11 +79,11 @@ This document captures the parts of the recovery work that are likely to stay us
 - `GXL` tables are now structurally recognized, but column-level schema recovery is still open.
   Current high-confidence header model is:
   - `magic = GXL\x01`
-  - `rowCount(u16)`
-  - `headerExtraSize(u16)`
   - `rowSize(u16)`
+  - `headerExtraSize(u16)`
+  - `rowCount(u16)`
   - `headerSize = 10 + headerExtraSize`
-  - `payloadSize = rowCount * rowSize`
+  - `payloadSize = rowSize * rowCount`
   This already holds for all currently inspected AW1 and AW2 data tables.
 
 - `179.pzx` in Arel Wars 1 now has a usable `shadeBand * 47 + paletteResidue` preview heuristic, but the original blend equation is still unproven.

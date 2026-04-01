@@ -23,7 +23,34 @@
       57,
       78
     ],
-    "rowSizes": [
+    "rowSizeGuesses": [
+      2,
+      3,
+      4,
+      5,
+      7,
+      9,
+      13,
+      16,
+      19,
+      24,
+      25,
+      28,
+      32,
+      34,
+      57,
+      64,
+      65,
+      124,
+      135,
+      166,
+      231,
+      271,
+      306,
+      432,
+      501
+    ],
+    "rowCountGuesses": [
       4,
       5,
       6,
@@ -54,9 +81,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsAi.zt1.bin",
-      "rowCount": 501,
+      "field1": 501,
       "headerExtraSize": 78,
-      "rowSize": 130,
+      "field3": 130,
+      "rowSizeGuess": 501,
+      "rowCountGuess": 130,
       "headerSize": 88,
       "payloadSize": 65130,
       "expectedPayloadSize": 65130,
@@ -66,23 +95,29 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0b00466972737420426174746c65000000000000000000000000000000000001010000006400000005e80300000a0001050501000000640000000000d00700000a0001050580070000ffff00ff10010000ff01000000ff010000ff0100ff010000ff010100ff010000ff0100000a500a0000640003010103010109010103010100e8",
+          "hex": "0b00466972737420426174746c65000000000000000000000000000000000001010000006400000005e80300000a0001050501000000640000000000d00700000a0001050580070000ffff00ff10010000ff01000000ff010000ff0100ff010000ff010100ff010000ff0100000a500a0000640003010103010109010103010100e803e803e80300400b040000436c6561722074686520737461676520696e2033206d696e7574657320746f2072656365697665206120626f6e7573207265776172643a204c6576656c20203120496e66616e7472796d616e20556e697420436172642e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000216366666666666654686520656e656d79204b6e6f6c6c732068617665206c6f772073746174732c2062757420746865792063616e20626520746872656174656e696e6720696e2067726f7570732e20216330306666666655736520796f7572206865726f216366666666666620746f20656c696d696e617465207468656d206265666f72652074686579206761746865722e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010",
           "asciiStrings": [
-            "First Battle"
+            "First Battle",
+            "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Infantryman Unit Card.",
+            "!cffffffThe enemy Knolls have low stats, but they can be threatening in groups. !c00ffffUse your hero!cffffff to eliminate them before they gather."
           ]
         },
         {
           "index": 1,
-          "hex": "03e803e80300400b040000436c6561722074686520737461676520696e2033206d696e7574657320746f2072656365697665206120626f6e7573207265776172643a204c6576656c20203120496e66616e7472796d616e20556e697420436172642e0000000000000000000000000000000000000000000000000000000000000000",
+          "hex": "0f004275737465722048756e7400000000000000000000000000000000000001010000006400000005e80300000a0002050501000000640000000000d00700000a0002050580070000ff0100ff100100001001000000ff010000ff0100ff010000ff010100ff010000ff010000500a0a3232000005040105040101020701020700e803e803e80303ffff006400446566656e6420796f757220746f77657220706572666563746c7920616761696e737420656e656d792061747461636b7320746f2072656365697665206120626f6e7573207265776172643a2031303020476f6c642e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002163666666666666496e66616e7472796d656e2061726520696e63617061626c65206f66206669676874696e6720616c6f6e652e202163303066666666416c6c6f63617465206174206c65617374216366666666666620216330306666666632206f72206d6f726520496e66616e7472796d656e2163666666666666206174207468652073616d652074696d6520666f72206d6178696d756d20726573756c74732e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Infantryman Unit Card."
+            "Buster Hunt",
+            "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Gold.",
+            "!cffffffInfantrymen are incapable of fighting alone. !c00ffffAllocate at least!cffffff !c00ffff2 or more Infantrymen!cffffff at the same time for maximum results."
           ]
         },
         {
           "index": 2,
-          "hex": "00000000000000000000000000000000000000216366666666666654686520656e656d79204b6e6f6c6c732068617665206c6f772073746174732c2062757420746865792063616e20626520746872656174656e696e6720696e2067726f7570732e20216330306666666655736520796f7572206865726f21636666666666662074",
+          "hex": "0e005365697a6520566572696c00000000000000000000000000000000000001010000006400000019e80300000a0002050500000000640000000000881300000a0002050580070000ff0100ff10010000100100000010010000ff0100ff010000ff010100ff010000ff010000323200140a321403010103010109030103030100e803e803e8030901000401005570677261646520796f757220706f70756c6174696f6e20666f722031206f72206d6f72652074696d6573207768696c6520696e2074686520737461676520746f2072656365697665206120626f6e7573207265776172643a204c6576656c2020312050616e7a657220556e697420436172642e000000000000000000000000000000000000000000002163666666666666546f206465616c207769746820616e2061726d79206f6620656e656d6965732c202163303066666666796f75206d75737420757067726164652163666666666666202163303066666666796f757220706f70756c6174696f6e2061742074686520546f776572206d656e7521636666666666662e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ff",
           "asciiStrings": [
-            "!cffffffThe enemy Knolls have low stats, but they can be threatening in groups. !c00ffffUse your hero!cffffff t"
+            "Seize Veril",
+            "Upgrade your population for 1 or more times while in the stage to receive a bonus reward: Level  1 Panzer Unit Card.",
+            "!cffffffTo deal with an army of enemies, !c00ffffyou must upgrade!cffffff !c00ffffyour population at the Tower menu!cffffff."
           ]
         }
       ],
@@ -93,9 +128,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsBalance.zt1.bin",
-      "rowCount": 3,
+      "field1": 3,
       "headerExtraSize": 3,
-      "rowSize": 4,
+      "field3": 4,
+      "rowSizeGuess": 3,
+      "rowCountGuess": 4,
       "headerSize": 13,
       "payloadSize": 12,
       "expectedPayloadSize": 12,
@@ -105,17 +142,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0500ff05",
+          "hex": "0500ff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00ff0301",
+          "hex": "0500ff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00030200",
+          "hex": "030100",
           "asciiStrings": []
         }
       ],
@@ -126,9 +163,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsBaseAttack.zt1.bin",
-      "rowCount": 32,
+      "field1": 32,
       "headerExtraSize": 26,
-      "rowSize": 86,
+      "field3": 86,
+      "rowSizeGuess": 32,
+      "rowCountGuess": 86,
       "headerSize": 36,
       "payloadSize": 2752,
       "expectedPayloadSize": 2752,
@@ -138,17 +177,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0200ff08000000000201ff3c000c000600020100000008f6102000ff00ff85000200ff08000000000201ff640014000a00040200000008f6104000ff00ff85000200ff04000000000201ff32000a0005000201000000",
+          "hex": "0200ff08000000000201ff3c000c000600020100000008f6102000ff00ff8500",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "08f6100800ff00ff850002010008000002000001ff2c013c001e00040200000054f6644000ff00ff830002010008000000000001ffc80028001400040200000054f6644000ff00ff830002010408000002000001ff64",
+          "hex": "0200ff08000000000201ff640014000a00040200000008f6104000ff00ff8500",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0014000a00020100000054f6642000ff00ff830002010408000001000001ffc80028001400020100000054f6642000ff00ff830002010208000000000201ff640014000a00020100000024f62440000001ff82000200",
+          "hex": "0200ff04000000000201ff32000a000500020100000008f6100800ff00ff8500",
           "asciiStrings": []
         }
       ],
@@ -159,9 +198,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsBuff.zt1.bin",
-      "rowCount": 7,
+      "field1": 7,
       "headerExtraSize": 5,
-      "rowSize": 22,
+      "field3": 22,
+      "rowSizeGuess": 7,
+      "rowCountGuess": 22,
       "headerSize": 15,
       "payloadSize": 154,
       "expectedPayloadSize": 154,
@@ -171,17 +212,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00c800c8000000010a000a000000000a000a00000001",
+          "hex": "00c800c8000000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "010001000000020a000a0000ff02f6fff6ff00ff030a",
+          "hex": "010a000a000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "000a0000ff03f6fff6ff00ff030000000002ff040100",
+          "hex": "000a000a000000",
           "asciiStrings": []
         }
       ],
@@ -192,9 +233,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsCardUpgrade.zt1.bin",
-      "rowCount": 16,
+      "field1": 16,
       "headerExtraSize": 8,
-      "rowSize": 13,
+      "field3": 13,
+      "rowSizeGuess": 16,
+      "rowCountGuess": 13,
       "headerSize": 18,
       "payloadSize": 208,
       "expectedPayloadSize": 208,
@@ -204,17 +247,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "64006400640064006400c800c8",
+          "hex": "64006400640064006400c800c8005f00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "005f006400640064006400c800",
+          "hex": "6400640064006400c800c8002c015300",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "c8002c01530064006400c800c8",
+          "hex": "64006400c800c800c8002c012c014700",
           "asciiStrings": []
         }
       ],
@@ -225,9 +268,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsCorrespondence.zt1.bin",
-      "rowCount": 7,
+      "field1": 7,
       "headerExtraSize": 7,
-      "rowSize": 5,
+      "field3": 5,
+      "rowSizeGuess": 7,
+      "rowCountGuess": 5,
       "headerSize": 17,
       "payloadSize": 35,
       "expectedPayloadSize": 35,
@@ -237,17 +282,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "ffffffff01",
+          "hex": "ffffffff01ff01",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "ff01ffffff",
+          "hex": "ffffff01010101",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0101010101",
+          "hex": "010101ffffffff",
           "asciiStrings": []
         }
       ],
@@ -258,9 +303,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsDef_Weight.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 2,
-      "rowSize": 60,
+      "field3": 60,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 60,
       "headerSize": 12,
       "payloadSize": 240,
       "expectedPayloadSize": 240,
@@ -270,17 +317,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "ffff8c00ffff2c01ffffbe008200aa0082008200ffffb400fffff401fffffa00ffff2201ffff000000004a010e01ffffffff9a01ffff5401ffff8601",
+          "hex": "ffff8c00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "ffff8601ffff9e02fffff401ffff2b0212024a01ffff8200fffff000ffff8c00ffffc800ffffb40082008200ffff2404ffff6801ffff0e012800dc00",
+          "hex": "ffff2c01",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "ffffc201ffff2201fffff000ffff5e01ffff0e01ffffe001aa008200ffff7201ffff43035e01e600ffff4303ffff4303ffff4303ffff4303ffff4303",
+          "hex": "ffffbe00",
           "asciiStrings": []
         }
       ],
@@ -291,9 +338,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsEffect.zt1.bin",
-      "rowCount": 9,
+      "field1": 9,
       "headerExtraSize": 9,
-      "rowSize": 37,
+      "field3": 37,
+      "rowSizeGuess": 9,
+      "rowCountGuess": 37,
       "headerSize": 19,
       "payloadSize": 333,
       "expectedPayloadSize": 333,
@@ -303,17 +352,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00000006000000ff0000010001010000ff0000020001010000ff0000030001010000ff0000",
+          "hex": "00000006000000ff00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "040001010100ff0000050001010000ff0000060001010000ff0000070001010000ff000008",
+          "hex": "00010001010000ff00",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0001010000ff0000090001010000ff0001000001010100ff0001010001010100ff00010200",
+          "hex": "00020001010000ff00",
           "asciiStrings": []
         }
       ],
@@ -324,9 +373,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsHero.zt1.bin",
-      "rowCount": 65,
+      "field1": 65,
       "headerExtraSize": 49,
-      "rowSize": 6,
+      "field3": 6,
+      "rowSizeGuess": 65,
+      "rowCountGuess": 6,
       "headerSize": 59,
       "payloadSize": 390,
       "expectedPayloadSize": 390,
@@ -336,20 +387,25 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "000000040400",
-          "asciiStrings": []
+          "hex": "00000004040056696e63656e7400e803140a001e0000a807000000000000000000000e012800001e01390000282bff2c000102030405060708090a0b0c0d0e0f00",
+          "asciiStrings": [
+            "Vincent"
+          ]
         },
         {
           "index": 1,
-          "hex": "56696e63656e",
+          "hex": "000101040a0048656c6261000000d007140800320000a80700000000000000000000a200140000c9002800002dffff2f101112131415161718191a1b1c1d1e1f00",
           "asciiStrings": [
-            "Vincen"
+            "Helba"
           ]
         },
         {
           "index": 2,
-          "hex": "7400e803140a",
-          "asciiStrings": []
+          "hex": "0002020407004a756e6f00000000e803000600140000a80700000000000000000000880014000080001a000030ffff31202122232425262728292a2b2c2d2e2f00",
+          "asciiStrings": [
+            "Juno",
+            "1 !\"#$%&'()*+,-./"
+          ]
         }
       ],
       "valid": true
@@ -359,9 +415,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroActiveSkill.zt1.bin",
-      "rowCount": 24,
+      "field1": 24,
       "headerExtraSize": 15,
-      "rowSize": 25,
+      "field3": 25,
+      "rowSizeGuess": 24,
+      "rowCountGuess": 25,
       "headerSize": 25,
       "payloadSize": 600,
       "expectedPayloadSize": 600,
@@ -371,17 +429,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0200000f273200050500000000000000000400010006000200",
+          "hex": "0200000f2732000505000000000000000004000100060002",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "0000140064001464000a00050001000003000200ffffff0003",
+          "hex": "000000140064001464000a00050001000003000200ffffff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00010032000a14000100010001000003000000080004ffffff",
+          "hex": "000300010032000a14000100010001000003000000080004",
           "asciiStrings": []
         }
       ],
@@ -392,9 +450,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroBuffSkill.zt1.bin",
-      "rowCount": 25,
+      "field1": 25,
       "headerExtraSize": 22,
-      "rowSize": 38,
+      "field3": 38,
+      "rowSizeGuess": 25,
+      "rowCountGuess": 38,
       "headerSize": 32,
       "payloadSize": 950,
       "expectedPayloadSize": 950,
@@ -404,17 +464,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "000000ffffffa000200006010101ff010101ff000001ff0aff000002a00010a00050000b0500",
+          "hex": "000000ffffffa000200006010101ff010101ff000001ff0aff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "01ff000001ff000001ffff14000002a00010e001a00009030001ff000001ff000001ffff1500",
+          "hex": "000002a00010a00050000b050001ff000001ff000001ffff14",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0002a00010a000100009010001041e050a08010001ffff16000100ffffff4001200011010101",
+          "hex": "000002a00010e001a00009030001ff000001ff000001ffff15",
           "asciiStrings": []
         }
       ],
@@ -425,9 +485,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroPassiveSkill.zt1.bin",
-      "rowCount": 28,
+      "field1": 28,
       "headerExtraSize": 5,
-      "rowSize": 24,
+      "field3": 24,
+      "rowSizeGuess": 28,
+      "rowCountGuess": 24,
       "headerSize": 15,
       "payloadSize": 672,
       "expectedPayloadSize": 672,
@@ -437,21 +499,21 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "4850205570000000000000000000000000000000c800c800",
+          "hex": "4850205570000000000000000000000000000000c800c80000000000",
           "asciiStrings": [
             "HP Up"
           ]
         },
         {
           "index": 1,
-          "hex": "00000000446f646765000000000000000000000000000000",
+          "hex": "446f6467650000000000000000000000000000001900050000000000",
           "asciiStrings": [
             "Dodge"
           ]
         },
         {
           "index": 2,
-          "hex": "190005000000000053687572696b656e0000000000000000",
+          "hex": "53687572696b656e0000000000000000000000001400140000000000",
           "asciiStrings": [
             "Shuriken"
           ]
@@ -464,9 +526,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsHeroSkill.zt1.bin",
-      "rowCount": 135,
+      "field1": 135,
       "headerExtraSize": 11,
-      "rowSize": 51,
+      "field3": 51,
+      "rowSizeGuess": 135,
+      "rowCountGuess": 51,
       "headerSize": 21,
       "payloadSize": 6885,
       "expectedPayloadSize": 6885,
@@ -476,25 +540,26 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "536e617463680000000000000000000000030cff000104ffffffff55736520796f7572206865726f20746f206b696c6c20616e",
+          "hex": "536e617463680000000000000000000000030cff000104ffffffff55736520796f7572206865726f20746f206b696c6c20616e20656e656d7920616e6420737465616c206d616e612e20546865206869676865722074686520536b696c6c204c6576656c2069732c20746865206d6f7265206d616e612073746f6c656e2e000000000000000000",
           "asciiStrings": [
             "Snatch",
-            "Use your hero to kill an"
+            "Use your hero to kill an enemy and steal mana. The higher the Skill Level is, the more mana stolen."
           ]
         },
         {
           "index": 1,
-          "hex": "20656e656d7920616e6420737465616c206d616e612e20546865206869676865722074686520536b696c6c204c6576656c2069",
+          "hex": "4850205570000000000000000000000000070eff010100ffffffff496e63726561736520796f7572206865726f2773204d61782048502e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            " enemy and steal mana. The higher the Skill Level i"
+            "HP Up",
+            "Increase your hero's Max HP."
           ]
         },
         {
           "index": 2,
-          "hex": "732c20746865206d6f7265206d616e612073746f6c656e2e000000000000000000485020557000000000000000000000000007",
+          "hex": "53687572696b656e0000000000000000000b0aff000102ffffffff496e63726561736520796f7572206865726f277320204c6f6e672d72616e6765642041747461636b20537472656e6774682c206576656e207768696c6520646566656e64696e672074686520746f7765722e0000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            "s, the more mana stolen.",
-            "HP Up"
+            "Shuriken",
+            "Increase your hero's  Long-ranged Attack Strength, even while defending the tower."
           ]
         }
       ],
@@ -505,9 +570,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsHero_Ai.zt1.bin",
-      "rowCount": 34,
+      "field1": 34,
       "headerExtraSize": 34,
-      "rowSize": 12,
+      "field3": 12,
+      "rowSizeGuess": 34,
+      "rowCountGuess": 12,
       "headerSize": 44,
       "payloadSize": 408,
       "expectedPayloadSize": 408,
@@ -517,17 +584,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "000101010101010101010101",
+          "hex": "0001010101010101010101010001020100640a1414321414001e0a00321e0a321e0a",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "0001020100640a1414321414",
+          "hex": "0001010101010101010103090409050900640a1414321414001e0a00321e0a321e0a",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "001e0a00321e0a321e0a0001",
+          "hex": "0001010101010101010106010701070100640a1414321414001e0a00321e0a321e0a",
           "asciiStrings": []
         }
       ],
@@ -538,9 +605,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsItem.zt1.bin",
-      "rowCount": 166,
+      "field1": 166,
       "headerExtraSize": 11,
-      "rowSize": 76,
+      "field3": 76,
+      "rowSizeGuess": 166,
+      "rowCountGuess": 76,
       "headerSize": 21,
       "payloadSize": 12616,
       "expectedPayloadSize": 12616,
@@ -550,25 +619,26 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "004172726f772053686f776572202853290000000000000010000001002d000000000000000153686f6f7420313030206172726f77732077697468203130302041747461636b20537472656e",
+          "hex": "004172726f772053686f776572202853290000000000000010000001002d000000000000000153686f6f7420313030206172726f77732077697468203130302041747461636b20537472656e6774682e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
             "Arrow Shower (S)",
-            "Shoot 100 arrows with 100 Attack Stren"
+            "Shoot 100 arrows with 100 Attack Strength."
           ]
         },
         {
           "index": 1,
-          "hex": "6774682e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "hex": "004172726f772053686f77657220284d29000000000001001100000100b4000000000000000e53686f6f7420313530206172726f77732077697468203230302041747461636b20537472656e6774682e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            "gth."
+            "Arrow Shower (M)",
+            "Shoot 150 arrows with 200 Attack Strength."
           ]
         },
         {
           "index": 2,
-          "hex": "0000000000000000000000000000004172726f772053686f77657220284d29000000000001001100000100b4000000000000000e53686f6f7420313530206172726f77732077697468203230",
+          "hex": "004172726f772053686f77657220284c29000000000002001200000100bc020000000000001b53686f6f7420323030206172726f77732077697468203430302041747461636b20537472656e6774682e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            "Arrow Shower (M)",
-            "Shoot 150 arrows with 20"
+            "Arrow Shower (L)",
+            "Shoot 200 arrows with 400 Attack Strength."
           ]
         }
       ],
@@ -579,9 +649,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsLevelDesign.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 1,
-      "rowSize": 63,
+      "field3": 63,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 63,
       "headerSize": 11,
       "payloadSize": 252,
       "expectedPayloadSize": 252,
@@ -591,19 +663,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "5802000034080000a00f000010270000f0550000a08c0000e8fd0000f0490200401f000030750000f8240100400d030020a10700a0bb0d0080841e00404b4c",
-          "asciiStrings": [
-            "@KL"
-          ]
+          "hex": "58020000",
+          "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00f40100004c040000fc0800005c12000088130000f82a0000d859000098b700000a00000014000000280000003c00000064000000a000000004010000a401",
+          "hex": "34080000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0000a8020000010000000200000004000000070000000b00000010000000160000001d0000002500000020000000200000000200000002000000020000003c",
+          "hex": "a00f0000",
           "asciiStrings": []
         }
       ],
@@ -614,9 +684,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsMap.zt1.bin",
-      "rowCount": 5,
+      "field1": 5,
       "headerExtraSize": 5,
-      "rowSize": 16,
+      "field3": 16,
+      "rowSizeGuess": 5,
+      "rowCountGuess": 16,
       "headerSize": 15,
       "payloadSize": 80,
       "expectedPayloadSize": 80,
@@ -626,17 +698,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0000e203000000e202000100d8020001",
+          "hex": "0000e20300",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00d803000200e203000200e202000300",
+          "hex": "0000e20200",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "e204000300e201000400f605000400f6",
+          "hex": "0100d80200",
           "asciiStrings": []
         }
       ],
@@ -647,9 +719,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsOff_Weight.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 2,
-      "rowSize": 60,
+      "field3": 60,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 60,
       "headerSize": 12,
       "payloadSize": 240,
       "expectedPayloadSize": 240,
@@ -659,17 +733,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00009000000070000000ee00fe009a00a6000a010000b0000000700000009a000000a60000004c01000062016e0100000000620100006e010000fe00",
+          "hex": "00009000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00000a010000ae000000d80000004701f200f2000000a600000090000000b0000000a8000000d8009a009a00000030040000140100000a014e00e400",
+          "hex": "00007000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00009a000000ce000000dc0000000a010000a600580158010a01a6004a004a00000027020a010a019a009a000000ea000000ea00000016010000ea00",
+          "hex": "0000ee00",
           "asciiStrings": []
         }
       ],
@@ -680,9 +754,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsParticle.zt1.bin",
-      "rowCount": 3,
+      "field1": 3,
       "headerExtraSize": 3,
-      "rowSize": 12,
+      "field3": 12,
+      "rowSizeGuess": 3,
+      "rowCountGuess": 12,
       "headerSize": 13,
       "payloadSize": 36,
       "expectedPayloadSize": 36,
@@ -692,17 +768,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "3000ff3000ff2e22ff2f2bff",
+          "hex": "3000ff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "2216ff0201ff2a25ff3027ff",
+          "hex": "3000ff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "3009ff302bff1504ff312bff",
+          "hex": "2e22ff",
           "asciiStrings": []
         }
       ],
@@ -713,9 +789,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsProjectile.zt1.bin",
-      "rowCount": 13,
+      "field1": 13,
       "headerExtraSize": 11,
-      "rowSize": 35,
+      "field3": 35,
+      "rowSizeGuess": 13,
+      "rowCountGuess": 35,
       "headerSize": 21,
       "payloadSize": 455,
       "expectedPayloadSize": 455,
@@ -725,17 +803,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0000000a02ffffffffffff84000005001400ffffffffffff84000001000a00ffffffff",
+          "hex": "0000000a02ffffffffffff8400",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "ffff84000002000602ffffffff00ffffff0003000800ffffffff00ff84000004010800",
+          "hex": "0005001400ffffffffffff8400",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "ffffffffffffffff0506011400ffffffff00ff84000107011e00ffffffff00ff840000",
+          "hex": "0001000a00ffffffffffff8400",
           "asciiStrings": []
         }
       ],
@@ -746,9 +824,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsSkill_Ai.zt1.bin",
-      "rowCount": 13,
+      "field1": 13,
       "headerExtraSize": 13,
-      "rowSize": 24,
+      "field3": 24,
+      "rowSizeGuess": 13,
+      "rowCountGuess": 24,
       "headerSize": 23,
       "payloadSize": 312,
       "expectedPayloadSize": 312,
@@ -758,17 +838,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0b0000003250cee2001e32fd0309000a0a1e32000a0a1e32",
+          "hex": "0b0000003250cee2001e32fd03",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00030f0000001e320000001e32fe03080000001e32000000",
+          "hex": "09000a0a1e32000a0a1e320003",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "1e32fd030c0000001e320000001e32fd030a0000001e3200",
+          "hex": "0f0000001e320000001e32fe03",
           "asciiStrings": []
         }
       ],
@@ -779,9 +859,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsSound.zt1.bin",
-      "rowCount": 2,
+      "field1": 2,
       "headerExtraSize": 1,
-      "rowSize": 157,
+      "field3": 157,
+      "rowSizeGuess": 2,
+      "rowCountGuess": 157,
       "headerSize": 11,
       "payloadSize": 314,
       "expectedPayloadSize": 314,
@@ -791,12 +873,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "3d003d003e003f000200270042004300ffffffff4600ffffffff420027004b003100ffffffffffffffffffffffff53005400550056003500ffff2f003e005c005d0032003f0062003b0035002f003f00340068002f006a0035006c003100340068005c002f005c005d007400750076007700780079007a007b007c0074007e007f007d00820083000000010002000300040001000600070003000d000a",
+          "hex": "3d00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "000b000c000d000e0004000100ffff120007000c00020016001700160003001a00ffffffff1d00ffff1f0020000c001a0001000200000026003b003200260026000e0027006a00540002002700350034003300320031002c0030002f002e002d002c002b0026000200280027000e0082002c000d001d006a0027002f005500260074007b00750078007e00760079007f0077007a007d00820084008500",
+          "hex": "3d00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "3e00",
           "asciiStrings": []
         }
       ],
@@ -807,9 +894,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsSynastry.zt1.bin",
-      "rowCount": 57,
+      "field1": 57,
       "headerExtraSize": 57,
-      "rowSize": 54,
+      "field3": 54,
+      "rowSizeGuess": 57,
+      "rowCountGuess": 54,
       "headerSize": 67,
       "payloadSize": 3078,
       "expectedPayloadSize": 3078,
@@ -819,17 +908,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00fffefffefffdfdfcfffe000000fc0000000000000000fd00000000000003000000fe00fd000000020000000000000000000000fb00",
+          "hex": "00fffefffefffdfdfcfffe000000fc0000000000000000fd00000000000003000000fe00fd000000020000000000000000000000fb00000000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "000000010001ffff00000000fe00000000fd0000000000000000fd0000000000000200000001fefc0000000200000000000000000000",
+          "hex": "010001ffff00000000fe00000000fd0000000000000000fd0000000000000200000001fefc000000020000000000000000000000fd00000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00fd0000000002ff0001fe010000ff0400000000fb0000000000000000fd000000000000020000000000020000000300000000000000",
+          "hex": "02ff0001fe010000ff0400000000fb0000000000000000fd00000000000002000000000002000000030000000000000000000000fc00000000",
           "asciiStrings": []
         }
       ],
@@ -840,9 +929,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsSynastry_mine.zt1.bin",
-      "rowCount": 57,
+      "field1": 57,
       "headerExtraSize": 57,
-      "rowSize": 55,
+      "field3": 55,
+      "rowSizeGuess": 57,
+      "rowCountGuess": 55,
       "headerSize": 67,
       "payloadSize": 3135,
       "expectedPayloadSize": 3135,
@@ -852,17 +943,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "0000000000010003ff00000300000200fc00000000000001000000000000020003ff01000003040000000500fb00020200030000000000",
+          "hex": "000000010003ff00000300000200fc00000000000001000000000000020003ff01000003040000000500fb0002020003000000000000000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": []
         }
       ],
@@ -873,9 +964,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsTower.zt1.bin",
-      "rowCount": 2,
+      "field1": 2,
       "headerExtraSize": 2,
-      "rowSize": 10,
+      "field3": 10,
+      "rowSizeGuess": 2,
+      "rowCountGuess": 10,
       "headerSize": 12,
       "payloadSize": 20,
       "expectedPayloadSize": 20,
@@ -885,12 +978,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00000003000001020105",
+          "hex": "0000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "01020201020402010306",
+          "hex": "0003",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0000",
           "asciiStrings": []
         }
       ],
@@ -901,9 +999,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsUnit.zt1.bin",
-      "rowCount": 271,
+      "field1": 271,
       "headerExtraSize": 43,
-      "rowSize": 55,
+      "field3": 55,
+      "rowSizeGuess": 271,
+      "rowCountGuess": 55,
       "headerSize": 53,
       "payloadSize": 14905,
       "expectedPayloadSize": 14905,
@@ -913,23 +1013,26 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00496e66616e74727900000000000000000000000a000000f40100000000000000f40132000000000006000a0000050000600006000000",
+          "hex": "00496e66616e74727900000000000000000000000a000000f40100000000000000f40132000000000006000a000005000060000600000000000000000000000072000c000662000c000700ffff5468697320626173696320756e6974206f66207468652048756d6520697320696e666572696f7220696e20636f6d6261742c2062757420636f6e73756d6573206c6974746c65206d616e612e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            "Infantry"
+            "Infantry",
+            "This basic unit of the Hume is inferior in combat, but consumes little mana."
           ]
         },
         {
           "index": 1,
-          "hex": "00000000000000000072000c000662000c000700ffff5468697320626173696320756e6974206f66207468652048756d6520697320696e",
+          "hex": "0150616e7a65720000000000000000000000030019000000f40100000000010100b00478003c000c0603000f0000090000a000060000000000000000000000007f0014000afe002c002401ffff546869732069726f6e636c616420736f6c64696572206d6f766573207665727920736c6f776c792c206275742070726f7669646573206869676820446566656e73652c20616e20616476616e74616765206f766572206c6967687477656967687420686f7273656d656e20756e697473206c696b6520436176616c727920616e642053636f7574732e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            "This basic unit of the Hume is in"
+            "Panzer",
+            "This ironclad soldier moves very slowly, but provides high Defense, an advantage over lightweight horsemen units like Cavalry and Scouts."
           ]
         },
         {
           "index": 2,
-          "hex": "666572696f7220696e20636f6d6261742c2062757420636f6e73756d6573206c6974746c65206d616e612e000000000000000000000000",
+          "hex": "02436176616c72790000000000000000000005001e000000f40100000000020200b00478000a0002010c000f00000b0000a00006000000000000000000000000da000a0005d1000e000b02ffff5468697320756e6974206861732066617374204d6f76656d656e7420616e642041747461636b205370656564732c206d616b696e6720697420696465616c20746f206465616c2077697468206c6f772d646566656e736520756e697473206f7220746f20726169642074686520656e656d7920746f7765722e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            "ferior in combat, but consumes little mana."
+            "Cavalry",
+            "This unit has fast Movement and Attack Speeds, making it ideal to deal with low-defense units or to raid the enemy tower."
           ]
         }
       ],
@@ -940,9 +1043,11 @@
       "kind": "data",
       "locale": "en",
       "decodedPath": "decoded/zt1/assets/data_eng/XlsWorldmap.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 4,
-      "rowSize": 16,
+      "field3": 16,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 16,
       "headerSize": 14,
       "payloadSize": 64,
       "expectedPayloadSize": 64,
@@ -952,17 +1057,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "ff01ffff0002ffff0103ffff0204ffff",
+          "hex": "ff01ffff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "03ffff05ffff0406ffff0507ffff0608",
+          "hex": "0002ffff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "ffff0709ffff080affff090bffff0a0c",
+          "hex": "0103ffff",
           "asciiStrings": []
         }
       ],
@@ -973,9 +1078,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsAi.zt1.bin",
-      "rowCount": 432,
+      "field1": 432,
       "headerExtraSize": 78,
-      "rowSize": 130,
+      "field3": 130,
+      "rowSizeGuess": 432,
+      "rowCountGuess": 130,
       "headerSize": 88,
       "payloadSize": 56160,
       "expectedPayloadSize": 56160,
@@ -985,22 +1092,33 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0b00c3b9b9f8c2b020c0fcc5f50000000000000001010000006400000005e80300000a0001050501000000640000000000d00700000a0001050580070000ffff00ff10010000ff01000000ff010000ff0100ff010000ff010100ff010000ff0100000a500a0000640003010103010109010103010100e803e803e80300400b040000",
-          "asciiStrings": []
+          "hex": "0b00c3b9b9f8c2b020c0fcc5f50000000000000001010000006400000005e80300000a0001050501000000640000000000d00700000a0001050580070000ffff00ff10010000ff01000000ff010000ff0100ff010000ff010100ff010000ff0100000a500a0000640003010103010109010103010100e803e803e80300400b04000033bad020bec8bfa120c5acb8aebeeec7cfb8e92c20c1f6bff8bab420b7b9baa7203120c0afb4d6c4abb5e5b8a620c3dfb0a120bab8bbf3c0b8b7ce20bef2c0bb20bcf620c0d6bdc0b4cfb4d92e00000000000000000000000000000000000000000000000000000000000000000000000000002163666666666666c0fbc0b8b7ce20b5eec0e5c7cfb4c220b3eec0c720b4c9b7c2c4a1b4c220b3b7c1f6b8b82c20b8b9c0ba20bcfdc0dab0a120b5eec0e5c7cfb8e920c0a7c7f9c0fb20c0d4b4cfb4d92e202163303066666666bfb5bff5c0bb20c3e2c1f82163666666666666bdc3c4d120c0fbc0bb20b9b0b8aec4a1bcbcbfe42e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010",
+          "asciiStrings": [
+            " 1 ",
+            "!cffffff",
+            ". !c00ffff",
+            "!cffffff"
+          ]
         },
         {
           "index": 1,
-          "hex": "33bad020bec8bfa120c5acb8aebeeec7cfb8e92c20c1f6bff8bab420b7b9baa7203120c0afb4d6c4abb5e5b8a620c3dfb0a120bab8bbf3c0b8b7ce20bef2c0bb20bcf620c0d6bdc0b4cfb4d92e00000000000000000000000000000000000000000000000000000000000000000000000000002163666666666666c0fbc0b8b7ce20",
+          "hex": "0f00b9f6bdbac5cd20bbe7b3c90000000000000001010000006400000005e80300000a0002050501000000640000000000d00700000a0002050580070000ff0100ff100100001001000000ff010000ff0100ff010000ff010100ff010000ff010000500a0a3232000005040105040101020701020700e803e803e80303ffff006400c0fbbfa1b0d420b0f8b0ddc0bb20b9dec1f620becab0ed20c5b8bff6b8a620bfcfbaaec7cfb0d420b9e6beeec7cfb8e92c2031303020b0f1b5e5b8a620c3dfb0a120bab8bbf3c0b8b7ce20bef2c0bb20bcf620c0d6bdc0b4cfb4d92e00000000000000000000000000000000000000000000002163666666666666c1f6bff8bab420c7d120b1e2b7ceb4c220c0fbc0bb20b8b7b1e220beeeb7c6bdc0b4cfb4d92e202163303066666666b5ce20b1e22163666666666666202163303066666666c0ccbbf3c0c720c0afb4d6c0bb20b9e8c4a12163666666666666c7cfbfa920c0fbc0bb20b9b0b8aec4a1bcbcbfe42e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            " 1 ",
+            ", 100 ",
+            "!cffffff",
+            ". !c00ffff",
+            "!cffffff !c00ffff",
             "!cffffff"
           ]
         },
         {
           "index": 2,
-          "hex": "b5eec0e5c7cfb4c220b3eec0c720b4c9b7c2c4a1b4c220b3b7c1f6b8b82c20b8b9c0ba20bcfdc0dab0a120b5eec0e5c7cfb8e920c0a7c7f9c0fb20c0d4b4cfb4d92e202163303066666666bfb5bff5c0bb20c3e2c1f82163666666666666bdc3c4d120c0fbc0bb20b9b0b8aec4a1bcbcbfe42e000000000000000000000000000000",
+          "hex": "0e00baa3b8b120c1a1b7c9c0fc0000000000000001010000006400000019e80300000a0002050500000000640000000000881300000a0002050580070000ff0100ff10010000100100000010010000ff0100ff010000ff010100ff010000ff010000323200140a321403010103010109030103030100e803e803e803090100040100c0ceb1b820c7d1b5b5b8a62031c8b820c0ccbbf320bef7b1d7b7b9c0ccb5e5c7d120c8c420c5acb8aebeeec7cfb8e92c20c1dfb0a9bab420b7b9baa7203120c0afb4d6c4abb5e5b8a620c3dfb0a120bab8bbf3c0b8b7ce20bef2c0bb20bcf620c0d6bdc0b4cfb4d92e000000000000000000002163666666666666b4ebb1d4b8f020c0fb20c0afb4d6b5e9c0bb20bbf3b4ebc7cfb1e220c0a7c7d8bcadb4c2202163303066666666c5b8bff6b8deb4babfa1bcad20c0ceb1b8c7d1b5b52163666666666666202163303066666666bef7b1d7b7b9c0ccb5e52163666666666666b0a120c7cabfe4c7d5b4cfb4d92e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ff",
           "asciiStrings": [
-            ". !c00ffff",
+            " 1 ",
+            "!cffffff",
+            " !c00ffff",
+            "!cffffff !c00ffff",
             "!cffffff"
           ]
         }
@@ -1012,9 +1130,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsBalance.zt1.bin",
-      "rowCount": 3,
+      "field1": 3,
       "headerExtraSize": 3,
-      "rowSize": 4,
+      "field3": 4,
+      "rowSizeGuess": 3,
+      "rowCountGuess": 4,
       "headerSize": 13,
       "payloadSize": 12,
       "expectedPayloadSize": 12,
@@ -1024,17 +1144,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0500ff05",
+          "hex": "0500ff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00ff0301",
+          "hex": "0500ff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00030200",
+          "hex": "030100",
           "asciiStrings": []
         }
       ],
@@ -1045,9 +1165,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsBaseAttack.zt1.bin",
-      "rowCount": 32,
+      "field1": 32,
       "headerExtraSize": 26,
-      "rowSize": 86,
+      "field3": 86,
+      "rowSizeGuess": 32,
+      "rowCountGuess": 86,
       "headerSize": 36,
       "payloadSize": 2752,
       "expectedPayloadSize": 2752,
@@ -1057,17 +1179,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0200ff08000000000201ff3c000c000600020100000008f6102000ff00ff85000200ff08000000000201ff640014000a00040200000008f6104000ff00ff85000200ff04000000000201ff32000a0005000201000000",
+          "hex": "0200ff08000000000201ff3c000c000600020100000008f6102000ff00ff8500",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "08f6100800ff00ff850002010008000002000001ff2c013c001e00040200000054f6644000ff00ff830002010008000000000001ffc80028001400040200000054f6644000ff00ff830002010408000002000001ff64",
+          "hex": "0200ff08000000000201ff640014000a00040200000008f6104000ff00ff8500",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0014000a00020100000054f6642000ff00ff830002010408000001000001ffc80028001400020100000054f6642000ff00ff830002010208000000000201ff640014000a00020100000024f62440000001ff82000200",
+          "hex": "0200ff04000000000201ff32000a000500020100000008f6100800ff00ff8500",
           "asciiStrings": []
         }
       ],
@@ -1078,9 +1200,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsBuff.zt1.bin",
-      "rowCount": 7,
+      "field1": 7,
       "headerExtraSize": 5,
-      "rowSize": 22,
+      "field3": 22,
+      "rowSizeGuess": 7,
+      "rowCountGuess": 22,
       "headerSize": 15,
       "payloadSize": 154,
       "expectedPayloadSize": 154,
@@ -1090,17 +1214,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00c800c8000000010a000a000000000a000a00000001",
+          "hex": "00c800c8000000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "010001000000020a000a0000ff02f6fff6ff00ff030a",
+          "hex": "010a000a000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "000a0000ff03f6fff6ff00ff030000000002ff040100",
+          "hex": "000a000a000000",
           "asciiStrings": []
         }
       ],
@@ -1111,9 +1235,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsCardUpgrade.zt1.bin",
-      "rowCount": 16,
+      "field1": 16,
       "headerExtraSize": 8,
-      "rowSize": 13,
+      "field3": 13,
+      "rowSizeGuess": 16,
+      "rowCountGuess": 13,
       "headerSize": 18,
       "payloadSize": 208,
       "expectedPayloadSize": 208,
@@ -1123,17 +1249,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "64006400640064006400c800c8",
+          "hex": "64006400640064006400c800c8005f00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "005f006400640064006400c800",
+          "hex": "6400640064006400c800c8002c015300",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "c8002c01530064006400c800c8",
+          "hex": "64006400c800c800c8002c012c014700",
           "asciiStrings": []
         }
       ],
@@ -1144,9 +1270,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsCorrespondence.zt1.bin",
-      "rowCount": 7,
+      "field1": 7,
       "headerExtraSize": 7,
-      "rowSize": 5,
+      "field3": 5,
+      "rowSizeGuess": 7,
+      "rowCountGuess": 5,
       "headerSize": 17,
       "payloadSize": 35,
       "expectedPayloadSize": 35,
@@ -1156,17 +1284,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "ffffffff01",
+          "hex": "ffffffff01ff01",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "ff01ffffff",
+          "hex": "ffffff01010101",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0101010101",
+          "hex": "010101ffffffff",
           "asciiStrings": []
         }
       ],
@@ -1177,9 +1305,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsDef_Weight.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 2,
-      "rowSize": 60,
+      "field3": 60,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 60,
       "headerSize": 12,
       "payloadSize": 240,
       "expectedPayloadSize": 240,
@@ -1189,17 +1319,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "ffff8c00ffff2c01ffffbe008200aa0082008200ffffb400fffff401fffffa00ffff2201ffff000000004a010e01ffffffff9a01ffff5401ffff8601",
+          "hex": "ffff8c00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "ffff8601ffff9e02fffff401ffff2b0212024a01ffff8200fffff000ffff8c00ffffc800ffffb40082008200ffff2404ffff6801ffff0e012800dc00",
+          "hex": "ffff2c01",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "ffffc201ffff2201fffff000ffff5e01ffff0e01ffffe001aa008200ffff7201ffff43035e01e600ffff4303ffff4303ffff4303ffff4303ffff4303",
+          "hex": "ffffbe00",
           "asciiStrings": []
         }
       ],
@@ -1210,9 +1340,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsEffect.zt1.bin",
-      "rowCount": 9,
+      "field1": 9,
       "headerExtraSize": 9,
-      "rowSize": 37,
+      "field3": 37,
+      "rowSizeGuess": 9,
+      "rowCountGuess": 37,
       "headerSize": 19,
       "payloadSize": 333,
       "expectedPayloadSize": 333,
@@ -1222,17 +1354,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00000006000000ff0000010001010000ff0000020001010000ff0000030001010000ff0000",
+          "hex": "00000006000000ff00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "040001010100ff0000050001010000ff0000060001010000ff0000070001010000ff000008",
+          "hex": "00010001010000ff00",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0001010000ff0000090001010000ff0001000001010100ff0001010001010100ff00010200",
+          "hex": "00020001010000ff00",
           "asciiStrings": []
         }
       ],
@@ -1243,9 +1375,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsHero.zt1.bin",
-      "rowCount": 64,
+      "field1": 64,
       "headerExtraSize": 49,
-      "rowSize": 6,
+      "field3": 6,
+      "rowSizeGuess": 64,
+      "rowCountGuess": 6,
       "headerSize": 59,
       "payloadSize": 384,
       "expectedPayloadSize": 384,
@@ -1255,18 +1389,20 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "000000040400",
+          "hex": "000000040400baf3bcbec6ae00e803140a001e0000a807000000000000000000000e012800001e01390000282bff2c000102030405060708090a0b0c0d0e0f00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "baf3bcbec6ae",
+          "hex": "000101040a00c7efb9d9000000d007140800320000a80700000000000000000000a200140000c9002800002dffff2f101112131415161718191a1b1c1d1e1f00",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00e803140a00",
-          "asciiStrings": []
+          "hex": "000202040700c0afb3eb000000e803000600140000a80700000000000000000000880014000080001a000030ffff31202122232425262728292a2b2c2d2e2f00",
+          "asciiStrings": [
+            "1 !\"#$%&'()*+,-./"
+          ]
         }
       ],
       "valid": true
@@ -1276,9 +1412,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroActiveSkill.zt1.bin",
-      "rowCount": 24,
+      "field1": 24,
       "headerExtraSize": 15,
-      "rowSize": 25,
+      "field3": 25,
+      "rowSizeGuess": 24,
+      "rowCountGuess": 25,
       "headerSize": 25,
       "payloadSize": 600,
       "expectedPayloadSize": 600,
@@ -1288,17 +1426,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0200000f273200050500000000000000000400010006000200",
+          "hex": "0200000f2732000505000000000000000004000100060002",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "0000140064001464000a00050001000003000200ffffff0003",
+          "hex": "000000140064001464000a00050001000003000200ffffff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00010032000a14000100010001000003000000080004ffffff",
+          "hex": "000300010032000a14000100010001000003000000080004",
           "asciiStrings": []
         }
       ],
@@ -1309,9 +1447,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroBuffSkill.zt1.bin",
-      "rowCount": 25,
+      "field1": 25,
       "headerExtraSize": 22,
-      "rowSize": 38,
+      "field3": 38,
+      "rowSizeGuess": 25,
+      "rowCountGuess": 38,
       "headerSize": 32,
       "payloadSize": 950,
       "expectedPayloadSize": 950,
@@ -1321,17 +1461,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "000000ffffffa000200006010101ff010101ff000001ff0aff000002a00010a00050000b0500",
+          "hex": "000000ffffffa000200006010101ff010101ff000001ff0aff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "01ff000001ff000001ffff14000002a00010e001a00009030001ff000001ff000001ffff1500",
+          "hex": "000002a00010a00050000b050001ff000001ff000001ffff14",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0002a00010a000100009010001041e050a08010001ffff16000100ffffff4001200011010101",
+          "hex": "000002a00010e001a00009030001ff000001ff000001ffff15",
           "asciiStrings": []
         }
       ],
@@ -1342,9 +1482,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroPassiveSkill.zt1.bin",
-      "rowCount": 19,
+      "field1": 19,
       "headerExtraSize": 5,
-      "rowSize": 24,
+      "field3": 24,
+      "rowSizeGuess": 19,
+      "rowCountGuess": 24,
       "headerSize": 15,
       "payloadSize": 456,
       "expectedPayloadSize": 456,
@@ -1354,19 +1496,19 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "485020c1f5b0a100000000c800c80000000000c8b8c7c700",
+          "hex": "485020c1f5b0a100000000c800c80000000000",
           "asciiStrings": [
             "HP "
           ]
         },
         {
           "index": 1,
-          "hex": "0000000000001900050000000000c7a5c3a2b0adc8ad0000",
+          "hex": "c8b8c7c7000000000000001900050000000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "001400140000000000becfbbec000000000000000a000200",
+          "hex": "c7a5c3a2b0adc8ad0000001400140000000000",
           "asciiStrings": []
         }
       ],
@@ -1377,9 +1519,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsHeroSkill.zt1.bin",
-      "rowCount": 306,
+      "field1": 306,
       "headerExtraSize": 11,
-      "rowSize": 51,
+      "field3": 51,
+      "rowSizeGuess": 306,
+      "rowCountGuess": 51,
       "headerSize": 21,
       "payloadSize": 15606,
       "expectedPayloadSize": 15606,
@@ -1389,19 +1533,29 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "b0adc5bb000000000000000000030cff000104ffffffffbfb5bff5c0cc20c0fbc0bb20c1d7c0ccb8e920b8b6b3aab8a620bef2",
-          "asciiStrings": []
+          "hex": "b0adc5bb000000000000000000030cff000104ffffffffbfb5bff5c0cc20c0fbc0bb20c1d7c0ccb8e920b8b6b3aab8a620bef2b4c2b4d92e20b7b9baa7c0cc20bfc0b8a6bcf6b7cf20b8b9c0cc20bba9bed1b4c2b4d92e0000000000000000000000000000c0fbc0bb20c1d7bfb4c0bb20b6a720c7d8b4e720c0afb4d620bbfdbbea20baf1bfebc0c720313025b8a620b8b6b3aab7ce20bef2bdc0b4cfb4d92e20bdbac5b320b7b9baa7c0cc20bfc0b8a620b6a7b8b6b4d920bbfdbbeabaf1bfebc0c720313025b8a620c3dfb0a1b7ce20c8b9b5e6c7d5b4cfb4d92e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": [
+            " 10%",
+            " 10%"
+          ]
         },
         {
           "index": 1,
-          "hex": "b4c2b4d92e20b7b9baa7c0cc20bfc0b8a6bcf6b7cf20b8b9c0cc20bba9bed1b4c2b4d92e0000000000000000000000000000c0",
-          "asciiStrings": []
+          "hex": "4850c1f5b0a100000000000000070eff010100ffffffffbfb5bff5c0c720485020c3d6b4ebc4a1b8a620bfc3b8b0b4d92e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000bfb5bff5c0c720485020c3d6b4ebb0aac0cc2032303020c1f5b0a1c7d5b4cfb4d92e20bdbac5b320b7b9baa7c0cc20bfc0b8a620b6a7b8b6b4d920485020c3d6b4ebb0aac0cc20c3dfb0a1b7ce2032303020b4f520c1f5b0a1c7d5b4cfb4d92e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": [
+            " HP ",
+            " HP ",
+            " 200 ",
+            " HP ",
+            " 200 "
+          ]
         },
         {
           "index": 2,
-          "hex": "fbc0bb20c1d7bfb4c0bb20b6a720c7d8b4e720c0afb4d620bbfdbbea20baf1bfebc0c720313025b8a620b8b6b3aab7ce20bef2",
+          "hex": "c7a5c3a2b0adc8ad00000000000b0aff000102ffffffffbff8b0c5b8ae20b0f8b0ddb7c2c0cc20bfc3b6f3b0a3b4d92e20b3f3bcba20bdc3bfa1b5b520c0fbbfeb2e0000000000000000000000000000000000000000000000000000000000000000000000b3f3bcbac0ccb3aa20c3e2c1f8bdc3c0c720c7a5c3a220b0f8b0ddb7c2c0cc20323020c1f5b0a1c7d5b4cfb4d92e20bdbac5b320b7b9baa7c0cc20bfc0b8a620b6a7b8b6b4d920b0f8b0ddb7c2c0cc20c3dfb0a1b7ce20323020b4f520c1f5b0a1c7d5b4cfb4d92e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
-            " 10%"
+            " 20 ",
+            " 20 "
           ]
         }
       ],
@@ -1412,9 +1566,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsHero_Ai.zt1.bin",
-      "rowCount": 34,
+      "field1": 34,
       "headerExtraSize": 34,
-      "rowSize": 12,
+      "field3": 12,
+      "rowSizeGuess": 34,
+      "rowCountGuess": 12,
       "headerSize": 44,
       "payloadSize": 408,
       "expectedPayloadSize": 408,
@@ -1424,17 +1580,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "000101010101010101010101",
+          "hex": "0001010101010101010101010001020100640a1414321414001e0a00321e0a321e0a",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "0001020100640a1414321414",
+          "hex": "0001010101010101010103090409050900640a1414321414001e0a00321e0a321e0a",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "001e0a00321e0a321e0a0001",
+          "hex": "0001010101010101010106010701070100640a1414321414001e0a00321e0a321e0a",
           "asciiStrings": []
         }
       ],
@@ -1445,9 +1601,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsItem.zt1.bin",
-      "rowCount": 124,
+      "field1": 124,
       "headerExtraSize": 11,
-      "rowSize": 76,
+      "field3": 76,
+      "rowSizeGuess": 124,
+      "rowCountGuess": 76,
       "headerSize": 21,
       "payloadSize": 9424,
       "expectedPayloadSize": 9424,
@@ -1457,7 +1615,7 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00c8adbbecbaf128bcd22900000000000000000010000001002d0000000000000001c0fbbfa1b0d420b0f8b0ddb7c220313030c0c720c8adbbecc0bb20313030b9df20bdf0b4d92e00000000",
+          "hex": "00c8adbbecbaf128bcd22900000000000000000010000001002d0000000000000001c0fbbfa1b0d420b0f8b0ddb7c220313030c0c720c8adbbecc0bb20313030b9df20bdf0b4d92e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
             " 100",
             " 100"
@@ -1465,15 +1623,18 @@
         },
         {
           "index": 1,
-          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c8adbbecbaf128c1df290000000000000001001100000100b40000",
-          "asciiStrings": []
-        },
-        {
-          "index": 2,
-          "hex": "00000000000ec0fbbfa1b0d420b0f8b0ddb7c220323030c0c720c8adbbecc0bb20313530b9df20bdf0b4d92e0000000000000000000000000000000000000000000000000000000000000000",
+          "hex": "00c8adbbecbaf128c1df290000000000000001001100000100b4000000000000000ec0fbbfa1b0d420b0f8b0ddb7c220323030c0c720c8adbbecc0bb20313530b9df20bdf0b4d92e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": [
             " 200",
             " 150"
+          ]
+        },
+        {
+          "index": 2,
+          "hex": "00c8adbbecbaf128b4eb290000000000000002001200000100bc020000000000001bc0fbbfa1b0d420b0f8b0ddb7c220343030c0c720c8adbbecc0bb20323030b9df20bdf0b4d92e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": [
+            " 400",
+            " 200"
           ]
         }
       ],
@@ -1484,9 +1645,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsLevelDesign.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 1,
-      "rowSize": 63,
+      "field3": 63,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 63,
       "headerSize": 11,
       "payloadSize": 252,
       "expectedPayloadSize": 252,
@@ -1496,19 +1659,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "5802000034080000a00f000010270000f0550000a08c0000e8fd0000f0490200401f000030750000f8240100400d030020a10700a0bb0d0080841e00404b4c",
-          "asciiStrings": [
-            "@KL"
-          ]
+          "hex": "58020000",
+          "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00f40100004c040000fc0800005c12000088130000f82a0000d859000098b700000a00000014000000280000003c00000064000000a000000004010000a401",
+          "hex": "34080000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "0000a8020000010000000200000004000000070000000b00000010000000160000001d0000002500000020000000200000000200000002000000020000003c",
+          "hex": "a00f0000",
           "asciiStrings": []
         }
       ],
@@ -1519,9 +1680,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsMap.zt1.bin",
-      "rowCount": 5,
+      "field1": 5,
       "headerExtraSize": 5,
-      "rowSize": 16,
+      "field3": 16,
+      "rowSizeGuess": 5,
+      "rowCountGuess": 16,
       "headerSize": 15,
       "payloadSize": 80,
       "expectedPayloadSize": 80,
@@ -1531,17 +1694,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0000e203000000e202000100d8020001",
+          "hex": "0000e20300",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00d803000200e203000200e202000300",
+          "hex": "0000e20200",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "e204000300e201000400f605000400f6",
+          "hex": "0100d80200",
           "asciiStrings": []
         }
       ],
@@ -1552,9 +1715,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsOff_Weight.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 2,
-      "rowSize": 60,
+      "field3": 60,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 60,
       "headerSize": 12,
       "payloadSize": 240,
       "expectedPayloadSize": 240,
@@ -1564,17 +1729,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00009000000070000000ee00fe009a00a6000a010000b0000000700000009a000000a60000004c01000062016e0100000000620100006e010000fe00",
+          "hex": "00009000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00000a010000ae000000d80000004701f200f2000000a600000090000000b0000000a8000000d8009a009a00000030040000140100000a014e00e400",
+          "hex": "00007000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00009a000000ce000000dc0000000a010000a600580158010a01a6004a004a00000027020a010a019a009a000000ea000000ea00000016010000ea00",
+          "hex": "0000ee00",
           "asciiStrings": []
         }
       ],
@@ -1585,9 +1750,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsParticle.zt1.bin",
-      "rowCount": 3,
+      "field1": 3,
       "headerExtraSize": 3,
-      "rowSize": 12,
+      "field3": 12,
+      "rowSizeGuess": 3,
+      "rowCountGuess": 12,
       "headerSize": 13,
       "payloadSize": 36,
       "expectedPayloadSize": 36,
@@ -1597,17 +1764,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "3000ff3000ff2e22ff2f2bff",
+          "hex": "3000ff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "2216ff0201ff2a25ff3027ff",
+          "hex": "3000ff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "3009ff302bff1504ff312bff",
+          "hex": "2e22ff",
           "asciiStrings": []
         }
       ],
@@ -1618,9 +1785,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsProjectile.zt1.bin",
-      "rowCount": 13,
+      "field1": 13,
       "headerExtraSize": 11,
-      "rowSize": 35,
+      "field3": 35,
+      "rowSizeGuess": 13,
+      "rowCountGuess": 35,
       "headerSize": 21,
       "payloadSize": 455,
       "expectedPayloadSize": 455,
@@ -1630,17 +1799,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0000000a02ffffffffffff84000005001400ffffffffffff84000001000a00ffffffff",
+          "hex": "0000000a02ffffffffffff8400",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "ffff84000002000602ffffffff00ffffff0003000800ffffffff00ff84000004010800",
+          "hex": "0005001400ffffffffffff8400",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "ffffffffffffffff0506011400ffffffff00ff84000107011e00ffffffff00ff840000",
+          "hex": "0001000a00ffffffffffff8400",
           "asciiStrings": []
         }
       ],
@@ -1651,9 +1820,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsSkill_Ai.zt1.bin",
-      "rowCount": 13,
+      "field1": 13,
       "headerExtraSize": 13,
-      "rowSize": 24,
+      "field3": 24,
+      "rowSizeGuess": 13,
+      "rowCountGuess": 24,
       "headerSize": 23,
       "payloadSize": 312,
       "expectedPayloadSize": 312,
@@ -1663,17 +1834,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "0b0000003250cee2001e32fd0309000a0a1e32000a0a1e32",
+          "hex": "0b0000003250cee2001e32fd03",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "00030f0000001e320000001e32fe03080000001e32000000",
+          "hex": "09000a0a1e32000a0a1e320003",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "1e32fd030c0000001e320000001e32fd030a0000001e3200",
+          "hex": "0f0000001e320000001e32fe03",
           "asciiStrings": []
         }
       ],
@@ -1684,9 +1855,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsSound.zt1.bin",
-      "rowCount": 2,
+      "field1": 2,
       "headerExtraSize": 1,
-      "rowSize": 157,
+      "field3": 157,
+      "rowSizeGuess": 2,
+      "rowCountGuess": 157,
       "headerSize": 11,
       "payloadSize": 314,
       "expectedPayloadSize": 314,
@@ -1696,12 +1869,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "3d003d003e003f000200270042004300ffffffff4600ffffffff420027004b003100ffffffffffffffffffffffff53005400550056003500ffff2f003e005c005d0032003f0062003b0035002f003f00340068002f006a0035006c003100340068005c002f005c005d007400750076007700780079007a007b007c0074007e007f007d00820083000000010002000300040001000600070003000d000a",
+          "hex": "3d00",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "000b000c000d000e0004000100ffff120007000c00020016001700160003001a00ffffffff1d00ffff1f0020000c001a0001000200000026003b003200260026000e0027006a00540002002700350034003300320031002c0030002f002e002d002c002b0026000200280027000e0082002c000d001d006a0027002f005500260074007b00750078007e00760079007f0077007a007d00820084008500",
+          "hex": "3d00",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "3e00",
           "asciiStrings": []
         }
       ],
@@ -1712,9 +1890,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsSynastry.zt1.bin",
-      "rowCount": 57,
+      "field1": 57,
       "headerExtraSize": 57,
-      "rowSize": 54,
+      "field3": 54,
+      "rowSizeGuess": 57,
+      "rowCountGuess": 54,
       "headerSize": 67,
       "payloadSize": 3078,
       "expectedPayloadSize": 3078,
@@ -1724,17 +1904,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00fffefffefffdfdfcfffe000000fc0000000000000000fd00000000000003000000fe00fd000000020000000000000000000000fb00",
+          "hex": "00fffefffefffdfdfcfffe000000fc0000000000000000fd00000000000003000000fe00fd000000020000000000000000000000fb00000000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "000000010001ffff00000000fe00000000fd0000000000000000fd0000000000000200000001fefc0000000200000000000000000000",
+          "hex": "010001ffff00000000fe00000000fd0000000000000000fd0000000000000200000001fefc000000020000000000000000000000fd00000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00fd0000000002ff0001fe010000ff0400000000fb0000000000000000fd000000000000020000000000020000000300000000000000",
+          "hex": "02ff0001fe010000ff0400000000fb0000000000000000fd00000000000002000000000002000000030000000000000000000000fc00000000",
           "asciiStrings": []
         }
       ],
@@ -1745,9 +1925,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsSynastry_mine.zt1.bin",
-      "rowCount": 57,
+      "field1": 57,
       "headerExtraSize": 57,
-      "rowSize": 55,
+      "field3": 55,
+      "rowSizeGuess": 57,
+      "rowCountGuess": 55,
       "headerSize": 67,
       "payloadSize": 3135,
       "expectedPayloadSize": 3135,
@@ -1757,17 +1939,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "0000000000010003ff00000300000200fc00000000000001000000000000020003ff01000003040000000500fb00020200030000000000",
+          "hex": "000000010003ff00000300000200fc00000000000001000000000000020003ff01000003040000000500fb0002020003000000000000000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": []
         }
       ],
@@ -1778,9 +1960,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsTower.zt1.bin",
-      "rowCount": 2,
+      "field1": 2,
       "headerExtraSize": 2,
-      "rowSize": 10,
+      "field3": 10,
+      "rowSizeGuess": 2,
+      "rowCountGuess": 10,
       "headerSize": 12,
       "payloadSize": 20,
       "expectedPayloadSize": 20,
@@ -1790,12 +1974,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00000003000001020105",
+          "hex": "0000",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "01020201020402010306",
+          "hex": "0003",
+          "asciiStrings": []
+        },
+        {
+          "index": 2,
+          "hex": "0000",
           "asciiStrings": []
         }
       ],
@@ -1806,9 +1995,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsUnit.zt1.bin",
-      "rowCount": 231,
+      "field1": 231,
       "headerExtraSize": 43,
-      "rowSize": 55,
+      "field3": 55,
+      "rowSizeGuess": 231,
+      "rowCountGuess": 55,
       "headerSize": 53,
       "payloadSize": 12705,
       "expectedPayloadSize": 12705,
@@ -1818,20 +2009,20 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "00c1f6bff8bab40000000000000000000a000000f40100000000000000f40132000000000006000a000005000060000600000000000000",
-          "asciiStrings": []
+          "hex": "00c1f6bff8bab40000000000000000000a000000f40100000000000000f40132000000000006000a000005000060000600000000000000000000000072000c000662000c000700ffffc8e2c0c720b1e2c3cabab4b7c2c0b8b7ce2c20c0fcc5f5b7c2c0ba20b3b7c1f6b8b820bcd2c8af204d50b0a120c0fbb0d420b5e9beeeb0a3b4d9b4c220b0cdc0cc20c0e5c1a1c0d4b4cfb4d92e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": [
+            " MP"
+          ]
         },
         {
           "index": 1,
-          "hex": "000000000072000c000662000c000700ffffc8e2c0c720b1e2c3cabab4b7c2c0b8b7ce2c20c0fcc5f5b7c2c0ba20b3b7c1f6b8b820bcd2",
+          "hex": "01c1dfb0a9bab400000000000000030019000000f40100000000010100b00478003c000c0603000f0000090000a000060000000000000000000000007f0014000afe002c002401ffffc3b6b0a9bfcac0bb20c0d4c0ba20bab4bbe7b7ce2c20c0ccb5bfbcd3b5b5b0a120b8c5bfec20b4c0b8aec1f6b8b820b9e6beeeb7c2c0cc20b3f4bec620bcf4c7ecbeeeb3aa20bcf8c2fbb4eb2c20bdbac4abbfecc6ae20b5eec0c720b0e6b1e2bab4bfa1b0d420b0adc7d5b4cfb4d92e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "c8af204d50b0a120c0fbb0d420b5e9beeeb0a3b4d9b4c220b0cdc0cc20c0e5c1a1c0d4b4cfb4d92e000000000000000000000000000000",
-          "asciiStrings": [
-            " MP"
-          ]
+          "hex": "02bcf8c2fbb4eb0000000000000005001e000000f40100000000020200b00478000a0002010c000f00000b0000a00006000000000000000000000000da000a0005d1000e000b02ffffbafcb8a3b0d420c0ccb5bfc7cfb0ed20b0f8b0ddc7d220bcf620c0d6b4c220c0afb4d6c0d4b4cfb4d92e20b9e6beeeb7c2c0cc20b3b7c0ba20b1e2babb20bab4b7c2c0bb20b0f8b0dd20c7cfb0c5b3aa20c0fbc0bb20b1e2bdc0c7cfb4c220b5a5bfa120c0afb8aec7d5b4cfb4d92e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "asciiStrings": []
         }
       ],
       "valid": true
@@ -1841,9 +2032,11 @@
       "kind": "data",
       "locale": "ko",
       "decodedPath": "decoded/zt1/assets/data_kor/XlsWorldmap.zt1.bin",
-      "rowCount": 4,
+      "field1": 4,
       "headerExtraSize": 4,
-      "rowSize": 16,
+      "field3": 16,
+      "rowSizeGuess": 4,
+      "rowCountGuess": 16,
       "headerSize": 14,
       "payloadSize": 64,
       "expectedPayloadSize": 64,
@@ -1853,17 +2046,17 @@
       "sampleRows": [
         {
           "index": 0,
-          "hex": "ff01ffff0002ffff0103ffff0204ffff",
+          "hex": "ff01ffff",
           "asciiStrings": []
         },
         {
           "index": 1,
-          "hex": "03ffff05ffff0406ffff0507ffff0608",
+          "hex": "0002ffff",
           "asciiStrings": []
         },
         {
           "index": 2,
-          "hex": "ffff0709ffff080affff090bffff0a0c",
+          "hex": "0103ffff",
           "asciiStrings": []
         }
       ],

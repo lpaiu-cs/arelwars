@@ -30,6 +30,7 @@ References:
 - [arel_wars1-recovery.md](/Users/lpaiu/vs/others/arelwars/docs/arel_wars1-recovery.md)
 - [arel_wars_shared-reverse-engineering-notes.md](/Users/lpaiu/vs/others/arelwars/docs/arel_wars_shared-reverse-engineering-notes.md)
 - [aw1-script-opcode-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-script-opcode-notes.md)
+- [aw1-gxl-table-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-gxl-table-notes.md)
 
 ## Hard Gaps To Close
 
@@ -97,11 +98,11 @@ References:
   - `54/54` decoded AW1 `GXL` tables now satisfy a fixed-size row layout.
   - current working header model:
     - `magic = GXL\x01`
-    - `rowCount(u16)`
-    - `headerExtraSize(u16)`
     - `rowSize(u16)`
+    - `headerExtraSize(u16)`
+    - `rowCount(u16)`
     - `headerSize = 10 + headerExtraSize`
-    - `payloadSize = rowCount * rowSize`
+    - `payloadSize = rowSize * rowCount`
   - first extraction targets:
     - `XlsLevelDesign`
     - `XlsMap`

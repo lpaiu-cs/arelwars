@@ -40,25 +40,27 @@ def inspect_gxl_blob(data: bytes) -> dict[str, object] | None:
     if len(data) < 10 or not data.startswith(b"GXL\x01"):
         return None
 
-    _magic, row_count, header_extra_size, row_size = struct.unpack("<4sHHH", data[:10])
+    _magic, field1, header_extra_size, field3 = struct.unpack("<4sHHH", data[:10])
     header_size = 10 + header_extra_size
     if header_size > len(data):
         return {
-            "rowCount": row_count,
+            "field1": field1,
             "headerExtraSize": header_extra_size,
-            "rowSize": row_size,
+            "field3": field3,
             "headerSize": header_size,
             "valid": False,
             "error": "header exceeds file size",
         }
 
     payload_size = len(data) - header_size
-    expected_payload_size = row_count * row_size
+    expected_payload_size = field1 * field3
     row_data = data[header_size:]
+    row_size_guess = field1
+    row_count_guess = field3
     sample_rows: list[dict[str, object]] = []
-    for index in range(min(row_count, 3)):
-        start = index * row_size
-        end = start + row_size
+    for index in range(min(row_count_guess, 3)):
+        start = index * row_size_guess
+        end = start + row_size_guess
         if end > len(row_data):
             break
         row = row_data[start:end]
@@ -71,9 +73,11 @@ def inspect_gxl_blob(data: bytes) -> dict[str, object] | None:
         )
 
     return {
-        "rowCount": row_count,
+        "field1": field1,
         "headerExtraSize": header_extra_size,
-        "rowSize": row_size,
+        "field3": field3,
+        "rowSizeGuess": row_size_guess,
+        "rowCountGuess": row_count_guess,
         "headerSize": header_size,
         "payloadSize": payload_size,
         "expectedPayloadSize": expected_payload_size,
@@ -130,7 +134,12 @@ def main() -> None:
         "headerExtraSizes": sorted(
             {int(item["headerExtraSize"]) for item in reports if isinstance(item.get("headerExtraSize"), int)}
         ),
-        "rowSizes": sorted({int(item["rowSize"]) for item in reports if isinstance(item.get("rowSize"), int)}),
+        "rowSizeGuesses": sorted(
+            {int(item["rowSizeGuess"]) for item in reports if isinstance(item.get("rowSizeGuess"), int)}
+        ),
+        "rowCountGuesses": sorted(
+            {int(item["rowCountGuess"]) for item in reports if isinstance(item.get("rowCountGuess"), int)}
+        ),
     }
 
     write_json(
