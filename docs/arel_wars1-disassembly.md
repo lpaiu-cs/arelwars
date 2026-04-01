@@ -260,7 +260,12 @@ frame:
 - 실제 effect 실행은 `CGxEffectPZD::ApplyEffect`가 담당한다.
   - 이 함수는 바이트값 `1..100`만 effect opcode로 실행한다.
   - `0`은 무시되고, `>= 101` (`0x65`, `0x66`, `0x67`, `0x70`, `0x7f` 등)은 실행되지 않는다.
-  - dispatch class는 `1/2 = rotate`, `3/4 = flip`, `5..100 = ChangePalette program id`로 닫힌다.
+  - `CGxEffectPZDC1/C2` constructor가 handler 슬롯을 채우는 순서를 따라가면 exact mapping도 닫힌다.
+    - `1 = ROTATE_CW90`
+    - `2 = ROTATE_CCW90`
+    - `3 = FLIP_LR`
+    - `4 = FLIP_UD`
+    - `5..100 = ChangePalette program id`
   - `CGxEffectPZD::DoEffect_ChangePalette`는 실제로 `effectType - 5`를 `CGxMPLParser::GetChangePalette(...)`에 넘긴다.
 - 따라서 현재 asset 전체에서 보는 runtime opcode histogram은 다음이다.
   - `1:4, 2:24, 3:2278, 4:68, 5:261, 6:11, 7:280, 8:68, 9:4, 10:93, 11:14, 12:43, 13:7, 14:16, 15:9, 20:4, 24:1, 28:1, 30:6, 40:8, 44:7, 50:14, 57:1, 60:4, 70:20, 72:4, 80:31, 86:1, 89:7, 99:15, 100:89`

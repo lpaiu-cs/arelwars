@@ -115,7 +115,7 @@
 - `CGxEffectPZD::ApplyEffect`
   - 실제 실행 opcode 범위는 `1..100`이다.
   - `0`과 `>= 101`은 실행되지 않는다.
-  - dispatch class는 `1/2 = rotate`, `3/4 = flip`, `5..100 = ChangePalette(effectType - 5)`로 닫힌다.
+  - `CGxEffectPZDC1/C2` constructor의 handler slot 배치를 따라가면 exact mapping은 `1 = ROTATE_CW90`, `2 = ROTATE_CCW90`, `3 = FLIP_LR`, `4 = FLIP_UD`, `5..100 = ChangePalette(effectType - 5)`다.
 - `PZD`
   - `field4`가 native `PZD` subresource라는 점을 자산측 parser로 완전히 닫았다.
   - `type 8` (`header[0] = 0x08`)은 `205/205` stems에서 `PZD` 구간 내부 zlib stream이 정확히 하나만 나오고, 그 decoded payload는 `first-stream`이며 chunk count가 `contentCount`와 항상 같다.
