@@ -448,3 +448,40 @@ frame:
    - current APK 기준 dormant feature다.
 2. standalone `EffectEx/ZeroEffectEx` raw parser는 구현됐지만, 현재 APK에는 `.pzf/.pzd` 실샘플이 없어서 real-asset regression은 아직 못 돌렸다.
    - current APK asset/call graph에는 이 경로로 들어오는 caller나 file reference가 없으므로 dormant parallel family로 정리한다.
+
+## APK Packaging / x86_64 Audit
+
+current APK decode는 닫혔지만, 이 사실이 곧바로 x86_64 실행 가능성을 뜻하지는 않는다. 그래서 packaging 쪽도 별도 감사/재패키징 경로를 추가했다.
+
+- [tools/arel_wars1/audit_apk_runtime.py](C:/vs/other/arelwars/tools/arel_wars1/audit_apk_runtime.py)
+  - APK zip, DEX, ELF를 함께 읽는다.
+  - `System.loadLibrary("gameDSO")` caller, `com.gamevil.nexus2.Natives` native method surface, ABI별 native library, direct `Java_*` JNI export를 JSON으로 정리한다.
+  - workspace에 Android project / native source tree가 있는지도 같이 본다.
+- [tools/arel_wars1/package_apk.py](C:/vs/other/arelwars/tools/arel_wars1/package_apk.py)
+  - exploded APK directory를 다시 zip으로 묶고, `keytool + jarsigner`로 새 APK를 서명한다.
+  - 현재 repo처럼 "소스 프로젝트는 없고, 추출한 APK tree만 있는" 경우의 재패키징 잔업을 닫는다.
+- [tools/arel_wars1/requirements.txt](C:/vs/other/arelwars/tools/arel_wars1/requirements.txt)
+  - disassembly / audit script에 필요한 Python dependency snapshot이다.
+
+audit 결과는 다음으로 고정됐다.
+
+- package: `com.gamevil.eruelwars.global`
+- version: `1.0.2 (102)`
+- native ABI payload: `lib/armeabi/libgameDSO.so`만 존재
+- `libgameDSO.so`: `ELF32 / EM_ARM`
+- loader callsite: `NexusGLActivity::<clinit> -> System.loadLibrary("gameDSO")`
+- renderer lifecycle:
+  - `NexusGLRenderer::surfaceCreated -> NativeInitWithBufferSize`
+  - `NexusGLRenderer::drawFrame -> NativeRender`
+  - `NexusGLRenderer::surfaceChanged -> NativeResize`
+  - `NexusGLSurfaceView::onPause/onResume -> NativePauseClet/NativeResumeClet`
+  - `NexusGLActivity::onDestroy -> NativeDestroyClet`
+- workspace side:
+  - Android project file 없음
+  - Java/Kotlin/C/C++ source tree 없음
+
+즉 current repo에서 바로 해결 가능한 packaging 잔업은 "exploded APK를 다시 묶고 서명하는 자동화"까지다. 실제 x86_64 정상 실행의 마지막 하드 블로커는 여전히 replacement `lib/x86_64/libgameDSO.so`다.
+
+- 이 replacement library는 최소한 `System.loadLibrary("gameDSO")`가 기대하는 same SONAME/path를 만족해야 한다.
+- 또 `com.gamevil.nexus2.Natives`가 기대하는 JNI surface와 `JNI_OnLoad` 동작을 재현해야 한다.
+- asset decode work는 이미 닫혔으므로, 남은 native port는 rendering / lifecycle / UI bridge / IAP bridge 재현 문제로 축소됐다.

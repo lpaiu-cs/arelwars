@@ -217,6 +217,21 @@ current APK 기준 open blocker는 없다.
   - current APK standalone `.pzf/.pzd` sample `0`
   - inbound caller / extension literal도 `0`
 
+### Packaging Follow-up
+
+- x86_64 packaging/runtime audit를 추가했다.
+  - [audit_apk_runtime.py](C:/vs/other/arelwars/tools/arel_wars1/audit_apk_runtime.py)
+  - 결과:
+    - ABI payload는 `armeabi` only
+    - `NexusGLActivity::<clinit> -> System.loadLibrary("gameDSO")`
+    - render loop는 `NativeInitWithBufferSize / NativeRender / NativeResize`에 직접 묶임
+    - workspace에는 Android project / native source tree가 없음
+  - 즉 current repo에서 x86_64 run blocker는 decode가 아니라 replacement `lib/x86_64/libgameDSO.so`다.
+- exploded APK repack + re-sign pipeline도 닫았다.
+  - [package_apk.py](C:/vs/other/arelwars/tools/arel_wars1/package_apk.py)
+  - current extract tree에서 signed rebuild 생성 확인
+  - 이 단계로 pure packaging 잔업은 닫혔지만, x86_64 native port를 대신하지는 않는다.
+
 ### Verification
 
 - `tools/arel_wars1/verify_current_apk_closure.py`
@@ -226,6 +241,7 @@ current APK 기준 open blocker는 없다.
 ### Next Focus
 
 1. 다른 build나 외부 dump에서 standalone `EffectEx / ZeroEffectEx` sample을 확보하면 새 parser를 real asset regression으로 확장한다.
+2. x86_64 목표를 계속 밀려면 next task는 packaging이 아니라 `libgameDSO.so` replacement port scope 정의와 JNI surface 재현이다.
 
 ### Refresh Commands
 
