@@ -240,6 +240,13 @@ optional 5-byte control chunks may appear:
     - `084` now resolves both `after-linked` `tupleCount=3`, `markerCount=4` overlays to `70` through the same prototype rule.
   - `084` also has one nearby `opaque-only` `6778` timing cue group, which is now attached to its large `before-linked` overlay. That event still lands on `120`, but it is now sourced from a local cue rather than the APK-wide default.
   - `228`'s linked base pose is still left on `global-record-default=120`; there is not yet a trustworthy local or donor-linked prototype for that exact shape.
+  - A follow-up linked-event pass now uses two more local heuristics before falling back to donors:
+    - `linked-family-prototype`: for `rising-anchor` stems, unresolved linked events can inherit `120` from nearby explicit linked shapes in `230`, as long as `(tupleCount, markerCount)` stays close.
+    - `neighbor-group-cue`: unresolved events can also inherit a duration from an adjacent non-event meta group when that nearby explicit cue is unique within the local gap.
+  - This reduces the truly global-default linked set further:
+    - `084` now resolves linked groups `1`, `6`, `7`, `10`, `19`, `25`, and `28` through `linked-family-prototype`
+    - `084` linked group `0` and `221`'s lone linked event now resolve through `neighbor-group-cue`
+    - `214` now resolves through an exact `linked-prototype` instead of depending on donor stem `193`
   - `230` and `084` now export explicit loop windows based on their strongest contiguous anchor runs:
     - `230`: event loop `1-3`
     - `084`: event loop `5-8`

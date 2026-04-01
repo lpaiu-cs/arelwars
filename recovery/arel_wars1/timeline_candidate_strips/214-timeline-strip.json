@@ -3,7 +3,7 @@
   "timelineKind": "linked-only-scatter",
   "sequenceKind": "single-anchor-delta",
   "eventCount": 1,
-  "stemDefaultDurationMs": 100,
+  "stemDefaultDurationMs": null,
   "loopSummary": {
     "startEventIndex": 0,
     "endEventIndex": 0,
@@ -27,7 +27,7 @@
       ],
       "durationHintMs": 255,
       "playbackDurationMs": 100,
-      "playbackSource": "donor-stem",
+      "playbackSource": "linked-prototype",
       "timingMarkers": [
         "67ff000000",
         "67ff000000"
@@ -53,9 +53,7 @@
         255,
         255
       ],
-      "framePath": "frames/214/00-g00-linked.png",
-      "playbackDonorStem": "193",
-      "playbackDonorScore": 12
+      "framePath": "frames/214/00-g00-linked.png"
     }
   ]
 }

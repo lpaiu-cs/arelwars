@@ -27,7 +27,7 @@
       ],
       "durationHintMs": 255,
       "playbackDurationMs": 120,
-      "playbackSource": "global-record-default",
+      "playbackSource": "neighbor-group-cue",
       "timingMarkers": [
         "67ff000000",
         "67ff000000",

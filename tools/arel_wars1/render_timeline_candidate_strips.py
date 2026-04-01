@@ -311,6 +311,55 @@ def _build_overlay_prototypes(candidates: list[StemRenderCandidate]) -> dict[tup
     return prototypes
 
 
+def _timeline_family(timeline_kind: str) -> str:
+    if timeline_kind.startswith("rising-anchor"):
+        return "rising-anchor"
+    return timeline_kind
+
+
+def _build_linked_prototypes(
+    candidates: list[StemRenderCandidate],
+) -> tuple[dict[tuple[str, int, int], int], dict[str, list[tuple[int, int, int]]]]:
+    exact_buckets: dict[tuple[str, int, int], list[int]] = {}
+    family_buckets: dict[tuple[str, int, int], list[int]] = {}
+    for candidate in candidates:
+        timeline_kind = str(candidate.sequence_summary.get("timelineKind"))
+        family = _timeline_family(timeline_kind)
+        for event in candidate.events:
+            if str(event["eventType"]) != "linked" or not _event_has_explicit_local_timing(event):
+                continue
+
+            tuple_count = int(event.get("tupleCount") or 0)
+            marker_count = len(event.get("timingMarkers") or [])
+            duration = int(event["playbackDurationMs"])
+            exact_buckets.setdefault((timeline_kind, tuple_count, marker_count), []).append(duration)
+            family_buckets.setdefault((family, tuple_count, marker_count), []).append(duration)
+
+    exact_prototypes: dict[tuple[str, int, int], int] = {}
+    for key, durations in exact_buckets.items():
+        spread = max(durations) - min(durations)
+        if spread > 20:
+            continue
+        median = _median_duration(durations)
+        if median is not None:
+            exact_prototypes[key] = median
+
+    family_prototypes: dict[str, list[tuple[int, int, int]]] = {}
+    for key, durations in family_buckets.items():
+        family, tuple_count, marker_count = key
+        if not family.startswith("rising-anchor"):
+            continue
+        spread = max(durations) - min(durations)
+        if spread > 0:
+            continue
+        median = _median_duration(durations)
+        if median is None:
+            continue
+        family_prototypes.setdefault(family, []).append((tuple_count, marker_count, median))
+
+    return (exact_prototypes, family_prototypes)
+
+
 def _apply_overlay_prototypes(candidates: list[StemRenderCandidate]) -> None:
     prototypes = _build_overlay_prototypes(candidates)
     for candidate in candidates:
@@ -330,6 +379,48 @@ def _apply_overlay_prototypes(candidates: list[StemRenderCandidate]) -> None:
             event["playbackDurationMs"] = duration
             event["playbackSource"] = "overlay-prototype"
             event["playbackPrototypeKey"] = f"{key[0]}x{key[1]}"
+
+
+def _apply_linked_prototypes(candidates: list[StemRenderCandidate]) -> None:
+    exact_prototypes, family_prototypes = _build_linked_prototypes(candidates)
+    for candidate in candidates:
+        timeline_kind = str(candidate.sequence_summary.get("timelineKind"))
+        family = _timeline_family(timeline_kind)
+        for event in candidate.events:
+            if str(event["eventType"]) != "linked":
+                continue
+            if _event_has_explicit_local_timing(event):
+                continue
+            if str(event["playbackSource"]) not in {"global-record-default", "stem-default"}:
+                continue
+
+            tuple_count = int(event.get("tupleCount") or 0)
+            marker_count = len(event.get("timingMarkers") or [])
+            exact_key = (timeline_kind, tuple_count, marker_count)
+            exact_duration = exact_prototypes.get(exact_key)
+            if exact_duration is not None:
+                event["playbackDurationMs"] = exact_duration
+                event["playbackSource"] = "linked-prototype"
+                continue
+
+            family_candidates = []
+            for proto_tuple_count, proto_marker_count, proto_duration in family_prototypes.get(family, []):
+                tuple_gap = abs(tuple_count - proto_tuple_count)
+                marker_gap = abs(marker_count - proto_marker_count)
+                if tuple_gap > 2 or marker_gap > 1:
+                    continue
+                family_candidates.append((tuple_gap + marker_gap, proto_duration))
+            if not family_candidates:
+                continue
+
+            family_candidates.sort(key=lambda item: item[0])
+            best_distance = family_candidates[0][0]
+            best_durations = sorted({duration for distance, duration in family_candidates if distance == best_distance})
+            if len(best_durations) != 1:
+                continue
+
+            event["playbackDurationMs"] = best_durations[0]
+            event["playbackSource"] = "linked-family-prototype"
 
 
 def _apply_opaque_timing_cues(candidates: list[StemRenderCandidate]) -> None:
@@ -363,6 +454,43 @@ def _apply_opaque_timing_cues(candidates: list[StemRenderCandidate]) -> None:
 
             event["playbackDurationMs"] = cue_duration
             event["playbackSource"] = "opaque-cue"
+
+
+def _apply_neighbor_group_cues(candidates: list[StemRenderCandidate]) -> None:
+    for candidate in candidates:
+        event_group_indices = {int(event["groupIndex"]) for event in candidate.events}
+        cue_groups: list[tuple[int, int]] = []
+        for group in candidate.meta_group_summaries:
+            group_index = int(group["groupIndex"])
+            if group_index in event_group_indices:
+                continue
+            explicit_values = [int(value) for value in group.get("timingExplicitValues", [])]
+            if not explicit_values:
+                continue
+            cue_groups.append((group_index, max(explicit_values)))
+
+        if not cue_groups:
+            continue
+
+        for event in candidate.events:
+            if str(event["playbackSource"]) not in {"global-record-default", "stem-default"}:
+                continue
+            nearby = [
+                (abs(int(event["groupIndex"]) - cue_group_index), cue_duration)
+                for cue_group_index, cue_duration in cue_groups
+                if abs(int(event["groupIndex"]) - cue_group_index) <= 2
+            ]
+            if not nearby:
+                continue
+
+            nearby.sort(key=lambda item: item[0])
+            best_gap = nearby[0][0]
+            best_durations = sorted({duration for gap, duration in nearby if gap == best_gap})
+            if len(best_durations) != 1:
+                continue
+
+            event["playbackDurationMs"] = best_durations[0]
+            event["playbackSource"] = "neighbor-group-cue"
 
 
 def _apply_donor_timings(candidates: list[StemRenderCandidate]) -> None:
@@ -584,6 +712,8 @@ def main() -> None:
 
     _apply_overlay_prototypes(candidates)
     _apply_opaque_timing_cues(candidates)
+    _apply_linked_prototypes(candidates)
+    _apply_neighbor_group_cues(candidates)
     _apply_donor_timings(candidates)
 
     rendered = 0
