@@ -249,12 +249,24 @@ frame:
   - `+0x08/+0x0C` extra pointer/length은 plain draw path에서 소비되지 않는다.
 - 실제 consumer는 effect-aware `PZD` loader다.
   - `CGxEffectPZDMgr::FindEffectedImage` / `CGxEffectExPZDMgr::FindEffectedImage`는 두 subframe의 `extraPtr/extraLen`을 비교할 때 바이트값 `<= 4`만 opcode로 취급한다.
-  - 현재 전체 asset 집계에서 이 filtered opcode histogram은 `0:13473, 1:102, 2:55, 3:2254, 4:79`다.
-  - 즉 `extraPayload`는 적어도 effect opcode stream을 포함하며, cache/reuse key로 쓰인다.
+  - 현재 전체 asset 집계에서 이 filtered cache-key histogram은 `0:13746, 1:4, 2:24, 3:2278, 4:68`다.
+  - 즉 `extraPayload`는 cache/reuse key로도 쓰이지만, 이 집계는 "실행되는 effect bytecode" 전체와는 다르다.
+- `HasFlipEffect`는 같은 payload를 별도로 훑되 `3/4`만 flip-class opcode로 취급한다.
+  - 결과는 `0 = no flip opcode`, `1 = all effective opcodes are 3/4`, `2 = 3/4와 다른 executable opcode가 섞여 있음`으로 정리된다.
+  - normal frame access에서는 `stride = 0x10`, effect-style access에서는 `stride = 0x18`을 쓴다.
+- 실제 effect 실행은 `CGxEffectPZD::ApplyEffect`가 담당한다.
+  - 이 함수는 바이트값 `1..100`만 effect opcode로 실행한다.
+  - `0`은 무시되고, `>= 101` (`0x65`, `0x66`, `0x67`, `0x70`, `0x7f` 등)은 실행되지 않는다.
+  - dispatch class는 `1/2 = rotate`, `3/4 = flip`, `5..100 = ChangePalette program id`로 닫힌다.
+  - `CGxEffectPZD::DoEffect_ChangePalette`는 실제로 `effectType - 5`를 `CGxMPLParser::GetChangePalette(...)`에 넘긴다.
+- 따라서 현재 asset 전체에서 보는 runtime opcode histogram은 다음이다.
+  - `1:4, 2:24, 3:2278, 4:68, 5:261, 6:11, 7:280, 8:68, 9:4, 10:93, 11:14, 12:43, 13:7, 14:16, 15:9, 20:4, 24:1, 28:1, 30:6, 40:8, 44:7, 50:14, 57:1, 60:4, 70:20, 72:4, 80:31, 86:1, 89:7, 99:15, 100:89`
+  - 대표 sequence는 `(3)`, `(7)`, `(5)`, `(10)`, `(100)`, `(4,3)`, `(3,7)`, `(44,99)`, `(3,100)`이다.
 - 별도 fast path도 보인다.
   - `CGxEffectPZDMgr::LoadImage*`는 `extraLen == 1`이고 그 1-byte 값이 `0x65..0x74`이면 effected-bitmap 생성 경로 대신 normal image load 쪽으로 빠진다.
-  - parsed asset 기준으로 이 single-byte family는 `66:15, 67:57, 71:1`이 확인된다.
-  - 따라서 `66/67` marker류는 pure effect opcode라기보다 module/effect selector envelope일 가능성이 높다.
+  - 하지만 `PZD.contentCount` bound를 다시 넣은 corrected parse 기준으로는 이 single-byte family가 실제 asset에서 더 이상 남지 않는다.
+  - 즉 이전 `66:15, 67:57, 71:1`은 parse artifact였고, native fast path 자체만 남아 있는 상태다.
+  - 따라서 `66/67` marker류는 executable opcode가 아니라 envelope / selector 계층으로 보는 쪽이 맞다.
 - `tools/arel_wars1/inspect_binary_assets.py`는 이제 exact-fit animation clip stream을 인식한다.
 - 현재 휴리스틱은 다음이다.
   - stream 전체가 `frameCount:u8 + frameCount * 8-byte frame record`의 clip 연속체로 끝까지 정확히 소진될 것
@@ -306,15 +318,15 @@ frame:
   - raw `PZF` stream 자체가 frame/subframe/extraPayload 계층으로 exact-fit 된다.
 - 따라서 남은 문제는 "시간축 메타데이터가 어디 있나"가 아니라:
   - raw `PZD` index table entry가 native `SeekIndexTable` 기준으로 어떤 encoding인지
-  - `PZF extraPayload(66/67...)`의 envelope semantics
+  - `PZF extraPayload`에서 `66/67/70...` 같은 non-executed envelope byte가 cache key / selector로 어떻게 쓰이는지
   - bbox group 의미(att/dam/reference point)를 어떻게 런타임과 대응시키느냐
   로 더 좁혀졌다.
 - 따라서 다음 reverse path의 우선순위는 `PZX tail` 일반화보다 `PZA parser -> PZx animation object` 연결 해체다.
 
 ## Next Reverse Steps
 
-1. `CGxPZDPackage / CGxPZDMgr::LoadImage*`를 더 깨서 `type 7/8`별 raw `PZD` index table entry encoding을 확정한다.
-2. `CGxPZxFrame::Draw`와 `CGxPZxFrameBB::*` consumer를 더 따라가서 `extraPayload(66/67...)`와 bbox group이 렌더/충돌에서 어떤 의미를 가지는지 붙인다.
-3. `082/083/084.pzx`와 `198/208/240.pzx`를 기준 샘플로 삼아, old frame-record/tail heuristic이 native `PZF`의 어느 subset을 잘못 읽은 것인지 정리한다.
+1. `CGxEffectPZDMgr::LoadImage*`, `CGxEffectPZFMgr::LoadFrame`, `ChangeModule*`를 더 따라가서 non-executed envelope byte(`66/67/70...`)가 cache selector인지 module selector인지 고정한다.
+2. `CGxPZDPackage / CGxPZDMgr::LoadImage*`를 더 깨서 `type 7/8`별 raw `PZD` index table entry encoding을 확정한다.
+3. `CGxPZxFrameBB::*` consumer를 더 따라가서 bbox group이 충돌/reference point/attack box 중 무엇인지 붙인다.
 4. `CSpriteIns::DoAnimate`와 `GetAniProcessCount`가 소비하는 `CGxPZxAni` 필드를 역추적해, `PZA` 출력이 실제 재생 시간축으로 어떻게 반영되는지 연결한다.
 5. 마지막에 later stream/tail 중 무엇이 truly native `PZF/PZA`이고, 무엇이 별도 overlay / placement metadata인지 결론을 낸다.

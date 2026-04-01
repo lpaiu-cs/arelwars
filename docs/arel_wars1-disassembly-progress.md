@@ -102,10 +102,17 @@
 - `CGxEffectPZDMgr::FindEffectedImage` / `CGxEffectExPZDMgr::FindEffectedImage`
   - `extraPayload`는 effect cache key다.
   - 비교 시 모든 바이트를 쓰지 않고, `<= 4`인 값만 opcode sequence로 추출해서 비교한다.
-  - 즉 `extraPayload`는 단순 tail marker가 아니라 native effect opcode stream을 포함한다.
+  - corrected parse 기준 filtered cache-key histogram은 `0:13746, 1:4, 2:24, 3:2278, 4:68`이다.
 - `CGxEffectPZDMgr::LoadImage*`
   - `extraLen == 1`이고 그 1-byte 값이 `0x65..0x74`이면 effected-bitmap 경로 대신 normal image load로 빠진다.
   - longer payload는 `FindEffectedImage -> AddNewEFFECTED_BITMAP` 경로로 들어가고, 그 과정에서 subframe의 `extraPayload`가 그대로 복제된다.
+- `HasFlipEffect`
+  - same payload에서 `3/4`만 flip-class opcode로 취급한다.
+  - return은 `0 = no flip`, `1 = pure flip`, `2 = flip + other executable opcode`로 읽힌다.
+- `CGxEffectPZD::ApplyEffect`
+  - 실제 실행 opcode 범위는 `1..100`이다.
+  - `0`과 `>= 101`은 실행되지 않는다.
+  - dispatch class는 `1/2 = rotate`, `3/4 = flip`, `5..100 = ChangePalette(effectType - 5)`로 닫힌다.
 - `PZD`
   - `field4`가 native `PZD` subresource라는 점을 자산측 parser로 완전히 닫았다.
   - `type 8` (`header[0] = 0x08`)은 `205/205` stems에서 `PZD` 구간 내부 zlib stream이 정확히 하나만 나오고, 그 decoded payload는 `first-stream`이며 chunk count가 `contentCount`와 항상 같다.
@@ -120,12 +127,13 @@
 ### Asset-side Validation
 
 - full parsed `PZF` set 기준으로 effect-relevant extra 통계가 닫혔다.
-  - single-byte `0x65..0x74` family: `66:15, 67:57, 71:1`
-  - filtered opcode histogram (`<= 4`만 집계): `0:13473, 1:102, 2:55, 3:2254, 4:79`
-  - payload length 분포는 `1-byte`와 `5-byte`가 압도적이고, marker family는 여전히 `67+u32 / 66+u32`가 우세하다.
+  - filtered cache-key histogram (`<= 4`만 집계): `0:13746, 1:4, 2:24, 3:2278, 4:68`
+  - runtime opcode histogram (`1..100`만 실행): `1:4, 2:24, 3:2278, 4:68, 5:261, 6:11, 7:280, 8:68, 9:4, 10:93, 11:14, 12:43, 13:7, 14:16, 15:9, 20:4, 24:1, 28:1, 30:6, 40:8, 44:7, 50:14, 57:1, 60:4, 70:20, 72:4, 80:31, 86:1, 89:7, 99:15, 100:89`
+  - corrected parse 기준 single-byte `0x65..0x74` family는 `{}`로 비었다.
+  - payload length 분포는 여전히 `5-byte`가 우세하고, marker family도 `67+u32 / 66+u32`가 우세하다.
 - 즉 현재 `PZF extraPayload`는 두 층으로 읽는 게 맞다.
-  - outer marker / module selector (`66/67...`, single-byte `0x65..0x74`)
-  - inner effect opcode sequence (`<= 4` bytes)
+  - outer envelope / selector bytes (`66/67/70...`, non-executed)
+  - inner executable effect opcode sequence (`1..100`)
 - report 쪽에도 `embeddedPzd*` summary를 추가했다.
   - `embeddedPzdTypeCounts = {7: 48, 8: 205}`
   - `embeddedPzdLayoutCounts = {row-stream-list: 48, first-stream-sheet: 205}`
@@ -140,8 +148,8 @@
 
 ### Next Focus
 
-1. `type 7` vs `type 8` raw `PZD` index table encoding을 고정한다.
-2. `66/67 + u32` marker family가 effect opcode envelope인지 module selector인지, `ChangeModule` / effect loaders를 기준으로 더 정리한다.
+1. `66/67/70...` envelope byte가 effect cache selector인지 module selector인지, `ChangeModule*` / effect loaders를 기준으로 더 정리한다.
+2. `type 7` vs `type 8` raw `PZD` index table encoding을 고정한다.
 3. `PZDParser::Open / DecodeImageData`의 palette branch(`bit0/bit4/bit6`)를 실제 raw byte layout과 다시 맞춘다.
 
 ### Refresh Commands
