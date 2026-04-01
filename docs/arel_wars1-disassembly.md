@@ -351,7 +351,8 @@ frame:
   - `CGxPZxEffectExFrame::__Draw`는 plain draw path에서 이 `+0x10/+0x14`를 실제로 소비한다.
     - selector가 `0x65..0x74` 또는 `0x7f`이면 16-entry table lookup을 거쳐 module/draw mode를 고르고
     - selector-associated `u32` parameter를 함께 bitmap draw call로 넘긴다.
-    - exact rodata map은 `0x65->1`, `0x66->1`, `0x67->2`, `0x68->3`, `0x69->6`, `0x6a->7`, `0x6b->8`, `0x6c->9`, `0x6d->10`, `0x6e->11`, `0x6f->12`, `0x70->13`, `0x71..0x74->19`, `0x7f->4`다.
+    - exact rodata map은 `0x65->1(Blend)`, `0x66->1(Blend)`, `0x67->2(Add)`, `0x68->3(Sub)`, `0x69->6(Lighten)`, `0x6a->7(Darken)`, `0x6b->8(Different)`, `0x6c->9(Negative)`, `0x6d->10(Gray)`, `0x6e->11(RGB)`, `0x6f->12(RGBHalf)`, `0x70->13(RGBAdd)`, `0x71..0x74->19(Fx)`, `0x7f->4(Void)`다.
+    - 이 이름은 `SetBlendFunc(enumDrawOP, ...)`가 채우는 `g_funcBlend / g_funcAdd / g_funcVoid / g_funcLighten / g_funcDarken / g_funcRGBAdd / g_funcFx` slot과 `DrawNative` jump table case가 같은 GOT entry를 쓰는지로 교차검증했다.
     - `0x71..0x74`는 전부 `drawOp 19 (0x13)`으로 collapse되고, 이 경우 parser가 읽은 trailing `u32`는 버려진 채 `selector - 0x71`이 runtime parameter로 들어간다.
     - 이 special family는 `CGxZeroEffectExPZFMgr::ChangeModule`이 쓰는 module slot (`0..3`)과 맞물린다.
     - current APK asset set에서는 실제로 `0x71/0x72`만 관측되고, module histogram은 `0:171, 1:32`다.

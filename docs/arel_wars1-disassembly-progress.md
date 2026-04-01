@@ -165,7 +165,8 @@
   - standalone `GsLoadPzf` / `GsLoadPzfPart`가 실제로 `CGxZeroEffectExPZDMgr`와 `CGxZeroEffectExPZFMgr`를 직접 생성한다.
   - `CGxEffectExPZFParser::EndDecodeFrameFromBAR/FILE`는 `stride = 0x18` subframe record를 만들고, raw `extraLen + extraPtr` 외에 마지막 `0x65..0x74` 또는 `0x7f`를 `selector byte(+0x10)`로 저장하며, 그 selector를 볼 때마다 trailing `u32 parameter(+0x14)`를 읽는다.
   - `CGxPZxEffectExFrame::__Draw`는 plain draw path에서 바로 이 `selector + parameter`를 소비한다.
-  - exact translation table은 `0x65->1`, `0x66->1`, `0x67->2`, `0x68->3`, `0x69->6`, `0x6a->7`, `0x6b->8`, `0x6c->9`, `0x6d->10`, `0x6e->11`, `0x6f->12`, `0x70->13`, `0x71..0x74->19`, `0x7f->4`다.
+  - exact translation table은 `0x65->1(Blend)`, `0x66->1(Blend)`, `0x67->2(Add)`, `0x68->3(Sub)`, `0x69->6(Lighten)`, `0x6a->7(Darken)`, `0x6b->8(Different)`, `0x6c->9(Negative)`, `0x6d->10(Gray)`, `0x6e->11(RGB)`, `0x6f->12(RGBHalf)`, `0x70->13(RGBAdd)`, `0x71..0x74->19(Fx)`, `0x7f->4(Void)`다.
+  - `SetBlendFunc`와 `DrawNative`가 이 drawOp 번호를 같은 `g_func*` slot(`Blend/Add/Void/Lighten/Darken/RGBAdd/Fx`)으로 묶는 것도 확인했다.
   - `0x71..0x74`는 전부 `drawOp 19`로 합쳐지고, 이때 trailing `u32` 대신 `selector - 0x71`이 runtime parameter로 들어가므로 module selector `0..3`으로 읽는 편이 맞다.
   - `CGxZeroEffectExPZFMgr::ChangeModule`는 실제로 그 module slot별 bitmap pointer array를 갈아끼운다.
   - 따라서 `66/67/70/71/7f`는 `EffectEx` family에서는 executable opcode가 아니라 draw/module selector다.
@@ -178,7 +179,7 @@
   - runtime opcode histogram (`1..100`만 실행): `1:4, 2:24, 3:2278, 4:68, 5:261, 6:11, 7:280, 8:68, 9:4, 10:93, 11:14, 12:43, 13:7, 14:16, 15:9, 20:4, 24:1, 28:1, 30:6, 40:8, 44:7, 50:14, 57:1, 60:4, 70:20, 72:4, 80:31, 86:1, 89:7, 99:15, 100:89`
   - corrected parse 기준 single-byte `0x65..0x74` family는 `{}`로 비었다.
   - 대신 longer extra 안의 selector-byte heuristic 분포는 `67:3197, 66:930, 71:171, 69:67, 70:57, 7f:36, 72:32, 6a:25`이고, last-selector 기준 분포는 `67:3197, 66:930, 71:171, 69:67, 70:49, 7f:36, 72:32, 6a:25`다.
-  - 이걸 native table로 번역한 last-selector drawOp 분포는 `1:930, 2:3197, 4:36, 6:67, 7:25, 13:49, 19:203`이다.
+  - 이걸 native table로 번역한 last-selector drawOp 분포는 `1:930(Blend), 2:3197(Add), 4:36(Void), 6:67(Lighten), 7:25(Darken), 13:49(RGBAdd), 19:203(Fx)`이다.
   - 특히 `0x71..0x74` family는 `drawOp 19` 아래 `module 0:171, 1:32`로 다시 보이고, current asset set에서는 `module 2/3` sample이 없다.
   - payload length 분포는 여전히 `5-byte`가 우세하고, marker family도 `67+u32 / 66+u32`가 우세하다.
   - runtime sequence `(3)`은 raw payload `19`종 (`03`, `0367ff000000`, `6603000000`, `67ff00000003`, ...)에서 나오고, `(4,3)`도 `8`종 payload에서 나온다.
