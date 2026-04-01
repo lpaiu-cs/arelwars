@@ -10,6 +10,7 @@ import struct
 
 from formats import (
     find_zlib_streams,
+    read_pzx_animation_clip_stream,
     read_pzx_frame_record_stream,
     read_pzx_first_stream,
     read_pzx_meta_sections,
@@ -150,6 +151,43 @@ def summarize_simple_placement_stream(stream: bytes, chunk_count: int, chunk_siz
                 "chunkHeight": chunk_sizes[placement.chunk_index][1],
             }
             for placement in placements[:8]
+        ],
+    }
+
+
+def summarize_animation_clip_stream(stream: bytes) -> dict[str, object] | None:
+    decoded = read_pzx_animation_clip_stream(stream)
+    if decoded is None:
+        return None
+
+    clip_sizes = [clip.frame_count for clip in decoded.clips]
+    return {
+        "clipCount": decoded.clip_count,
+        "totalFrameCount": decoded.total_frame_count,
+        "clipFrameCountRange": [min(clip_sizes), max(clip_sizes)],
+        "frameIndexRange": list(decoded.frame_index_range),
+        "delayRange": list(decoded.delay_range),
+        "xRange": list(decoded.x_range),
+        "yRange": list(decoded.y_range),
+        "controlValues": list(decoded.control_values),
+        "nonzeroControlCount": decoded.nonzero_control_count,
+        "clipOffsetsPreview": [clip.offset for clip in decoded.clips[:12]],
+        "clipPreview": [
+            {
+                "offset": clip.offset,
+                "frameCount": clip.frame_count,
+                "framesPreview": [
+                    {
+                        "frameIndex": frame.frame_index,
+                        "delay": frame.delay,
+                        "x": frame.x,
+                        "y": frame.y,
+                        "control": frame.control,
+                    }
+                    for frame in clip.frames[:6]
+                ],
+            }
+            for clip in decoded.clips[:6]
         ],
     }
 
@@ -369,6 +407,8 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
     first_stream_error: str | None = None
     simple_placement_summary: dict[str, object] | None = None
     frame_record_summaries: list[dict[str, object]] = []
+    animation_clip_summary: dict[str, object] | None = None
+    animation_clip_summaries: list[dict[str, object]] = []
 
     for index, item in enumerate(streams[:12]):
         entry = {
@@ -415,6 +455,12 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
                 if frame_record_summary is not None:
                     entry["frameRecord"] = frame_record_summary
                     frame_record_summaries.append({"streamIndex": index, **frame_record_summary})
+        animation_summary = summarize_animation_clip_stream(item.decoded)
+        if animation_summary is not None:
+            entry["animationClip"] = animation_summary
+            animation_clip_summaries.append({"streamIndex": index, **animation_summary})
+            if animation_clip_summary is None:
+                animation_clip_summary = {"streamIndex": index, **animation_summary}
         try:
             row_stream_summary = summarize_pzx_row_stream(item.decoded)
         except ValueError:
@@ -443,6 +489,8 @@ def parse_pzx(path: Path, has_mpl_pair: bool) -> dict[str, object]:
         "firstStreamError": first_stream_error,
         "simplePlacementStream": simple_placement_summary,
         "frameRecordStreams": frame_record_summaries,
+        "animationClipStream": animation_clip_summary,
+        "animationClipStreams": animation_clip_summaries,
     }
 
 
@@ -570,6 +618,60 @@ def main() -> None:
             if any(layout != "opaque" for layout in entry["metaLayoutCounts"])
         }
     )
+    animation_entries = [
+        {
+            "stem": Path(str(entry["path"])).stem,
+            "variant": entry["header"]["field16Low6"],
+            "streamIndex": stream["streamIndex"],
+            "clipCount": stream["clipCount"],
+            "totalFrameCount": stream["totalFrameCount"],
+            "clipFrameCountRange": stream["clipFrameCountRange"],
+            "frameIndexRange": stream["frameIndexRange"],
+            "delayRange": stream["delayRange"],
+            "xRange": stream["xRange"],
+            "yRange": stream["yRange"],
+            "controlValues": stream["controlValues"],
+            "nonzeroControlCount": stream["nonzeroControlCount"],
+        }
+        for entry in pzx_entries
+        for stream in entry.get("animationClipStreams", [])
+    ]
+    animation_stems = sorted({entry["stem"] for entry in animation_entries})
+    animation_stream_index_counts = Counter(entry["streamIndex"] for entry in animation_entries)
+    animation_clip_count_distribution = Counter(entry["clipCount"] for entry in animation_entries)
+    animation_nonzero_control_count = sum(int(entry["nonzeroControlCount"]) for entry in animation_entries)
+    animation_frame_index_range = (
+        [
+            min(int(entry["frameIndexRange"][0]) for entry in animation_entries),
+            max(int(entry["frameIndexRange"][1]) for entry in animation_entries),
+        ]
+        if animation_entries
+        else None
+    )
+    animation_delay_range = (
+        [
+            min(int(entry["delayRange"][0]) for entry in animation_entries),
+            max(int(entry["delayRange"][1]) for entry in animation_entries),
+        ]
+        if animation_entries
+        else None
+    )
+    animation_x_range = (
+        [
+            min(int(entry["xRange"][0]) for entry in animation_entries),
+            max(int(entry["xRange"][1]) for entry in animation_entries),
+        ]
+        if animation_entries
+        else None
+    )
+    animation_y_range = (
+        [
+            min(int(entry["yRange"][0]) for entry in animation_entries),
+            max(int(entry["yRange"][1]) for entry in animation_entries),
+        ]
+        if animation_entries
+        else None
+    )
     regular_mpl_palette_stems: list[str] = []
     regular_mpl_palette_set: set[str] = set()
     row_stream_regular_mpl_palette_stems: list[str] = []
@@ -695,6 +797,17 @@ def main() -> None:
             "frameMetaExactPzxCount": len(frame_meta_exact_stems),
             "frameMetaExactPreview": frame_meta_exact_stems[:20],
             "frameRecordPreview": frame_record_entries[:12],
+            "animationClipPzxCount": len(animation_stems),
+            "animationClipStreamCount": len(animation_entries),
+            "animationClipStreamIndexCounts": dict(sorted(animation_stream_index_counts.items())),
+            "animationClipThirdStreamCount": int(animation_stream_index_counts.get(2, 0)),
+            "animationClipCountDistribution": dict(sorted(animation_clip_count_distribution.items())),
+            "animationClipFrameIndexRange": animation_frame_index_range,
+            "animationClipDelayRange": animation_delay_range,
+            "animationClipXRange": animation_x_range,
+            "animationClipYRange": animation_y_range,
+            "animationClipNonzeroControlCount": animation_nonzero_control_count,
+            "animationClipPreview": animation_entries[:12],
             "regularMplPaletteCount": len(regular_mpl_palette_stems),
             "regularMplPalettePreview": regular_mpl_palette_stems[:20],
             "paletteCapacityFitCount": len(palette_capacity_fit_stems),
@@ -729,6 +842,9 @@ def main() -> None:
             f"{len(frame_meta_exact_stems)} stems already expose exact-fit tail subsections that decode as 7-byte flagged tuples or simple 6-byte tuples, so at least part of the secondary metadata is structured placement data rather than opaque blobs.",
             f"Those sections cluster into {frame_meta_group_count} opaque-led tail groups. {frame_meta_linked_group_count} groups already have an exact tuple overlap with at least one base frame record, while {frame_meta_tail_only_group_count} groups use only chunk indices that never appear in the base frame stream.",
             f"Current group classification counts are: base-frame-delta={frame_meta_group_link_counts.get('base-frame-delta', 0)}, overlay-track={frame_meta_group_link_counts.get('overlay-track', 0)}, chunk-linked-reuse={frame_meta_group_link_counts.get('chunk-linked-reuse', 0)}, mixed-or-unknown={frame_meta_group_link_counts.get('mixed-or-unknown', 0)}, opaque-only={frame_meta_group_link_counts.get('opaque-only', 0)}.",
+            f"Exact-fit animation clip streams are now recognized for {len(animation_stems)} stems ({len(animation_entries)} streams). {animation_stream_index_counts.get(2, 0)} of them occur at zlib stream index 2.",
+            "Those streams decode as concatenated clips: frameCount(u8) followed by frameIndex(u16), delay(u8), x(i16), y(i16), control(u8) per frame.",
+            f"Across the confirmed animation clip streams, frameIndex ranges {animation_frame_index_range[0] if animation_frame_index_range else 'n/a'}..{animation_frame_index_range[1] if animation_frame_index_range else 'n/a'}, delay stays within {animation_delay_range[0] if animation_delay_range else 'n/a'}..{animation_delay_range[1] if animation_delay_range else 'n/a'}, x stays within {animation_x_range[0] if animation_x_range else 'n/a'}..{animation_x_range[1] if animation_x_range else 'n/a'}, y stays within {animation_y_range[0] if animation_y_range else 'n/a'}..{animation_y_range[1] if animation_y_range else 'n/a'}, and nonzero control bytes appear {animation_nonzero_control_count} times.",
             "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
             "Once palette-capacity fits and shared MPL reuse are both accounted for, all 65 paired stems are covered by the current two-bank palette hypothesis.",
             "All MPL files share a fixed 32-bit signature 0x000A0230 and the field at offset 4 declares an apparent word count that is consistently actual_words + 5.",

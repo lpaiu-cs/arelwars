@@ -153,6 +153,63 @@ class PzxMetaSection:
     tuples: tuple[PzxMetaTuple, ...]
 
 
+@dataclass(frozen=True)
+class PzxAnimationFrame:
+    frame_index: int
+    delay: int
+    x: int
+    y: int
+    control: int
+
+
+@dataclass(frozen=True)
+class PzxAnimationClip:
+    offset: int
+    frame_count: int
+    frames: tuple[PzxAnimationFrame, ...]
+
+
+@dataclass(frozen=True)
+class PzxAnimationClipStream:
+    clips: tuple[PzxAnimationClip, ...]
+
+    @property
+    def clip_count(self) -> int:
+        return len(self.clips)
+
+    @property
+    def total_frame_count(self) -> int:
+        return sum(len(clip.frames) for clip in self.clips)
+
+    @property
+    def frame_index_range(self) -> tuple[int, int]:
+        values = [frame.frame_index for clip in self.clips for frame in clip.frames]
+        return (min(values), max(values))
+
+    @property
+    def delay_range(self) -> tuple[int, int]:
+        values = [frame.delay for clip in self.clips for frame in clip.frames]
+        return (min(values), max(values))
+
+    @property
+    def x_range(self) -> tuple[int, int]:
+        values = [frame.x for clip in self.clips for frame in clip.frames]
+        return (min(values), max(values))
+
+    @property
+    def y_range(self) -> tuple[int, int]:
+        values = [frame.y for clip in self.clips for frame in clip.frames]
+        return (min(values), max(values))
+
+    @property
+    def control_values(self) -> tuple[int, ...]:
+        return tuple(sorted({frame.control for clip in self.clips for frame in clip.frames}))
+
+    @property
+    def nonzero_control_count(self) -> int:
+        return sum(1 for clip in self.clips for frame in clip.frames if frame.control != 0)
+
+
 def read_zt1(data: bytes) -> Zt1File:
     if len(data) < 8:
         raise ValueError("ZT1 payload is too short")
@@ -602,6 +659,63 @@ def read_pzx_frame_record_stream(stream: bytes, chunk_count: int) -> PzxFrameRec
         return None
 
     return PzxFrameRecordStream(records=tuple(records), consumed=cursor, trailing=stream[cursor:])
+
+
+def _is_reasonable_pzx_animation_frame(delay: int, x: int, y: int) -> bool:
+    return 0 <= delay <= 32 and -256 <= x <= 256 and -256 <= y <= 256
+
+
+def read_pzx_animation_clip_stream(stream: bytes) -> PzxAnimationClipStream | None:
+    if len(stream) < 9:
+        return None
+
+    cursor = 0
+    clips: list[PzxAnimationClip] = []
+
+    while cursor < len(stream):
+        clip_offset = cursor
+        frame_count = stream[cursor]
+        if frame_count == 0:
+            return None
+        cursor += 1
+
+        frames: list[PzxAnimationFrame] = []
+        for _ in range(frame_count):
+            if cursor + 8 > len(stream):
+                return None
+
+            frame_index = struct.unpack("<H", stream[cursor : cursor + 2])[0]
+            delay = stream[cursor + 2]
+            x = struct.unpack("<h", stream[cursor + 3 : cursor + 5])[0]
+            y = struct.unpack("<h", stream[cursor + 5 : cursor + 7])[0]
+            control = stream[cursor + 7]
+
+            if not _is_reasonable_pzx_animation_frame(delay, x, y):
+                return None
+
+            frames.append(
+                PzxAnimationFrame(
+                    frame_index=frame_index,
+                    delay=delay,
+                    x=x,
+                    y=y,
+                    control=control,
+                )
+            )
+            cursor += 8
+
+        clips.append(
+            PzxAnimationClip(
+                offset=clip_offset,
+                frame_count=frame_count,
+                frames=tuple(frames),
+            )
+        )
+
+    if not clips:
+        return None
+
+    return PzxAnimationClipStream(clips=tuple(clips))
 
 
 def read_pzx_first_stream(stream: bytes, table_span: int) -> PzxFirstStream | None:

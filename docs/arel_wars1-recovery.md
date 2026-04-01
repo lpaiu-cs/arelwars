@@ -30,3 +30,4 @@ powershell -ExecutionPolicy Bypass -File tools/arel_wars1/inspect_libgameDSO.ps1
 ```
 
 자세한 호출축과 현재 reverse 방향은 [docs/arel_wars1-disassembly.md](/C:/vs/other/arelwars/docs/arel_wars1-disassembly.md)에 정리한다.
+세션별 중간 진행 보고는 [docs/arel_wars1-disassembly-progress.md](/C:/vs/other/arelwars/docs/arel_wars1-disassembly-progress.md)에 남긴다.
