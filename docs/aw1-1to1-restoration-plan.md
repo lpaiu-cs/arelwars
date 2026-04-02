@@ -33,6 +33,7 @@ References:
 - [aw1-script-opcode-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-script-opcode-notes.md)
 - [aw1-gxl-table-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-gxl-table-notes.md)
 - [aw1-stage-progression-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-stage-progression-notes.md)
+- [aw1-phase1-10-audit.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-phase1-10-audit.md)
 
 ## Hard Gaps To Close
 
