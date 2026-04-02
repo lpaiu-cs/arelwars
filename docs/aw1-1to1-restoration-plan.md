@@ -194,6 +194,7 @@ References:
     - deploy briefing now carries node-specific objective phase, favored lane, tactical bias, first-wave allied/enemy forecast, and recommended archetype labels, so route selection has pre-battle intel instead of only a title swap
     - deploy briefing now also exposes loadout presets, and the chosen preset changes battle start conditions such as queue depth, mana stock, tower upgrade tiers, opening panel, and hero starting lane when the next node launches
     - deploy loadouts now model hero roster role, skill preset, and tower opening policy, and those choices continue to affect skill casts, tower upgrade defaults, mana tempo, and hero deploy/return behavior after the battle begins
+    - active deploy loadouts now also retune allied/enemy wave directives and scripted scene beats, so roster/skill/policy choices change lane targeting, burst size, rally timing, and counter-pressure during the battle instead of only changing initial conditions
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest

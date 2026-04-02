@@ -1017,6 +1017,183 @@ export class RecoveryStageSystem {
     return plan[Math.min(Math.max(this.currentWaveIndex - 1, 0), plan.length - 1)] ?? null
   }
 
+  private adaptDirectiveForActiveLoadout(
+    side: 'enemy' | 'allied',
+    directive: RecoveryBattleWaveDirective | null,
+    source: 'preview' | 'scene' | 'tick',
+  ): RecoveryBattleWaveDirective | null {
+    if (!directive || !this.activeDeployLoadout) {
+      return directive
+    }
+
+    const activeLoadout = this.activeDeployLoadout
+    const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+    const defaultLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
+    const alternateLane = defaultLane === 'upper' ? 'lower' : 'upper'
+    let laneId = directive.laneId
+    let role = directive.role
+    let unitBurst = directive.unitBurst
+    let pressureBias = directive.pressureBias
+    const labelParts: string[] = []
+
+    if (side === 'allied') {
+      switch (activeLoadout.heroRosterRole) {
+        case 'vanguard':
+          laneId = defaultLane
+          if (role === 'screen' || role === 'support') {
+            role = 'push'
+          }
+          if (role === 'push' || role === 'siege') {
+            unitBurst += 1
+          }
+          pressureBias += 0.03
+          labelParts.push('vanguard')
+          break
+        case 'raider':
+          laneId = activeLoadout.heroLane ?? defaultLane
+          if (role === 'push' && (source !== 'preview' || this.currentObjectivePhase === 'siege' || this.currentObjectivePhase === 'hero-pressure')) {
+            role = 'skill-window'
+          }
+          if (source !== 'preview') {
+            unitBurst += 1
+          }
+          pressureBias += 0.04
+          labelParts.push('raider')
+          break
+        case 'defender':
+          if (role === 'push') {
+            role = source === 'scene' ? 'tower-rally' : 'support'
+          }
+          laneId = favoredLane
+          pressureBias += 0.04
+          labelParts.push('defense')
+          break
+        case 'support':
+          if (role === 'push' || role === 'screen') {
+            role = 'support'
+          }
+          laneId = activeLoadout.heroLane ?? alternateLane
+          pressureBias += 0.035
+          labelParts.push('support')
+          break
+        default:
+          break
+      }
+
+      switch (activeLoadout.skillPresetKind) {
+        case 'orders':
+          laneId = activeLoadout.dispatchLane ?? defaultLane
+          if (role === 'screen' || role === 'support') {
+            role = 'push'
+          }
+          if (role === 'push' || role === 'tower-rally') {
+            unitBurst += 1
+          }
+          pressureBias += 0.03
+          labelParts.push('orders')
+          break
+        case 'burst':
+          if (role === 'push' && (source !== 'preview' || this.currentObjectivePhase === 'skill-burst' || this.currentObjectivePhase === 'siege')) {
+            role = 'skill-window'
+          }
+          if (role === 'skill-window' || source === 'scene') {
+            unitBurst += 1
+          }
+          pressureBias += 0.04
+          labelParts.push('burst')
+          break
+        case 'support':
+          if (role === 'push') {
+            role = this.currentObjectivePhase === 'hero-pressure' ? 'tower-rally' : 'support'
+          }
+          pressureBias += 0.025
+          labelParts.push('support-kit')
+          break
+        case 'utility':
+          if (role === 'siege' && source !== 'preview') {
+            role = 'tower-rally'
+          }
+          pressureBias += 0.02
+          labelParts.push('utility')
+          break
+        default:
+          break
+      }
+
+      switch (activeLoadout.towerPolicyKind) {
+        case 'population-first':
+          if (role === 'push' || role === 'screen') {
+            unitBurst += 1
+          }
+          labelParts.push('population')
+          break
+        case 'mana-first':
+          if (this.currentObjectivePhase === 'tower-management' && role === 'push') {
+            role = 'support'
+          }
+          pressureBias += 0.02
+          labelParts.push('mana')
+          break
+        case 'attack-first':
+          if (role === 'support') {
+            role = 'siege'
+          }
+          laneId = defaultLane
+          pressureBias += 0.03
+          if (role === 'siege' || source === 'scene') {
+            unitBurst += 1
+          }
+          labelParts.push('attack')
+          break
+        default:
+          break
+      }
+    } else {
+      if (activeLoadout.heroRosterRole === 'defender' || activeLoadout.heroRosterRole === 'support') {
+        if ((role === 'siege' || role === 'push') && laneId === favoredLane) {
+          unitBurst = Math.max(unitBurst - 1, 1)
+          pressureBias -= activeLoadout.heroRosterRole === 'defender' ? 0.03 : 0.02
+          labelParts.push(activeLoadout.heroRosterRole === 'defender' ? 'screened' : 'softened')
+        }
+      }
+      if (activeLoadout.heroRosterRole === 'raider' && role === 'hero-bait') {
+        laneId = activeLoadout.heroLane ?? defaultLane
+        labelParts.push('counter-hero')
+      }
+      if (activeLoadout.skillPresetKind === 'burst' && source === 'scene' && role === 'screen') {
+        role = 'hero-bait'
+        pressureBias += 0.02
+        labelParts.push('burst-bait')
+      }
+      if (activeLoadout.towerPolicyKind === 'attack-first' && role === 'screen') {
+        role = 'push'
+        pressureBias += 0.02
+        labelParts.push('counter-push')
+      }
+      if (activeLoadout.towerPolicyKind === 'mana-first' && role === 'hero-bait') {
+        pressureBias -= 0.01
+        labelParts.push('delayed')
+      }
+    }
+
+    return {
+      ...directive,
+      laneId,
+      role,
+      unitBurst: clamp(unitBurst, 1, 5),
+      pressureBias: clamp(pressureBias, 0.02, 0.4),
+      label: labelParts.length > 0 ? `${directive.label} · ${labelParts.join('+')}` : directive.label,
+    }
+  }
+
+  private currentLoadoutDirective(
+    plan: RecoveryBattleWaveDirective[],
+    side: 'enemy' | 'allied',
+    source: 'preview' | 'scene' | 'tick',
+  ): RecoveryBattleWaveDirective | null {
+    return this.adaptDirectiveForActiveLoadout(side, this.currentWaveDirective(plan), source)
+  }
+
   private resetWaveCountdown(
     side: 'enemy' | 'allied',
     directive: RecoveryBattleWaveDirective | null,
@@ -1074,6 +1251,55 @@ export class RecoveryStageSystem {
     }
   }
 
+  private applyLoadoutWaveBeat(
+    side: 'enemy' | 'allied',
+    directive: RecoveryBattleWaveDirective | null,
+    source: 'scene' | 'tick',
+  ): string | null {
+    const activeLoadout = this.activeDeployLoadout
+    if (!directive || !activeLoadout) {
+      return null
+    }
+
+    if (side === 'allied') {
+      if (activeLoadout.skillPresetKind === 'orders' && (directive.role === 'push' || directive.role === 'siege')) {
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+        this.selectedDispatchLane = directive.laneId
+      }
+      if (activeLoadout.skillPresetKind === 'burst' && directive.role === 'skill-window') {
+        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - (source === 'scene' ? 0.028 : 0.018), 0.08, 1)
+        this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 700, this.lastUpdateNowMs)
+      }
+      if (activeLoadout.skillPresetKind === 'support' && (directive.role === 'support' || directive.role === 'tower-rally')) {
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.025, 0.1, 1)
+      }
+      if (activeLoadout.towerPolicyKind === 'mana-first') {
+        this.previewManaRatio = clamp(this.previewManaRatio + (source === 'scene' ? 0.05 : 0.03), 0.06, 1)
+      } else if (activeLoadout.towerPolicyKind === 'attack-first' && (directive.role === 'push' || directive.role === 'siege')) {
+        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.016, 0.08, 1)
+      } else if (activeLoadout.towerPolicyKind === 'population-first') {
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+      }
+
+      if (activeLoadout.heroRosterRole === 'support' || activeLoadout.heroRosterRole === 'defender') {
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.015, 0.1, 1)
+      }
+      return `${activeLoadout.label} script`
+    }
+
+    if ((activeLoadout.heroRosterRole === 'defender' || activeLoadout.heroRosterRole === 'support') && directive.role === 'siege') {
+      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.01, 0.1, 1)
+    }
+    if (activeLoadout.skillPresetKind === 'orders' && directive.role === 'push' && this.selectedDispatchLane) {
+      this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
+        this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.03,
+        0.08,
+        1,
+      )
+    }
+    return `${activeLoadout.label} counter-script`
+  }
+
   private triggerSceneWave(
     side: 'enemy' | 'allied',
     note: string,
@@ -1089,11 +1315,12 @@ export class RecoveryStageSystem {
     }
 
     const plan = side === 'enemy' ? this.enemyWavePlan : this.alliedWavePlan
-    const directive = this.currentWaveDirective(plan)
+    const directive = this.currentLoadoutDirective(plan, side, 'scene')
     this.applyWaveDirective(side, directive)
+    const loadoutBeat = this.applyLoadoutWaveBeat(side, directive, 'scene')
     this.resetWaveCountdown(side, directive)
     this.evaluateBattleResolution()
-    this.lastScriptedBeatNote = directive ? `${note} (${directive.label})` : note
+    this.lastScriptedBeatNote = directive ? `${note} (${directive.label}${loadoutBeat ? ` / ${loadoutBeat}` : ''})` : note
   }
 
   private resolveBattleOutcome(outcome: 'victory' | 'defeat', reason: string): void {
@@ -2814,8 +3041,8 @@ export class RecoveryStageSystem {
         enemyWaveCountdownBeats: this.enemyWaveCountdownBeats,
         alliedWaveCountdownBeats: this.alliedWaveCountdownBeats,
         favoredLane: this.currentStageBattleProfile.favoredLane,
-        enemyDirective: this.currentWaveDirective(this.enemyWavePlan),
-        alliedDirective: this.currentWaveDirective(this.alliedWavePlan),
+        enemyDirective: this.currentLoadoutDirective(this.enemyWavePlan, 'enemy', 'preview'),
+        alliedDirective: this.currentLoadoutDirective(this.alliedWavePlan, 'allied', 'preview'),
       },
       resolution: {
         status: this.battleResolutionOutcome ?? 'active',
@@ -2842,8 +3069,8 @@ export class RecoveryStageSystem {
     const profile = this.currentStageBattleProfile
     const favoredLane = profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
-    const enemyDirective = this.currentWaveDirective(this.enemyWavePlan)
-    const alliedDirective = this.currentWaveDirective(this.alliedWavePlan)
+    const enemyDirective = this.currentLoadoutDirective(this.enemyWavePlan, 'enemy', 'tick')
+    const alliedDirective = this.currentLoadoutDirective(this.alliedWavePlan, 'allied', 'tick')
 
     this.enemyWaveCountdownBeats = Math.max(this.enemyWaveCountdownBeats - 1, 0)
     if (this.enemyWaveCountdownBeats === 0) {
@@ -2860,8 +3087,10 @@ export class RecoveryStageSystem {
         pressureBias: 0,
         label: `enemy push ${laneId}`,
       }
-      this.applyWaveDirective('enemy', enemyDirective ?? fallbackDirective)
-      this.resetWaveCountdown('enemy', enemyDirective)
+      const resolvedDirective = enemyDirective ?? this.adaptDirectiveForActiveLoadout('enemy', fallbackDirective, 'tick')
+      this.applyWaveDirective('enemy', resolvedDirective)
+      this.applyLoadoutWaveBeat('enemy', resolvedDirective, 'tick')
+      this.resetWaveCountdown('enemy', resolvedDirective)
     }
 
     this.alliedWaveCountdownBeats = Math.max(this.alliedWaveCountdownBeats - 1, 0)
@@ -2878,9 +3107,11 @@ export class RecoveryStageSystem {
         pressureBias: 0,
         label: `ally push ${laneId}`,
       }
-      this.applyWaveDirective('allied', alliedDirective ?? fallbackDirective)
+      const resolvedDirective = alliedDirective ?? this.adaptDirectiveForActiveLoadout('allied', fallbackDirective, 'tick')
+      this.applyWaveDirective('allied', resolvedDirective)
+      this.applyLoadoutWaveBeat('allied', resolvedDirective, 'tick')
       this.queuedUnitCount = Math.max(this.queuedUnitCount - Math.min(this.queuedUnitCount, reinforcements), 0)
-      this.resetWaveCountdown('allied', alliedDirective)
+      this.resetWaveCountdown('allied', resolvedDirective)
     }
 
     ;(['upper', 'lower'] as const).forEach((laneId, index) => {
