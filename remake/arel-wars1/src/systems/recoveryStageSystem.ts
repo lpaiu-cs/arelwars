@@ -250,6 +250,8 @@ export class RecoveryStageSystem {
 
   private lastActionNote: string | null = null
 
+  private lastScriptedBeatNote: string | null = null
+
   constructor(
     catalog: RecoveryCatalog,
     previewManifest: RecoveryPreviewManifest,
@@ -407,6 +409,7 @@ export class RecoveryStageSystem {
     this.lastChannelBeat = -1
     this.resetInteractionState()
     this.seedBattlePreviewState(storyboard)
+    this.applyDialogueBeat(storyboard, this.currentDialogueEvent(storyboard))
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration()
     this.scheduleNextFrame(storyboard.previewStem, nowMs)
   }
@@ -446,6 +449,7 @@ export class RecoveryStageSystem {
     }
 
     this.dialogueIndex += 1
+    this.applyDialogueBeat(storyboard, this.currentDialogueEvent(storyboard))
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration()
   }
 
@@ -457,6 +461,7 @@ export class RecoveryStageSystem {
     this.lastChannelBeat = -1
     this.resetInteractionState()
     this.seedBattlePreviewState(this.storyboards[this.storyboardIndex])
+    this.applyDialogueBeat(this.storyboards[this.storyboardIndex], this.currentDialogueEvent(this.storyboards[this.storyboardIndex]))
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration() + STORYBOARD_GAP_MS
     this.scheduleNextFrame(this.storyboards[this.storyboardIndex].previewStem, nowMs)
   }
@@ -557,6 +562,132 @@ export class RecoveryStageSystem {
     }
     const { commandIndex: _commandIndex, ...cue } = pickedMnemonic
     return cue
+  }
+
+  private applyDialogueBeat(
+    storyboard: RecoveryStageStoryboard,
+    event: RecoveryDialogueEvent | null,
+  ): void {
+    this.lastScriptedBeatNote = null
+    if (!event) {
+      return
+    }
+
+    const tutorialCue = this.resolveTutorialCue(storyboard, event)
+    const opcodeCue = this.resolveOpcodeCue(event)
+    const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+
+    switch (tutorialCue?.chainId) {
+      case 'battle-hud-dispatch-arrows': {
+        this.selectedDispatchLane = favoredLane
+        this.queuedUnitCount = Math.max(
+          this.queuedUnitCount,
+          this.currentStageBattleProfile.dispatchBoost >= 0.16 ? 2 : 1,
+        )
+        const previousActionNote = this.lastActionNote
+        this.commitLaneDispatch(favoredLane)
+        this.lastActionNote = previousActionNote
+        this.lastScriptedBeatNote = `tutorial scripted ${favoredLane} lane push`
+        return
+      }
+      case 'battle-hud-unit-card':
+        if (this.applyScriptedAction('produce-unit', 'tutorial queued unit production')) {
+          return
+        }
+        break
+      case 'battle-hud-mana-bar':
+        this.previewManaRatio = clamp(
+          this.previewManaRatio + 0.08 + this.currentStageBattleProfile.manaSurge * 0.14,
+          0.06,
+          1,
+        )
+        this.lastScriptedBeatNote = 'tutorial restored mana context'
+        return
+      case 'battle-hud-hero-sortie':
+        if (this.applyScriptedAction('deploy-hero', `tutorial auto-deployed hero to ${favoredLane}`)) {
+          return
+        }
+        break
+      case 'battle-hud-hero-return':
+        if (this.applyScriptedAction('return-to-tower', 'tutorial recalled hero to tower')) {
+          return
+        }
+        break
+      case 'tower-menu-highlight':
+        this.panelOverride = 'tower'
+        this.lastScriptedBeatNote = 'tutorial focused tower panel'
+        return
+      case 'mana-upgrade-highlight':
+      case 'population-upgrade-highlight':
+        this.panelOverride = 'tower'
+        if (
+          this.applyScriptedAction(
+            'upgrade-tower-stat',
+            tutorialCue.chainId === 'mana-upgrade-highlight'
+              ? 'tutorial advanced mana upgrade'
+              : 'tutorial advanced population upgrade',
+          )
+        ) {
+          return
+        }
+        break
+      case 'skill-menu-highlight':
+        this.panelOverride = 'skill'
+        this.lastScriptedBeatNote = 'tutorial opened skill channel'
+        return
+      case 'skill-slot-highlight':
+        this.panelOverride = 'skill'
+        if (this.applyScriptedAction('cast-skill', 'tutorial fired skill beat')) {
+          return
+        }
+        break
+      case 'item-menu-highlight':
+        this.panelOverride = 'item'
+        if (this.applyScriptedAction('use-item', 'tutorial fired item beat')) {
+          return
+        }
+        this.lastScriptedBeatNote = 'tutorial opened item channel'
+        return
+      case 'system-menu-highlight':
+        this.panelOverride = 'system'
+        this.lastScriptedBeatNote = 'tutorial surfaced system panel'
+        return
+      case 'quest-panel-highlight':
+        this.panelOverride = 'system'
+        this.lastScriptedBeatNote = 'tutorial surfaced quest rewards'
+        return
+      default:
+        break
+    }
+
+    if (!opcodeCue) {
+      return
+    }
+
+    if (includesAny(opcodeCue.action, ['tower', 'mana', 'population'])) {
+      this.panelOverride = 'tower'
+    } else if (includesAny(opcodeCue.action, ['skill'])) {
+      this.panelOverride = 'skill'
+    } else if (includesAny(opcodeCue.action, ['item'])) {
+      this.panelOverride = 'item'
+    } else if (includesAny(opcodeCue.action, ['system', 'quest'])) {
+      this.panelOverride = 'system'
+    }
+
+    if (includesAny(opcodeCue.action, ['pose', 'emphasis', 'shock'])) {
+      const targetLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+      this.laneBattleState[targetLane].alliedPressure = clamp(
+        this.laneBattleState[targetLane].alliedPressure + 0.03,
+        0.08,
+        1,
+      )
+      this.lastScriptedBeatNote = `opcode pulse ${opcodeCue.action}`
+      return
+    }
+
+    if (includesAny(opcodeCue.action, ['highlight', 'focus', 'anchor'])) {
+      this.lastScriptedBeatNote = `opcode focus ${opcodeCue.action}`
+    }
   }
 
   private buildChannelStates(storyboard: RecoveryStageStoryboard): RecoveryBattleChannelState[] {
@@ -1004,6 +1135,7 @@ export class RecoveryStageSystem {
       enabledInputs: Array.from(enabledInputs),
       blockedInputs: Array.from(blockedInputs),
       primaryHint,
+      scriptedBeatNote: this.lastScriptedBeatNote,
       lastActionId: this.lastActionId,
       lastActionAccepted: this.lastActionAccepted,
       lastActionNote: this.lastActionNote,
@@ -1030,6 +1162,7 @@ export class RecoveryStageSystem {
     this.towerUpgradeLevels.mana = 1
     this.towerUpgradeLevels.population = 1
     this.towerUpgradeLevels.attack = 1
+    this.lastScriptedBeatNote = null
     this.lastActionId = null
     this.lastActionAccepted = false
     this.lastActionNote = null
@@ -1184,6 +1317,25 @@ export class RecoveryStageSystem {
         this.lastActionNote = `${actionId} accepted`
         break
     }
+  }
+
+  private applyScriptedAction(actionId: RecoveryGameplayActionId, note: string): boolean {
+    const snapshot = this.getSnapshot()
+    if (!snapshot) {
+      return false
+    }
+    const accepted =
+      snapshot.gameplayState.enabledInputs.includes(actionId)
+      && !snapshot.gameplayState.blockedInputs.includes(actionId)
+    if (!accepted) {
+      return false
+    }
+
+    const previousActionNote = this.lastActionNote
+    this.applyAction(actionId, snapshot)
+    this.lastActionNote = previousActionNote
+    this.lastScriptedBeatNote = note
+    return true
   }
 
   private cooldownRatio(endsAtMs: number, totalMs: number): number {

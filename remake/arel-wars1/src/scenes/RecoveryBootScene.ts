@@ -342,10 +342,11 @@ export class RecoveryBootScene extends Phaser.Scene {
       .map((entry) => `${entry.laneId}:${entry.momentum} ${entry.alliedUnits}-${entry.enemyUnits}`)
       .join(' · ')
     const signals = profile.archetypeSignals.length > 0 ? profile.archetypeSignals.join('/') : 'baseline'
+    const scriptedBeat = state.scriptedBeatNote ? `script ${state.scriptedBeatNote}` : 'script idle'
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {

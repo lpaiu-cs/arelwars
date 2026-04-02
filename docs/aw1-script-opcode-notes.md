@@ -42,6 +42,7 @@ Those persistent inputs now feed a small two-lane battle simulation in the recov
 The lane simulation is now seeded from per-stage runtime fields, map-branch hints, render intensity, and featured hero archetypes, which gives each storyboard a different favored lane and wave tempo.
 Those featured archetypes now also inject concrete lane rules: Dispatch boosts allied commit size, Tower Defense reduces incoming pressure, Recall swings frontline recovery, Armageddon creates burst unit loss, and mana-linked families refund part of skill pressure.
 Keyboard actions in the recovery scene now pass through that summary layer, which lets the preview accept or reject panel, quest, dispatch, production, and hero toggles according to the current tutorial state.
+Dialogue changes now also emit one-shot scripted battle beats from the same cue layer, so tutorial focus lines can automatically queue units, push a lane, deploy or recall the hero, trigger skill or item bursts, and advance tower upgrades without overwriting the manual input log.
 
 ### Tutorial / UI Guidance Cluster
 

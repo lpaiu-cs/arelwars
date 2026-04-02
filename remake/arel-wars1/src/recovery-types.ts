@@ -441,6 +441,7 @@ export interface RecoveryGameplayState {
   enabledInputs: RecoveryGameplayActionId[]
   blockedInputs: RecoveryGameplayActionId[]
   primaryHint: string
+  scriptedBeatNote: string | null
   lastActionId: RecoveryGameplayActionId | null
   lastActionAccepted: boolean
   lastActionNote: string | null
