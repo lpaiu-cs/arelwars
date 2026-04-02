@@ -9,115 +9,7 @@ import shutil
 from typing import Any
 
 from formats import parse_script_prefix
-
-
-OPCODE_HEURISTIC_OVERRIDES: dict[str, dict[str, Any]] = {
-    "cmd-02": {
-        "label": "tutorial-focus",
-        "category": "ui-focus",
-        "confidence": "medium",
-        "notes": [
-            "Clusters around tutorial scripts and explicit touch or HUD instructions.",
-            "Best current reading is a guided focus or highlight opcode.",
-        ],
-    },
-    "cmd-05": {
-        "label": "dialogue-pose-helper",
-        "category": "presentation",
-        "confidence": "medium",
-        "notes": [
-            "Usually follows portrait selection and is usually closed by cmd-08.",
-            "Best current reading is a dialogue pose, mouth, or focus helper.",
-        ],
-    },
-    "cmd-06": {
-        "label": "tutorial-focus-submode",
-        "category": "ui-focus",
-        "confidence": "medium",
-        "notes": [
-            "Appears heavily in tutorial scripts with arrows, cards, and menu references.",
-            "Best current reading is a submode or target selector for tutorial focus.",
-        ],
-    },
-    "cmd-08": {
-        "label": "presentation-close",
-        "category": "presentation",
-        "confidence": "medium",
-        "notes": [
-            "Frequently terminates pose-helper sequences that include cmd-05.",
-            "Best current reading is a close or release presentation command.",
-        ],
-    },
-    "cmd-0a": {
-        "label": "emphasis-start",
-        "category": "emphasis",
-        "confidence": "medium",
-        "notes": [
-            "Often clusters with cmd-0b around surprise or impact lines.",
-            "Best current reading is emphasis, shake, or dramatic-start markup.",
-        ],
-    },
-    "cmd-0b": {
-        "label": "emphasis-end",
-        "category": "emphasis",
-        "confidence": "medium",
-        "notes": [
-            "Pairs strongly with cmd-0a and appears on shocked or shouted lines.",
-            "Best current reading is a complementary emphasis or shock helper.",
-        ],
-    },
-    "cmd-0c": {
-        "label": "tutorial-target-anchor",
-        "category": "ui-focus",
-        "confidence": "medium",
-        "notes": [
-            "Appears in tutorial and scripted explanation contexts with cmd-02 and cmd-00.",
-            "Best current reading is a tutorial anchor or focus target opcode.",
-        ],
-    },
-    "cmd-10": {
-        "label": "scene-entry-preset",
-        "category": "scene-bootstrap",
-        "confidence": "low",
-        "notes": [
-            "Frequently appears at scene openings before portrait or pose helpers.",
-            "Best current reading is a scene-entry layout or camera preset.",
-        ],
-    },
-    "cmd-18": {
-        "label": "scene-entry-preset",
-        "category": "scene-bootstrap",
-        "confidence": "low",
-        "notes": [
-            "Clusters with scene starts and portrait setup.",
-            "Best current reading is another scene-entry preset variant.",
-        ],
-    },
-    "cmd-43": {
-        "label": "tutorial-bootstrap",
-        "category": "scene-bootstrap",
-        "confidence": "medium",
-        "notes": [
-            "Appears at tutorial openings before chained focus helpers.",
-            "Best current reading is a tutorial bootstrap or narrator mode switch.",
-        ],
-    },
-}
-
-FEATURED_ARCHETYPES = [
-    "dispatch",
-    "tower-defense",
-    "naturalhealing",
-    "recall",
-    "hpup",
-    "returntonature",
-    "manawall",
-    "armageddon",
-    "managain",
-    "special-stun",
-    "special-smoke",
-    "special-armageddonbuff",
-]
+from runtime_heuristics import FEATURED_ARCHETYPES, RUNTIME_FEATURED_MNEMONICS, render_intensity_label
 
 
 def parse_args() -> argparse.Namespace:
@@ -126,8 +18,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--parsed-dir", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables")
     parser.add_argument("--binary-report", type=Path, required=True, help="Path to recovery/arel_wars1/binary_asset_report.json")
-    parser.add_argument("--script-report", type=Path, required=True, help="Path to recovery/arel_wars1/script_event_report.json")
     parser.add_argument("--script-root", type=Path, required=True, help="Path to recovery/arel_wars1/decoded/zt1/assets/script_eng")
+    parser.add_argument("--opcode-map", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json")
+    parser.add_argument("--stage-map-proofs", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json")
     parser.add_argument("--output", type=Path, required=True, help="Path to write the local blueprint json")
     parser.add_argument("--web-output", type=Path, help="Optional path under public/ to copy the same json")
     return parser.parse_args()
@@ -145,26 +38,6 @@ def write_json(path: Path, payload: object) -> None:
 def copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
-
-
-def map_group_for_variant(variant_candidate: int) -> int:
-    if variant_candidate <= 1:
-        return 0
-    if variant_candidate == 2:
-        return 1
-    if variant_candidate == 3:
-        return 2
-    if variant_candidate == 4:
-        return 3
-    return 4
-
-
-def render_intensity_label(region_candidate: int, tier_candidate: int, story_flag_candidate: int) -> str:
-    if tier_candidate >= 50 or region_candidate >= 9:
-        return "high"
-    if story_flag_candidate == 1:
-        return "medium"
-    return "low"
 
 
 def recommend_archetypes(
@@ -196,7 +69,7 @@ def recommend_archetypes(
         recommendations.append("armageddon")
     if region >= 9:
         recommendations.append("managain")
-    if any(label in {"tutorial-focus", "tutorial-bootstrap"} for label in opcode_labels):
+    if any(label in {"tutorial-focus-anchor", "tutorial-bootstrap"} for label in opcode_labels):
         recommendations.append("special-stun")
 
     seen: set[str] = set()
@@ -209,22 +82,37 @@ def recommend_archetypes(
     return filtered
 
 
-def compact_opcode(profile: dict[str, Any]) -> dict[str, Any]:
-    mnemonic = str(profile["mnemonic"])
-    override = OPCODE_HEURISTIC_OVERRIDES.get(mnemonic, {})
+def compact_opcode(entry: dict[str, Any]) -> dict[str, Any]:
+    signal_profile = entry.get("signalProfile", {})
+    variant_hints = entry.get("variantHints", [])
     return {
-        "mnemonic": mnemonic,
-        "label": override.get("label", mnemonic),
-        "category": override.get("category", "unknown"),
-        "confidence": override.get("confidence", "low"),
-        "count": int(profile["count"]),
-        "topArgs": profile.get("topArgs", [])[:6],
-        "topSequences": profile.get("topSequences", [])[:4],
-        "notes": override.get("notes", []),
+        "mnemonic": str(entry["mnemonic"]),
+        "label": str(entry.get("label", entry["mnemonic"])),
+        "action": str(entry.get("action", "unknown-runtime-action")),
+        "category": str(entry.get("category", "unknown")),
+        "confidence": str(entry.get("confidence", "low")),
+        "count": int(entry.get("count", 0)),
+        "topArgs": signal_profile.get("topArgs", [])[:6],
+        "topSequences": signal_profile.get("topSequences", [])[:4],
+        "notes": list(entry.get("evidenceSummary", [])),
+        "variantHints": [
+            {
+                "variant": hint.get("variant"),
+                "label": hint.get("label"),
+                "action": hint.get("action"),
+                "confidence": hint.get("confidence"),
+                "count": hint.get("count"),
+            }
+            for hint in variant_hints[:4]
+        ],
     }
 
 
-def summarize_family_opcodes(script_root: Path, family: dict[str, Any]) -> list[dict[str, Any]]:
+def summarize_family_opcodes(
+    script_root: Path,
+    family: dict[str, Any],
+    opcode_actions_by_mnemonic: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
     opcode_counter: Counter[str] = Counter()
     for script_name in family.get("scriptFiles", []):
         path = script_root / str(script_name)
@@ -244,48 +132,74 @@ def summarize_family_opcodes(script_root: Path, family: dict[str, Any]) -> list[
                 if command.mnemonic.startswith("cmd-"):
                     opcode_counter.update([command.mnemonic])
 
-    return [
-        {"mnemonic": mnemonic, "count": count, **OPCODE_HEURISTIC_OVERRIDES.get(mnemonic, {})}
-        for mnemonic, count in opcode_counter.most_common(6)
-    ]
+    cues: list[dict[str, Any]] = []
+    for mnemonic, count in opcode_counter.most_common(6):
+        action = opcode_actions_by_mnemonic.get(mnemonic, {})
+        signal_profile = action.get("signalProfile", {})
+        cues.append(
+            {
+                "mnemonic": mnemonic,
+                "label": str(action.get("label", mnemonic)),
+                "action": str(action.get("action", "unknown-runtime-action")),
+                "category": str(action.get("category", "unknown")),
+                "confidence": str(action.get("confidence", "low")),
+                "count": count,
+                "familyCount": count,
+                "topArgs": signal_profile.get("topArgs", [])[:4],
+                "topSequences": signal_profile.get("topSequences", [])[:3],
+                "notes": list(action.get("evidenceSummary", []))[:3],
+                "variantHints": [
+                    {
+                        "variant": hint.get("variant"),
+                        "label": hint.get("label"),
+                        "action": hint.get("action"),
+                        "confidence": hint.get("confidence"),
+                    }
+                    for hint in list(action.get("variantHints", []))[:2]
+                ],
+            }
+        )
+    return cues
+
+
+def build_stage_map_binding(proof: dict[str, Any] | None) -> dict[str, Any] | None:
+    if proof is None:
+        return None
+    return {
+        "templateGroupId": int(proof.get("templateGroupId", -1)),
+        "mapPairIndices": list(proof.get("candidateMapBinPair", [])),
+        "preferredMapIndexHeuristic": proof.get("preferredMapIndex"),
+        "confidence": str(proof.get("confidence", "weak-heuristic")),
+        "proofScore": float(proof.get("proofScore", 0.0)),
+        "proofType": str(proof.get("proofType", "variant-template-plus-story-branch")),
+        "storyBranch": str(proof.get("storyBranch", "primary")),
+        "pairGeometrySignature": str(proof.get("pairGeometrySignature", "missing")),
+        "evidenceSummary": list(proof.get("evidenceSummary", []))[:4],
+    }
 
 
 def build_stage_blueprints(
     stage_progression: dict[str, Any],
-    map_binding: dict[str, Any],
+    stage_map_proofs: dict[str, Any],
     archetypes_by_id: dict[str, dict[str, Any]],
+    opcode_actions_by_mnemonic: dict[str, dict[str, Any]],
     script_root: Path,
 ) -> list[dict[str, Any]]:
-    group_candidates = {
-        int(group["groupId"]): group for group in map_binding["mapGroupSummary"]["groupCandidates"]
+    proofs_by_family = {
+        str(item["familyId"]): item for item in stage_map_proofs.get("stageProofs", []) if isinstance(item, dict)
     }
     stage_blueprints: list[dict[str, Any]] = []
 
     for family in stage_progression.get("families", []):
+        if not isinstance(family, dict):
+            continue
         runtime_fields = family.get("runtimeFieldCandidates") if isinstance(family, dict) else None
-        map_binding_candidate = None
-        render_intent = None
-        opcode_cues = summarize_family_opcodes(script_root, family)
+        proof = proofs_by_family.get(str(family["familyId"]))
+        map_binding_candidate = build_stage_map_binding(proof)
+        opcode_cues = summarize_family_opcodes(script_root, family, opcode_actions_by_mnemonic)
 
+        render_intent = None
         if isinstance(runtime_fields, dict):
-            variant = int(runtime_fields.get("variantCandidate", 0))
-            story_flag = int(runtime_fields.get("storyFlagCandidate", 0))
-            group_id = map_group_for_variant(variant)
-            group = group_candidates.get(group_id)
-            pair = list(group["candidateMapBinPair"]) if group else []
-            preferred_map_index = None
-            confidence = "low"
-            rationale = "No concrete map pointer yet; this is the strongest current variant-to-template heuristic."
-            if pair:
-                preferred_map_index = pair[1] if story_flag == 1 and len(pair) > 1 else pair[0]
-                confidence = "medium" if bool(group and group.get("hasNonZeroMetric")) else "low"
-            map_binding_candidate = {
-                "templateGroupId": group_id,
-                "mapPairIndices": pair,
-                "preferredMapIndexHeuristic": preferred_map_index,
-                "confidence": confidence,
-                "rationale": rationale,
-            }
             render_intent = {
                 "effectIntensity": render_intensity_label(
                     int(runtime_fields.get("regionCandidate", 0)),
@@ -363,23 +277,31 @@ def main() -> None:
     script_root = args.script_root.resolve()
 
     stage_progression = read_json(parsed_dir / "AW1.stage_progression.json")
-    map_binding = read_json(parsed_dir / "AW1.map_binding_candidates.json")
     archetype_report = read_json(parsed_dir / "AW1.hero_runtime_archetypes.json")
     effect_runtime = read_json(parsed_dir / "AW1.effect_runtime_links.json")
     binary_report = read_json(args.binary_report.resolve())
-    script_report = read_json(args.script_report.resolve())
+    opcode_map = read_json(args.opcode_map.resolve())
+    stage_map_proofs = read_json(args.stage_map_proofs.resolve())
 
     archetypes = archetype_report.get("archetypes", [])
     archetypes_by_id = {str(item["archetypeId"]): item for item in archetypes}
-    stage_blueprints = build_stage_blueprints(stage_progression, map_binding, archetypes_by_id, script_root)
+    opcode_actions = opcode_map.get("opcodeActions", [])
+    opcode_actions_by_mnemonic = {
+        str(item["mnemonic"]): item for item in opcode_actions if isinstance(item, dict)
+    }
+    stage_blueprints = build_stage_blueprints(
+        stage_progression,
+        stage_map_proofs,
+        archetypes_by_id,
+        opcode_actions_by_mnemonic,
+        script_root,
+    )
 
-    opcode_profiles = script_report.get("unknownCommandProfiles", [])
-    heuristics = []
-    for mnemonic in OPCODE_HEURISTIC_OVERRIDES:
-        profile = next((item for item in opcode_profiles if item.get("mnemonic") == mnemonic), None)
-        if profile is None:
-            continue
-        heuristics.append(compact_opcode(profile))
+    heuristics = [
+        compact_opcode(opcode_actions_by_mnemonic[mnemonic])
+        for mnemonic in RUNTIME_FEATURED_MNEMONICS
+        if mnemonic in opcode_actions_by_mnemonic
+    ]
 
     featured_archetypes = [
         archetypes_by_id[archetype_id]
@@ -392,11 +314,12 @@ def main() -> None:
         "archetypeCount": len(archetypes),
         "featuredArchetypeCount": len(featured_archetypes),
         "opcodeHeuristicCount": len(heuristics),
+        "stageMapProofCount": int(stage_map_proofs.get("summary", {}).get("stageProofCount", 0)),
     }
     findings = [
-        "Stage blueprints now carry map-template candidates, opcode cue summaries, and recommended hero archetypes in one engine-facing export.",
-        "The map binding still remains heuristic, but the strongest current rule is variantCandidate -> template group with storyFlag selecting the preferred map inside the pair.",
-        "Opcode heuristics, hero runtime archetypes, and render findings are now unified so the Phaser runtime can consume them without reading reverse-engineering reports directly.",
+        "Stage blueprints now consume an explicit stage-map proof layer instead of baking the map-pair heuristic directly into the exporter.",
+        "Opcode heuristics now come from AW1.opcode_action_map.json, which separates mnemonic-wide labels from variant-level action hints.",
+        "The runtime still uses heuristic stage-map bindings, but proof scores and evidence summaries are now exported alongside the preferred map index.",
     ]
 
     blueprint = {

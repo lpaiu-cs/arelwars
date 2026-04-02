@@ -213,7 +213,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     const stageTitle = snapshot.currentStoryboard.stageBlueprint?.title ?? `Stem ${previewStem.stem}`
     const mapBinding = snapshot.currentStoryboard.stageBlueprint?.mapBinding
     const mapLine = mapBinding
-      ? `Map pair ${mapBinding.mapPairIndices.join('/')} → ${mapBinding.preferredMapIndexHeuristic ?? 'n/a'}`
+      ? `Map pair ${mapBinding.mapPairIndices.join('/')} → ${mapBinding.preferredMapIndexHeuristic ?? 'n/a'} · ${mapBinding.confidence} ${mapBinding.proofScore.toFixed(2)}`
       : `Stem ${previewStem.stem}`
 
     this.spriteLabel.setText(`${stageTitle} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)
@@ -282,7 +282,8 @@ export class RecoveryBootScene extends Phaser.Scene {
       .slice(0, 3)
       .map((entry) => `${entry.label} ${entry.phaseLabel}`)
       .join(' · ')
-    const opcodeCue = snapshot.currentStoryboard.stageBlueprint?.opcodeCues[0]?.label
+    const opcodeCueEntry = snapshot.currentStoryboard.stageBlueprint?.opcodeCues[0]
+    const opcodeCue = opcodeCueEntry ? `${opcodeCueEntry.label}/${opcodeCueEntry.action}` : null
     const packed = snapshot.renderState.packedPixelStemRule ? '179 shade' : 'std render'
     return `${headline} · fx ${snapshot.renderState.effectPulseCount} · ${packed}${opcodeCue ? ` · ${opcodeCue}` : ''}`
   }

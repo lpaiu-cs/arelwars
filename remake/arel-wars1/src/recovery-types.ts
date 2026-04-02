@@ -36,12 +36,20 @@ export interface RecoveryOpcodeCounterEntry {
 export interface RecoveryOpcodeHeuristic {
   mnemonic: string
   label: string
+  action: string
   category: string
   confidence: string
   count: number
   topArgs: RecoveryOpcodeCounterEntry[]
   topSequences: RecoveryOpcodeCounterEntry[]
   notes: string[]
+  variantHints?: Array<{
+    variant: string
+    label: string
+    action: string
+    confidence: string
+    count?: number
+  }>
 }
 
 export interface RecoveryArchetypeActiveRow {
@@ -127,7 +135,11 @@ export interface RecoveryStageMapBinding {
   mapPairIndices: number[]
   preferredMapIndexHeuristic: number | null
   confidence: string
-  rationale: string
+  proofScore: number
+  proofType: string
+  storyBranch: string
+  pairGeometrySignature: string
+  evidenceSummary: string[]
 }
 
 export interface RecoveryStageRenderIntent {
@@ -178,6 +190,7 @@ export interface RecoveryRuntimeBlueprint {
     archetypeCount: number
     featuredArchetypeCount: number
     opcodeHeuristicCount: number
+    stageMapProofCount: number
   }
   stageBlueprints: RecoveryStageBlueprint[]
   opcodeHeuristics: RecoveryOpcodeHeuristic[]

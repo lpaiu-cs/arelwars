@@ -120,9 +120,9 @@ async function bootstrap(): Promise<void> {
     }
     game = createGame(stageSystem)
     stage.textContent = previewManifest
-      ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints)`
+      ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapProofCount ?? 0} map proofs)`
       : 'ZT1 decoded, Android APK verified'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics.` : ''} Android packaging has been verified on a modern emulator.`
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapProofCount} scored map proofs, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics.` : ''} Android packaging has been verified on a modern emulator.`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
@@ -320,8 +320,9 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const archetypePills = stage?.recommendedArchetypeIds.slice(0, 4) ?? []
   const channelPills = snapshot.channelStates.slice(0, 4).map((channel) => `${channel.label} ${channel.phaseLabel}`)
   const mapLine = stage?.mapBinding
-    ? `Map ${stage.mapBinding.mapPairIndices.join('/')} → ${stage.mapBinding.preferredMapIndexHeuristic ?? 'n/a'}`
+    ? `Map ${stage.mapBinding.mapPairIndices.join('/')} → ${stage.mapBinding.preferredMapIndexHeuristic ?? 'n/a'} (${stage.mapBinding.confidence} ${stage.mapBinding.proofScore.toFixed(2)})`
     : 'Map unresolved'
+  const opcodeAction = stage?.opcodeCues[0] ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}` : null
   return `
     <article class="story-card">
       <header class="story-card-header">
@@ -345,7 +346,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         ${opcodePills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
         ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
       </div>
-      <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}</p>
+      <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${opcodeAction ? ` · ${escapeHtml(opcodeAction)}` : ''}</p>
       <div class="story-strip">
         <img src="${previewStem.timelineStrip.pngPath}" alt="Timeline strip for stem ${previewStem.stem}" loading="lazy" />
       </div>

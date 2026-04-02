@@ -133,11 +133,13 @@ References:
   - current cross-correlation outputs now exist for:
     - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
     - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+    - [AW1.stage_map_proofs.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json)
     - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
     - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
     - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
     - [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
     - [AW1.hero_runtime_archetypes.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json)
+    - [AW1.opcode_action_map.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json)
     - [AW1.runtime_blueprint.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json)
   - current strongest runtime-field candidates in `XlsAi` are:
     - `tierCandidate = numericBlock[13]`
@@ -169,7 +171,9 @@ References:
       - `Natural Healing` / `Recall` -> slot-11 shared channel
       - `Mana Wall` / `Armageddon` -> slot-15 shared channel
       - `Smoke` regular skill and `Smoke (Special)` are now separated instead of being conflated by name
-    - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, map-binding heuristics, archetypes, and render cues into one runtime-facing manifest
+    - `AW1.opcode_action_map.json` now separates mnemonic-wide opcode labels from variant-local action hints
+    - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate instead of only a raw preferred map index
+    - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest
 
 ### Phase 4. Build Deterministic Runtime Systems
 
@@ -200,9 +204,9 @@ References:
    - arg-pattern histogram
    - co-occurring commands
    - representative script samples
-2. Use those outputs to start renaming the most common `cmd-XX` groups.
+2. Keep promoting `cmd-XX` groups from mnemonic-wide hints to proven engine actions as binary grammar evidence improves.
 3. Trace candidate battle/state source files and define a first canonical schema.
-4. Find the first hard pointer that links:
+4. Replace the current scored `stage_map_proofs` layer with the first hard pointer that links:
    - `script family / XlsAi row`
    - `tierCandidate / variantCandidate / regionCandidate`
    - concrete `assets/map/*.zt1` payload selection

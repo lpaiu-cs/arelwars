@@ -6,6 +6,7 @@ It is intentionally narrower than the overall restoration plan.
 Primary data source:
 
 - [script_event_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/script_event_report.json)
+- [AW1.opcode_action_map.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json)
 
 ## Important Constraint
 
@@ -19,6 +20,16 @@ This means:
 - global mnemonic renames should wait until the underlying argument grammar is proven
 
 ## High-Confidence Variant Hints
+
+`AW1.opcode_action_map.json` is now the structured export that the runtime reads.
+It keeps two layers separate:
+
+- mnemonic-wide action hints
+  - example: `cmd-05 -> apply-dialogue-pose`
+- variant-local action hints
+  - example: `cmd-0a(0x40) -> focus-skill-menu`
+
+This keeps the runtime-facing labels stable without pretending the binary grammar is fully proven.
 
 ### Tutorial / UI Guidance Cluster
 

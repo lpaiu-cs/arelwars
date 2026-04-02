@@ -12,12 +12,14 @@ Primary outputs:
 - [XlsAi.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsAi.eng.json)
 - parsed exports under [parsed_tables](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables)
 - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+- [AW1.stage_map_proofs.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json)
 - [AW1.runtime_field_reuse_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_field_reuse_scan.json)
 - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
 - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
 - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
 - [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
 - [AW1.hero_runtime_archetypes.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json)
+- [AW1.opcode_action_map.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json)
 
 `AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
 It did not yet reveal a hard `stage -> map payload` pointer on its own.
