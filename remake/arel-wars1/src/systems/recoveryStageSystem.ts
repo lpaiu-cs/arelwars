@@ -1314,6 +1314,75 @@ export class RecoveryStageSystem {
     return loadout.heroRosterMembers.some((member) => member.toLowerCase() === memberName.toLowerCase())
   }
 
+  private deriveCurrentStageScriptBias(): {
+    label: string
+    siegeBias: boolean
+    sustainBias: boolean
+    dispatchBias: boolean
+    heroBias: boolean
+    manaBias: boolean
+    rewardBias: boolean
+    preferredLane: 'upper' | 'lower' | null
+  } {
+    const storyboard = this.storyboards[this.storyboardIndex] ?? null
+    const stage = storyboard?.stageBlueprint ?? null
+    const title = (stage?.title ?? '').toLowerCase()
+    const hint = (stage?.hintText ?? '').toLowerCase()
+    const reward = (stage?.rewardText ?? '').toLowerCase()
+    const familyId = stage?.familyId ?? storyboard?.scriptFamilyId ?? '000'
+    const favoredLane = this.currentStageBattleProfile.favoredLane
+    const alternateLane = favoredLane === 'upper' ? 'lower' : 'upper'
+    const joined = `${title} ${hint} ${reward}`
+
+    const siegeBias =
+      this.currentObjectivePhase === 'siege'
+      || includesAny(joined, ['seize', 'siege', 'defeat', 'enemy camp', 'proxy', 'hunt', 'break'])
+    const sustainBias =
+      this.currentObjectivePhase === 'tower-management'
+      || this.currentObjectivePhase === 'lane-control'
+      || includesAny(joined, ['defend', 'hold', 'protect', 'guard', 'survive', 'wall'])
+    const dispatchBias =
+      this.currentObjectivePhase === 'lane-control'
+      || includesAny(joined, ['advance', 'dispatch', 'lane', 'escort', 'forward', 'charge', 'proxies'])
+    const heroBias =
+      this.currentObjectivePhase === 'hero-pressure'
+      || includesAny(joined, ['hero', 'champion', 'captain', 'leader', 'boss', 'elite'])
+    const manaBias =
+      this.currentObjectivePhase === 'skill-burst'
+      || includesAny(joined, ['mana', 'skill', 'arcane', 'magic', 'burst', 'spell'])
+    const rewardBias =
+      this.currentObjectivePhase === 'quest-resolution'
+      || includesAny(joined, ['reward', 'bonus', 'quest', 'treasure', 'bounty'])
+
+    const familyNumber = Number.parseInt(familyId, 10)
+    const preferredLane =
+      favoredLane === null
+        ? null
+        : Number.isFinite(familyNumber) && familyNumber % 2 === 1
+          ? alternateLane
+          : favoredLane
+
+    const labels = [
+      siegeBias ? 'siege' : null,
+      sustainBias ? 'hold' : null,
+      dispatchBias ? 'dispatch' : null,
+      heroBias ? 'hero' : null,
+      manaBias ? 'mana' : null,
+      rewardBias ? 'reward' : null,
+    ].filter((value): value is string => value !== null)
+
+    return {
+      label: labels.join('/') || 'neutral',
+      siegeBias,
+      sustainBias,
+      dispatchBias,
+      heroBias,
+      manaBias,
+      rewardBias,
+      preferredLane,
+    }
+  }
+
   private applyLoadoutCuePattern(
     tutorialCue: RecoveryTutorialChainCue | null,
     opcodeCue: RecoveryResolvedOpcodeCue | null,
@@ -1329,13 +1398,14 @@ export class RecoveryStageSystem {
     const rosterRole = activeLoadout.heroRosterRole
     const skillPresetKind = activeLoadout.skillPresetKind
     const towerPolicyKind = activeLoadout.towerPolicyKind
+    const stageBias = this.deriveCurrentStageScriptBias()
     const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
     const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
     const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
     const hasJuno = this.loadoutHasMember(activeLoadout, 'Juno')
     const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
     const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
-    const preferredLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
+    const preferredLane = stageBias.preferredLane ?? activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
 
     if (
       hasVincent
@@ -1343,12 +1413,14 @@ export class RecoveryStageSystem {
         tutorialChainId === 'battle-hud-dispatch-arrows'
         || tutorialChainId === 'battle-hud-hero-sortie'
         || tutorialChainId === 'battle-hud-goal-hp'
+        || stageBias.siegeBias
+        || stageBias.heroBias
         || includesAny(opcodeAction, ['dispatch', 'hero', 'siege'])
       )
     ) {
       this.selectedDispatchLane = preferredLane
-      this.queuedUnitCount = Math.max(this.queuedUnitCount, 1)
-      if (this.applyScriptedAction('deploy-hero', 'Vincent auto-led the assault lane')) {
+      this.queuedUnitCount = Math.max(this.queuedUnitCount, stageBias.dispatchBias ? 2 : 1)
+      if (this.applyScriptedAction('deploy-hero', `Vincent auto-led the assault lane (${stageBias.label})`)) {
         return true
       }
     }
@@ -1358,11 +1430,12 @@ export class RecoveryStageSystem {
       && (
         tutorialChainId === 'battle-hud-unit-card'
         || tutorialChainId === 'battle-hud-dispatch-arrows'
+        || stageBias.dispatchBias
         || includesAny(opcodeAction, ['dispatch', 'focus', 'anchor'])
       )
     ) {
       this.selectedDispatchLane = preferredLane
-      if (this.applyScriptedAction('produce-unit', 'Rogan auto-queued reinforcements')) {
+      if (this.applyScriptedAction('produce-unit', `Rogan auto-queued reinforcements (${stageBias.label})`)) {
         return true
       }
     }
@@ -1373,6 +1446,8 @@ export class RecoveryStageSystem {
         tutorialChainId === 'mana-upgrade-highlight'
         || tutorialChainId === 'tower-menu-highlight'
         || tutorialChainId === 'item-menu-highlight'
+        || stageBias.sustainBias
+        || stageBias.rewardBias
         || includesAny(opcodeAction, ['tower', 'mana', 'item', 'quest'])
       )
     ) {
@@ -1380,7 +1455,9 @@ export class RecoveryStageSystem {
       if (
         this.applyScriptedAction(
           tutorialChainId === 'item-menu-highlight' ? 'use-item' : 'upgrade-tower-stat',
-          tutorialChainId === 'item-menu-highlight' ? 'Helba auto-secured the defense item' : 'Helba auto-fortified the tower line',
+          tutorialChainId === 'item-menu-highlight'
+            ? `Helba auto-secured the defense item (${stageBias.label})`
+            : `Helba auto-fortified the tower line (${stageBias.label})`,
         )
       ) {
         return true
@@ -1393,11 +1470,13 @@ export class RecoveryStageSystem {
         tutorialChainId === 'skill-slot-highlight'
         || tutorialChainId === 'battle-hud-mana-bar'
         || tutorialChainId === 'battle-hud-goal-hp'
+        || stageBias.manaBias
+        || stageBias.heroBias
         || includesAny(opcodeAction, ['skill', 'mana', 'shock'])
       )
     ) {
       this.panelOverride = 'skill'
-      if (this.applyScriptedAction('cast-skill', 'Juno auto-threaded an arcane strike window')) {
+      if (this.applyScriptedAction('cast-skill', `Juno auto-threaded an arcane strike window (${stageBias.label})`)) {
         return true
       }
     }
@@ -1407,11 +1486,12 @@ export class RecoveryStageSystem {
       && (
         tutorialChainId === 'battle-hud-goal-hp'
         || tutorialChainId === 'skill-slot-highlight'
+        || stageBias.siegeBias
         || includesAny(opcodeAction, ['shock', 'siege', 'emphasis', 'pose'])
       )
     ) {
       this.panelOverride = 'skill'
-      if (this.applyScriptedAction('cast-skill', 'Manos auto-pressed the siege burst')) {
+      if (this.applyScriptedAction('cast-skill', `Manos auto-pressed the siege burst (${stageBias.label})`)) {
         return true
       }
     }
@@ -1422,11 +1502,13 @@ export class RecoveryStageSystem {
         tutorialChainId === 'battle-hud-guard-hp'
         || tutorialChainId === 'population-upgrade-highlight'
         || tutorialChainId === 'quest-panel-highlight'
+        || stageBias.sustainBias
+        || stageBias.rewardBias
         || includesAny(opcodeAction, ['guard', 'tower', 'quest', 'population'])
       )
     ) {
       this.panelOverride = 'tower'
-      if (this.applyScriptedAction('upgrade-tower-stat', 'Caesar auto-shored up the guard line')) {
+      if (this.applyScriptedAction('upgrade-tower-stat', `Caesar auto-shored up the guard line (${stageBias.label})`)) {
         return true
       }
     }
@@ -1514,11 +1596,12 @@ export class RecoveryStageSystem {
     }
 
     const signals = this.deriveArchetypeSignals(archetype)
+    const stageBias = this.deriveCurrentStageScriptBias()
     const favoredLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? this.currentStageBattleProfile.favoredLane ?? null
     let intensity = baseIntensity
     let resolvedPhaseLabel = phaseLabel
     let loadoutMode: string | null = null
-    let focusLane: 'upper' | 'lower' | null = null
+    let focusLane: 'upper' | 'lower' | null = stageBias.preferredLane ?? null
     let focusSource: 'roster' | 'skill' | 'policy' | null = null
     const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
     const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
@@ -1603,39 +1686,44 @@ export class RecoveryStageSystem {
     }
 
     if (hasVincent && signals.has('dispatch')) {
-      intensity += 0.06
-      resolvedPhaseLabel = this.currentObjectivePhase === 'hero-pressure' ? 'vincent-sortie' : 'vincent-drive'
-      loadoutMode = 'Vincent spearhead'
-      focusLane = activeLoadout.heroLane ?? favoredLane
+      intensity += stageBias.siegeBias || stageBias.heroBias ? 0.09 : 0.06
+      resolvedPhaseLabel =
+        this.currentObjectivePhase === 'hero-pressure' || stageBias.heroBias
+          ? 'vincent-sortie'
+          : stageBias.siegeBias
+            ? 'vincent-break'
+            : 'vincent-drive'
+      loadoutMode = `Vincent spearhead/${stageBias.label}`
+      focusLane = stageBias.preferredLane ?? activeLoadout.heroLane ?? favoredLane
       focusSource = 'roster'
     } else if (hasRogan && signals.has('dispatch')) {
-      intensity += 0.05
-      resolvedPhaseLabel = 'rogan-rally'
-      loadoutMode = 'Rogan reserves'
-      focusLane = activeLoadout.dispatchLane ?? favoredLane
+      intensity += stageBias.dispatchBias ? 0.08 : 0.05
+      resolvedPhaseLabel = stageBias.dispatchBias ? 'rogan-flood' : 'rogan-rally'
+      loadoutMode = `Rogan reserves/${stageBias.label}`
+      focusLane = stageBias.preferredLane ?? activeLoadout.dispatchLane ?? favoredLane
       focusSource = 'roster'
     } else if (hasHelba && (signals.has('tower-defense') || signals.has('healing'))) {
-      intensity += 0.06
-      resolvedPhaseLabel = 'helba-ward'
-      loadoutMode = 'Helba ward'
-      focusLane = this.currentStageBattleProfile.favoredLane ?? favoredLane
+      intensity += stageBias.sustainBias || stageBias.rewardBias ? 0.09 : 0.06
+      resolvedPhaseLabel = stageBias.rewardBias ? 'helba-claim' : 'helba-ward'
+      loadoutMode = `Helba ward/${stageBias.label}`
+      focusLane = stageBias.preferredLane ?? this.currentStageBattleProfile.favoredLane ?? favoredLane
       focusSource = 'roster'
     } else if (hasJuno && (signals.has('armageddon') || signals.has('mana-surge'))) {
-      intensity += 0.07
-      resolvedPhaseLabel = 'juno-arc'
-      loadoutMode = 'Juno arc'
+      intensity += stageBias.manaBias ? 0.1 : 0.07
+      resolvedPhaseLabel = stageBias.manaBias ? 'juno-focus' : 'juno-arc'
+      loadoutMode = `Juno arc/${stageBias.label}`
       focusSource = 'roster'
     } else if (hasManos && signals.has('armageddon')) {
-      intensity += 0.08
-      resolvedPhaseLabel = this.currentObjectivePhase === 'siege' ? 'manos-break' : 'manos-charge'
-      loadoutMode = 'Manos break'
-      focusLane = activeLoadout.heroLane ?? favoredLane
+      intensity += stageBias.siegeBias ? 0.11 : 0.08
+      resolvedPhaseLabel = this.currentObjectivePhase === 'siege' || stageBias.siegeBias ? 'manos-break' : 'manos-charge'
+      loadoutMode = `Manos break/${stageBias.label}`
+      focusLane = stageBias.preferredLane ?? activeLoadout.heroLane ?? favoredLane
       focusSource = 'roster'
     } else if (hasCaesar && signals.has('tower-defense')) {
-      intensity += 0.06
-      resolvedPhaseLabel = 'caesar-guard'
-      loadoutMode = 'Caesar guard'
-      focusLane = this.currentStageBattleProfile.favoredLane ?? favoredLane
+      intensity += stageBias.sustainBias ? 0.09 : 0.06
+      resolvedPhaseLabel = stageBias.rewardBias ? 'caesar-hold' : 'caesar-guard'
+      loadoutMode = `Caesar guard/${stageBias.label}`
+      focusLane = stageBias.preferredLane ?? this.currentStageBattleProfile.favoredLane ?? favoredLane
       focusSource = 'roster'
     }
 
@@ -2802,6 +2890,7 @@ export class RecoveryStageSystem {
 
   private tickPersistentPreview(): void {
     const activeLoadout = this.activeDeployLoadout
+    const stageBias = this.deriveCurrentStageScriptBias()
     const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
     const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
     const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
@@ -2820,9 +2909,16 @@ export class RecoveryStageSystem {
         : activeLoadout?.heroRosterRole === 'support'
           ? 0.004
           : 0
-    this.previewManaRatio = clamp(this.previewManaRatio + MANA_RECOVERY_PER_BEAT + manaBonus + (hasJuno ? 0.004 : 0), 0.06, 1)
+    this.previewManaRatio = clamp(
+      this.previewManaRatio + MANA_RECOVERY_PER_BEAT + manaBonus + (hasJuno ? (stageBias.manaBias ? 0.007 : 0.004) : 0),
+      0.06,
+      1,
+    )
     this.previewManaUpgradeProgressRatio = clamp(
-      this.previewManaUpgradeProgressRatio + UPGRADE_PROGRESS_RECOVERY_PER_BEAT + upgradeBonus + (hasRogan ? 0.004 : 0),
+      this.previewManaUpgradeProgressRatio
+      + UPGRADE_PROGRESS_RECOVERY_PER_BEAT
+      + upgradeBonus
+      + (hasRogan ? (stageBias.dispatchBias ? 0.007 : 0.004) : 0),
       0.04,
       1,
     )
@@ -2832,15 +2928,22 @@ export class RecoveryStageSystem {
         this.previewEnemyTowerHpRatio
         - 0.004
         - (activeLoadout?.heroRosterRole === 'raider' ? 0.002 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.001 : 0)
-        - (hasVincent ? 0.0015 : 0)
-        - (hasManos ? 0.0015 : 0),
+        - (hasVincent ? (stageBias.siegeBias || stageBias.heroBias ? 0.0025 : 0.0015) : 0)
+        - (hasManos ? (stageBias.siegeBias ? 0.0025 : 0.0015) : 0),
         0.08,
         1,
       )
     }
 
     if (activeLoadout?.heroRosterRole === 'defender' || activeLoadout?.heroRosterRole === 'support') {
-      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.002 + (hasHelba ? 0.002 : 0) + (hasCaesar ? 0.0015 : 0), 0.1, 1)
+      this.previewOwnTowerHpRatio = clamp(
+        this.previewOwnTowerHpRatio
+        + 0.002
+        + (hasHelba ? (stageBias.sustainBias || stageBias.rewardBias ? 0.0035 : 0.002) : 0)
+        + (hasCaesar ? (stageBias.sustainBias ? 0.0025 : 0.0015) : 0),
+        0.1,
+        1,
+      )
     }
 
     if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.previewManaRatio > 0.18) {
@@ -2851,6 +2954,13 @@ export class RecoveryStageSystem {
       )
       if (hasRogan) {
         this.laneBattleState[this.selectedDispatchLane].alliedUnits = Math.min(this.laneBattleState[this.selectedDispatchLane].alliedUnits + 1, 8)
+      }
+      if (hasVincent && stageBias.dispatchBias) {
+        this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
+          this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.02,
+          0.08,
+          1,
+        )
       }
     }
 
