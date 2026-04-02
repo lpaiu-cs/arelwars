@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import type {
+  RecoveryAudioState,
   RecoveryBattleChannelState,
   RecoveryBattleEffectState,
   RecoveryBattleEntityState,
@@ -77,6 +78,18 @@ export class RecoveryBootScene extends Phaser.Scene {
   private overlayGraphics: Phaser.GameObjects.Graphics | null = null
 
   private currentSnapshotKey = ''
+
+  private lastAudioCueSequence = 0
+
+  private lastAmbientLayer: RecoveryAudioState['ambientLayer'] | null = null
+
+  private audioContext: AudioContext | null = null
+
+  private masterGain: GainNode | null = null
+
+  private ambientGain: GainNode | null = null
+
+  private ambientOscillators: OscillatorNode[] = []
 
   private previewBaseX = 0
 
@@ -216,7 +229,11 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     if (this.stageSystem?.isReady()) {
       this.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
+        void this.resumeAudioContext()
         this.handleActionKey(event.key)
+      })
+      this.input.on('pointerdown', () => {
+        void this.resumeAudioContext()
       })
     }
   }
@@ -357,10 +374,11 @@ export class RecoveryBootScene extends Phaser.Scene {
       `${campaign.phaseSubtitle} · ${mapLine} · heuristic ${this.formatKind(previewStem.timelineKind)}${autoPhaseLine}`,
     )
     this.spriteFooter.setText(
-      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} · ${phaseFooter} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} · ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
+      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} · ${phaseFooter} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} · ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''} · audio ${snapshot.audioState.enabled ? `${Math.round(snapshot.audioState.masterVolume * 100)}% ${snapshot.audioState.ambientLayer}` : 'muted'} · save ${snapshot.persistenceState.hasQuickSave ? 'q' : '-'} / resume ${snapshot.persistenceState.hasResumeSession ? 'r' : '-'}`,
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
     this.interactionDetail.setText(this.describeGameplayState(snapshot))
+    this.syncAudio(snapshot)
     this.syncBattleRenderSprites(snapshot)
     this.drawBattleOverlay(snapshot)
   }
@@ -867,11 +885,157 @@ export class RecoveryBootScene extends Phaser.Scene {
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · scene ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${activeChain} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : snapshot.settingsState.autoAdvanceEnabled ? '' : ' manual-advance'} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · scene ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${activeChain} · audio ${snapshot.audioState.enabled ? `${Math.round(snapshot.audioState.masterVolume * 100)}% ${snapshot.audioState.ambientLayer}` : 'muted'}${snapshot.audioState.cueLabel ? `/${snapshot.audioState.cueLabel}` : ''} · save ${snapshot.persistenceState.hasQuickSave ? 'q' : '-'} resume ${snapshot.persistenceState.hasResumeSession ? 'r' : '-'} rev${snapshot.persistenceState.sessionRevision} · fx ${snapshot.settingsState.reducedEffects ? 'reduced' : 'full'} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+  }
+
+  private syncAudio(snapshot: RecoveryStageSnapshot): void {
+    const audioState = snapshot.audioState
+    if (!this.masterGain || !this.ambientGain) {
+      if (audioState.enabled) {
+        void this.resumeAudioContext()
+      }
+      return
+    }
+    const targetVolume = audioState.enabled ? audioState.masterVolume : 0
+    this.masterGain.gain.setTargetAtTime(targetVolume * 0.14, this.audioContext?.currentTime ?? 0, 0.04)
+
+    if (this.lastAmbientLayer !== audioState.ambientLayer) {
+      this.lastAmbientLayer = audioState.ambientLayer
+      this.applyAmbientLayer(audioState)
+    }
+    if (audioState.cueSequence > this.lastAudioCueSequence) {
+      this.lastAudioCueSequence = audioState.cueSequence
+      this.playAudioCue(audioState)
+    }
+  }
+
+  private async resumeAudioContext(): Promise<void> {
+    const context = this.ensureAudioContext()
+    if (!context) {
+      return
+    }
+    if (context.state === 'suspended') {
+      await context.resume()
+    }
+  }
+
+  private ensureAudioContext(): AudioContext | null {
+    if (this.audioContext) {
+      return this.audioContext
+    }
+    const AudioContextCtor = window.AudioContext ?? (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+    if (!AudioContextCtor) {
+      return null
+    }
+    this.audioContext = new AudioContextCtor()
+    this.masterGain = this.audioContext.createGain()
+    this.masterGain.gain.value = 0
+    this.masterGain.connect(this.audioContext.destination)
+    this.ambientGain = this.audioContext.createGain()
+    this.ambientGain.gain.value = 0
+    this.ambientGain.connect(this.masterGain)
+    this.ambientOscillators = [this.audioContext.createOscillator(), this.audioContext.createOscillator()]
+    this.ambientOscillators[0].type = 'sine'
+    this.ambientOscillators[1].type = 'triangle'
+    this.ambientOscillators.forEach((oscillator) => {
+      oscillator.connect(this.ambientGain as GainNode)
+      oscillator.start()
+    })
+    return this.audioContext
+  }
+
+  private applyAmbientLayer(audioState: RecoveryAudioState): void {
+    const context = this.ensureAudioContext()
+    if (!context || !this.ambientGain || this.ambientOscillators.length < 2) {
+      return
+    }
+    const [primary, secondary] = this.ambientFrequencies(audioState.ambientLayer)
+    this.ambientOscillators[0].frequency.setTargetAtTime(primary, context.currentTime, 0.08)
+    this.ambientOscillators[1].frequency.setTargetAtTime(secondary, context.currentTime, 0.08)
+    this.ambientGain.gain.setTargetAtTime((audioState.enabled ? audioState.masterVolume : 0) * 0.04, context.currentTime, 0.12)
+  }
+
+  private playAudioCue(audioState: RecoveryAudioState): void {
+    const context = this.ensureAudioContext()
+    if (!context || !this.masterGain || !audioState.enabled) {
+      return
+    }
+    const oscillator = context.createOscillator()
+    const gain = context.createGain()
+    const now = context.currentTime
+    const { frequency, type, duration } = this.audioCueTone(audioState)
+    oscillator.type = type
+    oscillator.frequency.setValueAtTime(frequency, now)
+    oscillator.connect(gain)
+    gain.connect(this.masterGain)
+    const peak = Math.max(0.01, audioState.masterVolume * (0.04 + audioState.cueIntensity * 0.08))
+    gain.gain.setValueAtTime(0.0001, now)
+    gain.gain.exponentialRampToValueAtTime(peak, now + 0.01)
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration)
+    oscillator.start(now)
+    oscillator.stop(now + duration + 0.03)
+  }
+
+  private ambientFrequencies(layer: RecoveryAudioState['ambientLayer']): [number, number] {
+    switch (layer) {
+      case 'title':
+        return [196, 294]
+      case 'menu':
+        return [220, 330]
+      case 'worldmap':
+        return [174, 261]
+      case 'deploy':
+        return [247, 370]
+      case 'result':
+        return [156, 234]
+      case 'reward':
+        return [262, 392]
+      case 'unlock':
+        return [294, 440]
+      default:
+        return [130, 195]
+    }
+  }
+
+  private audioCueTone(audioState: RecoveryAudioState): { frequency: number; type: OscillatorType; duration: number } {
+    switch (audioState.cueCategory) {
+      case 'result':
+        return {
+          frequency: audioState.cueLabel?.includes('defeat') ? 164 : 392,
+          type: audioState.cueLabel?.includes('defeat') ? 'sawtooth' : 'triangle',
+          duration: audioState.cueLabel?.includes('reward') ? 0.24 : 0.18,
+        }
+      case 'battle':
+        return {
+          frequency: audioState.cueLabel?.includes('hero') ? 330 : 220,
+          type: audioState.cueLabel?.includes('cast') || audioState.cueLabel?.includes('skill') ? 'square' : 'sine',
+          duration: 0.12,
+        }
+      case 'system':
+        return {
+          frequency: audioState.cueLabel?.includes('load') ? 294 : 247,
+          type: 'triangle',
+          duration: 0.11,
+        }
+      default:
+        return {
+          frequency: 262,
+          type: 'sine',
+          duration: 0.09,
+        }
+    }
   }
 
   private handleActionKey(key: string): void {
     if (!this.stageSystem?.isReady()) {
+      return
+    }
+    if (this.handleMetaKey(key)) {
+      const nextSnapshot = this.stageSystem.getSnapshot()
+      if (nextSnapshot) {
+        this.currentSnapshotKey = ''
+        this.applySnapshot(nextSnapshot)
+      }
       return
     }
     const snapshot = this.stageSystem.getSnapshot()
@@ -895,6 +1059,36 @@ export class RecoveryBootScene extends Phaser.Scene {
     if (nextSnapshot) {
       this.currentSnapshotKey = ''
       this.applySnapshot(nextSnapshot)
+    }
+  }
+
+  private handleMetaKey(key: string): boolean {
+    if (!this.stageSystem) {
+      return false
+    }
+    switch (key.toLowerCase()) {
+      case 'p':
+        return this.stageSystem.quickSave()
+      case 'l':
+        return this.stageSystem.quickLoad()
+      case 'i':
+        return this.stageSystem.retryActiveStage()
+      case 'm':
+        return this.stageSystem.toggleAudioEnabled()
+      case '[':
+        return this.stageSystem.adjustMasterVolume(-0.08)
+      case ']':
+        return this.stageSystem.adjustMasterVolume(0.08)
+      case 'o':
+        return this.stageSystem.toggleAutoAdvanceEnabled()
+      case 'j':
+        return this.stageSystem.toggleAutoSaveEnabled()
+      case 'k':
+        return this.stageSystem.toggleResumeOnLaunch()
+      case ';':
+        return this.stageSystem.toggleReducedEffects()
+      default:
+        return false
     }
   }
 

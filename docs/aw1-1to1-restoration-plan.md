@@ -281,6 +281,12 @@ References:
    - `script family -> AI row -> concrete map bin`
    - `cmd-XX -> engine action`
    - `PTC/MPL/179 -> final render implementation`
+9. Phase12 baseline is now in place:
+   - local save/load and resume slots
+   - retry-stage entry
+   - runtime settings for audio, autosave, auto-advance, resume-on-launch, reduced effects
+   - synthesized audio cues and ambient layer switching
+   - constructor-time session restore plus before-unload resume persistence
 
 ## First Opcode Findings
 

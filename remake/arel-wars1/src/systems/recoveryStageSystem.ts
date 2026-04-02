@@ -1,4 +1,5 @@
 import type {
+  RecoveryAudioState,
   RecoveryBattleChainState,
   RecoveryBattleEntityState,
   RecoveryBattleEffectState,
@@ -24,10 +25,12 @@ import type {
   RecoveryPreviewFrame,
   RecoveryPreviewManifest,
   RecoveryPreviewStem,
+  RecoveryPersistenceState,
   RecoveryRuntimeBlueprint,
   RecoveryScriptEntry,
   RecoverySceneScriptDirective,
   RecoverySceneScriptStep,
+  RecoverySettingsState,
   RecoveryStageBattleProfile,
   RecoveryStageBlueprint,
   RecoveryStageRenderState,
@@ -48,6 +51,10 @@ const DEPLOY_BRIEFING_MS = 1800
 const UPGRADE_PROGRESS_RECOVERY_PER_BEAT = 0.012
 const SKILL_COOLDOWN_MS = 2600
 const ITEM_COOLDOWN_MS = 3200
+const AUTO_SAVE_INTERVAL_MS = 4000
+const SETTINGS_STORAGE_KEY = 'arel-wars-aw1-settings-v1'
+const RESUME_STORAGE_KEY = 'arel-wars-aw1-resume-v1'
+const QUICKSAVE_STORAGE_KEY = 'arel-wars-aw1-quicksave-v1'
 const GENERIC_OPCODE_VARIANTS = new Set([
   'cmd-02:05',
   'cmd-05:03',
@@ -244,6 +251,108 @@ interface RecoveryEntityVisualRuntime {
   hitFlash: number
   overlayMode: string | null
   overlayAlpha: number
+}
+
+interface RecoveryStoredSettings {
+  audioEnabled: boolean
+  masterVolume: number
+  autoAdvanceEnabled: boolean
+  autoSaveEnabled: boolean
+  resumeOnLaunch: boolean
+  reducedEffects: boolean
+}
+
+interface RecoverySerializedSession {
+  version: 1
+  savedAtIso: string
+  slotLabel: string
+  sessionRevision: number
+  storyboardIndex: number
+  dialogueIndex: number
+  frameIndex: number
+  storyboardElapsedMs: number
+  nextDialogueRemainingMs: number | null
+  nextFrameRemainingMs: number | null
+  heroReturnCooldownRemainingMs: number | null
+  skillCooldownRemainingMs: number | null
+  itemCooldownRemainingMs: number | null
+  worldmapAutoEnterRemainingMs: number | null
+  deployBriefingRemainingMs: number | null
+  rewardReviewRemainingMs: number | null
+  unlockRevealRemainingMs: number | null
+  resultAutoAdvanceRemainingMs: number | null
+  lastChannelBeat: number
+  panelOverride: RecoveryGameplayState['openPanel']
+  heroOverrideMode: RecoveryGameplayState['heroMode'] | null
+  battlePaused: boolean
+  questRewardClaimed: boolean
+  questRewardClaims: number
+  selectedDispatchLane: RecoveryHudGhostState['selectedDispatchLane']
+  queuedUnitCount: number
+  previewManaRatio: number
+  previewManaUpgradeProgressRatio: number
+  previewOwnTowerHpRatio: number
+  previewEnemyTowerHpRatio: number
+  alliedManaValue: number
+  enemyManaValue: number
+  manaCapacityValue: number
+  enemyManaCapacityValue: number
+  populationCapacity: number
+  enemyPopulationCapacity: number
+  heroAssignedLane: RecoveryLaneBattleState['laneId'] | null
+  laneBattleState: Record<RecoveryLaneBattleState['laneId'], Omit<RecoveryLaneBattleState, 'laneId'>>
+  towerUpgradeLevels: RecoveryTowerUpgradeLevels
+  currentStageBattleProfile: RecoveryStageBattleProfile
+  currentObjectivePhase: RecoveryBattleObjectiveState['phase']
+  currentObjectiveLabel: string
+  currentWaveIndex: number
+  totalWaveCount: number
+  enemyWaveCursor: number
+  alliedWaveCursor: number
+  enemyWavesDispatched: number
+  alliedWavesDispatched: number
+  objectiveProgressRatio: number
+  enemyWaveCountdownBeats: number
+  alliedWaveCountdownBeats: number
+  enemyWavePlan: RecoveryBattleWaveDirective[]
+  alliedWavePlan: RecoveryBattleWaveDirective[]
+  battleResolutionOutcome: 'victory' | 'defeat' | null
+  battleResolutionReason: string | null
+  campaignUnlockedStageCount: number
+  campaignLastUnlockedNodeIndex: number | null
+  campaignSelectedNodeIndex: number
+  campaignSelectedLoadoutIndex: number
+  campaignMenuIndex: number
+  campaignScenePhase: RecoveryStageSnapshot['campaignState']['scenePhase']
+  campaignClearedStoryboardIds: string[]
+  campaignLastResolvedStageTitle: string | null
+  campaignLastOutcome: 'victory' | 'defeat' | null
+  campaignPreferredRouteLabel: string | null
+  campaignRouteCommitment: number
+  activeDeployLoadoutId: string | null
+  lastActionId: RecoveryGameplayActionId | null
+  lastActionAccepted: boolean
+  lastActionNote: string | null
+  lastScriptedBeatNote: string | null
+  rosterChainBoosts: Array<[string, number]>
+  rosterChainFocusLane: 'upper' | 'lower' | null
+  battleStepCount: number
+  nextBattleEntityId: number
+  nextBattleProjectileId: number
+  nextBattleEffectId: number
+  laneEntities: Record<RecoveryBattleLaneId, Record<RecoveryBattleSide, RecoveryBattleUnitRuntime[]>>
+  battleProjectiles: RecoveryBattleProjectileRuntime[]
+  battleEffects: RecoveryBattleEffectRuntime[]
+  entityVisuals: Array<[number, RecoveryEntityVisualRuntime]>
+  cameraShakeIntensity: number
+  cameraShakeAxes: RecoveryStageRenderState['cameraShakeAxes']
+  overlayMode: string | null
+  overlayColor: number | null
+  overlayAlpha: number
+  burstPulseIntensity: number
+  particleBoostIntensity: number
+  hitFlashIntensity: number
+  settings: RecoveryStoredSettings
 }
 
 export class RecoveryStageSystem {
@@ -491,6 +600,43 @@ export class RecoveryStageSystem {
 
   private enemyPopulationCapacity = 6
 
+  private settingsState: RecoverySettingsState = {
+    audioEnabled: true,
+    masterVolume: 0.72,
+    autoAdvanceEnabled: true,
+    autoSaveEnabled: true,
+    resumeOnLaunch: true,
+    reducedEffects: false,
+  }
+
+  private hasQuickSave = false
+
+  private hasResumeSession = false
+
+  private resumedFromSession = false
+
+  private activeSessionSlotLabel: string | null = null
+
+  private lastSavedLabel: string | null = null
+
+  private lastLoadedLabel: string | null = null
+
+  private lastSavedAtIso: string | null = null
+
+  private lastLoadedAtIso: string | null = null
+
+  private sessionRevision = 0
+
+  private lastAutoSaveAtMs = 0
+
+  private audioCueSequence = 0
+
+  private audioCueCategory: RecoveryAudioState['cueCategory'] = 'ui'
+
+  private audioCueLabel: string | null = null
+
+  private audioCueIntensity = 0
+
   constructor(
     catalog: RecoveryCatalog,
     previewManifest: RecoveryPreviewManifest,
@@ -499,6 +645,7 @@ export class RecoveryStageSystem {
   ) {
     this.runtimeBlueprint = runtimeBlueprint
     this.battleModel = battleModel
+    this.loadStoredSettings()
     runtimeBlueprint?.featuredArchetypes.forEach((entry) => {
       this.featuredArchetypesById.set(entry.archetypeId, entry)
     })
@@ -528,14 +675,19 @@ export class RecoveryStageSystem {
       storyboard.sceneScriptSteps = this.buildSceneScript(storyboard)
     })
     if (this.storyboards.length > 0) {
-      this.campaignPreferredRouteLabel = this.deriveStoryboardRouteBias(this.storyboards[0]).routeLabel
-      this.campaignRouteCommitment = 1
-      this.seedBattlePreviewState(this.storyboards[0])
-      const initialLoadout = this.resolveSelectedDeployLoadout(this.storyboards[0])
-      if (initialLoadout) {
-        this.applyDeployLoadout(initialLoadout)
+      const restored = this.settingsState.resumeOnLaunch ? this.restoreStoredSession(RESUME_STORAGE_KEY, 'resume-session') : false
+      if (!restored) {
+        this.campaignPreferredRouteLabel = this.deriveStoryboardRouteBias(this.storyboards[0]).routeLabel
+        this.campaignRouteCommitment = 1
+        this.seedBattlePreviewState(this.storyboards[0])
+        const initialLoadout = this.resolveSelectedDeployLoadout(this.storyboards[0])
+        if (initialLoadout) {
+          this.applyDeployLoadout(initialLoadout)
+        }
+        this.enterTitle(0)
+      } else {
+        this.hasResumeSession = true
       }
-      this.enterTitle(0)
     }
   }
 
@@ -562,6 +714,581 @@ export class RecoveryStageSystem {
 
   getStoryboards(): RecoveryStageStoryboard[] {
     return this.storyboards
+  }
+
+  quickSave(): boolean {
+    const saved = this.persistSessionToKey(QUICKSAVE_STORAGE_KEY, 'quick-save')
+    if (!saved) {
+      return false
+    }
+    this.lastActionNote = 'quick save written'
+    this.emitAudioCue('system', 'save-session', 0.3)
+    this.version += 1
+    return true
+  }
+
+  quickLoad(): boolean {
+    const restored = this.restoreStoredSession(QUICKSAVE_STORAGE_KEY, 'quick-save')
+    if (!restored) {
+      this.lastActionNote = 'quick load unavailable'
+      this.version += 1
+      return false
+    }
+    this.lastActionNote = 'quick save restored'
+    this.emitAudioCue('system', 'load-session', 0.34)
+    this.version += 1
+    return true
+  }
+
+  retryActiveStage(): boolean {
+    if (!this.isReady()) {
+      return false
+    }
+    const index = clamp(
+      this.campaignScenePhase === 'worldmap' || this.campaignScenePhase === 'deploy-briefing'
+        ? this.campaignSelectedNodeIndex
+        : this.storyboardIndex,
+      0,
+      this.storyboards.length - 1,
+    )
+    const storyboard = this.storyboards[index]
+    if (!storyboard) {
+      return false
+    }
+
+    if (this.campaignScenePhase === 'title') {
+      this.enterMainMenu(this.lastUpdateNowMs)
+      this.lastActionNote = 'title attract skipped for retry'
+    } else {
+      this.campaignSelectedNodeIndex = index
+      const selectedLoadout = this.resolveSelectedDeployLoadout(storyboard)
+      if (selectedLoadout) {
+        this.activeDeployLoadout = selectedLoadout
+      }
+      this.activateStoryboard(index, this.lastUpdateNowMs, 0)
+      this.lastActionNote = `stage retry started: ${this.storyboardLabel(index)}`
+    }
+    this.emitAudioCue('system', 'retry-stage', 0.36)
+    this.persistResumeSessionNow('retry-stage')
+    this.version += 1
+    return true
+  }
+
+  toggleAudioEnabled(): boolean {
+    this.settingsState.audioEnabled = !this.settingsState.audioEnabled
+    this.persistSettings()
+    this.lastActionNote = this.settingsState.audioEnabled ? 'audio enabled' : 'audio muted'
+    this.emitAudioCue('system', this.settingsState.audioEnabled ? 'audio-on' : 'audio-off', 0.22)
+    this.version += 1
+    return true
+  }
+
+  adjustMasterVolume(delta: number): boolean {
+    const nextVolume = clamp(this.settingsState.masterVolume + delta, 0, 1)
+    if (Math.abs(nextVolume - this.settingsState.masterVolume) < 0.001) {
+      return false
+    }
+    this.settingsState.masterVolume = nextVolume
+    this.persistSettings()
+    this.lastActionNote = `volume ${Math.round(nextVolume * 100)}%`
+    this.emitAudioCue('system', 'volume-shift', 0.18 + nextVolume * 0.2)
+    this.version += 1
+    return true
+  }
+
+  toggleAutoAdvanceEnabled(): boolean {
+    this.settingsState.autoAdvanceEnabled = !this.settingsState.autoAdvanceEnabled
+    this.persistSettings()
+    this.lastActionNote = this.settingsState.autoAdvanceEnabled ? 'auto advance enabled' : 'auto advance held for manual confirmation'
+    this.emitAudioCue('system', this.settingsState.autoAdvanceEnabled ? 'auto-advance-on' : 'auto-advance-off', 0.22)
+    this.version += 1
+    return true
+  }
+
+  toggleAutoSaveEnabled(): boolean {
+    this.settingsState.autoSaveEnabled = !this.settingsState.autoSaveEnabled
+    this.persistSettings()
+    this.lastActionNote = this.settingsState.autoSaveEnabled ? 'resume autosave enabled' : 'resume autosave paused'
+    this.emitAudioCue('system', this.settingsState.autoSaveEnabled ? 'autosave-on' : 'autosave-off', 0.2)
+    this.version += 1
+    return true
+  }
+
+  toggleResumeOnLaunch(): boolean {
+    this.settingsState.resumeOnLaunch = !this.settingsState.resumeOnLaunch
+    this.persistSettings()
+    this.lastActionNote = this.settingsState.resumeOnLaunch ? 'session resume on launch enabled' : 'session resume on launch disabled'
+    this.emitAudioCue('system', this.settingsState.resumeOnLaunch ? 'resume-on' : 'resume-off', 0.2)
+    this.version += 1
+    return true
+  }
+
+  toggleReducedEffects(): boolean {
+    this.settingsState.reducedEffects = !this.settingsState.reducedEffects
+    this.persistSettings()
+    this.lastActionNote = this.settingsState.reducedEffects ? 'reduced effects enabled' : 'full effects restored'
+    this.emitAudioCue('system', this.settingsState.reducedEffects ? 'effects-low' : 'effects-full', 0.2)
+    this.version += 1
+    return true
+  }
+
+  persistResumeSessionNow(reason: string = 'manual-resume-save'): boolean {
+    return this.persistSessionToKey(RESUME_STORAGE_KEY, reason)
+  }
+
+  private storage(): Storage | null {
+    if (typeof window === 'undefined' || !('localStorage' in window)) {
+      return null
+    }
+    try {
+      return window.localStorage
+    } catch {
+      return null
+    }
+  }
+
+  private loadStoredSettings(): void {
+    const storage = this.storage()
+    if (!storage) {
+      return
+    }
+    this.hasQuickSave = storage.getItem(QUICKSAVE_STORAGE_KEY) !== null
+    this.hasResumeSession = storage.getItem(RESUME_STORAGE_KEY) !== null
+    const raw = storage.getItem(SETTINGS_STORAGE_KEY)
+    if (!raw) {
+      return
+    }
+    try {
+      const parsed = JSON.parse(raw) as Partial<RecoveryStoredSettings>
+      this.settingsState = {
+        audioEnabled: parsed.audioEnabled ?? this.settingsState.audioEnabled,
+        masterVolume: clamp(typeof parsed.masterVolume === 'number' ? parsed.masterVolume : this.settingsState.masterVolume, 0, 1),
+        autoAdvanceEnabled: parsed.autoAdvanceEnabled ?? this.settingsState.autoAdvanceEnabled,
+        autoSaveEnabled: parsed.autoSaveEnabled ?? this.settingsState.autoSaveEnabled,
+        resumeOnLaunch: parsed.resumeOnLaunch ?? this.settingsState.resumeOnLaunch,
+        reducedEffects: parsed.reducedEffects ?? this.settingsState.reducedEffects,
+      }
+    } catch {
+      // Ignore invalid settings payloads.
+    }
+  }
+
+  private persistSettings(): void {
+    const storage = this.storage()
+    if (!storage) {
+      return
+    }
+    const payload: RecoveryStoredSettings = {
+      audioEnabled: this.settingsState.audioEnabled,
+      masterVolume: this.settingsState.masterVolume,
+      autoAdvanceEnabled: this.settingsState.autoAdvanceEnabled,
+      autoSaveEnabled: this.settingsState.autoSaveEnabled,
+      resumeOnLaunch: this.settingsState.resumeOnLaunch,
+      reducedEffects: this.settingsState.reducedEffects,
+    }
+    storage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(payload))
+  }
+
+  private persistSessionToKey(storageKey: string, slotLabel: string): boolean {
+    const storage = this.storage()
+    if (!storage || !this.isReady()) {
+      return false
+    }
+    const savedAtIso = new Date().toISOString()
+    this.sessionRevision += 1
+    const payload = this.serializeSession(slotLabel, savedAtIso)
+    storage.setItem(storageKey, JSON.stringify(payload))
+    this.activeSessionSlotLabel = slotLabel
+    this.lastSavedLabel = slotLabel
+    this.lastSavedAtIso = savedAtIso
+    this.lastAutoSaveAtMs = this.lastUpdateNowMs
+    if (storageKey === QUICKSAVE_STORAGE_KEY) {
+      this.hasQuickSave = true
+    }
+    if (storageKey === RESUME_STORAGE_KEY) {
+      this.hasResumeSession = true
+    }
+    return true
+  }
+
+  private restoreStoredSession(storageKey: string, slotLabel: string): boolean {
+    const storage = this.storage()
+    if (!storage) {
+      return false
+    }
+    const raw = storage.getItem(storageKey)
+    if (!raw) {
+      return false
+    }
+    try {
+      const parsed = JSON.parse(raw) as RecoverySerializedSession
+      const restored = this.restoreSerializedSession(parsed, slotLabel)
+      if (!restored) {
+        return false
+      }
+      this.resumedFromSession = slotLabel === 'resume-session'
+      if (storageKey === QUICKSAVE_STORAGE_KEY) {
+        this.hasQuickSave = true
+      }
+      if (storageKey === RESUME_STORAGE_KEY) {
+        this.hasResumeSession = true
+      }
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  private serializeSession(slotLabel: string, savedAtIso: string): RecoverySerializedSession {
+    return {
+      version: 1,
+      savedAtIso,
+      slotLabel,
+      sessionRevision: this.sessionRevision,
+      storyboardIndex: this.storyboardIndex,
+      dialogueIndex: this.dialogueIndex,
+      frameIndex: this.frameIndex,
+      storyboardElapsedMs: Math.max(this.lastUpdateNowMs - this.storyboardStartedAtMs, 0),
+      nextDialogueRemainingMs: this.remainingMs(this.nextDialogueAtMs),
+      nextFrameRemainingMs: this.remainingMs(this.nextFrameAtMs),
+      heroReturnCooldownRemainingMs: this.remainingMs(this.heroReturnCooldownEndsAtMs),
+      skillCooldownRemainingMs: this.remainingMs(this.skillCooldownEndsAtMs),
+      itemCooldownRemainingMs: this.remainingMs(this.itemCooldownEndsAtMs),
+      worldmapAutoEnterRemainingMs: this.remainingMs(this.campaignWorldmapAutoEnterAtMs),
+      deployBriefingRemainingMs: this.remainingMs(this.campaignDeployBriefingEndsAtMs),
+      rewardReviewRemainingMs: this.remainingMs(this.campaignRewardReviewEndsAtMs),
+      unlockRevealRemainingMs: this.remainingMs(this.campaignUnlockRevealEndsAtMs),
+      resultAutoAdvanceRemainingMs: this.remainingMs(this.battleResolutionAutoAdvanceAtMs),
+      lastChannelBeat: this.lastChannelBeat,
+      panelOverride: this.panelOverride,
+      heroOverrideMode: this.heroOverrideMode,
+      battlePaused: this.battlePaused,
+      questRewardClaimed: this.questRewardClaimed,
+      questRewardClaims: this.questRewardClaims,
+      selectedDispatchLane: this.selectedDispatchLane,
+      queuedUnitCount: this.queuedUnitCount,
+      previewManaRatio: this.previewManaRatio,
+      previewManaUpgradeProgressRatio: this.previewManaUpgradeProgressRatio,
+      previewOwnTowerHpRatio: this.previewOwnTowerHpRatio,
+      previewEnemyTowerHpRatio: this.previewEnemyTowerHpRatio,
+      alliedManaValue: this.alliedManaValue,
+      enemyManaValue: this.enemyManaValue,
+      manaCapacityValue: this.manaCapacityValue,
+      enemyManaCapacityValue: this.enemyManaCapacityValue,
+      populationCapacity: this.populationCapacity,
+      enemyPopulationCapacity: this.enemyPopulationCapacity,
+      heroAssignedLane: this.heroAssignedLane,
+      laneBattleState: structuredClone(this.laneBattleState),
+      towerUpgradeLevels: { ...this.towerUpgradeLevels },
+      currentStageBattleProfile: structuredClone(this.currentStageBattleProfile),
+      currentObjectivePhase: this.currentObjectivePhase,
+      currentObjectiveLabel: this.currentObjectiveLabel,
+      currentWaveIndex: this.currentWaveIndex,
+      totalWaveCount: this.totalWaveCount,
+      enemyWaveCursor: this.enemyWaveCursor,
+      alliedWaveCursor: this.alliedWaveCursor,
+      enemyWavesDispatched: this.enemyWavesDispatched,
+      alliedWavesDispatched: this.alliedWavesDispatched,
+      objectiveProgressRatio: this.objectiveProgressRatio,
+      enemyWaveCountdownBeats: this.enemyWaveCountdownBeats,
+      alliedWaveCountdownBeats: this.alliedWaveCountdownBeats,
+      enemyWavePlan: structuredClone(this.enemyWavePlan),
+      alliedWavePlan: structuredClone(this.alliedWavePlan),
+      battleResolutionOutcome: this.battleResolutionOutcome,
+      battleResolutionReason: this.battleResolutionReason,
+      campaignUnlockedStageCount: this.campaignUnlockedStageCount,
+      campaignLastUnlockedNodeIndex: this.campaignLastUnlockedNodeIndex,
+      campaignSelectedNodeIndex: this.campaignSelectedNodeIndex,
+      campaignSelectedLoadoutIndex: this.campaignSelectedLoadoutIndex,
+      campaignMenuIndex: this.campaignMenuIndex,
+      campaignScenePhase: this.campaignScenePhase,
+      campaignClearedStoryboardIds: Array.from(this.campaignClearedStoryboardIds),
+      campaignLastResolvedStageTitle: this.campaignLastResolvedStageTitle,
+      campaignLastOutcome: this.campaignLastOutcome,
+      campaignPreferredRouteLabel: this.campaignPreferredRouteLabel,
+      campaignRouteCommitment: this.campaignRouteCommitment,
+      activeDeployLoadoutId: this.activeDeployLoadout?.id ?? null,
+      lastActionId: this.lastActionId,
+      lastActionAccepted: this.lastActionAccepted,
+      lastActionNote: this.lastActionNote,
+      lastScriptedBeatNote: this.lastScriptedBeatNote,
+      rosterChainBoosts: Object.entries(this.rosterChainBoosts).filter((entry): entry is [string, number] => typeof entry[1] === 'number'),
+      rosterChainFocusLane: this.rosterChainFocusLane,
+      battleStepCount: this.battleStepCount,
+      nextBattleEntityId: this.nextBattleEntityId,
+      nextBattleProjectileId: this.nextBattleProjectileId,
+      nextBattleEffectId: this.nextBattleEffectId,
+      laneEntities: structuredClone(this.laneEntities),
+      battleProjectiles: structuredClone(this.battleProjectiles),
+      battleEffects: structuredClone(this.battleEffects),
+      entityVisuals: Array.from(this.entityVisuals.entries()).map(([key, value]) => [key, structuredClone(value)]),
+      cameraShakeIntensity: this.cameraShakeIntensity,
+      cameraShakeAxes: this.cameraShakeAxes,
+      overlayMode: this.overlayMode,
+      overlayColor: this.overlayColor,
+      overlayAlpha: this.overlayAlpha,
+      burstPulseIntensity: this.burstPulseIntensity,
+      particleBoostIntensity: this.particleBoostIntensity,
+      hitFlashIntensity: this.hitFlashIntensity,
+      settings: {
+        audioEnabled: this.settingsState.audioEnabled,
+        masterVolume: this.settingsState.masterVolume,
+        autoAdvanceEnabled: this.settingsState.autoAdvanceEnabled,
+        autoSaveEnabled: this.settingsState.autoSaveEnabled,
+        resumeOnLaunch: this.settingsState.resumeOnLaunch,
+        reducedEffects: this.settingsState.reducedEffects,
+      },
+    }
+  }
+
+  private restoreSerializedSession(payload: RecoverySerializedSession, slotLabel: string): boolean {
+    if (payload.version !== 1 || !this.storyboards[payload.storyboardIndex]) {
+      return false
+    }
+    const baseNow = this.lastUpdateNowMs
+    this.storyboardIndex = clamp(payload.storyboardIndex, 0, this.storyboards.length - 1)
+    this.dialogueIndex = clamp(payload.dialogueIndex, 0, Math.max(this.storyboards[this.storyboardIndex].scriptEvents.length - 1, 0))
+    this.frameIndex = Math.max(payload.frameIndex, 0)
+    this.storyboardStartedAtMs = baseNow - Math.max(payload.storyboardElapsedMs, 0)
+    this.nextDialogueAtMs = this.restoreDeadline(payload.nextDialogueRemainingMs, baseNow)
+    this.nextFrameAtMs = this.restoreDeadline(payload.nextFrameRemainingMs, baseNow)
+    this.heroReturnCooldownEndsAtMs = this.restoreDeadline(payload.heroReturnCooldownRemainingMs, baseNow)
+    this.skillCooldownEndsAtMs = this.restoreDeadline(payload.skillCooldownRemainingMs, baseNow)
+    this.itemCooldownEndsAtMs = this.restoreDeadline(payload.itemCooldownRemainingMs, baseNow)
+    this.campaignWorldmapAutoEnterAtMs = this.restoreDeadline(payload.worldmapAutoEnterRemainingMs, baseNow)
+    this.campaignDeployBriefingEndsAtMs = this.restoreDeadline(payload.deployBriefingRemainingMs, baseNow)
+    this.campaignRewardReviewEndsAtMs = this.restoreDeadline(payload.rewardReviewRemainingMs, baseNow)
+    this.campaignUnlockRevealEndsAtMs = this.restoreDeadline(payload.unlockRevealRemainingMs, baseNow)
+    this.battleResolutionAutoAdvanceAtMs = this.restoreDeadline(payload.resultAutoAdvanceRemainingMs, baseNow)
+    this.lastChannelBeat = payload.lastChannelBeat
+    this.panelOverride = payload.panelOverride
+    this.heroOverrideMode = payload.heroOverrideMode
+    this.battlePaused = payload.battlePaused
+    this.pauseStartedAtMs = payload.battlePaused ? baseNow : 0
+    this.questRewardClaimed = payload.questRewardClaimed
+    this.questRewardClaims = payload.questRewardClaims
+    this.selectedDispatchLane = payload.selectedDispatchLane
+    this.queuedUnitCount = payload.queuedUnitCount
+    this.previewManaRatio = payload.previewManaRatio
+    this.previewManaUpgradeProgressRatio = payload.previewManaUpgradeProgressRatio
+    this.previewOwnTowerHpRatio = payload.previewOwnTowerHpRatio
+    this.previewEnemyTowerHpRatio = payload.previewEnemyTowerHpRatio
+    this.alliedManaValue = payload.alliedManaValue
+    this.enemyManaValue = payload.enemyManaValue
+    this.manaCapacityValue = payload.manaCapacityValue
+    this.enemyManaCapacityValue = payload.enemyManaCapacityValue
+    this.populationCapacity = payload.populationCapacity
+    this.enemyPopulationCapacity = payload.enemyPopulationCapacity
+    this.heroAssignedLane = payload.heroAssignedLane
+    this.copyLaneBattleState(payload.laneBattleState)
+    this.towerUpgradeLevels.mana = payload.towerUpgradeLevels.mana
+    this.towerUpgradeLevels.population = payload.towerUpgradeLevels.population
+    this.towerUpgradeLevels.attack = payload.towerUpgradeLevels.attack
+    this.currentStageBattleProfile = structuredClone(payload.currentStageBattleProfile)
+    this.currentObjectivePhase = payload.currentObjectivePhase
+    this.currentObjectiveLabel = payload.currentObjectiveLabel
+    this.currentWaveIndex = payload.currentWaveIndex
+    this.totalWaveCount = payload.totalWaveCount
+    this.enemyWaveCursor = payload.enemyWaveCursor
+    this.alliedWaveCursor = payload.alliedWaveCursor
+    this.enemyWavesDispatched = payload.enemyWavesDispatched
+    this.alliedWavesDispatched = payload.alliedWavesDispatched
+    this.objectiveProgressRatio = payload.objectiveProgressRatio
+    this.enemyWaveCountdownBeats = payload.enemyWaveCountdownBeats
+    this.alliedWaveCountdownBeats = payload.alliedWaveCountdownBeats
+    this.enemyWavePlan = structuredClone(payload.enemyWavePlan)
+    this.alliedWavePlan = structuredClone(payload.alliedWavePlan)
+    this.battleResolutionOutcome = payload.battleResolutionOutcome
+    this.battleResolutionReason = payload.battleResolutionReason
+    this.campaignUnlockedStageCount = payload.campaignUnlockedStageCount
+    this.campaignLastUnlockedNodeIndex = payload.campaignLastUnlockedNodeIndex
+    this.campaignSelectedNodeIndex = payload.campaignSelectedNodeIndex
+    this.campaignSelectedLoadoutIndex = payload.campaignSelectedLoadoutIndex
+    this.campaignMenuIndex = payload.campaignMenuIndex
+    this.campaignScenePhase = payload.campaignScenePhase
+    this.campaignClearedStoryboardIds.clear()
+    payload.campaignClearedStoryboardIds.forEach((id) => {
+      this.campaignClearedStoryboardIds.add(id)
+    })
+    this.campaignLastResolvedStageTitle = payload.campaignLastResolvedStageTitle
+    this.campaignLastOutcome = payload.campaignLastOutcome
+    this.campaignPreferredRouteLabel = payload.campaignPreferredRouteLabel
+    this.campaignRouteCommitment = payload.campaignRouteCommitment
+    this.activeDeployLoadout = this.findLoadoutById(payload.activeDeployLoadoutId, this.storyboards[this.storyboardIndex])
+    this.lastActionId = payload.lastActionId
+    this.lastActionAccepted = payload.lastActionAccepted
+    this.lastActionNote = payload.lastActionNote
+    this.lastScriptedBeatNote = payload.lastScriptedBeatNote
+    for (const key of Object.keys(this.rosterChainBoosts)) {
+      delete this.rosterChainBoosts[key]
+    }
+    payload.rosterChainBoosts.forEach(([key, value]) => {
+      this.rosterChainBoosts[key] = value
+    })
+    this.rosterChainFocusLane = payload.rosterChainFocusLane
+    this.battleStepCount = payload.battleStepCount
+    this.nextBattleEntityId = payload.nextBattleEntityId
+    this.nextBattleProjectileId = payload.nextBattleProjectileId
+    this.nextBattleEffectId = payload.nextBattleEffectId
+    this.copyLaneEntities(payload.laneEntities)
+    this.replaceRuntimeList(this.battleProjectiles, payload.battleProjectiles)
+    this.replaceRuntimeList(this.battleEffects, payload.battleEffects)
+    this.entityVisuals.clear()
+    payload.entityVisuals.forEach(([key, value]) => {
+      this.entityVisuals.set(key, structuredClone(value))
+    })
+    this.cameraShakeIntensity = payload.cameraShakeIntensity
+    this.cameraShakeAxes = payload.cameraShakeAxes
+    this.overlayMode = payload.overlayMode
+    this.overlayColor = payload.overlayColor
+    this.overlayAlpha = payload.overlayAlpha
+    this.burstPulseIntensity = payload.burstPulseIntensity
+    this.particleBoostIntensity = payload.particleBoostIntensity
+    this.hitFlashIntensity = payload.hitFlashIntensity
+    this.settingsState = {
+      audioEnabled: payload.settings.audioEnabled,
+      masterVolume: clamp(payload.settings.masterVolume, 0, 1),
+      autoAdvanceEnabled: payload.settings.autoAdvanceEnabled,
+      autoSaveEnabled: payload.settings.autoSaveEnabled,
+      resumeOnLaunch: payload.settings.resumeOnLaunch,
+      reducedEffects: payload.settings.reducedEffects,
+    }
+    this.persistSettings()
+    this.rebuildLaneBattleState()
+    this.lastSavedLabel = payload.slotLabel
+    this.lastSavedAtIso = payload.savedAtIso
+    this.lastLoadedLabel = slotLabel
+    this.lastLoadedAtIso = new Date().toISOString()
+    this.activeSessionSlotLabel = slotLabel
+    this.sessionRevision = Math.max(payload.sessionRevision, this.sessionRevision)
+    this.lastAutoSaveAtMs = baseNow
+    return true
+  }
+
+  private remainingMs(deadlineMs: number): number | null {
+    if (!Number.isFinite(deadlineMs) || deadlineMs <= 0) {
+      return null
+    }
+    return Math.max(deadlineMs - this.lastUpdateNowMs, 0)
+  }
+
+  private restoreDeadline(remainingMs: number | null, baseNow: number): number {
+    if (remainingMs === null || !Number.isFinite(remainingMs)) {
+      return 0
+    }
+    return baseNow + Math.max(remainingMs, 0)
+  }
+
+  private copyLaneBattleState(
+    source: Record<RecoveryLaneBattleState['laneId'], Omit<RecoveryLaneBattleState, 'laneId'>>,
+  ): void {
+    ;(['upper', 'lower'] as const).forEach((laneId) => {
+      const target = this.laneBattleState[laneId]
+      const next = source[laneId]
+      target.alliedUnits = next.alliedUnits
+      target.enemyUnits = next.enemyUnits
+      target.alliedPressure = next.alliedPressure
+      target.enemyPressure = next.enemyPressure
+      target.frontline = next.frontline
+      target.contested = next.contested
+      target.momentum = next.momentum
+      target.heroPresent = next.heroPresent
+    })
+  }
+
+  private copyLaneEntities(
+    source: Record<RecoveryBattleLaneId, Record<RecoveryBattleSide, RecoveryBattleUnitRuntime[]>>,
+  ): void {
+    ;(['upper', 'lower'] as const).forEach((laneId) => {
+      ;(['allied', 'enemy'] as const).forEach((side) => {
+        this.replaceRuntimeList(this.laneEntities[laneId][side], source[laneId][side])
+      })
+    })
+  }
+
+  private replaceRuntimeList<T>(target: T[], source: T[]): void {
+    target.splice(0, target.length, ...structuredClone(source))
+  }
+
+  private findLoadoutById(
+    loadoutId: string | null,
+    storyboard: RecoveryStageStoryboard | null,
+  ): RecoveryStageSnapshot['campaignState']['loadouts'][number] | null {
+    if (!loadoutId || !storyboard) {
+      return null
+    }
+    return this.buildDeployLoadouts(storyboard).find((loadout) => loadout.id === loadoutId) ?? null
+  }
+
+  private buildSettingsState(): RecoverySettingsState {
+    return { ...this.settingsState }
+  }
+
+  private buildPersistenceState(): RecoveryPersistenceState {
+    return {
+      hasQuickSave: this.hasQuickSave,
+      hasResumeSession: this.hasResumeSession,
+      resumedFromSession: this.resumedFromSession,
+      activeSlotLabel: this.activeSessionSlotLabel,
+      lastSavedLabel: this.lastSavedLabel,
+      lastLoadedLabel: this.lastLoadedLabel,
+      lastSavedAtIso: this.lastSavedAtIso,
+      lastLoadedAtIso: this.lastLoadedAtIso,
+      sessionRevision: this.sessionRevision,
+    }
+  }
+
+  private buildAudioState(): RecoveryAudioState {
+    return {
+      enabled: this.settingsState.audioEnabled,
+      masterVolume: this.settingsState.masterVolume,
+      ambientLayer: this.deriveAmbientLayer(),
+      cueSequence: this.audioCueSequence,
+      cueCategory: this.audioCueCategory,
+      cueLabel: this.audioCueLabel,
+      cueIntensity: this.audioCueIntensity,
+    }
+  }
+
+  private deriveAmbientLayer(): RecoveryAudioState['ambientLayer'] {
+    switch (this.campaignScenePhase) {
+      case 'title':
+        return 'title'
+      case 'main-menu':
+        return 'menu'
+      case 'worldmap':
+        return 'worldmap'
+      case 'deploy-briefing':
+        return 'deploy'
+      case 'reward-review':
+        return 'reward'
+      case 'unlock-reveal':
+        return 'unlock'
+      case 'result-hold':
+        return 'result'
+      default:
+        return 'battle'
+    }
+  }
+
+  private emitAudioCue(
+    cueCategory: RecoveryAudioState['cueCategory'],
+    cueLabel: string,
+    cueIntensity: number,
+  ): void {
+    this.audioCueSequence += 1
+    this.audioCueCategory = cueCategory
+    this.audioCueLabel = cueLabel
+    this.audioCueIntensity = clamp(cueIntensity, 0, 1)
+  }
+
+  private maybePersistResumeSession(nowMs: number): void {
+    if (!this.settingsState.autoSaveEnabled || nowMs - this.lastAutoSaveAtMs < AUTO_SAVE_INTERVAL_MS) {
+      return
+    }
+    if (this.persistSessionToKey(RESUME_STORAGE_KEY, 'resume-session')) {
+      this.lastAutoSaveAtMs = nowMs
+    }
   }
 
   moveCampaignMenu(direction: -1 | 1): boolean {
@@ -799,6 +1526,9 @@ export class RecoveryStageSystem {
         activeOpcodeCue,
         hudState,
       ),
+      settingsState: this.buildSettingsState(),
+      persistenceState: this.buildPersistenceState(),
+      audioState: this.buildAudioState(),
       battlePreviewState,
     }
   }
@@ -839,7 +1569,7 @@ export class RecoveryStageSystem {
     if (this.campaignScenePhase === 'title' || this.campaignScenePhase === 'main-menu') {
       // Hold on the title/menu phases while keeping sprite playback alive.
     } else if (this.campaignScenePhase === 'result-hold') {
-      if (this.battleResolutionAutoAdvanceAtMs > 0 && nowMs >= this.battleResolutionAutoAdvanceAtMs) {
+      if (this.settingsState.autoAdvanceEnabled && this.battleResolutionAutoAdvanceAtMs > 0 && nowMs >= this.battleResolutionAutoAdvanceAtMs) {
         if (this.battleResolutionOutcome === 'victory') {
           this.enterRewardReview(nowMs)
         } else {
@@ -849,7 +1579,7 @@ export class RecoveryStageSystem {
         return true
       }
     } else if (this.campaignScenePhase === 'reward-review') {
-      if (this.campaignRewardReviewEndsAtMs > 0 && nowMs >= this.campaignRewardReviewEndsAtMs) {
+      if (this.settingsState.autoAdvanceEnabled && this.campaignRewardReviewEndsAtMs > 0 && nowMs >= this.campaignRewardReviewEndsAtMs) {
         if (this.currentUnlockRevealLabel() !== null) {
           this.enterUnlockReveal(nowMs)
         } else {
@@ -859,19 +1589,19 @@ export class RecoveryStageSystem {
         return true
       }
     } else if (this.campaignScenePhase === 'unlock-reveal') {
-      if (this.campaignUnlockRevealEndsAtMs > 0 && nowMs >= this.campaignUnlockRevealEndsAtMs) {
+      if (this.settingsState.autoAdvanceEnabled && this.campaignUnlockRevealEndsAtMs > 0 && nowMs >= this.campaignUnlockRevealEndsAtMs) {
         this.enterWorldmapSelection(nowMs)
         this.version += 1
         return true
       }
     } else if (this.campaignScenePhase === 'worldmap') {
-      if (this.campaignWorldmapAutoEnterAtMs > 0 && nowMs >= this.campaignWorldmapAutoEnterAtMs) {
+      if (this.settingsState.autoAdvanceEnabled && this.campaignWorldmapAutoEnterAtMs > 0 && nowMs >= this.campaignWorldmapAutoEnterAtMs) {
         this.enterDeployBriefing(this.campaignSelectedNodeIndex, nowMs)
         this.version += 1
         return true
       }
     } else if (this.campaignScenePhase === 'deploy-briefing') {
-      if (this.campaignDeployBriefingEndsAtMs > 0 && nowMs >= this.campaignDeployBriefingEndsAtMs) {
+      if (this.settingsState.autoAdvanceEnabled && this.campaignDeployBriefingEndsAtMs > 0 && nowMs >= this.campaignDeployBriefingEndsAtMs) {
         this.launchCampaignNodeNow(this.campaignSelectedNodeIndex, nowMs)
         this.version += 1
         return true
@@ -893,6 +1623,7 @@ export class RecoveryStageSystem {
     if (changed) {
       this.version += 1
     }
+    this.maybePersistResumeSession(nowMs)
     return changed
   }
 
@@ -958,6 +1689,7 @@ export class RecoveryStageSystem {
     this.applyDialogueBeat(storyboard, this.currentDialogueEvent(storyboard))
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration() + dialogueGapMs
     this.scheduleNextFrame(storyboard.previewStem, nowMs)
+    this.emitAudioCue('battle', 'battle-start', 0.42)
   }
 
   private enterWorldmapSelection(nowMs: number): void {
@@ -987,6 +1719,7 @@ export class RecoveryStageSystem {
     this.campaignUnlockRevealEndsAtMs = 0
     this.campaignLastUnlockedNodeIndex = null
     this.lastActionNote = `worldmap opened for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
+    this.emitAudioCue('ui', 'worldmap-open', 0.26)
   }
 
   private enterDeployBriefing(index: number, nowMs: number): void {
@@ -1009,6 +1742,7 @@ export class RecoveryStageSystem {
     this.campaignRewardReviewEndsAtMs = 0
     this.campaignUnlockRevealEndsAtMs = 0
     this.lastActionNote = `deploy briefing ready for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
+    this.emitAudioCue('ui', 'deploy-briefing', 0.24)
   }
 
   private enterTitle(nowMs: number): void {
@@ -1022,6 +1756,7 @@ export class RecoveryStageSystem {
     this.battlePaused = false
     this.pauseStartedAtMs = 0
     this.lastActionNote = 'title screen ready'
+    this.emitAudioCue('ui', 'title-ready', 0.18)
   }
 
   private enterMainMenu(nowMs: number): void {
@@ -1035,6 +1770,7 @@ export class RecoveryStageSystem {
     this.battlePaused = false
     this.pauseStartedAtMs = 0
     this.lastActionNote = 'campaign menu ready'
+    this.emitAudioCue('ui', 'main-menu', 0.2)
   }
 
   private enterRewardReview(nowMs: number): void {
@@ -1047,6 +1783,7 @@ export class RecoveryStageSystem {
     this.battlePaused = false
     this.pauseStartedAtMs = 0
     this.lastActionNote = 'reward review opened'
+    this.emitAudioCue('result', 'reward-review', 0.3)
   }
 
   private enterUnlockReveal(nowMs: number): void {
@@ -1059,6 +1796,7 @@ export class RecoveryStageSystem {
     this.battlePaused = false
     this.pauseStartedAtMs = 0
     this.lastActionNote = this.currentUnlockRevealLabel() ?? 'unlock reveal opened'
+    this.emitAudioCue('result', 'unlock-reveal', 0.34)
   }
 
   private currentUnlockRevealLabel(): string | null {
@@ -1164,8 +1902,9 @@ export class RecoveryStageSystem {
                   : selectedNodeIndex !== this.storyboardIndex
                     ? 'queued-route-selection'
                     : 'follow-active-stage'
-    const autoAdvanceInMs =
-      this.campaignScenePhase === 'result-hold' && this.battleResolutionAutoAdvanceAtMs > 0
+    const autoAdvanceInMs = !this.settingsState.autoAdvanceEnabled
+      ? null
+      : this.campaignScenePhase === 'result-hold' && this.battleResolutionAutoAdvanceAtMs > 0
         ? Math.max(this.battleResolutionAutoAdvanceAtMs - this.lastUpdateNowMs, 0)
       : this.campaignScenePhase === 'reward-review' && this.campaignRewardReviewEndsAtMs > 0
         ? Math.max(this.campaignRewardReviewEndsAtMs - this.lastUpdateNowMs, 0)
@@ -3296,6 +4035,7 @@ export class RecoveryStageSystem {
       this.panelOverride = 'system'
     }
     this.lastScriptedBeatNote = `${outcome === 'victory' ? 'stage clear' : 'stage failed'}: ${reason}`
+    this.emitAudioCue(outcome === 'victory' ? 'result' : 'battle', outcome === 'victory' ? 'stage-victory' : 'stage-defeat', outcome === 'victory' ? 0.48 : 0.4)
   }
 
   private totalUnits(side: RecoveryBattleSide): number {
@@ -3625,31 +4365,32 @@ export class RecoveryStageSystem {
     )
     const familyRepresentatives = this.runtimeBlueprint?.renderProfile.ptcBridgeSummary.familyRepresentativeEmitters ?? {}
     const bankOverlayWeight = Math.max(0, Number(currentFrame?.bankOverlayWeight ?? 0))
+    const effectsScale = this.settingsState.reducedEffects ? 0.52 : 1
     return {
       bankRuleLabel: storyboard.stageBlueprint?.renderIntent?.bankRule ?? this.runtimeBlueprint?.renderProfile.defaultMplBankRule.label ?? 'flag-driven-bank-switch',
-      bankOverlayActive: bankOverlayWeight > 0.01,
+      bankOverlayActive: bankOverlayWeight * effectsScale > 0.01,
       bankStateId: currentFrame?.bankStateId ?? 'bank-b-only',
       bankTransition: currentFrame?.bankTransition ?? null,
       bankBlendMode: currentFrame?.bankBlendMode ?? 'opaque-b',
-      bankOverlayWeight,
+      bankOverlayWeight: bankOverlayWeight * effectsScale,
       baseFlaggedCount: Number(currentFrame?.baseFlaggedCount ?? 0),
       tailFlaggedCount: Number(currentFrame?.tailFlaggedCount ?? 0),
       packedPixelStemRule: specialRule?.heuristic ?? null,
       packedPixelBlendMode: specialRule?.highlightBlendMode ?? null,
       effectPulseCount: Math.max(
         channelStates.filter((entry) => entry.intensity > 0.62 && entry.hasBuffLayer).length,
-        Math.round(this.burstPulseIntensity * 4),
+        Math.round(this.burstPulseIntensity * effectsScale * 4),
       ),
       effectIntensity: storyboard.stageBlueprint?.renderIntent?.effectIntensity ?? 'medium',
       ptcEmitterHint: typeof familyRepresentatives.support === 'string' ? familyRepresentatives.support : null,
-      cameraShakeIntensity: this.cameraShakeIntensity,
+      cameraShakeIntensity: this.cameraShakeIntensity * effectsScale,
       cameraShakeAxes: this.cameraShakeAxes,
       overlayMode: this.overlayMode,
       overlayColor: this.overlayColor,
-      overlayAlpha: this.overlayAlpha,
-      burstPulseIntensity: this.burstPulseIntensity,
-      particleBoostIntensity: this.particleBoostIntensity,
-      hitFlashIntensity: this.hitFlashIntensity,
+      overlayAlpha: this.overlayAlpha * effectsScale,
+      burstPulseIntensity: this.burstPulseIntensity * effectsScale,
+      particleBoostIntensity: this.particleBoostIntensity * effectsScale,
+      hitFlashIntensity: this.hitFlashIntensity * effectsScale,
     }
   }
 
@@ -4410,6 +5151,7 @@ export class RecoveryStageSystem {
       this.supportLaneUnits(targetLane, 'allied', 0.12)
     }
     this.lastActionNote = `skill cast ${skillTemplate.name}`
+    this.emitAudioCue('battle', 'cast-skill', 0.36)
   }
 
   private applyItemAction(nowMs: number): void {
@@ -4462,6 +5204,7 @@ export class RecoveryStageSystem {
       this.supportLaneUnits(targetLane, 'allied', 0.12)
     }
     this.lastActionNote = `item used ${itemTemplate.name}`
+    this.emitAudioCue('battle', 'use-item', 0.28)
   }
 
   private applyAction(actionId: RecoveryGameplayActionId, snapshot: RecoveryStageSnapshot): void {
@@ -4471,25 +5214,30 @@ export class RecoveryStageSystem {
       case 'open-tower-menu':
         this.panelOverride = 'tower'
         this.lastActionNote = 'tower panel opened'
+        this.emitAudioCue('ui', 'panel-tower', 0.18)
         break
       case 'open-skill-menu':
         this.panelOverride = 'skill'
         this.lastActionNote = 'skill panel opened'
+        this.emitAudioCue('ui', 'panel-skill', 0.18)
         break
       case 'open-item-menu':
         this.panelOverride = 'item'
         this.lastActionNote = 'item panel opened'
+        this.emitAudioCue('ui', 'panel-item', 0.18)
         break
       case 'open-system-menu':
       case 'open-settings':
         this.panelOverride = 'system'
         this.setBattlePaused(nowMs, true)
         this.lastActionNote = actionId === 'open-settings' ? 'settings route selected' : 'system panel opened'
+        this.emitAudioCue('ui', actionId === 'open-settings' ? 'panel-settings' : 'panel-system', 0.2)
         break
       case 'resume-battle':
         this.panelOverride = null
         this.setBattlePaused(nowMs, false)
         this.lastActionNote = 'panel closed, battle resumed'
+        this.emitAudioCue('ui', 'resume-battle', 0.16)
         break
       case 'upgrade-tower-stat':
         this.panelOverride = 'tower'
@@ -4536,6 +5284,7 @@ export class RecoveryStageSystem {
           })
         }
         this.lastActionNote = `unit production preview accepted${activeLoadout ? ` (${activeLoadout.heroRosterLabel})` : ''}`
+        this.emitAudioCue('battle', 'produce-unit', 0.22)
         }
         break
       case 'deploy-hero':
@@ -4581,6 +5330,7 @@ export class RecoveryStageSystem {
             })
           }
           this.lastActionNote = `hero deployed to ${this.heroAssignedLane} lane (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
+          this.emitAudioCue('battle', 'hero-deploy', 0.34)
         }
         }
         break
@@ -4607,6 +5357,7 @@ export class RecoveryStageSystem {
           this.supportLaneUnits(guardLane, 'allied', 0.12)
         }
         this.lastActionNote = `hero return cooldown started (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
+        this.emitAudioCue('battle', 'hero-return', 0.24)
         }
         break
       case 'review-quest-rewards':
@@ -4618,6 +5369,7 @@ export class RecoveryStageSystem {
         this.panelOverride = 'system'
         this.claimQuestRewardPayout()
         this.lastActionNote = 'quest reward claimed'
+        this.emitAudioCue('result', 'reward-claim', 0.28)
         break
       default:
         this.lastActionNote = `${actionId} accepted`
@@ -4985,6 +5737,7 @@ export class RecoveryStageSystem {
     this.applyUpgradeProgressDelta(-0.3)
     this.recalculatePopulationCaps()
     this.lastActionNote = `${upgradeId} upgrade advanced to tier ${this.towerUpgradeLevels[upgradeId]} (${this.activeDeployLoadout?.towerPolicyLabel ?? 'balanced towers'})`
+    this.emitAudioCue('system', `upgrade-${upgradeId}`, 0.22)
   }
 
   private commitLaneDispatch(lane: 'upper' | 'lower'): void {
@@ -5011,9 +5764,11 @@ export class RecoveryStageSystem {
       this.recalculatePopulationCaps()
       this.rebuildLaneBattleState()
       this.lastActionNote = `${lane} lane selected with ${allowedCount} unit push`
+      this.emitAudioCue('battle', `dispatch-${lane}`, 0.24)
       return
     }
     this.lastActionNote = `${lane} lane primed`
+    this.emitAudioCue('battle', `prime-${lane}`, 0.18)
   }
 
   private seedBattlePreviewState(storyboard: RecoveryStageStoryboard): void {

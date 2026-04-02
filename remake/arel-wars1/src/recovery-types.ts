@@ -1034,6 +1034,37 @@ export interface RecoveryCampaignState {
   nodes: RecoveryCampaignNodeState[]
 }
 
+export interface RecoverySettingsState {
+  audioEnabled: boolean
+  masterVolume: number
+  autoAdvanceEnabled: boolean
+  autoSaveEnabled: boolean
+  resumeOnLaunch: boolean
+  reducedEffects: boolean
+}
+
+export interface RecoveryPersistenceState {
+  hasQuickSave: boolean
+  hasResumeSession: boolean
+  resumedFromSession: boolean
+  activeSlotLabel: string | null
+  lastSavedLabel: string | null
+  lastLoadedLabel: string | null
+  lastSavedAtIso: string | null
+  lastLoadedAtIso: string | null
+  sessionRevision: number
+}
+
+export interface RecoveryAudioState {
+  enabled: boolean
+  masterVolume: number
+  ambientLayer: 'title' | 'menu' | 'worldmap' | 'deploy' | 'battle' | 'result' | 'reward' | 'unlock'
+  cueSequence: number
+  cueCategory: 'ui' | 'system' | 'battle' | 'result'
+  cueLabel: string | null
+  cueIntensity: number
+}
+
 export interface RecoveryBattlePreviewState {
   lanes: RecoveryLaneBattleState[]
   entities: RecoveryBattleEntityState[]
@@ -1065,5 +1096,8 @@ export interface RecoveryStageSnapshot {
   renderState: RecoveryStageRenderState
   hudState: RecoveryHudGhostState
   gameplayState: RecoveryGameplayState
+  settingsState: RecoverySettingsState
+  persistenceState: RecoveryPersistenceState
+  audioState: RecoveryAudioState
   battlePreviewState: RecoveryBattlePreviewState
 }

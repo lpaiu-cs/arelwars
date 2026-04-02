@@ -201,6 +201,26 @@ function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLEleme
     return
   }
 
+  panel.addEventListener('click', (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLElement)) {
+      return
+    }
+    const control = target.closest<HTMLElement>('[data-runtime-control]')
+    if (!control) {
+      return
+    }
+    const action = control.dataset.runtimeControl
+    if (!action || !invokeRuntimeControl(system, action)) {
+      return
+    }
+    render()
+  })
+
+  window.addEventListener('beforeunload', () => {
+    system.persistResumeSessionNow('beforeunload')
+  })
+
   const render = (): void => {
     const snapshot = system.getSnapshot()
     if (!snapshot) {
@@ -221,6 +241,33 @@ function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLEleme
 
   render()
   window.requestAnimationFrame(loop)
+}
+
+function invokeRuntimeControl(system: RecoveryStageSystem, action: string): boolean {
+  switch (action) {
+    case 'save-session':
+      return system.quickSave()
+    case 'load-session':
+      return system.quickLoad()
+    case 'retry-stage':
+      return system.retryActiveStage()
+    case 'toggle-audio':
+      return system.toggleAudioEnabled()
+    case 'volume-down':
+      return system.adjustMasterVolume(-0.08)
+    case 'volume-up':
+      return system.adjustMasterVolume(0.08)
+    case 'toggle-auto-advance':
+      return system.toggleAutoAdvanceEnabled()
+    case 'toggle-autosave':
+      return system.toggleAutoSaveEnabled()
+    case 'toggle-resume':
+      return system.toggleResumeOnLaunch()
+    case 'toggle-effects':
+      return system.toggleReducedEffects()
+    default:
+      return false
+  }
 }
 
 function renderTimelinePreview(
@@ -382,6 +429,9 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       : null
   const gameplayState = snapshot.gameplayState
   const campaign = snapshot.campaignState
+  const settings = snapshot.settingsState
+  const persistence = snapshot.persistenceState
+  const audio = snapshot.audioState
   const briefing = campaign.briefing
   const selectedLoadout = campaign.loadouts[Math.max(campaign.selectedLoadoutIndex - 1, 0)] ?? null
   const profile = snapshot.battlePreviewState.stageProfile
@@ -394,7 +444,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const battleLine = snapshot.battlePreviewState.lanes
     .map((lane) => `${lane.laneId} ${lane.alliedUnits}-${lane.enemyUnits} ${lane.momentum} @ ${lane.frontline.toFixed(2)}`)
     .join(' · ')
-  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? ` / ${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? ` / ${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? ` / ${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? ` / ${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? ` / ${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · script ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · profile ${profile.label} · bias ${profile.tacticalBias} · signals ${profile.archetypeSignals.join('/') || 'baseline'} · tempo a${profile.alliedWaveCadenceBeats}/e${profile.enemyWaveCadenceBeats} · heroImpact ${profile.heroImpact.toFixed(2)} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'} · result ${resolution.status}${resolution.status !== 'active' ? ` ${resolution.label}${resolution.autoAdvanceInMs !== null ? ` in ${Math.ceil(resolution.autoAdvanceInMs / 100) / 10}s` : ''}` : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · entities ${entityCount} / projectiles ${projectileCount} / effects ${effectCount}${activeChain.active ? ` · chain ${activeChain.members.join('+')} @ ${activeChain.focusLane ?? 'mixed'} x${activeChain.intensity.toFixed(2)}` : ''} · objectiveMode ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.scriptedBeatNote ? ` · script ${gameplayState.scriptedBeatNote}` : ''}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
+  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : settings.autoAdvanceEnabled ? '' : ' manual-advance'} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? ` / ${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? ` / ${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? ` / ${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? ` / ${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? ` / ${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · script ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · profile ${profile.label} · bias ${profile.tacticalBias} · signals ${profile.archetypeSignals.join('/') || 'baseline'} · tempo a${profile.alliedWaveCadenceBeats}/e${profile.enemyWaveCadenceBeats} · heroImpact ${profile.heroImpact.toFixed(2)} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'} · result ${resolution.status}${resolution.status !== 'active' ? ` ${resolution.label}${resolution.autoAdvanceInMs !== null ? ` in ${Math.ceil(resolution.autoAdvanceInMs / 100) / 10}s` : ''}` : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · entities ${entityCount} / projectiles ${projectileCount} / effects ${effectCount}${activeChain.active ? ` · chain ${activeChain.members.join('+')} @ ${activeChain.focusLane ?? 'mixed'} x${activeChain.intensity.toFixed(2)}` : ''} · objectiveMode ${gameplayState.objectiveMode} · audio ${audio.enabled ? `${Math.round(audio.masterVolume * 100)}% ${audio.ambientLayer}` : 'muted'}${audio.cueLabel ? `/${audio.cueLabel}` : ''} · saves q${persistence.hasQuickSave ? 'ready' : 'empty'} r${persistence.hasResumeSession ? 'ready' : 'empty'} rev${persistence.sessionRevision} · ${gameplayState.primaryHint}${gameplayState.scriptedBeatNote ? ` · script ${gameplayState.scriptedBeatNote}` : ''}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
   const campaignStrip = campaign.nodes
     .map((node) => {
       const classes = [
@@ -481,7 +531,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
               ? 'Press U to claim the reward if available, or Enter to continue.'
               : campaign.scenePhase === 'unlock-reveal'
                 ? 'Enter moves on to the world map after the unlock reveal.'
-                : 'ArrowLeft/ArrowRight selects an unlocked campaign node while paused or between battles. ArrowUp/ArrowDown cycles deploy loadouts. Enter advances the campaign flow.'
+                : 'ArrowLeft/ArrowRight selects an unlocked campaign node while paused or between battles. ArrowUp/ArrowDown cycles deploy loadouts. Enter advances the campaign flow. P save, L load, I retry, M mute, [ ] volume, O auto, J autosave, K resume, ; effects.'
   return `
     <article class="story-card">
       <header class="story-card-header">
@@ -512,6 +562,25 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         <p><strong>Allied Waves:</strong> ${escapeHtml(briefing.alliedForecast.join(' · ') || 'idle')}</p>
         <p><strong>Enemy Waves:</strong> ${escapeHtml(briefing.enemyForecast.join(' · ') || 'idle')}</p>
         ${activeChain.active ? `<p><strong>Chain:</strong> ${escapeHtml(`${activeChain.members.join(' / ')} / ${activeChain.focusLane ?? 'mixed'} / x${activeChain.intensity.toFixed(2)}`)}</p>` : ''}
+      </div>
+      <div class="story-settings-grid">
+        <p><strong>Settings:</strong> audio ${escapeHtml(settings.audioEnabled ? 'on' : 'off')} / volume ${Math.round(settings.masterVolume * 100)} / auto ${escapeHtml(settings.autoAdvanceEnabled ? 'on' : 'manual')} / autosave ${escapeHtml(settings.autoSaveEnabled ? 'on' : 'off')} / resume ${escapeHtml(settings.resumeOnLaunch ? 'on' : 'off')} / effects ${escapeHtml(settings.reducedEffects ? 'reduced' : 'full')}</p>
+        <p><strong>Session:</strong> quick ${escapeHtml(persistence.hasQuickSave ? 'ready' : 'empty')} / resume ${escapeHtml(persistence.hasResumeSession ? 'ready' : 'empty')}${persistence.resumedFromSession ? ' / resumed' : ''} / active ${escapeHtml(persistence.activeSlotLabel ?? 'live')} / rev ${persistence.sessionRevision}</p>
+        <p><strong>Saved:</strong> ${escapeHtml(persistence.lastSavedLabel ?? 'n/a')}${persistence.lastSavedAtIso ? ` / ${escapeHtml(persistence.lastSavedAtIso)}` : ''}</p>
+        <p><strong>Loaded:</strong> ${escapeHtml(persistence.lastLoadedLabel ?? 'n/a')}${persistence.lastLoadedAtIso ? ` / ${escapeHtml(persistence.lastLoadedAtIso)}` : ''}</p>
+        <p><strong>Audio Bus:</strong> ${escapeHtml(audio.ambientLayer)} / ${escapeHtml(audio.cueCategory)}${audio.cueLabel ? ` / ${escapeHtml(audio.cueLabel)}` : ''} / ${audio.cueSequence}</p>
+      </div>
+      <div class="story-control-strip">
+        <button type="button" data-runtime-control="save-session">Quick Save</button>
+        <button type="button" data-runtime-control="load-session">Quick Load</button>
+        <button type="button" data-runtime-control="retry-stage">Retry Stage</button>
+        <button type="button" data-runtime-control="toggle-audio">${settings.audioEnabled ? 'Mute' : 'Unmute'}</button>
+        <button type="button" data-runtime-control="volume-down">Vol -</button>
+        <button type="button" data-runtime-control="volume-up">Vol +</button>
+        <button type="button" data-runtime-control="toggle-auto-advance">${settings.autoAdvanceEnabled ? 'Hold Auto' : 'Enable Auto'}</button>
+        <button type="button" data-runtime-control="toggle-autosave">${settings.autoSaveEnabled ? 'Pause Autosave' : 'Enable Autosave'}</button>
+        <button type="button" data-runtime-control="toggle-resume">${settings.resumeOnLaunch ? 'Disable Resume' : 'Enable Resume'}</button>
+        <button type="button" data-runtime-control="toggle-effects">${settings.reducedEffects ? 'Full FX' : 'Reduce FX'}</button>
       </div>
       <div class="story-dialogue">
         <p class="story-speaker">${escapeHtml(speakerLine)}</p>
