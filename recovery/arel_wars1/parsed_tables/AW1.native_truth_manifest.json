@@ -1,0 +1,319 @@
+{
+  "summary": {
+    "frozenTruthLayerCount": 7,
+    "heuristicLayerCount": 5,
+    "dormantNativePathCount": 3,
+    "regressionStemCount": 8
+  },
+  "certaintyLegend": {
+    "native-confirmed": "Matches a native field or consumer behavior already confirmed from disassembly.",
+    "asset-structural": "Exact or near-exact structure recovered from APK assets, but not necessarily backed by a closed native consumer path.",
+    "runtime-consistent heuristic": "Useful and stable in the remake runtime, but not yet proven as original-engine truth.",
+    "donor/prototype inferred": "Filled or grouped from neighboring examples rather than closed on the target asset itself."
+  },
+  "provenanceLegend": {
+    "native-disassembly": "Backed by the disassemble branch and native loader analysis.",
+    "apk-structural-exact": "Backed by exact APK-side structural or binding evidence on main.",
+    "runtime-reconstruction": "Backed by remake-side reconstruction and consistency checks, not by a closed native proof path."
+  },
+  "regressionStemSet": [
+    "082",
+    "084",
+    "208",
+    "209",
+    "215",
+    "226",
+    "230",
+    "240"
+  ],
+  "certificationPolicy": {
+    "certificationUsesNativeTruthFor": [
+      "PZA base timing",
+      "PZF frame composition",
+      "PZD image-pool indexing",
+      "MPL flag-driven bank switching"
+    ],
+    "certificationUsesAssetStructuralTruthFor": [
+      "script family to AI row to map bin binding",
+      "179 special packed-pixel handling"
+    ],
+    "requiresExplicitWaiverIfUsedAsProof": [
+      "timelineKind",
+      "playbackDurationMs",
+      "grouped tail cadence",
+      "opcode action mnemonics",
+      "PTC emitter semantics"
+    ],
+    "runtimeSummary": {
+      "stageBlueprintCount": 111,
+      "opcodeHeuristicCount": 64,
+      "tutorialChainCount": 15
+    }
+  },
+  "frozenTruthLayers": [
+    {
+      "id": "pzx-root-subresource-typing",
+      "label": "PZX root typed subresources",
+      "domain": "render-stack",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "base render truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md",
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-native-branch-alignment.md"
+      ],
+      "proofSummary": [
+        "PZX root offsets are typed as field4->PZD, field8->PZF, field12->PZA.",
+        "Certification should treat the stack as PZA -> PZF -> PZD rather than grouped tail cadence alone."
+      ]
+    },
+    {
+      "id": "pza-base-clip-timing",
+      "label": "PZA base clip timing",
+      "domain": "animation-timing",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "timing truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md",
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-original-equivalence-certification-plan.md"
+      ],
+      "proofSummary": [
+        "Embedded PZA delay is the authoritative base-clip timing when present.",
+        "Main-branch playbackDurationMs must not be treated as a substitute for native PZA delay."
+      ],
+      "regressionStemSet": [
+        "082",
+        "084",
+        "208",
+        "209",
+        "215",
+        "226",
+        "230",
+        "240"
+      ]
+    },
+    {
+      "id": "pzf-frame-composition",
+      "label": "PZF frame composition",
+      "domain": "render-stack",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "frame assembly truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md"
+      ],
+      "proofSummary": [
+        "PZF owns frame composition and sub-frame placement.",
+        "Grouped tail overlays must not replace PZF frame-order truth in certification work."
+      ]
+    },
+    {
+      "id": "pzd-image-pool-layout",
+      "label": "PZD image-pool layout",
+      "domain": "render-stack",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "bitmap indexing truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md"
+      ],
+      "proofSummary": [
+        "PZD type 8 aligns to chunk-indexed pools; type 7 aligns to row-stream image indexes.",
+        "This is the canonical source for image-pool identity during certification."
+      ]
+    },
+    {
+      "id": "stage-family-ai-map-binding",
+      "label": "Script family to AI row to map bin binding",
+      "domain": "stage-binding",
+      "certaintyLevel": "asset-structural",
+      "provenance": "apk-structural-exact",
+      "certificationRole": "stage identity truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json"
+      ],
+      "proofSummary": [
+        "Every current script-backed stage binds exactly as familyId == XlsAi rowIndex with inline pair-base and pair-branch map pointers.",
+        "Main runtime no longer depends on scored map heuristics for stage identity."
+      ],
+      "counts": {
+        "stageBindingCount": 111,
+        "scriptAiExactCoverage": 111,
+        "inlineMapExactCoverage": 111
+      }
+    },
+    {
+      "id": "mpl-flag-bank-switching",
+      "label": "MPL flag-driven bank switching",
+      "domain": "render-stack",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "palette state truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.render_semantics.json"
+      ],
+      "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+      "counts": {
+        "exactStateCount": 224,
+        "bankStateCount": 224
+      },
+      "proofSummary": [
+        "Anchor and tail item flags are now exported per preview frame instead of inferred from overlay-only event labels.",
+        "Runtime bank overlays now read exact flagged-item counts and bank transitions from preview frames."
+      ]
+    },
+    {
+      "id": "packed-pixel-179-special",
+      "label": "179 packed-pixel special case",
+      "domain": "render-stack",
+      "certaintyLevel": "asset-structural",
+      "provenance": "apk-structural-exact",
+      "certificationRole": "special render handling",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.render_semantics.json"
+      ],
+      "proofSummary": [
+        "This packed-pixel rule is treated as a special 179-only mapping.",
+        "It is stronger than a generic preview heuristic, but it should not be generalized onto normal PZX/MPL stems."
+      ],
+      "notes": [
+        "Treat 179 as an isolated structural special case.",
+        "Do not generalize its packed-pixel mapping onto normal stems during certification."
+      ]
+    }
+  ],
+  "heuristicLayers": [
+    {
+      "id": "grouped-tail-overlay-cadence",
+      "label": "Grouped tail overlay cadence",
+      "domain": "animation-timing",
+      "certaintyLevel": "runtime-consistent heuristic",
+      "provenance": "runtime-reconstruction",
+      "certificationRole": "secondary runtime playback layer",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md",
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-native-branch-alignment.md"
+      ],
+      "proofSummary": [
+        "Grouped tail sections remain useful for the remake runtime but are not proven native timing fields.",
+        "They should be compared separately from PZA base timing during certification."
+      ]
+    },
+    {
+      "id": "timeline-kind-classification",
+      "label": "Timeline kind classification",
+      "domain": "animation-timing",
+      "certaintyLevel": "runtime-consistent heuristic",
+      "provenance": "runtime-reconstruction",
+      "certificationRole": "debug taxonomy only",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md"
+      ],
+      "proofSummary": [
+        "timelineKind is useful for grouping runtime playback behavior.",
+        "It must not be treated as a native enum in certification reports."
+      ]
+    },
+    {
+      "id": "playback-duration-ms",
+      "label": "playbackDurationMs overlay sheet",
+      "domain": "animation-timing",
+      "certaintyLevel": "runtime-consistent heuristic",
+      "provenance": "runtime-reconstruction",
+      "certificationRole": "preview tempo layer only",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md"
+      ],
+      "proofSummary": [
+        "Current main playbackDurationMs values do not directly overlap native PZA delay values on the regression set.",
+        "Use them only as remake playback scaffolding until native-equivalence replacement is in place."
+      ],
+      "regressionStemSet": [
+        "082",
+        "084",
+        "208",
+        "209",
+        "215",
+        "226",
+        "230",
+        "240"
+      ]
+    },
+    {
+      "id": "opcode-scene-command-registry",
+      "label": "Opcode scene-command registry",
+      "domain": "scene-scripting",
+      "certaintyLevel": "runtime-consistent heuristic",
+      "provenance": "runtime-reconstruction",
+      "certificationRole": "scene interpreter scaffolding",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json"
+      ],
+      "counts": {
+        "opcodeActionCount": 64,
+        "featuredOpcodeCount": 15,
+        "curatedVariantCount": 184
+      },
+      "proofSummary": [
+        "Opcode registry is complete enough for runtime interpretation, but it is not yet a native-disassembly command table.",
+        "Original-equivalence work should keep room for renaming or splitting commands when native evidence improves."
+      ]
+    },
+    {
+      "id": "ptc-emitter-semantics",
+      "label": "PTC emitter semantics",
+      "domain": "effects",
+      "certaintyLevel": "runtime-consistent heuristic",
+      "provenance": "runtime-reconstruction",
+      "certificationRole": "effect-behavior approximation",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.render_semantics.json"
+      ],
+      "counts": {
+        "ptcEmitterCount": 12
+      },
+      "proofSummary": [
+        "Emitter families and names are useful runtime labels.",
+        "Field semantics should still be treated as reconstructed until matched to original-side behavior."
+      ]
+    }
+  ],
+  "dormantNativePaths": [
+    {
+      "id": "global-delay-bias",
+      "label": "CGxPZxAni global delay bias",
+      "provenance": "native-disassembly",
+      "status": "dormant-in-current-apk",
+      "notes": [
+        "Native playback code carries a signed globalDelayBias field.",
+        "Current APK appears not to exercise it in the active asset set."
+      ]
+    },
+    {
+      "id": "reference-point-mode",
+      "label": "Reference-point bounding mode",
+      "provenance": "native-disassembly",
+      "status": "dormant-in-current-apk",
+      "notes": [
+        "Bounding-box and reference-point machinery exists natively.",
+        "Current APK coverage suggests the mode is dormant for live content."
+      ]
+    },
+    {
+      "id": "effectex-zeroeffectex-paths",
+      "label": "EffectEx and ZeroEffectEx selector paths",
+      "provenance": "native-disassembly",
+      "status": "mostly-dormant-in-current-apk",
+      "notes": [
+        "Selector tables and draw-op routing are substantially understood.",
+        "Do not force remake runtime behavior to mirror dormant native paths unless live APK evidence appears."
+      ]
+    }
+  ],
+  "findings": [
+    "Certification must treat PZA base timing and grouped tail cadence as separate layers.",
+    "Main runtime timing sheets remain valid for playback scaffolding, but not as direct native timing proof.",
+    "Stage binding is exact enough to serve as certification truth even though it is asset-structural rather than disassembly-derived."
+  ]
+}

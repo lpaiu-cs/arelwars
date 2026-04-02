@@ -60,10 +60,12 @@ Deliverables:
 
 - branch review note
 - native alignment note
+- machine-readable native truth manifest
 - selected disassemble tools mirrored or callable from `main`
 
 Required artifacts:
 
+- `AW1.native_truth_manifest.json`
 - `compare_main_regression_set.py`
 - native loader notes for `PZA/PZF/PZD`
 - native timing notes for `CGxPZxAni`
