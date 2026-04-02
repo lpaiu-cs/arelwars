@@ -331,6 +331,14 @@ export class RecoveryStageSystem {
 
   private totalWaveCount = 4
 
+  private enemyWaveCursor = 1
+
+  private alliedWaveCursor = 1
+
+  private enemyWavesDispatched = 0
+
+  private alliedWavesDispatched = 0
+
   private objectiveProgressRatio = 0.08
 
   private enemyWaveCountdownBeats = 4
@@ -1208,11 +1216,35 @@ export class RecoveryStageSystem {
     return progressDelta * clamp(multiplier, 0.72, 1.55)
   }
 
-  private currentWaveDirective(plan: RecoveryBattleWaveDirective[]): RecoveryBattleWaveDirective | null {
+  private syncCurrentWaveIndex(): void {
+    this.currentWaveIndex = clamp(
+      Math.max(this.enemyWaveCursor, this.alliedWaveCursor, this.enemyWavesDispatched, this.alliedWavesDispatched),
+      1,
+      this.totalWaveCount,
+    )
+  }
+
+  private markWaveDispatched(side: 'enemy' | 'allied', advanceCycle = true): void {
+    if (side === 'enemy') {
+      this.enemyWavesDispatched = Math.min(Math.max(this.enemyWavesDispatched, this.enemyWaveCursor), this.totalWaveCount)
+      if (advanceCycle && this.enemyWaveCursor < this.totalWaveCount) {
+        this.enemyWaveCursor += 1
+      }
+    } else {
+      this.alliedWavesDispatched = Math.min(Math.max(this.alliedWavesDispatched, this.alliedWaveCursor), this.totalWaveCount)
+      if (advanceCycle && this.alliedWaveCursor < this.totalWaveCount) {
+        this.alliedWaveCursor += 1
+      }
+    }
+    this.syncCurrentWaveIndex()
+  }
+
+  private currentWaveDirective(plan: RecoveryBattleWaveDirective[], side: 'enemy' | 'allied'): RecoveryBattleWaveDirective | null {
     if (plan.length === 0) {
       return null
     }
-    return plan[Math.min(Math.max(this.currentWaveIndex - 1, 0), plan.length - 1)] ?? null
+    const cursor = side === 'enemy' ? this.enemyWaveCursor : this.alliedWaveCursor
+    return plan[Math.min(Math.max(cursor - 1, 0), plan.length - 1)] ?? null
   }
 
   private adaptDirectiveForActiveLoadout(
@@ -1389,7 +1421,7 @@ export class RecoveryStageSystem {
     side: 'enemy' | 'allied',
     source: 'preview' | 'scene' | 'tick',
   ): RecoveryBattleWaveDirective | null {
-    return this.adaptDirectiveForActiveLoadout(side, this.currentWaveDirective(plan), source)
+    return this.adaptDirectiveForActiveLoadout(side, this.currentWaveDirective(plan, side), source)
   }
 
   private adjustSceneDirectiveForRoute(
@@ -2540,27 +2572,24 @@ export class RecoveryStageSystem {
     const storyboard = this.storyboards[this.storyboardIndex] ?? null
     const routeBias = this.deriveStoryboardRouteBias(storyboard)
     const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
-    if (advanceWave && this.currentWaveIndex < this.totalWaveCount) {
-      this.currentWaveIndex += 1
-      this.objectiveProgressRatio = clamp(
-        Math.max(
-          this.objectiveProgressRatio,
-          this.currentWaveIndex / this.totalWaveCount
-          - 0.08
-          + (routeInfluence.matchesPreferred ? 0.02 * routeInfluence.commitmentFactor : 0),
-        ),
-        0.04,
-        1,
-      )
-    }
 
     const plan = side === 'enemy' ? this.enemyWavePlan : this.alliedWavePlan
     const directive = this.adjustSceneDirectiveForRoute(side, this.currentLoadoutDirective(plan, side, 'scene'))
     this.applyWaveDirective(side, directive)
+    if (directive) {
+      this.markWaveDispatched(side, advanceWave)
+    }
     const loadoutBeat = this.applyLoadoutWaveBeat(side, directive, 'scene')
     if (directive && side === 'allied' && routeInfluence.matchesPreferred) {
       if ((directive.role === 'push' || directive.role === 'siege') && routeBias.directRoute) {
-        this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + 0.02 + routeInfluence.commitmentFactor * 0.02, 0.04, 1)
+        this.objectiveProgressRatio = clamp(
+          Math.max(
+            this.objectiveProgressRatio,
+            this.alliedWavesDispatched / Math.max(this.totalWaveCount, 1) * 0.72 + 0.14 + routeInfluence.commitmentFactor * 0.04,
+          ),
+          0.04,
+          1,
+        )
       } else if (directive.role === 'tower-rally' && routeBias.sustainRoute) {
         this.repairTower('allied', 0.02 + routeInfluence.defenseDelta * 0.25)
       } else if (directive.role === 'skill-window' && routeBias.manaRoute) {
@@ -2623,6 +2652,33 @@ export class RecoveryStageSystem {
     this.lastScriptedBeatNote = `${outcome === 'victory' ? 'stage clear' : 'stage failed'}: ${reason}`
   }
 
+  private totalUnits(side: RecoveryBattleSide): number {
+    return (['upper', 'lower'] as const).reduce((sum, laneId) => sum + this.laneEntities[laneId][side].length, 0)
+  }
+
+  private totalProjectiles(side: RecoveryBattleSide): number {
+    return this.battleProjectiles.filter((projectile) => projectile.side === side).length
+  }
+
+  private laneControlScore(side: RecoveryBattleSide, laneId: RecoveryBattleLaneId): number {
+    const lane = this.laneBattleState[laneId]
+    const unitAdvantage = side === 'allied'
+      ? lane.alliedUnits - lane.enemyUnits
+      : lane.enemyUnits - lane.alliedUnits
+    const frontlineBias = side === 'allied'
+      ? lane.frontline - 0.5
+      : 0.5 - lane.frontline
+    return unitAdvantage * 0.22 + frontlineBias + (lane.heroPresent && side === 'allied' ? 0.18 : 0)
+  }
+
+  private securedLaneCount(side: RecoveryBattleSide): number {
+    return (['upper', 'lower'] as const).filter((laneId) => this.laneControlScore(side, laneId) > 0.12).length
+  }
+
+  private threatenedLaneCount(side: RecoveryBattleSide): number {
+    return (['upper', 'lower'] as const).filter((laneId) => this.laneControlScore(side, laneId) < -0.12).length
+  }
+
   private evaluateBattleResolution(): void {
     if (this.battleResolutionOutcome) {
       return
@@ -2631,91 +2687,90 @@ export class RecoveryStageSystem {
     const storyboard = this.storyboards[this.storyboardIndex] ?? null
     const routeBias = this.deriveStoryboardRouteBias(storyboard)
     const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
-    const allyMomentum = (this.laneBattleState.upper.alliedPressure + this.laneBattleState.lower.alliedPressure) / 2
-    const enemyMomentum = (this.laneBattleState.upper.enemyPressure + this.laneBattleState.lower.enemyPressure) / 2
-    const victoryTowerThreshold = clamp(
-      0.11
-      + (routeInfluence.matchesPreferred && (routeBias.directRoute || routeBias.flankingRoute) ? 0.018 + routeInfluence.commitmentFactor * 0.03 : 0)
-      - (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.012 : 0),
-      0.08,
-      0.18,
-    )
-    const siegeVictoryThreshold = clamp(
-      0.16
+    const alliedUnits = this.totalUnits('allied')
+    const enemyUnits = this.totalUnits('enemy')
+    const alliedProjectiles = this.totalProjectiles('allied')
+    const enemyProjectiles = this.totalProjectiles('enemy')
+    const alliedSecuredLanes = this.securedLaneCount('allied')
+    const enemySecuredLanes = this.securedLaneCount('enemy')
+    const alliedThreatenedLanes = this.threatenedLaneCount('allied')
+    const enemyWavesExhausted = this.enemyWavesDispatched >= this.totalWaveCount
+    const alliedWavesExhausted = this.alliedWavesDispatched >= this.totalWaveCount
+    const enemyFieldCleared = enemyUnits === 0 && enemyProjectiles === 0
+    const alliedFieldCollapsed = alliedUnits === 0 && alliedProjectiles === 0 && !this.heroAssignedLane
+    const siegeTowerThreshold = clamp(
+      0.18
       + (routeInfluence.matchesPreferred && routeBias.directRoute ? 0.03 + routeInfluence.commitmentFactor * 0.03 : 0)
       - (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.015 : 0),
       0.12,
       0.24,
     )
-    const progressVictoryThreshold = clamp(
-      0.98
-      - (routeInfluence.matchesPreferred ? 0.04 * routeInfluence.commitmentFactor : 0)
-      - (routeBias.manaRoute && routeInfluence.matchesPreferred ? 0.02 : 0),
-      0.88,
-      0.98,
-    )
-    const progressMomentumAllowance = clamp(
-      0.02 + (routeInfluence.matchesPreferred && routeBias.manaRoute ? 0.03 : 0),
-      0.02,
-      0.06,
-    )
-    const defeatTowerThreshold = clamp(
-      0.12
+    const alliedExhaustedThreshold = clamp(
+      0.14
       - (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.02 + routeInfluence.commitmentFactor * 0.02 : 0)
       + (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.012 : 0),
       0.08,
       0.16,
     )
-    const collapseTowerThreshold = clamp(
-      0.18
-      - (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.03 + routeInfluence.commitmentFactor * 0.02 : 0)
-      + (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.01 : 0),
-      0.12,
-      0.2,
-    )
-    const defeatMomentumGap = clamp(
-      0.12
-      + (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.03 + routeInfluence.commitmentFactor * 0.03 : 0)
-      - (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.02 : 0),
-      0.08,
-      0.2,
-    )
 
     if (
-      this.previewEnemyTowerHpRatio <= victoryTowerThreshold
-      || (this.currentObjectivePhase === 'siege' && this.previewEnemyTowerHpRatio <= siegeVictoryThreshold)
-      || (this.objectiveProgressRatio >= progressVictoryThreshold && allyMomentum >= enemyMomentum - progressMomentumAllowance)
+      this.previewEnemyTowerHpRatio <= 0.08
+      || (
+        enemyWavesExhausted
+        && enemyFieldCleared
+        && alliedSecuredLanes >= (this.currentObjectivePhase === 'lane-control' ? 1 : 0)
+      )
+      || (
+        this.currentObjectivePhase === 'siege'
+        && enemyWavesExhausted
+        && this.previewEnemyTowerHpRatio <= siegeTowerThreshold
+        && alliedUnits + alliedProjectiles > 0
+      )
       || (
         this.currentObjectivePhase === 'skill-burst'
         && routeInfluence.matchesPreferred
         && routeBias.manaRoute
-        && this.objectiveProgressRatio >= progressVictoryThreshold - 0.04
-        && this.alliedManaValue >= this.manaCapacityValue * 0.66
+        && enemyWavesExhausted
+        && enemyFieldCleared
+        && this.alliedManaValue >= this.manaCapacityValue * 0.44
       )
     ) {
       this.resolveBattleOutcome(
         'victory',
-        routeInfluence.matchesPreferred
-          ? `enemy line collapsed under ${routeInfluence.stanceLabel}`
-          : 'enemy tower pressure collapsed',
+        enemyWavesExhausted && enemyFieldCleared
+          ? `enemy waves exhausted under ${routeInfluence.stanceLabel}`
+          : 'enemy tower destroyed',
       )
       return
     }
 
     if (
-      this.previewOwnTowerHpRatio <= defeatTowerThreshold
-      || (this.previewOwnTowerHpRatio <= collapseTowerThreshold && enemyMomentum - allyMomentum > defeatMomentumGap)
+      this.previewOwnTowerHpRatio <= 0.08
+      || (
+        alliedFieldCollapsed
+        && this.queuedUnitCount === 0
+        && this.alliedManaValue < this.manaCapacityValue * 0.18
+        && enemyUnits + enemyProjectiles > 0
+        && enemySecuredLanes >= 1
+      )
+      || (
+        alliedWavesExhausted
+        && this.previewOwnTowerHpRatio <= alliedExhaustedThreshold
+        && enemySecuredLanes >= 1
+        && this.queuedUnitCount === 0
+      )
       || (
         this.currentObjectivePhase === 'lane-control'
-        && enemyMomentum > 0.9
-        && this.objectiveProgressRatio < (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.22 : 0.28)
+        && enemySecuredLanes === 2
+        && alliedThreatenedLanes >= 2
+        && this.previewOwnTowerHpRatio <= 0.18
       )
     ) {
       this.resolveBattleOutcome(
         'defeat',
         routeInfluence.preferredRouteLabel !== null && !routeInfluence.matchesPreferred
-          ? `branch pressure broke the tower line (${routeInfluence.stanceLabel})`
-          : 'enemy lane pressure breached the guard line',
+          ? `branch counter-force held the field (${routeInfluence.stanceLabel})`
+          : 'allied field collapsed before the tower line recovered',
       )
     }
   }
@@ -3432,6 +3487,10 @@ export class RecoveryStageSystem {
     this.currentObjectivePhase = 'opening'
     this.currentObjectiveLabel = 'stabilize the opening lane'
     this.currentWaveIndex = 1
+    this.enemyWaveCursor = 1
+    this.alliedWaveCursor = 1
+    this.enemyWavesDispatched = 0
+    this.alliedWavesDispatched = 0
     this.totalWaveCount = 4
     this.objectiveProgressRatio = 0.08
     this.enemyWaveCountdownBeats = 4
@@ -4010,7 +4069,7 @@ export class RecoveryStageSystem {
     }
 
     if (this.enemyManaValue >= 14 && beat % Math.max(this.currentStageBattleProfile.enemyWaveCadenceBeats - 1, 3) === 1) {
-      const enemyLane = this.currentWaveDirective(this.enemyWavePlan)?.laneId ?? this.currentStageBattleProfile.favoredLane ?? 'upper'
+      const enemyLane = this.currentWaveDirective(this.enemyWavePlan, 'enemy')?.laneId ?? this.currentStageBattleProfile.favoredLane ?? 'upper'
       const role: RecoveryBattleWaveDirective['role'] =
         this.currentObjectivePhase === 'siege'
           ? 'siege'
@@ -4272,6 +4331,10 @@ export class RecoveryStageSystem {
     const seed = this.deriveObjectiveSeed(storyboard, this.currentStageBattleProfile)
     this.totalWaveCount = seed.totalWaveCount
     this.currentWaveIndex = 1
+    this.enemyWaveCursor = 1
+    this.alliedWaveCursor = 1
+    this.enemyWavesDispatched = 0
+    this.alliedWavesDispatched = 0
     this.objectiveProgressRatio = seed.objectiveProgressRatio
     this.enemyWaveCountdownBeats = seed.enemyWaveCountdownBeats
     this.alliedWaveCountdownBeats = seed.alliedWaveCountdownBeats
@@ -5541,6 +5604,7 @@ export class RecoveryStageSystem {
       const resolvedDirective = enemyDirective ?? this.adaptDirectiveForActiveLoadout('enemy', fallbackDirective, 'tick')
       this.applyWaveDirective('enemy', resolvedDirective)
       this.applyLoadoutWaveBeat('enemy', resolvedDirective, 'tick')
+      this.markWaveDispatched('enemy')
       this.resetWaveCountdown('enemy', resolvedDirective)
     }
 
@@ -5562,6 +5626,7 @@ export class RecoveryStageSystem {
       this.applyWaveDirective('allied', resolvedDirective)
       this.applyLoadoutWaveBeat('allied', resolvedDirective, 'tick')
       this.queuedUnitCount = Math.max(this.queuedUnitCount - Math.min(this.queuedUnitCount, reinforcements), 0)
+      this.markWaveDispatched('allied')
       this.resetWaveCountdown('allied', resolvedDirective)
     }
 
@@ -5580,17 +5645,22 @@ export class RecoveryStageSystem {
 
     this.tickBattleEntities(chainState)
 
-    const allyMomentum =
-      (this.laneBattleState.upper.alliedPressure + this.laneBattleState.lower.alliedPressure) / 2
-    const enemyMomentum =
-      (this.laneBattleState.upper.enemyPressure + this.laneBattleState.lower.enemyPressure) / 2
-    const pressureSwing = clamp(
-      (allyMomentum - enemyMomentum) * 0.06 + (1 - this.previewEnemyTowerHpRatio) * 0.02 + (this.heroAssignedLane ? 0.008 : 0),
-      0.002,
+    const alliedWaveRatio = this.alliedWavesDispatched / Math.max(this.totalWaveCount, 1)
+    const enemyWaveRatio = this.enemyWavesDispatched / Math.max(this.totalWaveCount, 1)
+    const alliedSecuredLanes = this.securedLaneCount('allied')
+    const enemySecuredLanes = this.securedLaneCount('enemy')
+    const objectiveScore = clamp(
+      alliedWaveRatio * 0.34
+      + (1 - this.previewEnemyTowerHpRatio) * 0.34
+      + alliedSecuredLanes * 0.12
+      + (this.heroAssignedLane ? 0.06 : 0)
+      - enemyWaveRatio * 0.08
+      - enemySecuredLanes * 0.08,
       0.04,
+      1,
     )
     if (chainState.active) {
-      this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + chainState.intensity * 0.006, 0.04, 1)
+      this.objectiveProgressRatio = clamp(Math.max(this.objectiveProgressRatio, objectiveScore) + chainState.intensity * 0.006, 0.04, 1)
       if (chainState.members.includes('Juno')) {
         this.restoreMana('allied', this.manaCapacityValue * chainState.intensity * 0.01)
       }
@@ -5600,9 +5670,9 @@ export class RecoveryStageSystem {
       if (chainState.members.includes('Vincent') || chainState.members.includes('Manos')) {
         this.damageTower('enemy', chainState.intensity * 0.008)
       }
+    } else {
+      this.objectiveProgressRatio = clamp(Math.max(this.objectiveProgressRatio, objectiveScore), 0.04, 1)
     }
-    this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + pressureSwing, 0.04, 1)
-    this.currentWaveIndex = clamp(1 + Math.floor(this.objectiveProgressRatio * this.totalWaveCount), 1, this.totalWaveCount)
 
     if (this.objectiveProgressRatio >= 0.82) {
       this.currentObjectivePhase = 'siege'
