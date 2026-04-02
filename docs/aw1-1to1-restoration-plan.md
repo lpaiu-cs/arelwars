@@ -179,6 +179,7 @@ References:
     - that same cue layer now drives a lightweight gameplay-state machine with panel, hero, objective, and enabled-input summaries
     - the Phaser recovery scene now routes keyboard input through that state machine, so panel open/close and hero sortie/return transitions can be exercised instead of only visualized
     - accepted actions now leave persistent preview state behind: lane selection, queued units, tower upgrade tiers, skill/item cooldowns, quest reward claims, and pause/resume all feed the ghost HUD
+    - the recovery system now owns a deterministic two-lane battle preview, so dispatch, queued units, and hero sortie affect lane frontline, momentum, and unit counts instead of only HUD chrome
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest

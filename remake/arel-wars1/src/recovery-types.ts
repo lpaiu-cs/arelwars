@@ -446,6 +446,27 @@ export interface RecoveryGameplayState {
   lastActionNote: string | null
 }
 
+export interface RecoveryLaneBattleState {
+  laneId: 'upper' | 'lower'
+  alliedUnits: number
+  enemyUnits: number
+  alliedPressure: number
+  enemyPressure: number
+  frontline: number
+  contested: number
+  momentum: 'allied-push' | 'enemy-push' | 'contested' | 'stalled'
+  heroPresent: boolean
+}
+
+export interface RecoveryBattlePreviewState {
+  lanes: RecoveryLaneBattleState[]
+  selectedLane: 'upper' | 'lower' | null
+  queuedReserve: number
+  allyMomentum: number
+  enemyMomentum: number
+  towerThreat: number
+}
+
 export interface RecoveryStageSnapshot {
   storyboardIndex: number
   dialogueIndex: number
@@ -459,4 +480,5 @@ export interface RecoveryStageSnapshot {
   renderState: RecoveryStageRenderState
   hudState: RecoveryHudGhostState
   gameplayState: RecoveryGameplayState
+  battlePreviewState: RecoveryBattlePreviewState
 }

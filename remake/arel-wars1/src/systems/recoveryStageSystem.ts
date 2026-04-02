@@ -1,10 +1,12 @@
 import type {
+  RecoveryBattlePreviewState,
   RecoveryBattleChannelState,
   RecoveryCatalog,
   RecoveryDialogueEvent,
   RecoveryGameplayActionId,
   RecoveryGameplayState,
   RecoveryHudGhostState,
+  RecoveryLaneBattleState,
   RecoveryResolvedOpcodeCue,
   RecoveryPreviewFrame,
   RecoveryPreviewManifest,
@@ -185,6 +187,31 @@ export class RecoveryStageSystem {
 
   private itemCooldownEndsAtMs = 0
 
+  private heroAssignedLane: RecoveryLaneBattleState['laneId'] | null = null
+
+  private readonly laneBattleState: Record<RecoveryLaneBattleState['laneId'], Omit<RecoveryLaneBattleState, 'laneId'>> = {
+    upper: {
+      alliedUnits: 1,
+      enemyUnits: 2,
+      alliedPressure: 0.28,
+      enemyPressure: 0.42,
+      frontline: 0.42,
+      contested: 0.36,
+      momentum: 'enemy-push',
+      heroPresent: false,
+    },
+    lower: {
+      alliedUnits: 2,
+      enemyUnits: 1,
+      alliedPressure: 0.34,
+      enemyPressure: 0.26,
+      frontline: 0.56,
+      contested: 0.28,
+      momentum: 'allied-push',
+      heroPresent: false,
+    },
+  }
+
   private readonly towerUpgradeLevels: RecoveryTowerUpgradeLevels = {
     mana: 1,
     population: 1,
@@ -270,6 +297,7 @@ export class RecoveryStageSystem {
     const activeOpcodeCue = this.resolveOpcodeCue(activeDialogueEvent)
     const channelStates = this.buildChannelStates(currentStoryboard)
     const hudState = this.buildHudState(currentStoryboard, activeTutorialCue, activeOpcodeCue, channelStates)
+    const battlePreviewState = this.buildBattlePreviewState()
     return {
       storyboardIndex: this.storyboardIndex,
       dialogueIndex: this.dialogueIndex,
@@ -287,6 +315,7 @@ export class RecoveryStageSystem {
         activeOpcodeCue,
         hudState,
       ),
+      battlePreviewState,
     }
   }
 
@@ -966,6 +995,23 @@ export class RecoveryStageSystem {
     this.previewEnemyTowerHpRatio = 0.58
     this.skillCooldownEndsAtMs = 0
     this.itemCooldownEndsAtMs = 0
+    this.heroAssignedLane = null
+    this.laneBattleState.upper.alliedUnits = 1
+    this.laneBattleState.upper.enemyUnits = 2
+    this.laneBattleState.upper.alliedPressure = 0.28
+    this.laneBattleState.upper.enemyPressure = 0.42
+    this.laneBattleState.upper.frontline = 0.42
+    this.laneBattleState.upper.contested = 0.36
+    this.laneBattleState.upper.momentum = 'enemy-push'
+    this.laneBattleState.upper.heroPresent = false
+    this.laneBattleState.lower.alliedUnits = 2
+    this.laneBattleState.lower.enemyUnits = 1
+    this.laneBattleState.lower.alliedPressure = 0.34
+    this.laneBattleState.lower.enemyPressure = 0.26
+    this.laneBattleState.lower.frontline = 0.56
+    this.laneBattleState.lower.contested = 0.28
+    this.laneBattleState.lower.momentum = 'allied-push'
+    this.laneBattleState.lower.heroPresent = false
     this.towerUpgradeLevels.mana = 1
     this.towerUpgradeLevels.population = 1
     this.towerUpgradeLevels.attack = 1
@@ -1037,18 +1083,28 @@ export class RecoveryStageSystem {
         if (gameplayState.heroMode === 'field') {
           this.heroOverrideMode = 'return-cooldown'
           this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
+          if (this.heroAssignedLane) {
+            this.laneBattleState[this.heroAssignedLane].heroPresent = false
+          }
+          this.heroAssignedLane = null
           this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
           this.lastActionNote = 'hero returned to tower'
         } else {
           this.heroOverrideMode = 'field'
           this.heroReturnCooldownEndsAtMs = 0
+          this.heroAssignedLane = this.selectedDispatchLane ?? 'upper'
+          this.laneBattleState[this.heroAssignedLane].heroPresent = true
           this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.04, 0.08, 1)
-          this.lastActionNote = 'hero deployed to field'
+          this.lastActionNote = `hero deployed to ${this.heroAssignedLane} lane`
         }
         break
       case 'return-to-tower':
         this.heroOverrideMode = 'return-cooldown'
         this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
+        if (this.heroAssignedLane) {
+          this.laneBattleState[this.heroAssignedLane].heroPresent = false
+        }
+        this.heroAssignedLane = null
         this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
         this.lastActionNote = 'hero return cooldown started'
         break
@@ -1129,6 +1185,8 @@ export class RecoveryStageSystem {
     if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.previewManaRatio > 0.18) {
       this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.006, 0.08, 1)
     }
+
+    this.tickLaneBattlePreview()
   }
 
   private applyTowerUpgrade(snapshot: RecoveryStageSnapshot): void {
@@ -1153,8 +1211,85 @@ export class RecoveryStageSystem {
     this.selectedDispatchLane = lane
     if (this.queuedUnitCount > 0) {
       const queueDamage = Math.min(this.queuedUnitCount * 0.04, 0.16)
+      const commitCount = Math.min(this.queuedUnitCount, 2)
       this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - queueDamage, 0.08, 1)
-      this.queuedUnitCount = Math.max(this.queuedUnitCount - 1, 0)
+      this.laneBattleState[lane].alliedUnits = Math.min(this.laneBattleState[lane].alliedUnits + commitCount, 8)
+      this.laneBattleState[lane].alliedPressure = clamp(
+        this.laneBattleState[lane].alliedPressure + commitCount * 0.11,
+        0.08,
+        1,
+      )
+      this.queuedUnitCount = Math.max(this.queuedUnitCount - commitCount, 0)
+      this.lastActionNote = `${lane} lane selected with ${commitCount} unit push`
     }
+  }
+
+  private buildBattlePreviewState(): RecoveryBattlePreviewState {
+    const lanes: RecoveryLaneBattleState[] = (['upper', 'lower'] as const).map((laneId) => ({
+      laneId,
+      ...this.laneBattleState[laneId],
+    }))
+    const allyMomentum = lanes.reduce((sum, lane) => sum + lane.alliedPressure, 0) / lanes.length
+    const enemyMomentum = lanes.reduce((sum, lane) => sum + lane.enemyPressure, 0) / lanes.length
+    return {
+      lanes,
+      selectedLane: this.selectedDispatchLane,
+      queuedReserve: this.queuedUnitCount,
+      allyMomentum,
+      enemyMomentum,
+      towerThreat: clamp(1 - this.previewOwnTowerHpRatio + enemyMomentum * 0.22, 0, 1),
+    }
+  }
+
+  private tickLaneBattlePreview(): void {
+    const beat = Math.max(this.lastChannelBeat, 0)
+    ;(['upper', 'lower'] as const).forEach((laneId, index) => {
+      const lane = this.laneBattleState[laneId]
+      const phase = oscillate(beat * 120, 3400 + index * 500, index * 700)
+      const enemyReinforcement = 0.012 + phase * 0.028
+      const alliedReinforcement =
+        0.01
+        + (this.selectedDispatchLane === laneId ? 0.05 : 0)
+        + (this.heroAssignedLane === laneId ? 0.045 : 0)
+        + (this.towerUpgradeLevels.attack - 1) * 0.008
+
+      lane.enemyPressure = clamp(lane.enemyPressure * 0.88 + enemyReinforcement, 0.08, 1)
+      lane.alliedPressure = clamp(lane.alliedPressure * 0.86 + alliedReinforcement, 0.08, 1)
+
+      if (beat % 6 === (index + 2) % 3) {
+        lane.enemyUnits = Math.min(lane.enemyUnits + 1, 7)
+      }
+      if (this.selectedDispatchLane === laneId && this.queuedUnitCount > 0 && beat % 4 === index) {
+        lane.alliedUnits = Math.min(lane.alliedUnits + 1, 8)
+        this.queuedUnitCount = Math.max(this.queuedUnitCount - 1, 0)
+      }
+
+      const heroBonus = this.heroAssignedLane === laneId ? 0.12 : 0
+      const netPush = lane.alliedPressure + lane.alliedUnits * 0.035 + heroBonus - (lane.enemyPressure + lane.enemyUnits * 0.03)
+      lane.frontline = clamp(lane.frontline + netPush * 0.11, 0.04, 0.96)
+      lane.contested = clamp(1 - Math.abs(netPush) * 2.8, 0.08, 1)
+
+      if (lane.frontline > 0.72) {
+        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.004 - lane.alliedUnits * 0.0008, 0.08, 1)
+      } else if (lane.frontline < 0.28) {
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio - 0.003 - lane.enemyUnits * 0.0007, 0.1, 1)
+      }
+
+      if (lane.frontline > 0.6 && lane.enemyUnits > 0 && beat % 3 === 0) {
+        lane.enemyUnits = Math.max(lane.enemyUnits - 1, 0)
+      } else if (lane.frontline < 0.4 && lane.alliedUnits > 0 && beat % 4 === 0) {
+        lane.alliedUnits = Math.max(lane.alliedUnits - 1, 0)
+      }
+
+      lane.heroPresent = this.heroAssignedLane === laneId
+      lane.momentum =
+        netPush > 0.08
+          ? 'allied-push'
+          : netPush < -0.08
+            ? 'enemy-push'
+            : lane.contested > 0.62
+              ? 'contested'
+              : 'stalled'
+    })
   }
 }

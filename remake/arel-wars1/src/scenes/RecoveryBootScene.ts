@@ -337,10 +337,13 @@ export class RecoveryBootScene extends Phaser.Scene {
     const lane = state.selectedDispatchLane ?? 'none'
     const cooldowns = `skill ${state.skillReady ? 'ready' : 'cooldown'} / item ${state.itemReady ? 'ready' : 'cooldown'}`
     const upgrades = `up ${state.towerUpgradeLevels.mana}/${state.towerUpgradeLevels.population}/${state.towerUpgradeLevels.attack}`
+    const battle = snapshot.battlePreviewState.lanes
+      .map((entry) => `${entry.laneId}:${entry.momentum} ${entry.alliedUnits}-${entry.enemyUnits}`)
+      .join(' · ')
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {
@@ -418,6 +421,7 @@ export class RecoveryBootScene extends Phaser.Scene {
         : 0x4c676f
     graphics.lineStyle(2, borderColor, 0.8)
     graphics.strokeRoundedRect(x, y, width, height, 14)
+    this.drawLaneBattlePreview(graphics, snapshot, { x, y, width, height })
     this.drawHudGhost(graphics, snapshot, { x, y, width, height })
     this.drawTutorialFocus(graphics, snapshot, { x, y, width, height })
 
@@ -658,6 +662,58 @@ export class RecoveryBootScene extends Phaser.Scene {
       graphics.fillRoundedRect(pauseBox.x + pauseBox.width * 0.34, pauseBox.y + 18, 10, pauseBox.height - 36, 4)
       graphics.fillRoundedRect(pauseBox.x + pauseBox.width * 0.56, pauseBox.y + 18, 10, pauseBox.height - 36, 4)
     }
+  }
+
+  private drawLaneBattlePreview(
+    graphics: Phaser.GameObjects.Graphics,
+    snapshot: RecoveryStageSnapshot,
+    bounds: FocusLayoutBounds,
+  ): void {
+    const laneY = (index: number): number => bounds.y + bounds.height * (index === 0 ? 0.36 : 0.62)
+    const laneStartX = bounds.x + bounds.width * 0.18
+    const laneEndX = bounds.x + bounds.width * 0.82
+
+    snapshot.battlePreviewState.lanes.forEach((lane, index) => {
+      const y = laneY(index)
+      const selected = snapshot.battlePreviewState.selectedLane === lane.laneId
+      const momentumColor =
+        lane.momentum === 'allied-push'
+          ? 0x85d46a
+          : lane.momentum === 'enemy-push'
+            ? 0xd56565
+            : lane.momentum === 'contested'
+              ? 0xf0b45e
+              : 0x6c7c82
+
+      graphics.lineStyle(2.4, selected ? 0xf0b45e : 0x314048, 0.74)
+      graphics.lineBetween(laneStartX, y, laneEndX, y)
+
+      const contestedWidth = (laneEndX - laneStartX) * lane.contested * 0.35
+      const frontlineX = laneStartX + (laneEndX - laneStartX) * lane.frontline
+      graphics.lineStyle(6, momentumColor, 0.22)
+      graphics.lineBetween(frontlineX - contestedWidth, y, frontlineX + contestedWidth, y)
+      graphics.fillStyle(momentumColor, selected ? 0.95 : 0.78)
+      graphics.fillCircle(frontlineX, y, selected ? 7 : 6)
+
+      for (let unitIndex = 0; unitIndex < lane.alliedUnits; unitIndex += 1) {
+        const progress = Math.min((unitIndex + 1) / (lane.alliedUnits + 1), 0.92)
+        const unitX = laneStartX + (frontlineX - laneStartX - 18) * progress
+        graphics.fillStyle(0x7eb6ff, 0.88)
+        graphics.fillCircle(unitX, y - 10, 4)
+      }
+
+      for (let unitIndex = 0; unitIndex < lane.enemyUnits; unitIndex += 1) {
+        const progress = Math.min((unitIndex + 1) / (lane.enemyUnits + 1), 0.92)
+        const unitX = frontlineX + 18 + (laneEndX - frontlineX - 18) * progress
+        graphics.fillStyle(0xff8a75, 0.88)
+        graphics.fillCircle(unitX, y + 10, 4)
+      }
+
+      if (lane.heroPresent) {
+        graphics.fillStyle(0xffefbf, 0.92)
+        graphics.fillTriangle(frontlineX - 6, y - 20, frontlineX + 6, y - 20, frontlineX, y - 32)
+      }
+    })
   }
 
   private drawTutorialFocus(
