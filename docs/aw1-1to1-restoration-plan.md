@@ -117,13 +117,23 @@ References:
     - `XlsMap.eng`
     - `XlsLevelDesign.eng`
     - `XlsHero.eng`
+    - `XlsHeroSkill.eng`
+    - `XlsItem.eng`
     - `XlsHero_Ai.eng`
     - `XlsSkill_Ai.eng`
     - `XlsProjectile.eng`
     - `XlsEffect.eng`
+    - `XlsBaseAttack.eng`
+    - `XlsParticle.eng`
+    - `XlsHeroActiveSkill.eng`
+    - `XlsHeroBuffSkill.eng`
+    - `XlsHeroPassiveSkill.eng`
+    - `XlsBalance.eng`
+    - `XlsCorrespondence.eng`
   - current cross-correlation outputs now exist for:
     - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
     - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+    - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
   - current strongest runtime-field candidates in `XlsAi` are:
     - `tierCandidate = numericBlock[13]`
     - `variantCandidate = numericBlock[15]`
@@ -174,9 +184,10 @@ References:
    - concrete `assets/map/*.zt1` payload selection
 5. Continue promoting compact battle tables into runtime-ready schemas:
    - hero AI
-   - skill AI
+   - item/active-skill AI
    - projectile definitions
    - effect definitions
+   - hero active/passive/buff skill definitions
 
 ## First Opcode Findings
 

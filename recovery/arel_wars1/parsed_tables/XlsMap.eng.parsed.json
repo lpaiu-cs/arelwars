@@ -7,6 +7,8 @@
       "index": 0,
       "groupId": 0,
       "reserved": 0,
+      "valueLoByte": 226,
+      "valueHiByte": 3,
       "valueU16": 994,
       "tailByte": 0,
       "rawU8": [
@@ -21,6 +23,8 @@
       "index": 1,
       "groupId": 0,
       "reserved": 0,
+      "valueLoByte": 226,
+      "valueHiByte": 2,
       "valueU16": 738,
       "tailByte": 0,
       "rawU8": [
@@ -35,6 +39,8 @@
       "index": 2,
       "groupId": 1,
       "reserved": 0,
+      "valueLoByte": 216,
+      "valueHiByte": 2,
       "valueU16": 728,
       "tailByte": 0,
       "rawU8": [
@@ -49,6 +55,8 @@
       "index": 3,
       "groupId": 1,
       "reserved": 0,
+      "valueLoByte": 216,
+      "valueHiByte": 3,
       "valueU16": 984,
       "tailByte": 0,
       "rawU8": [
@@ -63,6 +71,8 @@
       "index": 4,
       "groupId": 2,
       "reserved": 0,
+      "valueLoByte": 226,
+      "valueHiByte": 3,
       "valueU16": 994,
       "tailByte": 0,
       "rawU8": [
@@ -77,6 +87,8 @@
       "index": 5,
       "groupId": 2,
       "reserved": 0,
+      "valueLoByte": 226,
+      "valueHiByte": 2,
       "valueU16": 738,
       "tailByte": 0,
       "rawU8": [
@@ -91,6 +103,8 @@
       "index": 6,
       "groupId": 3,
       "reserved": 0,
+      "valueLoByte": 226,
+      "valueHiByte": 4,
       "valueU16": 1250,
       "tailByte": 0,
       "rawU8": [
@@ -105,6 +119,8 @@
       "index": 7,
       "groupId": 3,
       "reserved": 0,
+      "valueLoByte": 226,
+      "valueHiByte": 1,
       "valueU16": 482,
       "tailByte": 0,
       "rawU8": [
@@ -119,6 +135,8 @@
       "index": 8,
       "groupId": 4,
       "reserved": 0,
+      "valueLoByte": 246,
+      "valueHiByte": 5,
       "valueU16": 1526,
       "tailByte": 0,
       "rawU8": [
@@ -133,6 +151,8 @@
       "index": 9,
       "groupId": 4,
       "reserved": 0,
+      "valueLoByte": 246,
+      "valueHiByte": 3,
       "valueU16": 1014,
       "tailByte": 0,
       "rawU8": [
@@ -147,6 +167,8 @@
       "index": 10,
       "groupId": 5,
       "reserved": 0,
+      "valueLoByte": 0,
+      "valueHiByte": 0,
       "valueU16": 0,
       "tailByte": 0,
       "rawU8": [
@@ -161,6 +183,8 @@
       "index": 11,
       "groupId": 5,
       "reserved": 0,
+      "valueLoByte": 0,
+      "valueHiByte": 0,
       "valueU16": 0,
       "tailByte": 0,
       "rawU8": [
@@ -175,6 +199,8 @@
       "index": 12,
       "groupId": 6,
       "reserved": 0,
+      "valueLoByte": 0,
+      "valueHiByte": 0,
       "valueU16": 0,
       "tailByte": 0,
       "rawU8": [
@@ -189,6 +215,8 @@
       "index": 13,
       "groupId": 6,
       "reserved": 0,
+      "valueLoByte": 0,
+      "valueHiByte": 0,
       "valueU16": 0,
       "tailByte": 0,
       "rawU8": [
@@ -203,6 +231,8 @@
       "index": 14,
       "groupId": 7,
       "reserved": 0,
+      "valueLoByte": 0,
+      "valueHiByte": 0,
       "valueU16": 0,
       "tailByte": 0,
       "rawU8": [
@@ -217,6 +247,8 @@
       "index": 15,
       "groupId": 7,
       "reserved": 0,
+      "valueLoByte": 0,
+      "valueHiByte": 0,
       "valueU16": 0,
       "tailByte": 0,
       "rawU8": [

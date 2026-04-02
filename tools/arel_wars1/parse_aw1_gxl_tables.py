@@ -42,6 +42,11 @@ def u16_words(blob: bytes) -> list[int]:
     return [struct.unpack("<H", blob[index : index + 2])[0] for index in range(0, usable, 2)]
 
 
+def be16_words(blob: bytes) -> list[int]:
+    usable = len(blob) - (len(blob) % 2)
+    return [struct.unpack(">H", blob[index : index + 2])[0] for index in range(0, usable, 2)]
+
+
 def u32_words(blob: bytes) -> list[int]:
     usable = len(blob) - (len(blob) % 4)
     return [struct.unpack("<I", blob[index : index + 4])[0] for index in range(0, usable, 4)]
@@ -141,6 +146,8 @@ def parse_xls_map(rows: list[bytes]) -> dict[str, Any]:
                 "index": index,
                 "groupId": row[0],
                 "reserved": row[1],
+                "valueLoByte": row[2],
+                "valueHiByte": row[3],
                 "valueU16": struct.unpack("<H", row[2:4])[0],
                 "tailByte": row[4],
                 "rawU8": list(row),
@@ -232,6 +239,80 @@ def parse_xls_unit_eng(rows: list[bytes]) -> dict[str, Any]:
     }
 
 
+def parse_xls_hero_skill_eng(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        name = cstring(row[:17])
+        metadata = list(row[17:27])
+        description = cstring(row[27:])
+        records.append(
+            {
+                "index": index,
+                "name": name,
+                "skillCodeCandidate": metadata[0],
+                "aiCodeCandidate": metadata[1],
+                "flagA": metadata[2],
+                "modeA": metadata[3],
+                "modeB": metadata[4],
+                "slotOrPowerCandidate": metadata[5],
+                "tailFlags": metadata[6:10],
+                "description": description,
+                "metadataU8": metadata,
+            }
+        )
+    return {
+        "table": "XlsHeroSkill",
+        "locale": "eng",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "slotModel": {
+            "nameSlot": [0, 17],
+            "metadata": [17, 27],
+            "descriptionSlot": [27, len(rows[0]) if rows else 0],
+        },
+        "records": records,
+    }
+
+
+def parse_xls_item_eng(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        name = cstring(row[1:22])
+        metadata = row[22:38]
+        description = cstring(row[38:])
+        records.append(
+            {
+                "index": index,
+                "unknownLeadByte": row[0],
+                "name": name,
+                "itemCodeCandidate": metadata[0],
+                "categoryCandidate": metadata[1],
+                "aiCodeCandidate": metadata[2],
+                "flagA": metadata[3],
+                "flagB": metadata[4],
+                "modeCandidate": metadata[5],
+                "flagC": metadata[6],
+                "costCandidate": struct.unpack("<I", metadata[7:11])[0],
+                "unknownTailValue": metadata[11],
+                "description": description,
+                "metadataU8": list(metadata),
+            }
+        )
+    return {
+        "table": "XlsItem",
+        "locale": "eng",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "slotModel": {
+            "unknownLeadByte": [0, 1],
+            "nameSlot": [1, 22],
+            "metadata": [22, 38],
+            "descriptionSlot": [38, len(rows[0]) if rows else 0],
+        },
+        "records": records,
+    }
+
+
 def parse_xls_tower(rows: list[bytes]) -> dict[str, Any]:
     records = []
     for index, row in enumerate(rows):
@@ -315,6 +396,71 @@ def parse_xls_projectile(rows: list[bytes]) -> dict[str, Any]:
     }
 
 
+def parse_xls_base_attack(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "familyCandidate": row[0],
+                "attackIdCandidate": row[1],
+                "variantCandidate": row[2],
+                "flagsByte": row[3],
+                "parameterBytes": list(row[4:16]),
+                "rawU8": list(row),
+                "rawU16LE": u16_words(row),
+                "rawU16BE": be16_words(row),
+            }
+        )
+    return {
+        "table": "XlsBaseAttack",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_balance(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "scalarA": row[0],
+                "scalarB": row[1],
+                "sentinel": row[2],
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsBalance",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_correspondence(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        active_slots = [slot for slot, value in enumerate(row) if value == 1]
+        masked_slots = [slot for slot, value in enumerate(row) if value == 0xFF]
+        records.append(
+            {
+                "index": index,
+                "activeSlots": active_slots,
+                "maskedSlots": masked_slots,
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsCorrespondence",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
 def parse_xls_effect(rows: list[bytes]) -> dict[str, Any]:
     records: list[dict[str, Any]] = []
     for index, row in enumerate(rows):
@@ -341,6 +487,103 @@ def parse_xls_effect(rows: list[bytes]) -> dict[str, Any]:
     }
 
 
+def parse_xls_particle(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "particleIdCandidate": row[0],
+                "variantCandidate": row[1],
+                "sentinel": row[2],
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsParticle",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_hero_active_skill(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "headerBytes": list(row[:4]),
+                "timingWindowA": list(row[4:8]),
+                "timingWindowB": list(row[8:16]),
+                "tailPairBE": be16_words(row[16:24]),
+                "rawU8": list(row),
+                "rawU16LE": u16_words(row),
+            }
+        )
+    return {
+        "table": "XlsHeroActiveSkill",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_hero_buff_skill(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "familyCandidate": row[0],
+                "tierCandidate": row[1],
+                "triggerModeCandidate": row[2],
+                "magnitudeWindowU8": list(row[3:11]),
+                "skillCodeCandidate": row[10],
+                "profileCandidate": row[11],
+                "conditionWindowU8": list(row[11:19]),
+                "tailLinkCandidate": row[24],
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsHeroBuffSkill",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_hero_passive_skill(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        name = cstring(row[:20])
+        records.append(
+            {
+                "index": index,
+                "name": name,
+                "nameSlotHex": row[:20].hex(),
+                "valueA": struct.unpack("<H", row[20:22])[0],
+                "valueB": struct.unpack("<H", row[22:24])[0],
+                "tailU16": u16_words(row[24:28]),
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsHeroPassiveSkill",
+        "locale": "eng",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "slotModel": {
+            "nameSlot": [0, 20],
+            "valueA": [20, 22],
+            "valueB": [22, 24],
+            "tail": [24, 28],
+        },
+        "records": records,
+    }
+
+
 def build_summary(
     ai_report: dict[str, Any],
     worldmap_report: dict[str, Any],
@@ -349,10 +592,19 @@ def build_summary(
     hero_report: dict[str, Any],
     unit_report: dict[str, Any],
     tower_report: dict[str, Any],
+    hero_skill_report: dict[str, Any],
+    item_report: dict[str, Any],
     hero_ai_report: dict[str, Any],
     skill_ai_report: dict[str, Any],
     projectile_report: dict[str, Any],
     effect_report: dict[str, Any],
+    base_attack_report: dict[str, Any],
+    particle_report: dict[str, Any],
+    hero_active_skill_report: dict[str, Any],
+    hero_buff_skill_report: dict[str, Any],
+    hero_passive_skill_report: dict[str, Any],
+    balance_report: dict[str, Any],
+    correspondence_report: dict[str, Any],
 ) -> dict[str, Any]:
     ai_records = ai_report["records"]
     map_records = map_report["records"]
@@ -401,6 +653,30 @@ def build_summary(
             "rowCount": unit_report["rowCount"],
             "firstNames": [record["name"] for record in unit_report["records"][:16]],
         },
+        "heroSkill": {
+            "rowCount": hero_skill_report["rowCount"],
+            "firstNames": [record["name"] for record in hero_skill_report["records"][:16]],
+            "aiCodeHistogram": {
+                str(value): sum(
+                    1 for record in hero_skill_report["records"] if record["aiCodeCandidate"] == value
+                )
+                for value in sorted(
+                    {record["aiCodeCandidate"] for record in hero_skill_report["records"]}
+                )
+            },
+        },
+        "item": {
+            "rowCount": item_report["rowCount"],
+            "firstNames": [record["name"] for record in item_report["records"][:16]],
+            "categoryHistogram": {
+                str(value): sum(
+                    1 for record in item_report["records"] if record["categoryCandidate"] == value
+                )
+                for value in sorted(
+                    {record["categoryCandidate"] for record in item_report["records"]}
+                )
+            },
+        },
         "tower": {
             "rowCount": tower_report["rowCount"],
             "pairs": [record["pair"] for record in tower_report["records"]],
@@ -416,6 +692,7 @@ def build_summary(
             "skillIdCandidates": [
                 record["skillIdCandidate"] for record in skill_ai_report["records"][:16]
             ],
+            "bestCurrentReading": "Compact item/active-skill trigger policy table; ids align more strongly with XlsItem itemCodeCandidate than with raw row indices.",
         },
         "projectile": {
             "rowCount": projectile_report["rowCount"],
@@ -439,6 +716,56 @@ def build_summary(
                 )
             },
         },
+        "baseAttack": {
+            "rowCount": base_attack_report["rowCount"],
+            "familyHistogram": {
+                str(value): sum(
+                    1
+                    for record in base_attack_report["records"]
+                    if record["familyCandidate"] == value
+                )
+                for value in sorted(
+                    {record["familyCandidate"] for record in base_attack_report["records"]}
+                )
+            },
+        },
+        "particle": {
+            "rowCount": particle_report["rowCount"],
+            "particleIds": [
+                record["particleIdCandidate"] for record in particle_report["records"]
+            ],
+        },
+        "heroActiveSkill": {
+            "rowCount": hero_active_skill_report["rowCount"],
+            "tailPairPreview": [
+                record["tailPairBE"] for record in hero_active_skill_report["records"][:8]
+            ],
+        },
+        "heroBuffSkill": {
+            "rowCount": hero_buff_skill_report["rowCount"],
+            "skillCodeHistogram": {
+                str(value): sum(
+                    1
+                    for record in hero_buff_skill_report["records"]
+                    if record["skillCodeCandidate"] == value
+                )
+                for value in sorted(
+                    {record["skillCodeCandidate"] for record in hero_buff_skill_report["records"]}
+                )
+            },
+        },
+        "heroPassiveSkill": {
+            "rowCount": hero_passive_skill_report["rowCount"],
+            "firstNames": [record["name"] for record in hero_passive_skill_report["records"][:16]],
+        },
+        "balance": {
+            "rowCount": balance_report["rowCount"],
+            "rows": [record["rawU8"] for record in balance_report["records"]],
+        },
+        "correspondence": {
+            "rowCount": correspondence_report["rowCount"],
+            "activeSlots": [record["activeSlots"] for record in correspondence_report["records"]],
+        },
     }
 
 
@@ -453,11 +780,20 @@ def main() -> None:
     level_design = read_gxl(assets_root / "data_eng" / "XlsLevelDesign.zt1.bin")
     hero = read_gxl(assets_root / "data_eng" / "XlsHero.zt1.bin")
     unit = read_gxl(assets_root / "data_eng" / "XlsUnit.zt1.bin")
+    hero_skill = read_gxl(assets_root / "data_eng" / "XlsHeroSkill.zt1.bin")
+    item = read_gxl(assets_root / "data_eng" / "XlsItem.zt1.bin")
     tower = read_gxl(assets_root / "data_eng" / "XlsTower.zt1.bin")
     hero_ai = read_gxl(assets_root / "data_eng" / "XlsHero_Ai.zt1.bin")
     skill_ai = read_gxl(assets_root / "data_eng" / "XlsSkill_Ai.zt1.bin")
     projectile = read_gxl(assets_root / "data_eng" / "XlsProjectile.zt1.bin")
     effect = read_gxl(assets_root / "data_eng" / "XlsEffect.zt1.bin")
+    base_attack = read_gxl(assets_root / "data_eng" / "XlsBaseAttack.zt1.bin")
+    particle = read_gxl(assets_root / "data_eng" / "XlsParticle.zt1.bin")
+    hero_active_skill = read_gxl(assets_root / "data_eng" / "XlsHeroActiveSkill.zt1.bin")
+    hero_buff_skill = read_gxl(assets_root / "data_eng" / "XlsHeroBuffSkill.zt1.bin")
+    hero_passive_skill = read_gxl(assets_root / "data_eng" / "XlsHeroPassiveSkill.zt1.bin")
+    balance = read_gxl(assets_root / "data_eng" / "XlsBalance.zt1.bin")
+    correspondence = read_gxl(assets_root / "data_eng" / "XlsCorrespondence.zt1.bin")
 
     ai_report = parse_xls_ai_eng(ai["rows"])
     worldmap_report = parse_xls_worldmap(worldmap["rows"])
@@ -465,11 +801,20 @@ def main() -> None:
     level_design_report = parse_xls_level_design(level_design["rows"])
     hero_report = parse_xls_hero_eng(hero["rows"])
     unit_report = parse_xls_unit_eng(unit["rows"])
+    hero_skill_report = parse_xls_hero_skill_eng(hero_skill["rows"])
+    item_report = parse_xls_item_eng(item["rows"])
     tower_report = parse_xls_tower(tower["rows"])
     hero_ai_report = parse_xls_hero_ai(hero_ai["rows"])
     skill_ai_report = parse_xls_skill_ai(skill_ai["rows"])
     projectile_report = parse_xls_projectile(projectile["rows"])
     effect_report = parse_xls_effect(effect["rows"])
+    base_attack_report = parse_xls_base_attack(base_attack["rows"])
+    particle_report = parse_xls_particle(particle["rows"])
+    hero_active_skill_report = parse_xls_hero_active_skill(hero_active_skill["rows"])
+    hero_buff_skill_report = parse_xls_hero_buff_skill(hero_buff_skill["rows"])
+    hero_passive_skill_report = parse_xls_hero_passive_skill(hero_passive_skill["rows"])
+    balance_report = parse_xls_balance(balance["rows"])
+    correspondence_report = parse_xls_correspondence(correspondence["rows"])
 
     write_json(output_dir / "XlsAi.eng.parsed.json", ai_report)
     write_json(output_dir / "XlsWorldmap.eng.parsed.json", worldmap_report)
@@ -477,11 +822,20 @@ def main() -> None:
     write_json(output_dir / "XlsLevelDesign.eng.parsed.json", level_design_report)
     write_json(output_dir / "XlsHero.eng.parsed.json", hero_report)
     write_json(output_dir / "XlsUnit.eng.parsed.json", unit_report)
+    write_json(output_dir / "XlsHeroSkill.eng.parsed.json", hero_skill_report)
+    write_json(output_dir / "XlsItem.eng.parsed.json", item_report)
     write_json(output_dir / "XlsTower.eng.parsed.json", tower_report)
     write_json(output_dir / "XlsHero_Ai.eng.parsed.json", hero_ai_report)
     write_json(output_dir / "XlsSkill_Ai.eng.parsed.json", skill_ai_report)
     write_json(output_dir / "XlsProjectile.eng.parsed.json", projectile_report)
     write_json(output_dir / "XlsEffect.eng.parsed.json", effect_report)
+    write_json(output_dir / "XlsBaseAttack.eng.parsed.json", base_attack_report)
+    write_json(output_dir / "XlsParticle.eng.parsed.json", particle_report)
+    write_json(output_dir / "XlsHeroActiveSkill.eng.parsed.json", hero_active_skill_report)
+    write_json(output_dir / "XlsHeroBuffSkill.eng.parsed.json", hero_buff_skill_report)
+    write_json(output_dir / "XlsHeroPassiveSkill.eng.parsed.json", hero_passive_skill_report)
+    write_json(output_dir / "XlsBalance.eng.parsed.json", balance_report)
+    write_json(output_dir / "XlsCorrespondence.eng.parsed.json", correspondence_report)
     write_json(
         output_dir / "AW1.gxl.summary.json",
         build_summary(
@@ -492,10 +846,19 @@ def main() -> None:
             hero_report,
             unit_report,
             tower_report,
+            hero_skill_report,
+            item_report,
             hero_ai_report,
             skill_ai_report,
             projectile_report,
             effect_report,
+            base_attack_report,
+            particle_report,
+            hero_active_skill_report,
+            hero_buff_skill_report,
+            hero_passive_skill_report,
+            balance_report,
+            correspondence_report,
         ),
     )
 

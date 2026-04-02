@@ -1,0 +1,122 @@
+{
+  "table": "XlsCorrespondence",
+  "rowSize": 7,
+  "rowCount": 5,
+  "records": [
+    {
+      "index": 0,
+      "activeSlots": [
+        4,
+        6
+      ],
+      "maskedSlots": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "rawU8": [
+        255,
+        255,
+        255,
+        255,
+        1,
+        255,
+        1
+      ]
+    },
+    {
+      "index": 1,
+      "activeSlots": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "maskedSlots": [
+        0,
+        1,
+        2
+      ],
+      "rawU8": [
+        255,
+        255,
+        255,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 2,
+      "activeSlots": [
+        0,
+        1,
+        2
+      ],
+      "maskedSlots": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "rawU8": [
+        1,
+        1,
+        1,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 3,
+      "activeSlots": [
+        1,
+        2
+      ],
+      "maskedSlots": [
+        0,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rawU8": [
+        255,
+        1,
+        1,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 4,
+      "activeSlots": [
+        0
+      ],
+      "maskedSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rawU8": [
+        1,
+        255,
+        255,
+        255,
+        255,
+        255,
+        255
+      ]
+    }
+  ]
+}

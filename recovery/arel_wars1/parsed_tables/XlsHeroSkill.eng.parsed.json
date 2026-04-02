@@ -1,0 +1,1501 @@
+{
+  "table": "XlsHeroSkill",
+  "locale": "eng",
+  "rowSize": 135,
+  "rowCount": 51,
+  "slotModel": {
+    "nameSlot": [
+      0,
+      17
+    ],
+    "metadata": [
+      17,
+      27
+    ],
+    "descriptionSlot": [
+      27,
+      135
+    ]
+  },
+  "records": [
+    {
+      "index": 0,
+      "name": "Snatch",
+      "skillCodeCandidate": 3,
+      "aiCodeCandidate": 12,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 4,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Use your hero to kill an enemy and steal mana. The higher the Skill Level is, the more mana stolen.",
+      "metadataU8": [
+        3,
+        12,
+        255,
+        0,
+        1,
+        4,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 1,
+      "name": "HP Up",
+      "skillCodeCandidate": 7,
+      "aiCodeCandidate": 14,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 0,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Max HP.",
+      "metadataU8": [
+        7,
+        14,
+        255,
+        1,
+        1,
+        0,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 2,
+      "name": "Shuriken",
+      "skillCodeCandidate": 11,
+      "aiCodeCandidate": 10,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 2,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's  Long-ranged Attack Strength, even while defending the tower.",
+      "metadataU8": [
+        11,
+        10,
+        255,
+        0,
+        1,
+        2,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 3,
+      "name": "Defend Tower",
+      "skillCodeCandidate": 15,
+      "aiCodeCandidate": 15,
+      "flagA": 255,
+      "modeA": 255,
+      "modeB": 1,
+      "slotOrPowerCandidate": 6,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Attack with shurikens while in the tower. Increase this skill's Level to increase Attack Speed.",
+      "metadataU8": [
+        15,
+        15,
+        255,
+        255,
+        1,
+        6,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 4,
+      "name": "Dispatch",
+      "skillCodeCandidate": 19,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 20,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+      "metadataU8": [
+        19,
+        0,
+        255,
+        1,
+        1,
+        20,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 5,
+      "name": "Dodge",
+      "skillCodeCandidate": 23,
+      "aiCodeCandidate": 9,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 1,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of evading the enemy's attack.",
+      "metadataU8": [
+        23,
+        9,
+        255,
+        1,
+        1,
+        1,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 6,
+      "name": "Assassinate",
+      "skillCodeCandidate": 27,
+      "aiCodeCandidate": 11,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 3,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of finishing an enemy with one hit.",
+      "metadataU8": [
+        27,
+        11,
+        255,
+        1,
+        1,
+        3,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 7,
+      "name": "Build Tower",
+      "skillCodeCandidate": 31,
+      "aiCodeCandidate": 13,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 5,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your tower's Defense.",
+      "metadataU8": [
+        31,
+        13,
+        255,
+        0,
+        1,
+        5,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 8,
+      "name": "Repair",
+      "skillCodeCandidate": 1,
+      "aiCodeCandidate": 5,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 3,
+      "tailFlags": [
+        255,
+        255,
+        192,
+        3
+      ],
+      "description": "Repair your tower to restore its HP.",
+      "metadataU8": [
+        1,
+        5,
+        0,
+        255,
+        0,
+        3,
+        255,
+        255,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 9,
+      "name": "Shuriken",
+      "skillCodeCandidate": 5,
+      "aiCodeCandidate": 1,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 1,
+      "tailFlags": [
+        1,
+        0,
+        128,
+        7
+      ],
+      "description": "Throw a giant shuriken that pushes an enemy backward with a shock wave. ",
+      "metadataU8": [
+        5,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        128,
+        7
+      ]
+    },
+    {
+      "index": 10,
+      "name": "Bomb",
+      "skillCodeCandidate": 9,
+      "aiCodeCandidate": 7,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 5,
+      "tailFlags": [
+        255,
+        255,
+        192,
+        3
+      ],
+      "description": "Throw a bomb that pushes enemies backward with damage.",
+      "metadataU8": [
+        9,
+        7,
+        0,
+        255,
+        0,
+        5,
+        255,
+        255,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 11,
+      "name": "Poison Mist",
+      "skillCodeCandidate": 13,
+      "aiCodeCandidate": 2,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 0,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Create a poisonous mist that inflicts damage on all surrounding enemies.",
+      "metadataU8": [
+        13,
+        2,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 12,
+      "name": "Smoke",
+      "skillCodeCandidate": 17,
+      "aiCodeCandidate": 6,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 4,
+      "tailFlags": [
+        255,
+        255,
+        128,
+        7
+      ],
+      "description": "Create smoke in front of your tower to incapacitate the enemy.",
+      "metadataU8": [
+        17,
+        6,
+        0,
+        255,
+        0,
+        4,
+        255,
+        255,
+        128,
+        7
+      ]
+    },
+    {
+      "index": 13,
+      "name": "Defense Stance",
+      "skillCodeCandidate": 21,
+      "aiCodeCandidate": 4,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 0,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Command your soldiers to take a defensive stance.",
+      "metadataU8": [
+        21,
+        4,
+        255,
+        0,
+        2,
+        0,
+        1,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 14,
+      "name": "Lightning",
+      "skillCodeCandidate": 25,
+      "aiCodeCandidate": 8,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 6,
+      "tailFlags": [
+        255,
+        255,
+        64,
+        11
+      ],
+      "description": "Drop lightning to inflict damage to the entire enemy.",
+      "metadataU8": [
+        25,
+        8,
+        0,
+        255,
+        0,
+        6,
+        255,
+        255,
+        64,
+        11
+      ]
+    },
+    {
+      "index": 15,
+      "name": "Lotus Blizzard",
+      "skillCodeCandidate": 29,
+      "aiCodeCandidate": 3,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 2,
+      "tailFlags": [
+        1,
+        0,
+        64,
+        11
+      ],
+      "description": "Throw a flurry of blades.",
+      "metadataU8": [
+        29,
+        3,
+        1,
+        1,
+        0,
+        2,
+        1,
+        0,
+        64,
+        11
+      ]
+    },
+    {
+      "index": 16,
+      "name": "HP Up",
+      "skillCodeCandidate": 3,
+      "aiCodeCandidate": 15,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 7,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Max HP.",
+      "metadataU8": [
+        3,
+        15,
+        255,
+        1,
+        1,
+        7,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 17,
+      "name": "Natural Healing",
+      "skillCodeCandidate": 7,
+      "aiCodeCandidate": 12,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 11,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Improve your natural healing power to restore HP with time.",
+      "metadataU8": [
+        7,
+        12,
+        255,
+        1,
+        1,
+        11,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 18,
+      "name": "ATK Up",
+      "skillCodeCandidate": 11,
+      "aiCodeCandidate": 10,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 9,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's basic Attack Strength.",
+      "metadataU8": [
+        11,
+        10,
+        255,
+        1,
+        1,
+        9,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 19,
+      "name": "DEF Up",
+      "skillCodeCandidate": 15,
+      "aiCodeCandidate": 9,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 8,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Defense.",
+      "metadataU8": [
+        15,
+        9,
+        255,
+        1,
+        1,
+        8,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 20,
+      "name": "Mane Spikes",
+      "skillCodeCandidate": 19,
+      "aiCodeCandidate": 11,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 10,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Spike your hero's mane to counter his attacker.",
+      "metadataU8": [
+        19,
+        11,
+        255,
+        1,
+        1,
+        10,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 21,
+      "name": "Deflect",
+      "skillCodeCandidate": 23,
+      "aiCodeCandidate": 13,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 12,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Build muscle to deflect attackers.",
+      "metadataU8": [
+        23,
+        13,
+        255,
+        1,
+        1,
+        12,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 22,
+      "name": "Defend Tower",
+      "skillCodeCandidate": 27,
+      "aiCodeCandidate": 14,
+      "flagA": 255,
+      "modeA": 255,
+      "modeB": 1,
+      "slotOrPowerCandidate": 13,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Attack the enemy while in your tower. Increase this skill's Level for improved damage.",
+      "metadataU8": [
+        27,
+        14,
+        255,
+        255,
+        1,
+        13,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 23,
+      "name": "Dispatch",
+      "skillCodeCandidate": 31,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 21,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+      "metadataU8": [
+        31,
+        0,
+        255,
+        1,
+        1,
+        21,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 24,
+      "name": "Charge",
+      "skillCodeCandidate": 1,
+      "aiCodeCandidate": 6,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 2,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Increase the Movement Speed of surrounding units.",
+      "metadataU8": [
+        1,
+        6,
+        1,
+        1,
+        2,
+        2,
+        2,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 25,
+      "name": "Feast",
+      "skillCodeCandidate": 5,
+      "aiCodeCandidate": 3,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 9,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Eat meat to restore HP.",
+      "metadataU8": [
+        5,
+        3,
+        1,
+        1,
+        0,
+        9,
+        2,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 26,
+      "name": "Berserk",
+      "skillCodeCandidate": 9,
+      "aiCodeCandidate": 5,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 1,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Increase the Attack Speed of surrounding units.",
+      "metadataU8": [
+        9,
+        5,
+        1,
+        1,
+        2,
+        1,
+        2,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 27,
+      "name": "Parry",
+      "skillCodeCandidate": 13,
+      "aiCodeCandidate": 2,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 8,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Return damage to attackers with no damage on your end.",
+      "metadataU8": [
+        13,
+        2,
+        1,
+        1,
+        0,
+        8,
+        2,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 28,
+      "name": "Draft",
+      "skillCodeCandidate": 17,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 4,
+      "tailFlags": [
+        1,
+        0,
+        128,
+        7
+      ],
+      "description": "Draft soldiers to reduce Respawn Delay.",
+      "metadataU8": [
+        17,
+        8,
+        255,
+        0,
+        2,
+        4,
+        1,
+        0,
+        128,
+        7
+      ]
+    },
+    {
+      "index": 29,
+      "name": "Lion Roar",
+      "skillCodeCandidate": 21,
+      "aiCodeCandidate": 1,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 7,
+      "tailFlags": [
+        2,
+        0,
+        128,
+        7
+      ],
+      "description": "Shout out loud to Stun enemies and push them backward.",
+      "metadataU8": [
+        21,
+        1,
+        1,
+        1,
+        0,
+        7,
+        2,
+        0,
+        128,
+        7
+      ]
+    },
+    {
+      "index": 30,
+      "name": "Wave",
+      "skillCodeCandidate": 25,
+      "aiCodeCandidate": 7,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 3,
+      "tailFlags": [
+        2,
+        0,
+        128,
+        7
+      ],
+      "description": "Muster energy to attack. Increase Movement and Attack Strengths at the cost of your entire Defense.",
+      "metadataU8": [
+        25,
+        7,
+        1,
+        1,
+        2,
+        3,
+        2,
+        0,
+        128,
+        7
+      ]
+    },
+    {
+      "index": 31,
+      "name": "Rally",
+      "skillCodeCandidate": 29,
+      "aiCodeCandidate": 4,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 10,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Summon units to your hero's side.",
+      "metadataU8": [
+        29,
+        4,
+        1,
+        1,
+        0,
+        10,
+        2,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 32,
+      "name": "HP Up",
+      "skillCodeCandidate": 5,
+      "aiCodeCandidate": 14,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 14,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Max HP.",
+      "metadataU8": [
+        5,
+        14,
+        255,
+        1,
+        1,
+        14,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 33,
+      "name": "Defend Tower",
+      "skillCodeCandidate": 7,
+      "aiCodeCandidate": 15,
+      "flagA": 255,
+      "modeA": 255,
+      "modeB": 1,
+      "slotOrPowerCandidate": 23,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Enable to shoot Magic Spheres while in your tower. Increase this skill's Level for a broader Attack Range.",
+      "metadataU8": [
+        7,
+        15,
+        255,
+        255,
+        1,
+        23,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 34,
+      "name": "Multi Shot",
+      "skillCodeCandidate": 13,
+      "aiCodeCandidate": 10,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 16,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your number of Magic Spheres.",
+      "metadataU8": [
+        13,
+        10,
+        255,
+        0,
+        1,
+        16,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 35,
+      "name": "Mana Wall",
+      "skillCodeCandidate": 16,
+      "aiCodeCandidate": 9,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 15,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a shield that neutralizes Long-ranged attacks while protecting nearby units.",
+      "metadataU8": [
+        16,
+        9,
+        255,
+        1,
+        1,
+        15,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 36,
+      "name": "Vampire",
+      "skillCodeCandidate": 19,
+      "aiCodeCandidate": 12,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 18,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Restore HP while attacking.",
+      "metadataU8": [
+        19,
+        12,
+        255,
+        1,
+        1,
+        18,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 37,
+      "name": "Temptation",
+      "skillCodeCandidate": 23,
+      "aiCodeCandidate": 11,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 17,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of convering enemy units to your side.",
+      "metadataU8": [
+        23,
+        11,
+        255,
+        0,
+        1,
+        17,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 38,
+      "name": "Dispatch",
+      "skillCodeCandidate": 27,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 22,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+      "metadataU8": [
+        27,
+        0,
+        255,
+        1,
+        1,
+        22,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 39,
+      "name": "Mana Gain",
+      "skillCodeCandidate": 29,
+      "aiCodeCandidate": 13,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 19,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of regaining mana when attacked.",
+      "metadataU8": [
+        29,
+        13,
+        255,
+        1,
+        1,
+        19,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 40,
+      "name": "Encourage",
+      "skillCodeCandidate": 1,
+      "aiCodeCandidate": 5,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 6,
+      "tailFlags": [
+        2,
+        0,
+        64,
+        11
+      ],
+      "description": "Increase the damage and range of Long-ranged units.",
+      "metadataU8": [
+        1,
+        5,
+        1,
+        1,
+        2,
+        6,
+        2,
+        0,
+        64,
+        11
+      ]
+    },
+    {
+      "index": 41,
+      "name": "Align",
+      "skillCodeCandidate": 3,
+      "aiCodeCandidate": 4,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 5,
+      "tailFlags": [
+        2,
+        0,
+        128,
+        7
+      ],
+      "description": "Send Melee units to the front and the Long-ranged to the back.",
+      "metadataU8": [
+        3,
+        4,
+        1,
+        1,
+        2,
+        5,
+        2,
+        0,
+        128,
+        7
+      ]
+    },
+    {
+      "index": 42,
+      "name": "Balance",
+      "skillCodeCandidate": 9,
+      "aiCodeCandidate": 3,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 13,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Equalize the HP of surrounding units.",
+      "metadataU8": [
+        9,
+        3,
+        1,
+        1,
+        0,
+        13,
+        2,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 43,
+      "name": "Recharge",
+      "skillCodeCandidate": 11,
+      "aiCodeCandidate": 6,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 2,
+      "slotOrPowerCandidate": 7,
+      "tailFlags": [
+        1,
+        0,
+        128,
+        7
+      ],
+      "description": "Increase Mana Regeneration Speed at the cost of your unit production for the skill's duration.",
+      "metadataU8": [
+        11,
+        6,
+        0,
+        255,
+        2,
+        7,
+        1,
+        0,
+        128,
+        7
+      ]
+    },
+    {
+      "index": 44,
+      "name": "Recall",
+      "skillCodeCandidate": 17,
+      "aiCodeCandidate": 1,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 11,
+      "tailFlags": [
+        5,
+        0,
+        192,
+        3
+      ],
+      "description": "Recall your hero along with surrounding units to the front of your tower.",
+      "metadataU8": [
+        17,
+        1,
+        1,
+        1,
+        0,
+        11,
+        5,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 45,
+      "name": "Convert Spirit",
+      "skillCodeCandidate": 21,
+      "aiCodeCandidate": 2,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 12,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Convert your hero's HP to MP.",
+      "metadataU8": [
+        21,
+        2,
+        1,
+        1,
+        0,
+        12,
+        1,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 46,
+      "name": "Return to Nature",
+      "skillCodeCandidate": 25,
+      "aiCodeCandidate": 7,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 0,
+      "slotOrPowerCandidate": 14,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Convert low-HP units into mana. Increase this skill's Level for a higher conversion rate.",
+      "metadataU8": [
+        25,
+        7,
+        255,
+        0,
+        0,
+        14,
+        1,
+        0,
+        192,
+        3
+      ]
+    },
+    {
+      "index": 47,
+      "name": "Armageddon",
+      "skillCodeCandidate": 31,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 0,
+      "slotOrPowerCandidate": 15,
+      "tailFlags": [
+        10,
+        0,
+        64,
+        11
+      ],
+      "description": "Deliver a meteor attack, and then increase your tower's Mana Regeneration.",
+      "metadataU8": [
+        31,
+        8,
+        255,
+        0,
+        0,
+        15,
+        10,
+        0,
+        64,
+        11
+      ]
+    },
+    {
+      "index": 48,
+      "name": "Stun",
+      "skillCodeCandidate": 255,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 29,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "None",
+      "metadataU8": [
+        255,
+        0,
+        255,
+        0,
+        2,
+        29,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 49,
+      "name": "Smoke",
+      "skillCodeCandidate": 255,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 30,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "None",
+      "metadataU8": [
+        255,
+        8,
+        255,
+        0,
+        2,
+        30,
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "index": 50,
+      "name": "Armageddon Buff",
+      "skillCodeCandidate": 255,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 31,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "None",
+      "metadataU8": [
+        255,
+        8,
+        255,
+        0,
+        2,
+        31,
+        255,
+        255,
+        255,
+        255
+      ]
+    }
+  ]
+}

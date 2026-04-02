@@ -1,0 +1,51 @@
+{
+  "table": "XlsBalance",
+  "rowSize": 3,
+  "rowCount": 4,
+  "records": [
+    {
+      "index": 0,
+      "scalarA": 5,
+      "scalarB": 0,
+      "sentinel": 255,
+      "rawU8": [
+        5,
+        0,
+        255
+      ]
+    },
+    {
+      "index": 1,
+      "scalarA": 5,
+      "scalarB": 0,
+      "sentinel": 255,
+      "rawU8": [
+        5,
+        0,
+        255
+      ]
+    },
+    {
+      "index": 2,
+      "scalarA": 3,
+      "scalarB": 1,
+      "sentinel": 0,
+      "rawU8": [
+        3,
+        1,
+        0
+      ]
+    },
+    {
+      "index": 3,
+      "scalarA": 3,
+      "scalarB": 2,
+      "sentinel": 0,
+      "rawU8": [
+        3,
+        2,
+        0
+      ]
+    }
+  ]
+}

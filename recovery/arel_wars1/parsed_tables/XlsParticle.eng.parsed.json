@@ -1,0 +1,139 @@
+{
+  "table": "XlsParticle",
+  "rowSize": 3,
+  "rowCount": 12,
+  "records": [
+    {
+      "index": 0,
+      "particleIdCandidate": 48,
+      "variantCandidate": 0,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        0,
+        255
+      ]
+    },
+    {
+      "index": 1,
+      "particleIdCandidate": 48,
+      "variantCandidate": 0,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        0,
+        255
+      ]
+    },
+    {
+      "index": 2,
+      "particleIdCandidate": 46,
+      "variantCandidate": 34,
+      "sentinel": 255,
+      "rawU8": [
+        46,
+        34,
+        255
+      ]
+    },
+    {
+      "index": 3,
+      "particleIdCandidate": 47,
+      "variantCandidate": 43,
+      "sentinel": 255,
+      "rawU8": [
+        47,
+        43,
+        255
+      ]
+    },
+    {
+      "index": 4,
+      "particleIdCandidate": 34,
+      "variantCandidate": 22,
+      "sentinel": 255,
+      "rawU8": [
+        34,
+        22,
+        255
+      ]
+    },
+    {
+      "index": 5,
+      "particleIdCandidate": 2,
+      "variantCandidate": 1,
+      "sentinel": 255,
+      "rawU8": [
+        2,
+        1,
+        255
+      ]
+    },
+    {
+      "index": 6,
+      "particleIdCandidate": 42,
+      "variantCandidate": 37,
+      "sentinel": 255,
+      "rawU8": [
+        42,
+        37,
+        255
+      ]
+    },
+    {
+      "index": 7,
+      "particleIdCandidate": 48,
+      "variantCandidate": 39,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        39,
+        255
+      ]
+    },
+    {
+      "index": 8,
+      "particleIdCandidate": 48,
+      "variantCandidate": 9,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        9,
+        255
+      ]
+    },
+    {
+      "index": 9,
+      "particleIdCandidate": 48,
+      "variantCandidate": 43,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        43,
+        255
+      ]
+    },
+    {
+      "index": 10,
+      "particleIdCandidate": 21,
+      "variantCandidate": 4,
+      "sentinel": 255,
+      "rawU8": [
+        21,
+        4,
+        255
+      ]
+    },
+    {
+      "index": 11,
+      "particleIdCandidate": 49,
+      "variantCandidate": 43,
+      "sentinel": 255,
+      "rawU8": [
+        49,
+        43,
+        255
+      ]
+    }
+  ]
+}

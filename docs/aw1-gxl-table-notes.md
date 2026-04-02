@@ -13,6 +13,7 @@ Primary outputs:
 - parsed exports under [parsed_tables](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables)
 - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
 - [AW1.runtime_field_reuse_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_field_reuse_scan.json)
+- [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
 
 `AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
 It did not yet reveal a hard `stage -> map payload` pointer on its own.
@@ -88,6 +89,10 @@ Evidence:
 - Current candidate shape:
   - a small map or world id in the first byte or first `u16`
   - one or two compact coordinate / offset fields in the remaining bytes
+- A more cautious current reading is that bytes `2` and `3` should still be kept as separate compact fields:
+  - `valueLoByte`
+  - `valueHiByte`
+  The combined little-endian `valueU16` is still useful for clustering, but it is probably not the true semantic field boundary.
 - Current parsed `groupId -> pair(valueU16)` clusters are:
   - `0 -> [994, 738]`
   - `1 -> [728, 984]`
@@ -229,6 +234,58 @@ Evidence:
 - Strongest current reading:
   - this is a compact skill-trigger policy table
   - repeated `30/50`, `20/30/50/60`, and tail markers `0xfd/0xfe` look like cooldown or threshold presets
+  - ids align more strongly with `XlsItem.itemCodeCandidate` and selected `XlsHeroSkill.aiCodeCandidate` values than with raw row order
+  - best current practical label is `item/active-skill AI`
+
+### XlsHeroSkill and XlsItem
+
+- English parsed exports now exist under:
+  - [`XlsHeroSkill.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsHeroSkill.eng.parsed.json)
+  - [`XlsItem.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsItem.eng.parsed.json)
+- `XlsHeroSkill` currently reads as:
+  - name slot
+  - compact metadata block with `skillCodeCandidate` and `aiCodeCandidate`
+  - localized description
+- `XlsItem` currently reads as:
+  - name slot
+  - compact metadata block with `itemCodeCandidate`, `categoryCandidate`, `aiCodeCandidate`, and `costCandidate`
+  - localized description
+- The linked export [`AW1.battle_catalog.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json) now cross-references:
+  - `skillIdCandidate -> matchingItemsByItemCode`
+  - `skillIdCandidate -> matchingHeroSkillsByAiCode`
+
+### XlsHeroActiveSkill
+
+- English parsed export now exists under [`XlsHeroActiveSkill.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsHeroActiveSkill.eng.parsed.json).
+- Current pragmatic reading:
+  - `headerBytes`
+  - `timingWindowA`
+  - `timingWindowB`
+  - `tailPairBE`
+- The last `8` bytes produce small big-endian pair values such as `[4, 1, 6, 2]`, which are much more plausible as compact ids than the raw little-endian words.
+
+### XlsHeroBuffSkill
+
+- English parsed export now exists under [`XlsHeroBuffSkill.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsHeroBuffSkill.eng.parsed.json).
+- Current pragmatic reading:
+  - `familyCandidate`
+  - `tierCandidate`
+  - `triggerModeCandidate`
+  - `magnitudeWindowU8`
+  - `skillCodeCandidate`
+  - `profileCandidate`
+  - `tailLinkCandidate`
+- This is still provisional, but rows visibly carry compact skill or profile ids in the low teens and low twenties, which makes it a good next runtime-schema target.
+
+### XlsHeroPassiveSkill
+
+- English parsed export now exists under [`XlsHeroPassiveSkill.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsHeroPassiveSkill.eng.parsed.json).
+- Current reading:
+  - fixed `20`-byte name slot
+  - two little-endian value fields
+  - short tail field
+- Several names overlap directly with `XlsHeroSkill` entries such as `HP Up`, `Shuriken`, and `Double Attack`.
+  This strongly suggests `XlsHeroPassiveSkill` is the stat-definition side of some named hero-skill upgrades.
 
 ### XlsProjectile
 
@@ -257,6 +314,16 @@ Evidence:
   - byte `6`: `extraModeCandidate`
   - byte `7`: sentinel, usually `0xff`
   - byte `8`: tail byte
+
+### XlsBaseAttack, XlsParticle, XlsBalance, XlsCorrespondence
+
+- Parsed exports now also exist for:
+  - [`XlsBaseAttack.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsBaseAttack.eng.parsed.json)
+  - [`XlsParticle.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsParticle.eng.parsed.json)
+  - [`XlsBalance.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsBalance.eng.parsed.json)
+  - [`XlsCorrespondence.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsCorrespondence.eng.parsed.json)
+- `XlsParticle` is especially likely to matter for runtime reconstruction because it is a tiny id bridge table and lines up naturally with `PTC`/effect work.
+- `XlsCorrespondence` currently looks like a `5 x 7` slot-mask table rather than free-form data.
 - Strongest current reading:
   - this is a compact effect playback definition table rather than a content string table
   - early rows look like family-indexed effect variants with one-byte loop/blend flags
