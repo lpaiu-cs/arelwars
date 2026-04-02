@@ -320,7 +320,9 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const opcodePills = stage?.opcodeCues.slice(0, 4).map((cue) => cue.label) ?? []
   const tutorialPills = stage?.tutorialChainCues.slice(0, 4).map((cue) => cue.label) ?? []
   const archetypePills = stage?.recommendedArchetypeIds.slice(0, 4) ?? []
-  const channelPills = snapshot.channelStates.slice(0, 4).map((channel) => `${channel.label} ${channel.phaseLabel}`)
+  const channelPills = snapshot.channelStates
+    .slice(0, 4)
+    .map((channel) => `${channel.label} ${channel.phaseLabel}${channel.loadoutMode ? ` [${channel.loadoutMode}${channel.focusLane ? ` ${channel.focusLane}` : ''}]` : ''}`)
   const mapLine = stage?.mapBinding
     ? `Map ${stage.mapBinding.mapPairIndices.join('/')} → ${stage.mapBinding.preferredMapIndexHeuristic ?? 'n/a'} (${stage.mapBinding.proofType} ${stage.mapBinding.proofScore.toFixed(2)})`
     : 'Map unresolved'

@@ -342,6 +342,9 @@ export interface RecoveryBattleChannelState {
   markerCount: number
   hasBuffLayer: boolean
   hasExactTailHit: boolean
+  loadoutMode: string | null
+  focusLane: 'upper' | 'lower' | null
+  focusSource: 'roster' | 'skill' | 'policy' | null
 }
 
 export interface RecoveryStageRenderState {

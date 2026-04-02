@@ -337,7 +337,7 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     const headline = channelStates
       .slice(0, 3)
-      .map((entry) => `${entry.label} ${entry.phaseLabel}`)
+      .map((entry) => `${entry.label} ${entry.phaseLabel}${entry.loadoutMode ? ` [${entry.loadoutMode}${entry.focusLane ? ` ${entry.focusLane}` : ''}]` : ''}`)
       .join(' · ')
     const opcodeCue = snapshot.activeOpcodeCue ? `${snapshot.activeOpcodeCue.label}/${snapshot.activeOpcodeCue.action}` : null
     const tutorialCue = snapshot.activeTutorialCue ? `${snapshot.activeTutorialCue.label}/${snapshot.activeTutorialCue.action}` : null

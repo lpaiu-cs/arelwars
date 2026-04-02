@@ -849,6 +849,10 @@ export class RecoveryStageSystem {
     const opcodeCue = this.resolveOpcodeCue(event)
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
 
+    if (this.applyLoadoutCuePattern(tutorialCue, opcodeCue, favoredLane)) {
+      return
+    }
+
     switch (tutorialCue?.chainId) {
       case 'battle-hud-guard-hp':
         this.setObjectiveState('lane-control', 'hold the tower line', 0.03)
@@ -1300,6 +1304,196 @@ export class RecoveryStageSystem {
     return `${activeLoadout.label} counter-script`
   }
 
+  private applyLoadoutCuePattern(
+    tutorialCue: RecoveryTutorialChainCue | null,
+    opcodeCue: RecoveryResolvedOpcodeCue | null,
+    favoredLane: 'upper' | 'lower',
+  ): boolean {
+    const activeLoadout = this.activeDeployLoadout
+    if (!activeLoadout) {
+      return false
+    }
+
+    const tutorialChainId = tutorialCue?.chainId ?? ''
+    const opcodeAction = opcodeCue?.action ?? ''
+    const rosterRole = activeLoadout.heroRosterRole
+    const skillPresetKind = activeLoadout.skillPresetKind
+    const towerPolicyKind = activeLoadout.towerPolicyKind
+
+    if (
+      (rosterRole === 'vanguard' || rosterRole === 'raider')
+      && (tutorialChainId === 'battle-hud-dispatch-arrows' || includesAny(opcodeAction, ['dispatch', 'hero', 'shock', 'siege']))
+    ) {
+      this.selectedDispatchLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
+      this.queuedUnitCount = Math.max(this.queuedUnitCount, rosterRole === 'raider' ? 2 : 1)
+      if (this.applyScriptedAction('deploy-hero', `${activeLoadout.heroRosterLabel} auto-committed hero pressure`)) {
+        return true
+      }
+    }
+
+    if (
+      (rosterRole === 'defender' || rosterRole === 'support')
+      && (
+        tutorialChainId === 'mana-upgrade-highlight'
+        || tutorialChainId === 'population-upgrade-highlight'
+        || tutorialChainId === 'tower-menu-highlight'
+        || includesAny(opcodeAction, ['tower', 'mana', 'population', 'quest'])
+      )
+    ) {
+      this.panelOverride = 'tower'
+      if (this.applyScriptedAction('upgrade-tower-stat', `${activeLoadout.heroRosterLabel} reinforced tower policy`)) {
+        return true
+      }
+    }
+
+    if (
+      (skillPresetKind === 'support' || skillPresetKind === 'utility')
+      && (
+        tutorialChainId === 'battle-hud-mana-bar'
+        || tutorialChainId === 'item-menu-highlight'
+        || tutorialChainId === 'quest-panel-highlight'
+        || includesAny(opcodeAction, ['item', 'quest', 'mana', 'system'])
+      )
+    ) {
+      if (this.applyScriptedAction('use-item', `${activeLoadout.skillPresetLabel} auto-stabilized the lane`)) {
+        return true
+      }
+    }
+
+    if (
+      (skillPresetKind === 'burst' || skillPresetKind === 'orders')
+      && (
+        tutorialChainId === 'skill-slot-highlight'
+        || tutorialChainId === 'battle-hud-goal-hp'
+        || includesAny(opcodeAction, ['skill', 'pose', 'emphasis', 'shock'])
+      )
+    ) {
+      this.panelOverride = 'skill'
+      if (this.applyScriptedAction('cast-skill', `${activeLoadout.skillPresetLabel} auto-opened a channel spike`)) {
+        return true
+      }
+    }
+
+    if (
+      towerPolicyKind === 'population-first'
+      && (tutorialChainId === 'battle-hud-unit-card' || includesAny(opcodeAction, ['dispatch', 'focus']))
+    ) {
+      if (this.applyScriptedAction('produce-unit', `${activeLoadout.towerPolicyLabel} auto-queued reinforcements`)) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  private deriveChannelLoadoutModulation(
+    archetype: RecoveryRuntimeBlueprint['featuredArchetypes'][number],
+    baseIntensity: number,
+    phaseLabel: string,
+  ): Pick<RecoveryBattleChannelState, 'intensity' | 'phaseLabel' | 'loadoutMode' | 'focusLane' | 'focusSource'> {
+    const activeLoadout = this.activeDeployLoadout
+    if (!activeLoadout) {
+      return {
+        intensity: baseIntensity,
+        phaseLabel,
+        loadoutMode: null,
+        focusLane: null,
+        focusSource: null,
+      }
+    }
+
+    const signals = this.deriveArchetypeSignals(archetype)
+    const favoredLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? this.currentStageBattleProfile.favoredLane ?? null
+    let intensity = baseIntensity
+    let resolvedPhaseLabel = phaseLabel
+    let loadoutMode: string | null = null
+    let focusLane: 'upper' | 'lower' | null = null
+    let focusSource: 'roster' | 'skill' | 'policy' | null = null
+
+    if (
+      activeLoadout.heroRosterRole === 'vanguard'
+      && (signals.has('dispatch') || signals.has('tower-defense'))
+    ) {
+      intensity += 0.14
+      resolvedPhaseLabel = intensity > 0.82 ? 'vanguard-pulse' : 'lane-orders'
+      loadoutMode = activeLoadout.heroRosterLabel
+      focusLane = favoredLane
+      focusSource = 'roster'
+    } else if (
+      activeLoadout.heroRosterRole === 'raider'
+      && (signals.has('armageddon') || signals.has('dispatch'))
+    ) {
+      intensity += 0.18
+      resolvedPhaseLabel = this.currentObjectivePhase === 'siege' || this.currentObjectivePhase === 'hero-pressure' ? 'raid-window' : 'raid-ready'
+      loadoutMode = activeLoadout.heroRosterLabel
+      focusLane = activeLoadout.heroLane ?? favoredLane
+      focusSource = 'roster'
+    } else if (
+      (activeLoadout.heroRosterRole === 'defender' || activeLoadout.heroRosterRole === 'support')
+      && (signals.has('tower-defense') || archetype.buffRows.length > 0)
+    ) {
+      intensity += 0.12
+      resolvedPhaseLabel = activeLoadout.heroRosterRole === 'defender' ? 'guard-loop' : 'support-loop'
+      loadoutMode = activeLoadout.heroRosterLabel
+      focusLane = this.currentStageBattleProfile.favoredLane ?? favoredLane
+      focusSource = 'roster'
+    }
+
+    if (activeLoadout.skillPresetKind === 'orders' && (signals.has('dispatch') || signals.has('tower-defense'))) {
+      intensity += 0.1
+      resolvedPhaseLabel = 'orders-window'
+      loadoutMode = activeLoadout.skillPresetLabel
+      focusLane = activeLoadout.dispatchLane ?? favoredLane
+      focusSource = 'skill'
+    } else if (
+      activeLoadout.skillPresetKind === 'burst'
+      && (signals.has('armageddon') || archetype.evidence.some((entry) => entry.includes('exact projectile or effect hits')))
+    ) {
+      intensity += 0.14
+      resolvedPhaseLabel = this.currentObjectivePhase === 'skill-burst' || this.currentObjectivePhase === 'siege' ? 'burst-window' : 'burst-arming'
+      loadoutMode = activeLoadout.skillPresetLabel
+      focusSource = 'skill'
+    } else if (activeLoadout.skillPresetKind === 'support' && archetype.buffRows.length > 0) {
+      intensity += 0.1
+      resolvedPhaseLabel = 'support-net'
+      loadoutMode = activeLoadout.skillPresetLabel
+      focusLane = activeLoadout.heroLane ?? this.currentStageBattleProfile.favoredLane ?? null
+      focusSource = 'skill'
+    } else if (activeLoadout.skillPresetKind === 'utility' && (signals.has('mana-surge') || archetype.buffRows.length > 0)) {
+      intensity += 0.08
+      resolvedPhaseLabel = 'utility-cycle'
+      loadoutMode = activeLoadout.skillPresetLabel
+      focusSource = 'skill'
+    }
+
+    if (activeLoadout.towerPolicyKind === 'mana-first' && signals.has('mana-surge')) {
+      intensity += 0.08
+      resolvedPhaseLabel = 'mana-route'
+      loadoutMode = activeLoadout.towerPolicyLabel
+      focusSource = 'policy'
+    } else if (activeLoadout.towerPolicyKind === 'population-first' && signals.has('dispatch')) {
+      intensity += 0.08
+      resolvedPhaseLabel = 'population-surge'
+      loadoutMode = activeLoadout.towerPolicyLabel
+      focusLane = activeLoadout.dispatchLane ?? favoredLane
+      focusSource = 'policy'
+    } else if (activeLoadout.towerPolicyKind === 'attack-first' && (signals.has('dispatch') || signals.has('armageddon'))) {
+      intensity += 0.09
+      resolvedPhaseLabel = 'siege-route'
+      loadoutMode = activeLoadout.towerPolicyLabel
+      focusLane = activeLoadout.dispatchLane ?? favoredLane
+      focusSource = 'policy'
+    }
+
+    return {
+      intensity: clamp(intensity, 0.18, 1),
+      phaseLabel: resolvedPhaseLabel,
+      loadoutMode,
+      focusLane,
+      focusSource,
+    }
+  }
+
   private triggerSceneWave(
     side: 'enemy' | 'allied',
     note: string,
@@ -1539,10 +1733,15 @@ export class RecoveryStageSystem {
           ) + archetype.buffRows.length
         const phaseProgress = cycleMs > 0 ? ((elapsed + offsetMs) % cycleMs) / cycleMs : 0
         const pulse = Math.sin(phaseProgress * Math.PI * 2)
-        const intensity = 0.25 + Math.max(pulse, 0) * 0.75
-        const phaseLabel =
-          intensity > 0.82 ? 'burst' : intensity > 0.52 ? 'arming' : markerCount > 0 ? 'ready' : 'idle'
+        const baseIntensity = 0.25 + Math.max(pulse, 0) * 0.75
+        const basePhaseLabel =
+          baseIntensity > 0.82 ? 'burst' : baseIntensity > 0.52 ? 'arming' : markerCount > 0 ? 'ready' : 'idle'
         const hasExactTailHit = archetype.evidence.some((entry) => entry.includes('exact projectile or effect hits'))
+        const { intensity, phaseLabel, loadoutMode, focusLane, focusSource } = this.deriveChannelLoadoutModulation(
+          archetype,
+          baseIntensity,
+          basePhaseLabel,
+        )
 
         return {
           archetypeId: archetype.archetypeId,
@@ -1555,6 +1754,9 @@ export class RecoveryStageSystem {
           markerCount,
           hasBuffLayer: archetype.buffRows.length > 0,
           hasExactTailHit,
+          loadoutMode,
+          focusLane,
+          focusSource,
         }
       })
       .filter((entry): entry is RecoveryBattleChannelState => entry !== null)
