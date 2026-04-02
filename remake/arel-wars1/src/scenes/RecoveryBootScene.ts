@@ -1,8 +1,13 @@
 import Phaser from 'phaser'
 import type {
   RecoveryBattleChannelState,
+  RecoveryBattleEffectState,
+  RecoveryBattleEntityState,
   RecoveryGameplayActionId,
   RecoveryPreviewStem,
+  RecoveryRenderEmitterPreset,
+  RecoveryRenderPack,
+  RecoveryRenderStemAsset,
   RecoveryStageSnapshot,
 } from '../recovery-types'
 import { RecoveryStageSystem } from '../systems/recoveryStageSystem'
@@ -31,9 +36,29 @@ interface FocusLayoutBounds {
 export class RecoveryBootScene extends Phaser.Scene {
   private readonly stageSystem: RecoveryStageSystem | null
 
+  private readonly renderPack: RecoveryRenderPack | null
+
   private readonly featuredEntries: RecoveryPreviewStem[]
 
+  private readonly textureKeysByPath = new Map<string, string>()
+
+  private readonly stemAssetsByStem = new Map<string, RecoveryRenderStemAsset>()
+
+  private readonly emitterPresetsById = new Map<string, RecoveryRenderEmitterPreset>()
+
+  private readonly entitySprites = new Map<string, Phaser.GameObjects.Image>()
+
+  private readonly entityOverlaySprites = new Map<string, Phaser.GameObjects.Image>()
+
+  private readonly projectileSprites = new Map<string, Phaser.GameObjects.Image>()
+
+  private readonly effectSprites = new Map<string, Phaser.GameObjects.Image>()
+
+  private readonly particleSprites = new Map<string, Phaser.GameObjects.Image>()
+
   private previewImage: Phaser.GameObjects.Image | null = null
+
+  private bankProbeImage: Phaser.GameObjects.Image | null = null
 
   private spriteLabel: Phaser.GameObjects.Text | null = null
 
@@ -49,14 +74,38 @@ export class RecoveryBootScene extends Phaser.Scene {
 
   private currentSnapshotKey = ''
 
-  constructor(stageSystem: RecoveryStageSystem | null = null) {
+  constructor(stageSystem: RecoveryStageSystem | null = null, renderPack: RecoveryRenderPack | null = null) {
     super('RecoveryBootScene')
     this.stageSystem = stageSystem
+    this.renderPack = renderPack
     this.featuredEntries = stageSystem?.getPreviewEntries().slice(0, 6) ?? []
+    renderPack?.stemAssets.forEach((asset) => {
+      this.stemAssetsByStem.set(asset.stem, asset)
+    })
+    renderPack?.emitterPresets.forEach((preset) => {
+      this.emitterPresetsById.set(preset.id, preset)
+    })
   }
 
   preload(): void {
     this.load.image(ICON_KEY, '/recovery/raw/res/drawable-hdpi/icon_normal.png')
+
+    this.renderPack?.stemAssets.forEach((asset) => {
+      asset.framePaths.forEach((path) => {
+        this.load.image(this.ensureTextureKey(path), path)
+      })
+      if (asset.bankProbePath) {
+        this.load.image(this.ensureTextureKey(asset.bankProbePath), asset.bankProbePath)
+      }
+    })
+    this.renderPack?.packedPixelSpecials.forEach((entry) => {
+      if (entry.compositePath) {
+        this.load.image(this.ensureTextureKey(entry.compositePath), entry.compositePath)
+      }
+      if (entry.probeSheetPath) {
+        this.load.image(this.ensureTextureKey(entry.probeSheetPath), entry.probeSheetPath)
+      }
+    })
 
     this.featuredEntries.forEach((entry) => {
       this.load.image(this.previewKey(entry.stem), entry.timelineStrip.pngPath)
@@ -68,6 +117,7 @@ export class RecoveryBootScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.scale
+    this.createGeneratedTextures()
 
     this.add.rectangle(width / 2, height / 2, width, height, 0x0c1215)
     this.drawGrid(width, height)
@@ -185,6 +235,12 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     this.previewImage = this.add.image(frame.x, frame.y - 18, this.resolvePreviewTexture(snapshot.currentStoryboard.previewStem, snapshot.frameIndex))
     this.fitImageToBox(this.previewImage, 320, 188)
+    this.previewImage.setDepth(1)
+
+    this.bankProbeImage = this.add.image(frame.x + 116, frame.y - 98, this.resolveFallbackBankProbeTexture())
+    this.bankProbeImage.setVisible(false)
+    this.bankProbeImage.setDepth(2.8)
+    this.fitImageToBox(this.bankProbeImage, 86, 60)
 
     this.spriteLabel = this.add
       .text(frame.x - 156, frame.y + 96, '', {
@@ -231,6 +287,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       .setAlpha(0.84)
 
     this.overlayGraphics = this.add.graphics()
+    this.overlayGraphics.setDepth(5)
 
     this.applySnapshot(snapshot)
   }
@@ -250,6 +307,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     this.fitImageToBox(this.previewImage, 320, 188)
     this.previewImage.setTint(snapshot.renderState.bankOverlayActive ? 0xffe3a1 : 0xffffff)
     this.previewImage.setAlpha(snapshot.renderState.packedPixelStemRule ? 0.96 : 1)
+    this.syncBankProbe(snapshot)
 
     const stageTitle = snapshot.currentStoryboard.stageBlueprint?.title ?? `Stem ${previewStem.stem}`
     const mapBinding = snapshot.currentStoryboard.stageBlueprint?.mapBinding
@@ -281,6 +339,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
     this.interactionDetail.setText(this.describeGameplayState(snapshot))
+    this.syncBattleRenderSprites(snapshot)
     this.drawBattleOverlay(snapshot)
   }
 
@@ -317,6 +376,323 @@ export class RecoveryBootScene extends Phaser.Scene {
     const height = image.height || 1
     const scale = Math.min(maxWidth / width, maxHeight / height)
     image.setScale(scale)
+  }
+
+  private ensureTextureKey(path: string): string {
+    const existing = this.textureKeysByPath.get(path)
+    if (existing) {
+      return existing
+    }
+    const normalized = path.replace(/[^a-zA-Z0-9]+/g, '-')
+    const key = `render-${this.textureKeysByPath.size}-${normalized}`
+    this.textureKeysByPath.set(path, key)
+    return key
+  }
+
+  private createGeneratedTextures(): void {
+    const dot = this.make.graphics({ x: 0, y: 0 })
+    dot.fillStyle(0xffffff, 1)
+    dot.fillCircle(6, 6, 5)
+    dot.generateTexture('ptc-dot', 12, 12)
+    dot.clear()
+    dot.fillStyle(0xffffff, 1)
+    dot.fillTriangle(8, 0, 16, 8, 0, 8)
+    dot.generateTexture('ptc-spark', 16, 8)
+    dot.clear()
+    dot.fillStyle(0xffffff, 0.9)
+    dot.fillCircle(12, 12, 10)
+    dot.generateTexture('ptc-glow', 24, 24)
+    dot.destroy()
+  }
+
+  private resolveFallbackBankProbeTexture(): string {
+    const firstPath = this.renderPack?.stemAssets.find((asset) => asset.bankProbePath)?.bankProbePath
+    return firstPath ? this.ensureTextureKey(firstPath) : ICON_KEY
+  }
+
+  private stemAsset(stem: string | null | undefined): RecoveryRenderStemAsset | null {
+    if (!stem) {
+      return null
+    }
+    return this.stemAssetsByStem.get(stem) ?? null
+  }
+
+  private pickStemTexture(
+    asset: RecoveryRenderStemAsset | null,
+    seed: number,
+    preferOverlay: boolean,
+  ): string | null {
+    if (!asset) {
+      return null
+    }
+    const framePaths = preferOverlay && asset.overlayFramePaths.length > 0
+      ? asset.overlayFramePaths
+      : asset.linkedFramePaths.length > 0
+        ? asset.linkedFramePaths
+        : asset.framePaths
+    if (framePaths.length === 0) {
+      return null
+    }
+    const index = Math.abs(seed) % framePaths.length
+    return this.ensureTextureKey(framePaths[index])
+  }
+
+  private resolveEntityStemAsset(entity: RecoveryBattleEntityState): RecoveryRenderStemAsset | null {
+    if (!this.renderPack) {
+      return null
+    }
+    const sideMap = entity.side === 'allied' ? this.renderPack.roleAssignments.allied : this.renderPack.roleAssignments.enemy
+    const role =
+      entity.role === 'hero-bait'
+        ? 'screen'
+        : entity.role
+    return this.stemAsset(sideMap[role])
+  }
+
+  private resolveProjectileStemAsset(side: 'allied' | 'enemy'): RecoveryRenderStemAsset | null {
+    if (!this.renderPack) {
+      return null
+    }
+    return this.stemAsset(this.renderPack.roleAssignments.projectile[side])
+  }
+
+  private effectCategory(effect: RecoveryBattleEffectState): 'support' | 'impact' | 'burst' | 'utility' {
+    const kind = effect.kind.toLowerCase()
+    if (kind.includes('support') || kind.includes('heal')) {
+      return 'support'
+    }
+    if (kind.includes('burst') || kind.includes('tower') || kind.includes('siege')) {
+      return 'burst'
+    }
+    if (kind.includes('impact') || kind.includes('hit')) {
+      return 'impact'
+    }
+    return 'utility'
+  }
+
+  private resolveEffectStemTexture(effect: RecoveryBattleEffectState, seed: number): string | null {
+    if (!this.renderPack) {
+      return null
+    }
+    const category = this.effectCategory(effect)
+    if (category === 'burst') {
+      const special = this.renderPack.packedPixelSpecials.find((entry) => entry.stem === this.renderPack?.roleAssignments.effect.burst)
+      if (special?.compositePath) {
+        return this.ensureTextureKey(special.compositePath)
+      }
+    }
+    const stem = this.renderPack.roleAssignments.effect[category]
+    return this.pickStemTexture(this.stemAsset(stem), seed, category !== 'impact')
+  }
+
+  private resolveEmitterPreset(effect: RecoveryBattleEffectState): RecoveryRenderEmitterPreset | null {
+    if (!this.renderPack) {
+      return null
+    }
+    const category = this.effectCategory(effect)
+    const presetId = this.renderPack.effectEmitterAssignments[category]
+    return presetId ? this.emitterPresetsById.get(presetId) ?? null : null
+  }
+
+  private laneRenderGeometry(bounds: FocusLayoutBounds): {
+    startX: number
+    endX: number
+    laneY: (laneId: 'upper' | 'lower') => number
+  } {
+    const startX = bounds.x + bounds.width * 0.18
+    const endX = bounds.x + bounds.width * 0.82
+    return {
+      startX,
+      endX,
+      laneY: (laneId: 'upper' | 'lower') => bounds.y + bounds.height * (laneId === 'upper' ? 0.36 : 0.62),
+    }
+  }
+
+  private syncBattleRenderSprites(snapshot: RecoveryStageSnapshot): void {
+    if (!this.previewImage) {
+      return
+    }
+
+    const bounds = {
+      x: this.previewImage.x - ((this.previewImage.displayWidth || 320) + 16) / 2,
+      y: this.previewImage.y - ((this.previewImage.displayHeight || 188) + 16) / 2,
+      width: (this.previewImage.displayWidth || 320) + 16,
+      height: (this.previewImage.displayHeight || 188) + 16,
+    }
+    const { startX, endX, laneY } = this.laneRenderGeometry(bounds)
+
+    const activeEntityKeys = new Set<string>()
+    snapshot.battlePreviewState.entities.forEach((entity) => {
+      const spriteKey = `entity-${entity.id}`
+      const overlayKey = `entity-overlay-${entity.id}`
+      activeEntityKeys.add(spriteKey)
+      activeEntityKeys.add(overlayKey)
+      const textureKey =
+        this.pickStemTexture(
+          this.resolveEntityStemAsset(entity),
+          snapshot.frameIndex + entity.id,
+          false,
+        ) ?? this.resolvePreviewTexture(snapshot.currentStoryboard.previewStem, snapshot.frameIndex)
+      const x = startX + (endX - startX) * entity.positionRatio
+      const y = laneY(entity.laneId) + (entity.side === 'allied' ? -14 : 14)
+      const scale = entity.hero ? 0.34 : entity.role === 'siege' || entity.role === 'skill-window' ? 0.24 : 0.2
+      const tint = entity.side === 'allied' ? 0xe6f4ff : 0xffe1d0
+
+      let sprite = this.entitySprites.get(spriteKey)
+      if (!sprite) {
+        sprite = this.add.image(x, y, textureKey).setDepth(2.2)
+        this.entitySprites.set(spriteKey, sprite)
+      }
+      sprite.setTexture(textureKey)
+      sprite.setPosition(x, y)
+      sprite.setScale(scale)
+      sprite.setFlipX(entity.side === 'enemy')
+      sprite.setTint(tint)
+      sprite.setAlpha(0.5 + entity.hpRatio * 0.5)
+
+      const overlayTexture = this.pickStemTexture(
+        this.resolveEntityStemAsset(entity),
+        snapshot.frameIndex + entity.id,
+        true,
+      )
+      const overlayActive =
+        snapshot.renderState.bankOverlayActive
+        || entity.role === 'hero'
+        || entity.role === 'support'
+        || entity.role === 'skill-window'
+      let overlay = this.entityOverlaySprites.get(overlayKey)
+      if (overlayTexture && overlayActive) {
+        if (!overlay) {
+          overlay = this.add.image(x, y, overlayTexture).setDepth(2.4)
+          overlay.setBlendMode(Phaser.BlendModes.ADD)
+          this.entityOverlaySprites.set(overlayKey, overlay)
+        }
+        overlay.setVisible(true)
+        overlay.setTexture(overlayTexture)
+        overlay.setPosition(x, y)
+        overlay.setScale(scale * 1.05)
+        overlay.setFlipX(entity.side === 'enemy')
+        overlay.setTint(snapshot.renderState.bankOverlayActive ? 0xffd78b : 0xb6efff)
+        overlay.setAlpha(snapshot.renderState.bankOverlayActive ? 0.34 : 0.22)
+      } else if (overlay) {
+        overlay.setVisible(false)
+      }
+    })
+
+    for (const [key, sprite] of this.entitySprites) {
+      if (!activeEntityKeys.has(key)) {
+        sprite.destroy()
+        this.entitySprites.delete(key)
+      }
+    }
+    for (const [key, sprite] of this.entityOverlaySprites) {
+      if (!activeEntityKeys.has(key)) {
+        sprite.destroy()
+        this.entityOverlaySprites.delete(key)
+      }
+    }
+
+    const activeProjectileKeys = new Set<string>()
+    snapshot.battlePreviewState.projectiles.forEach((projectile) => {
+      const spriteKey = `projectile-${projectile.id}`
+      activeProjectileKeys.add(spriteKey)
+      const textureKey =
+        this.pickStemTexture(this.resolveProjectileStemAsset(projectile.side), snapshot.frameIndex + projectile.id, true)
+        ?? 'ptc-spark'
+      const x = startX + (endX - startX) * projectile.positionRatio
+      const y = laneY(projectile.laneId)
+      let sprite = this.projectileSprites.get(spriteKey)
+      if (!sprite) {
+        sprite = this.add.image(x, y, textureKey).setDepth(3)
+        this.projectileSprites.set(spriteKey, sprite)
+      }
+      sprite.setTexture(textureKey)
+      sprite.setPosition(x, y)
+      sprite.setScale(0.12 + projectile.strength * 0.03)
+      sprite.setTint(projectile.side === 'allied' ? 0x9fe7ff : 0xffcca4)
+      sprite.setAlpha(0.84)
+    })
+    for (const [key, sprite] of this.projectileSprites) {
+      if (!activeProjectileKeys.has(key)) {
+        sprite.destroy()
+        this.projectileSprites.delete(key)
+      }
+    }
+
+    const activeEffectKeys = new Set<string>()
+    snapshot.battlePreviewState.effects.forEach((effect) => {
+      const effectKey = `effect-${effect.id}`
+      activeEffectKeys.add(effectKey)
+      const textureKey = this.resolveEffectStemTexture(effect, snapshot.frameIndex + effect.id) ?? 'ptc-glow'
+      const x = startX + (endX - startX) * effect.positionRatio
+      const y = laneY(effect.laneId) + (effect.side === 'allied' ? -2 : 2)
+      let sprite = this.effectSprites.get(effectKey)
+      if (!sprite) {
+        sprite = this.add.image(x, y, textureKey).setDepth(3.2)
+        sprite.setBlendMode(Phaser.BlendModes.ADD)
+        this.effectSprites.set(effectKey, sprite)
+      }
+      sprite.setTexture(textureKey)
+      sprite.setPosition(x, y)
+      sprite.setScale(0.14 + effect.intensity * 0.08)
+      sprite.setTint(effect.side === 'allied' ? 0xaee9ff : 0xffc69c)
+      sprite.setAlpha(0.24 + Math.min(effect.intensity, 1.4) * 0.22)
+
+      const preset = this.resolveEmitterPreset(effect)
+      const particleCount = Math.max(2, Math.min(6, Math.round((preset?.emissionFields[0] ?? 24) / 24) + 2))
+      for (let index = 0; index < particleCount; index += 1) {
+        const particleKey = `${effectKey}-particle-${index}`
+        activeEffectKeys.add(particleKey)
+        const particleTexture = index % 3 === 0 ? 'ptc-glow' : index % 2 === 0 ? 'ptc-spark' : 'ptc-dot'
+        const angle = (Math.PI * 2 * index) / particleCount + snapshot.frameIndex * 0.12
+        const radius = 8 + (preset?.ratioFieldsFloat[index % (preset?.ratioFieldsFloat.length || 1)] ?? 0.12) * 64
+        const offsetX = Math.cos(angle) * radius
+        const offsetY = Math.sin(angle) * radius * 0.55
+        let particle = this.particleSprites.get(particleKey)
+        if (!particle) {
+          particle = this.add.image(x, y, particleTexture).setDepth(3.4)
+          particle.setBlendMode(Phaser.BlendModes.ADD)
+          this.particleSprites.set(particleKey, particle)
+        }
+        particle.setTexture(particleTexture)
+        particle.setPosition(x + offsetX, y + offsetY)
+        particle.setScale(0.08 + effect.intensity * 0.03 + index * 0.01)
+        particle.setTint(effect.side === 'allied' ? 0xaee9ff : 0xffd3ae)
+        particle.setAlpha(0.16 + effect.intensity * 0.12)
+      }
+    })
+
+    for (const [key, sprite] of this.effectSprites) {
+      if (!activeEffectKeys.has(key)) {
+        sprite.destroy()
+        this.effectSprites.delete(key)
+      }
+    }
+    for (const [key, sprite] of this.particleSprites) {
+      if (!activeEffectKeys.has(key)) {
+        sprite.destroy()
+        this.particleSprites.delete(key)
+      }
+    }
+  }
+
+  private syncBankProbe(snapshot: RecoveryStageSnapshot): void {
+    if (!this.bankProbeImage) {
+      return
+    }
+    const previewAsset = this.stemAsset(snapshot.currentStoryboard.previewStem.stem)
+    const heroStem = this.renderPack?.roleAssignments.allied.hero ?? null
+    const heroAsset = this.stemAsset(heroStem)
+    const probePath = previewAsset?.bankProbePath ?? heroAsset?.bankProbePath ?? null
+    if (!probePath) {
+      this.bankProbeImage.setVisible(false)
+      return
+    }
+    this.bankProbeImage.setVisible(true)
+    this.bankProbeImage.setTexture(this.ensureTextureKey(probePath))
+    this.fitImageToBox(this.bankProbeImage, 86, 60)
+    this.bankProbeImage.setAlpha(snapshot.renderState.bankOverlayActive ? 0.92 : 0.58)
+    this.bankProbeImage.setTint(snapshot.renderState.bankOverlayActive ? 0xffd78b : 0xffffff)
   }
 
   private formatKind(value: string): string {
@@ -797,12 +1173,6 @@ export class RecoveryBootScene extends Phaser.Scene {
       const y = laneY(index)
       const selected = snapshot.battlePreviewState.selectedLane === lane.laneId
       const chained = snapshot.battlePreviewState.activeChain.active && snapshot.battlePreviewState.activeChain.focusLane === lane.laneId
-      const laneEntities = snapshot.battlePreviewState.entities
-        .filter((entity) => entity.laneId === lane.laneId)
-        .sort((left, right) => left.positionRatio - right.positionRatio)
-      const alliedEntities = laneEntities.filter((entity) => entity.side === 'allied')
-      const enemyEntities = laneEntities.filter((entity) => entity.side === 'enemy')
-      const laneProjectiles = snapshot.battlePreviewState.projectiles.filter((projectile) => projectile.laneId === lane.laneId)
       const momentumColor =
         lane.momentum === 'allied-push'
           ? 0x85d46a
@@ -826,51 +1196,6 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.lineStyle(1.6, 0x76d6ff, 0.7)
         graphics.strokeCircle(frontlineX, y, 13 + snapshot.battlePreviewState.activeChain.intensity * 10)
       }
-
-      alliedEntities.forEach((entity) => {
-        const unitX = laneStartX + (laneEndX - laneStartX) * entity.positionRatio
-        const radius = entity.hero ? 6 : entity.role === 'siege' || entity.role === 'skill-window' ? 4.5 : 4
-        const color =
-          entity.role === 'support' || entity.role === 'tower-rally'
-            ? 0x8de6d4
-            : entity.hero
-              ? 0xffefbf
-              : 0x7eb6ff
-        graphics.fillStyle(color, 0.9)
-        graphics.fillCircle(unitX, y - 10, radius)
-        if (entity.hero) {
-          graphics.lineStyle(1.2, 0xffefbf, 0.74)
-          graphics.strokeCircle(unitX, y - 10, radius + 3)
-        }
-      })
-
-      enemyEntities.forEach((entity) => {
-        const unitX = laneStartX + (laneEndX - laneStartX) * entity.positionRatio
-        const radius = entity.hero ? 6 : entity.role === 'siege' || entity.role === 'skill-window' ? 4.5 : 4
-        const color =
-          entity.role === 'support' || entity.role === 'tower-rally'
-            ? 0xffc17a
-            : entity.hero
-              ? 0xffe4c2
-              : 0xff8a75
-        graphics.fillStyle(color, 0.9)
-        graphics.fillCircle(unitX, y + 10, radius)
-      })
-
-      laneProjectiles.forEach((projectile) => {
-        const projectileX = laneStartX + (laneEndX - laneStartX) * projectile.positionRatio
-        graphics.fillStyle(projectile.side === 'allied' ? 0xaee7ff : 0xffd0b6, 0.88)
-        graphics.fillRect(projectileX - 3, y - 2, 6, 4)
-      })
-
-      snapshot.battlePreviewState.effects
-        .filter((effect) => effect.laneId === lane.laneId)
-        .forEach((effect) => {
-          const effectX = laneStartX + (laneEndX - laneStartX) * effect.positionRatio
-          const radius = 6 + effect.intensity * 7
-          graphics.lineStyle(1.2, effect.side === 'allied' ? 0x9fe7ff : 0xffca9f, 0.22 + effect.intensity * 0.18)
-          graphics.strokeCircle(effectX, y, radius)
-        })
     })
   }
 

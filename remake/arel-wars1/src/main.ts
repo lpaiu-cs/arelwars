@@ -8,6 +8,7 @@ import type {
   RecoveryEngineSchema,
   RecoveryPreviewManifest,
   RecoveryPreviewStem,
+  RecoveryRenderPack,
   RecoveryRuntimeBlueprint,
   RecoveryStageSnapshot,
 } from './recovery-types'
@@ -105,18 +106,20 @@ async function bootstrap(): Promise<void> {
     return
   }
 
-  const [catalogResult, previewResult, blueprintResult, battleModelResult, engineSchemaResult] = await Promise.allSettled([
+  const [catalogResult, previewResult, blueprintResult, battleModelResult, engineSchemaResult, renderPackResult] = await Promise.allSettled([
     fetchJson<RecoveryCatalog>('/recovery/catalog.json'),
     fetchJson<RecoveryPreviewManifest>('/recovery/analysis/preview_manifest.json'),
     fetchJson<RecoveryRuntimeBlueprint>('/recovery/analysis/aw1_runtime_blueprint.json'),
     fetchJson<RecoveryBattleModel>('/recovery/analysis/aw1_battle_model.json'),
     fetchJson<RecoveryEngineSchema>('/recovery/analysis/aw1_engine_schema.json'),
+    fetchJson<RecoveryRenderPack>('/recovery/analysis/aw1_render_pack.json'),
   ])
 
   const previewManifest = previewResult.status === 'fulfilled' ? previewResult.value : null
   const runtimeBlueprint = blueprintResult.status === 'fulfilled' ? blueprintResult.value : null
   const battleModel = battleModelResult.status === 'fulfilled' ? battleModelResult.value : null
   const engineSchema = engineSchemaResult.status === 'fulfilled' ? engineSchemaResult.value : null
+  const renderPack = renderPackResult.status === 'fulfilled' ? renderPackResult.value : null
   let stageSystem: RecoveryStageSystem | null = null
 
   if (catalogResult.status === 'fulfilled') {
@@ -124,11 +127,11 @@ async function bootstrap(): Promise<void> {
     if (previewManifest) {
       stageSystem = new RecoveryStageSystem(catalog, previewManifest, runtimeBlueprint, battleModel)
     }
-    game = createGame(stageSystem)
+    game = createGame(stageSystem, renderPack)
     stage.textContent = previewManifest
-      ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapBindingCount ?? 0} stage bindings / ${battleModel?.summary.unitTemplateCount ?? 0} unit templates / ${engineSchema?.summary.unitCount ?? 0} schema units)`
+      ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapBindingCount ?? 0} stage bindings / ${battleModel?.summary.unitTemplateCount ?? 0} unit templates / ${engineSchema?.summary.unitCount ?? 0} schema units / ${renderPack?.summary.stemCount ?? 0} render stems)`
       : 'ZT1 decoded, Android APK verified'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapBindingCount} hard stage bindings, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics, ${runtimeBlueprint.summary.tutorialChainCount} mirrored tutorial chains.` : ''}${engineSchema ? ` Engine schema: ${engineSchema.summary.unitCount} units, ${engineSchema.summary.heroCount} heroes, ${engineSchema.summary.heroAiProfileCount} hero AI rows, ${engineSchema.summary.skillAiProfileCount} skill AI rows, ${engineSchema.summary.projectileCount} projectiles, ${engineSchema.summary.effectCount} effects, ${engineSchema.summary.particleCount} particles, ${engineSchema.summary.balanceRowCount} balance rows.` : ''}${battleModel ? ` Battle model: ${battleModel.summary.unitTemplateCount} unit templates, ${battleModel.summary.projectileTemplateCount} projectiles, ${battleModel.summary.effectTemplateCount} effects, ${battleModel.summary.heroTemplateCount} hero AI profiles.` : ''} Android packaging has been verified on a modern emulator.`
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapBindingCount} hard stage bindings, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics, ${runtimeBlueprint.summary.tutorialChainCount} mirrored tutorial chains.` : ''}${engineSchema ? ` Engine schema: ${engineSchema.summary.unitCount} units, ${engineSchema.summary.heroCount} heroes, ${engineSchema.summary.heroAiProfileCount} hero AI rows, ${engineSchema.summary.skillAiProfileCount} skill AI rows, ${engineSchema.summary.projectileCount} projectiles, ${engineSchema.summary.effectCount} effects, ${engineSchema.summary.particleCount} particles, ${engineSchema.summary.balanceRowCount} balance rows.` : ''}${battleModel ? ` Battle model: ${battleModel.summary.unitTemplateCount} unit templates, ${battleModel.summary.projectileTemplateCount} projectiles, ${battleModel.summary.effectTemplateCount} effects, ${battleModel.summary.heroTemplateCount} hero AI profiles.` : ''}${renderPack ? ` Render pack: ${renderPack.summary.stemCount} sprite stems, ${renderPack.summary.bankProbeCount} MPL bank probes, ${renderPack.summary.packedSpecialCount} packed-pixel specials, ${renderPack.summary.emitterPresetCount} PTC emitter presets.` : ''} Android packaging has been verified on a modern emulator.`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
@@ -141,6 +144,9 @@ async function bootstrap(): Promise<void> {
       statCard('Schema Heroes', String(engineSchema?.summary.heroCount ?? 0)),
       statCard('Units', String(battleModel?.summary.unitTemplateCount ?? 0)),
       statCard('Effects', String(battleModel?.summary.effectTemplateCount ?? 0)),
+      statCard('Render Stems', String(renderPack?.summary.stemCount ?? 0)),
+      statCard('Bank Probes', String(renderPack?.summary.bankProbeCount ?? 0)),
+      statCard('Emitters', String(renderPack?.summary.emitterPresetCount ?? 0)),
       statCard('Stage Plans', String(runtimeBlueprint?.summary.stageBlueprintCount ?? 0)),
       statCard('Opcode Hints', String(runtimeBlueprint?.summary.opcodeHeuristicCount ?? 0)),
       statCard('Tutorial Chains', String(runtimeBlueprint?.summary.tutorialChainCount ?? 0)),
@@ -161,7 +167,7 @@ async function bootstrap(): Promise<void> {
       )
       .join('')
   } else {
-    game = createGame(null)
+    game = createGame(null, null)
     const message = catalogResult.reason instanceof Error ? catalogResult.reason.message : 'Unknown error'
     stage.textContent = 'Catalog load failed'
     summary.textContent = message
@@ -173,14 +179,14 @@ async function bootstrap(): Promise<void> {
   renderTimelinePreview(previewManifest, timelineSummary, timelineStats, timelineGallery)
 }
 
-function createGame(stageSystem: RecoveryStageSystem | null): Phaser.Game {
+function createGame(stageSystem: RecoveryStageSystem | null, renderPack: RecoveryRenderPack | null): Phaser.Game {
   return new Phaser.Game({
     type: Phaser.AUTO,
     parent: 'game-root',
     width: 960,
     height: 540,
     backgroundColor: '#0e1418',
-    scene: [new RecoveryBootScene(stageSystem)],
+    scene: [new RecoveryBootScene(stageSystem, renderPack)],
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,

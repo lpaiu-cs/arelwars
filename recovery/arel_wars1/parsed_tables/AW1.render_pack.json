@@ -1,0 +1,773 @@
+{
+  "generatedAt": null,
+  "summary": {
+    "stemCount": 21,
+    "bankProbeCount": 7,
+    "packedSpecialCount": 1,
+    "emitterPresetCount": 4
+  },
+  "stemAssets": [
+    {
+      "stem": "082",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/082/00-g06-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/01-g18-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/02-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/03-g21-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/04-g23-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/05-g25-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/06-g31-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/07-g33-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/08-g39-linked.png",
+        "/recovery/analysis/timeline_event_frames/082/09-g42-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/10-g44-linked.png",
+        "/recovery/analysis/timeline_event_frames/082/11-g46-linked.png",
+        "/recovery/analysis/timeline_event_frames/082/12-g48-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/13-g51-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/14-g54-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/15-g55-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/16-g58-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/17-g59-overlay.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/082/08-g39-linked.png",
+        "/recovery/analysis/timeline_event_frames/082/10-g44-linked.png",
+        "/recovery/analysis/timeline_event_frames/082/11-g46-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/082/00-g06-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/01-g18-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/02-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/03-g21-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/04-g23-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/05-g25-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/06-g31-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/07-g33-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/09-g42-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/12-g48-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/13-g51-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/14-g54-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/15-g55-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/16-g58-overlay.png",
+        "/recovery/analysis/timeline_event_frames/082/17-g59-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "083",
+      "sequenceKind": "linked-mixed",
+      "timelineKind": "mixed-anchor-overlay",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/083/00-g00-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/01-g03-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/02-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/03-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/04-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/05-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/06-g09-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/07-g11-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/08-g12-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/09-g14-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/10-g15-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/11-g16-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/12-g18-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/13-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/14-g20-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/15-g22-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/16-g23-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/17-g25-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/18-g27-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/19-g28-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/20-g30-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/21-g32-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/22-g34-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/23-g36-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/24-g37-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/25-g38-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/26-g40-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/27-g41-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/28-g43-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/29-g45-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/30-g53-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/31-g54-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/32-g55-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/33-g56-overlay.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/083/01-g03-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/02-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/03-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/04-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/05-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/26-g40-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/27-g41-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/29-g45-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/30-g53-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/31-g54-linked.png",
+        "/recovery/analysis/timeline_event_frames/083/32-g55-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/083/00-g00-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/06-g09-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/07-g11-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/08-g12-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/09-g14-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/10-g15-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/11-g16-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/12-g18-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/13-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/14-g20-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/15-g22-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/16-g23-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/17-g25-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/18-g27-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/19-g28-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/20-g30-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/21-g32-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/22-g34-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/23-g36-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/24-g37-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/25-g38-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/28-g43-overlay.png",
+        "/recovery/analysis/timeline_event_frames/083/33-g56-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "084",
+      "sequenceKind": "has-contiguous-rise",
+      "timelineKind": "rising-anchor-with-overlays",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/084/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/02-g02-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/04-g04-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/05-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/06-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/07-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/08-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/09-g09-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/10-g10-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/11-g11-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/12-g12-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/13-g13-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/14-g15-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/15-g17-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/16-g19-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/17-g21-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/18-g22-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/19-g23-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/20-g24-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/21-g25-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/22-g27-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/23-g28-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/084/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/05-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/06-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/07-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/08-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/09-g09-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/10-g10-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/12-g12-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/16-g19-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/17-g21-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/19-g23-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/21-g25-linked.png",
+        "/recovery/analysis/timeline_event_frames/084/23-g28-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/084/02-g02-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/04-g04-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/11-g11-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/13-g13-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/14-g15-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/15-g17-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/18-g22-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/20-g24-overlay.png",
+        "/recovery/analysis/timeline_event_frames/084/22-g27-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "203",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/203/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/203/01-g01-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/203/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/203/01-g01-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": null
+    },
+    {
+      "stem": "206",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/206/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/206/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/206/02-g02-overlay.png",
+        "/recovery/analysis/timeline_event_frames/206/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/206/04-g04-overlay.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/206/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/206/01-g01-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/206/02-g02-overlay.png",
+        "/recovery/analysis/timeline_event_frames/206/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/206/04-g04-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "207",
+      "sequenceKind": "linked-mixed",
+      "timelineKind": "linked-only-scatter",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/207/00-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/207/01-g02-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/207/00-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/207/01-g02-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": null
+    },
+    {
+      "stem": "208",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/208/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/208/01-g01-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/208/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/208/01-g01-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": "/recovery/analysis/render/bank_probes/208-mpl-bank-probes.png"
+    },
+    {
+      "stem": "209",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/209/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/209/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/209/02-g09-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/209/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/209/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/209/02-g09-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": null
+    },
+    {
+      "stem": "214",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/214/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/214/01-g01-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/214/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/214/01-g01-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": "/recovery/analysis/render/bank_probes/214-mpl-bank-probes.png"
+    },
+    {
+      "stem": "215",
+      "sequenceKind": "multi-anchor-loop",
+      "timelineKind": "mixed-anchor-overlay",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/215/00-g01-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/01-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/02-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/03-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/04-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/05-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/06-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/07-g10-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/08-g12-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/09-g13-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/10-g14-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/11-g16-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/12-g18-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/13-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/14-g20-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/15-g22-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/16-g23-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/17-g24-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/18-g25-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/19-g26-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/20-g27-overlay.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/215/01-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/03-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/04-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/05-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/06-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/08-g12-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/09-g13-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/10-g14-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/11-g16-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/12-g18-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/14-g20-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/15-g22-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/16-g23-linked.png",
+        "/recovery/analysis/timeline_event_frames/215/18-g25-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/215/00-g01-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/02-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/07-g10-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/13-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/17-g24-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/19-g26-overlay.png",
+        "/recovery/analysis/timeline_event_frames/215/20-g27-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "219",
+      "sequenceKind": "multi-anchor-loop",
+      "timelineKind": "mixed-anchor-overlay",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/219/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/02-g02-overlay.png",
+        "/recovery/analysis/timeline_event_frames/219/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/219/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/05-g05-overlay.png",
+        "/recovery/analysis/timeline_event_frames/219/06-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/07-g09-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/219/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/06-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/219/07-g09-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/219/02-g02-overlay.png",
+        "/recovery/analysis/timeline_event_frames/219/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/219/05-g05-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "221",
+      "sequenceKind": "single-anchor-delta",
+      "timelineKind": "linked-only-scatter",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/221/00-g00-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/221/00-g00-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": "/recovery/analysis/render/bank_probes/221-mpl-bank-probes.png"
+    },
+    {
+      "stem": "223",
+      "sequenceKind": "overlay-only",
+      "timelineKind": "overlay-track-only",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/223/00-g00-overlay.png"
+      ],
+      "linkedFramePaths": [],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/223/00-g00-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "225",
+      "sequenceKind": "linked-mixed",
+      "timelineKind": "linked-only-scatter",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/225/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/02-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/03-g03-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/05-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/06-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/07-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/08-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/09-g09-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/10-g10-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/11-g11-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/12-g12-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/225/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/02-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/03-g03-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/05-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/06-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/07-g07-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/08-g08-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/09-g09-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/10-g10-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/11-g11-linked.png",
+        "/recovery/analysis/timeline_event_frames/225/12-g12-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": "/recovery/analysis/render/bank_probes/225-mpl-bank-probes.png"
+    },
+    {
+      "stem": "226",
+      "sequenceKind": "has-contiguous-rise",
+      "timelineKind": "rising-anchor-with-overlays",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/226/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/01-g01-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/02-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/05-g05-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/06-g07-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/07-g09-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/08-g11-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/09-g12-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/10-g13-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/11-g14-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/12-g15-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/13-g16-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/14-g17-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/15-g18-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/16-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/17-g20-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/18-g21-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/19-g22-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/20-g23-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/21-g25-overlay.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/226/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/02-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/09-g12-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/11-g14-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/13-g16-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/15-g18-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/17-g20-linked.png",
+        "/recovery/analysis/timeline_event_frames/226/19-g22-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/226/01-g01-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/03-g03-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/05-g05-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/06-g07-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/07-g09-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/08-g11-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/10-g13-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/12-g15-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/14-g17-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/16-g19-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/18-g21-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/20-g23-overlay.png",
+        "/recovery/analysis/timeline_event_frames/226/21-g25-overlay.png"
+      ],
+      "bankProbePath": "/recovery/analysis/render/bank_probes/226-mpl-bank-probes.png"
+    },
+    {
+      "stem": "228",
+      "sequenceKind": "overlay-only",
+      "timelineKind": "overlay-track-only",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/228/00-g01-overlay.png",
+        "/recovery/analysis/timeline_event_frames/228/01-g06-overlay.png",
+        "/recovery/analysis/timeline_event_frames/228/02-g07-overlay.png",
+        "/recovery/analysis/timeline_event_frames/228/03-g08-overlay.png"
+      ],
+      "linkedFramePaths": [],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/228/00-g01-overlay.png",
+        "/recovery/analysis/timeline_event_frames/228/01-g06-overlay.png",
+        "/recovery/analysis/timeline_event_frames/228/02-g07-overlay.png",
+        "/recovery/analysis/timeline_event_frames/228/03-g08-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "230",
+      "sequenceKind": "multi-anchor-loop",
+      "timelineKind": "linked-only-scatter",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/230/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/02-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/03-g03-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/05-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/06-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/07-g07-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/230/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/02-g02-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/03-g03-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/04-g04-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/05-g05-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/06-g06-linked.png",
+        "/recovery/analysis/timeline_event_frames/230/07-g07-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": "/recovery/analysis/render/bank_probes/230-mpl-bank-probes.png"
+    },
+    {
+      "stem": "231",
+      "sequenceKind": "overlay-only",
+      "timelineKind": "overlay-track-only",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/231/00-g00-overlay.png"
+      ],
+      "linkedFramePaths": [],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/231/00-g00-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "238",
+      "sequenceKind": "single-anchor-delta",
+      "timelineKind": "linked-only-scatter",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/238/00-g12-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/238/00-g12-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": null
+    },
+    {
+      "stem": "239",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/239/00-g00-overlay.png",
+        "/recovery/analysis/timeline_event_frames/239/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/239/02-g02-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/239/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/239/02-g02-linked.png"
+      ],
+      "overlayFramePaths": [
+        "/recovery/analysis/timeline_event_frames/239/00-g00-overlay.png"
+      ],
+      "bankProbePath": null
+    },
+    {
+      "stem": "240",
+      "sequenceKind": "single-anchor-repeat",
+      "timelineKind": "single-anchor-cadence",
+      "framePaths": [
+        "/recovery/analysis/timeline_event_frames/240/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/240/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/240/02-g02-linked.png"
+      ],
+      "linkedFramePaths": [
+        "/recovery/analysis/timeline_event_frames/240/00-g00-linked.png",
+        "/recovery/analysis/timeline_event_frames/240/01-g01-linked.png",
+        "/recovery/analysis/timeline_event_frames/240/02-g02-linked.png"
+      ],
+      "overlayFramePaths": [],
+      "bankProbePath": "/recovery/analysis/render/bank_probes/240-mpl-bank-probes.png"
+    }
+  ],
+  "roleAssignments": {
+    "allied": {
+      "screen": "221",
+      "push": "230",
+      "support": "223",
+      "siege": "225",
+      "tower-rally": "214",
+      "skill-window": "226",
+      "hero": "226"
+    },
+    "enemy": {
+      "screen": "214",
+      "push": "208",
+      "support": "239",
+      "siege": "225",
+      "tower-rally": "219",
+      "skill-window": "228",
+      "hero": "209"
+    },
+    "projectile": {
+      "allied": "240",
+      "enemy": "240"
+    },
+    "effect": {
+      "support": "223",
+      "impact": "214",
+      "burst": "179",
+      "utility": "240"
+    }
+  },
+  "effectEmitterAssignments": {
+    "support": "support-048",
+    "impact": "impact-047-043",
+    "burst": "burst-046-034",
+    "utility": "utility-034"
+  },
+  "packedPixelSpecials": [
+    {
+      "stem": "179",
+      "heuristic": "shadeBand*47 + paletteResidue with 188..199 as highlight tail",
+      "confidence": "medium",
+      "compositePath": "/recovery/analysis/render/special/179-composite-mod47.png",
+      "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes.png"
+    }
+  ],
+  "emitterPresets": [
+    {
+      "id": "support-048",
+      "label": "Support pulse",
+      "relationKind": "primary-only",
+      "primaryPtcStem": "048",
+      "secondaryPtcStem": null,
+      "timingFields": [
+        0,
+        0,
+        10
+      ],
+      "emissionFields": [
+        10,
+        5,
+        5,
+        5
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.08,
+        0.04
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "burst-046-034",
+      "label": "Burst flare",
+      "relationKind": "dual-ptc",
+      "primaryPtcStem": "046",
+      "secondaryPtcStem": "034",
+      "timingFields": [
+        5,
+        0,
+        1000
+      ],
+      "emissionFields": [
+        150,
+        0,
+        10,
+        0
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "impact-047-043",
+      "label": "Impact spark",
+      "relationKind": "dual-ptc",
+      "primaryPtcStem": "047",
+      "secondaryPtcStem": "043",
+      "timingFields": [
+        0,
+        0,
+        50
+      ],
+      "emissionFields": [
+        16,
+        0,
+        6,
+        5
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "utility-034",
+      "label": "Utility trail",
+      "relationKind": "dual-ptc",
+      "primaryPtcStem": "034",
+      "secondaryPtcStem": "022",
+      "timingFields": [
+        0,
+        0,
+        4
+      ],
+      "emissionFields": [
+        1,
+        0,
+        10,
+        5
+      ],
+      "ratioFieldsFloat": [
+        0.7,
+        0.2,
+        0.02,
+        0.01
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        -65,
+        -1
+      ]
+    }
+  ]
+}

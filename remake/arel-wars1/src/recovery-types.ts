@@ -230,6 +230,67 @@ export interface RecoveryRenderProfile {
   findings: string[]
 }
 
+export interface RecoveryRenderStemAsset {
+  stem: string
+  sequenceKind: string
+  timelineKind: string
+  framePaths: string[]
+  linkedFramePaths: string[]
+  overlayFramePaths: string[]
+  bankProbePath: string | null
+}
+
+export interface RecoveryRenderEmitterPreset {
+  id: string
+  label: string
+  relationKind: string
+  primaryPtcStem: string | null
+  secondaryPtcStem: string | null
+  timingFields: number[]
+  emissionFields: number[]
+  ratioFieldsFloat: number[]
+  signedDeltaFields: number[]
+}
+
+export interface RecoveryRenderPack {
+  generatedAt: string | null
+  summary: {
+    stemCount: number
+    bankProbeCount: number
+    packedSpecialCount: number
+    emitterPresetCount: number
+  }
+  stemAssets: RecoveryRenderStemAsset[]
+  roleAssignments: {
+    allied: Record<'screen' | 'push' | 'support' | 'siege' | 'tower-rally' | 'skill-window' | 'hero', string>
+    enemy: Record<'screen' | 'push' | 'support' | 'siege' | 'tower-rally' | 'skill-window' | 'hero', string>
+    projectile: {
+      allied: string
+      enemy: string
+    }
+    effect: {
+      support: string
+      impact: string
+      burst: string
+      utility: string
+    }
+  }
+  effectEmitterAssignments: {
+    support: string | null
+    impact: string | null
+    burst: string | null
+    utility: string | null
+  }
+  packedPixelSpecials: Array<{
+    stem: string
+    heuristic: string
+    confidence: string
+    compositePath: string | null
+    probeSheetPath: string | null
+  }>
+  emitterPresets: RecoveryRenderEmitterPreset[]
+}
+
 export interface RecoveryRuntimeBlueprint {
   summary: {
     stageBlueprintCount: number
