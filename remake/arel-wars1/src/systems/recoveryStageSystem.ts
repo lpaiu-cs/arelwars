@@ -1046,8 +1046,44 @@ export class RecoveryStageSystem {
     this.currentObjectivePhase = phase
     this.currentObjectiveLabel = label
     if (progressDelta !== 0) {
-      this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + progressDelta, 0.02, 1)
+      this.objectiveProgressRatio = clamp(
+        this.objectiveProgressRatio + this.resolveObjectiveProgressDelta(phase, progressDelta),
+        0.02,
+        1,
+      )
     }
+  }
+
+  private resolveObjectiveProgressDelta(
+    phase: RecoveryBattleObjectiveState['phase'],
+    progressDelta: number,
+  ): number {
+    if (progressDelta === 0) {
+      return 0
+    }
+
+    const storyboard = this.storyboards[this.storyboardIndex] ?? null
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
+    let multiplier = 1
+
+    if (routeInfluence.matchesPreferred) {
+      if (phase === 'siege' && routeBias.directRoute) {
+        multiplier += 0.38 * routeInfluence.commitmentFactor
+      } else if (phase === 'hero-pressure' && routeBias.flankingRoute) {
+        multiplier += 0.34 * routeInfluence.commitmentFactor
+      } else if ((phase === 'lane-control' || phase === 'tower-management' || phase === 'quest-resolution') && routeBias.sustainRoute) {
+        multiplier += 0.28 * routeInfluence.commitmentFactor
+      } else if ((phase === 'skill-burst' || phase === 'tower-management') && routeBias.manaRoute) {
+        multiplier += 0.26 * routeInfluence.commitmentFactor
+      } else {
+        multiplier += 0.12 * routeInfluence.commitmentFactor
+      }
+    } else if (routeInfluence.preferredRouteLabel !== null) {
+      multiplier -= 0.14 * routeInfluence.commitmentFactor
+    }
+
+    return progressDelta * clamp(multiplier, 0.72, 1.55)
   }
 
   private currentWaveDirective(plan: RecoveryBattleWaveDirective[]): RecoveryBattleWaveDirective | null {
@@ -1232,6 +1268,65 @@ export class RecoveryStageSystem {
     source: 'preview' | 'scene' | 'tick',
   ): RecoveryBattleWaveDirective | null {
     return this.adaptDirectiveForActiveLoadout(side, this.currentWaveDirective(plan), source)
+  }
+
+  private adjustSceneDirectiveForRoute(
+    side: 'enemy' | 'allied',
+    directive: RecoveryBattleWaveDirective | null,
+  ): RecoveryBattleWaveDirective | null {
+    if (!directive) {
+      return null
+    }
+
+    const storyboard = this.storyboards[this.storyboardIndex] ?? null
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
+    let laneId = directive.laneId
+    let role = directive.role
+    let unitBurst = directive.unitBurst
+    let pressureBias = directive.pressureBias
+    const labelParts: string[] = []
+
+    if (side === 'allied') {
+      if (routeInfluence.matchesPreferred && routeBias.directRoute && (role === 'push' || role === 'siege' || role === 'skill-window')) {
+        unitBurst += 1
+        pressureBias += 0.03 + routeInfluence.pressureDelta * 0.3
+        labelParts.push('branch-commit')
+      } else if (routeInfluence.matchesPreferred && routeBias.flankingRoute && (role === 'push' || role === 'tower-rally')) {
+        laneId = routeInfluence.preferredLane ?? laneId
+        unitBurst += 1
+        pressureBias += 0.025
+        labelParts.push('route-flank')
+      } else if (routeInfluence.matchesPreferred && routeBias.sustainRoute && (role === 'support' || role === 'tower-rally')) {
+        pressureBias += 0.03 + routeInfluence.defenseDelta * 0.25
+        labelParts.push('route-hold')
+      } else if (routeInfluence.matchesPreferred && routeBias.manaRoute && (role === 'skill-window' || role === 'support')) {
+        pressureBias += 0.028 + routeInfluence.manaDelta * 0.15
+        labelParts.push('route-mana')
+      } else if (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null) {
+        pressureBias -= 0.014 * Math.max(routeInfluence.commitmentFactor, 0.4)
+        labelParts.push('branch-drift')
+      }
+    } else {
+      if (routeInfluence.matchesPreferred && routeBias.sustainRoute && (role === 'siege' || role === 'push')) {
+        unitBurst = Math.max(unitBurst - 1, 1)
+        pressureBias -= 0.03 + routeInfluence.defenseDelta * 0.2
+        labelParts.push('screened')
+      } else if (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null && (role === 'push' || role === 'siege' || role === 'hero-bait')) {
+        unitBurst += 1
+        pressureBias += 0.02 + routeInfluence.commitmentFactor * 0.02
+        labelParts.push('counter-route')
+      }
+    }
+
+    return {
+      ...directive,
+      laneId,
+      role,
+      unitBurst: clamp(unitBurst, 1, 5),
+      pressureBias: clamp(pressureBias, 0.02, 0.42),
+      label: labelParts.length > 0 ? `${directive.label} · ${labelParts.join('+')}` : directive.label,
+    }
   }
 
   private resetWaveCountdown(
@@ -2204,19 +2299,36 @@ export class RecoveryStageSystem {
     note: string,
     advanceWave: boolean,
   ): void {
+    const storyboard = this.storyboards[this.storyboardIndex] ?? null
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
     if (advanceWave && this.currentWaveIndex < this.totalWaveCount) {
       this.currentWaveIndex += 1
       this.objectiveProgressRatio = clamp(
-        Math.max(this.objectiveProgressRatio, this.currentWaveIndex / this.totalWaveCount - 0.08),
+        Math.max(
+          this.objectiveProgressRatio,
+          this.currentWaveIndex / this.totalWaveCount
+          - 0.08
+          + (routeInfluence.matchesPreferred ? 0.02 * routeInfluence.commitmentFactor : 0),
+        ),
         0.04,
         1,
       )
     }
 
     const plan = side === 'enemy' ? this.enemyWavePlan : this.alliedWavePlan
-    const directive = this.currentLoadoutDirective(plan, side, 'scene')
+    const directive = this.adjustSceneDirectiveForRoute(side, this.currentLoadoutDirective(plan, side, 'scene'))
     this.applyWaveDirective(side, directive)
     const loadoutBeat = this.applyLoadoutWaveBeat(side, directive, 'scene')
+    if (directive && side === 'allied' && routeInfluence.matchesPreferred) {
+      if ((directive.role === 'push' || directive.role === 'siege') && routeBias.directRoute) {
+        this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + 0.02 + routeInfluence.commitmentFactor * 0.02, 0.04, 1)
+      } else if (directive.role === 'tower-rally' && routeBias.sustainRoute) {
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.02 + routeInfluence.defenseDelta * 0.25, 0.1, 1)
+      } else if (directive.role === 'skill-window' && routeBias.manaRoute) {
+        this.previewManaRatio = clamp(this.previewManaRatio + 0.04 + routeInfluence.manaDelta * 0.3, 0.06, 1)
+      }
+    }
     this.resetWaveCountdown(side, directive)
     this.evaluateBattleResolution()
     this.lastScriptedBeatNote = directive ? `${note} (${directive.label}${loadoutBeat ? ` / ${loadoutBeat}` : ''})` : note
@@ -2278,24 +2390,95 @@ export class RecoveryStageSystem {
       return
     }
 
+    const storyboard = this.storyboards[this.storyboardIndex] ?? null
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
     const allyMomentum = (this.laneBattleState.upper.alliedPressure + this.laneBattleState.lower.alliedPressure) / 2
     const enemyMomentum = (this.laneBattleState.upper.enemyPressure + this.laneBattleState.lower.enemyPressure) / 2
+    const victoryTowerThreshold = clamp(
+      0.11
+      + (routeInfluence.matchesPreferred && (routeBias.directRoute || routeBias.flankingRoute) ? 0.018 + routeInfluence.commitmentFactor * 0.03 : 0)
+      - (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.012 : 0),
+      0.08,
+      0.18,
+    )
+    const siegeVictoryThreshold = clamp(
+      0.16
+      + (routeInfluence.matchesPreferred && routeBias.directRoute ? 0.03 + routeInfluence.commitmentFactor * 0.03 : 0)
+      - (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.015 : 0),
+      0.12,
+      0.24,
+    )
+    const progressVictoryThreshold = clamp(
+      0.98
+      - (routeInfluence.matchesPreferred ? 0.04 * routeInfluence.commitmentFactor : 0)
+      - (routeBias.manaRoute && routeInfluence.matchesPreferred ? 0.02 : 0),
+      0.88,
+      0.98,
+    )
+    const progressMomentumAllowance = clamp(
+      0.02 + (routeInfluence.matchesPreferred && routeBias.manaRoute ? 0.03 : 0),
+      0.02,
+      0.06,
+    )
+    const defeatTowerThreshold = clamp(
+      0.12
+      - (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.02 + routeInfluence.commitmentFactor * 0.02 : 0)
+      + (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.012 : 0),
+      0.08,
+      0.16,
+    )
+    const collapseTowerThreshold = clamp(
+      0.18
+      - (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.03 + routeInfluence.commitmentFactor * 0.02 : 0)
+      + (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.01 : 0),
+      0.12,
+      0.2,
+    )
+    const defeatMomentumGap = clamp(
+      0.12
+      + (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.03 + routeInfluence.commitmentFactor * 0.03 : 0)
+      - (!routeInfluence.matchesPreferred && routeInfluence.preferredRouteLabel !== null ? 0.02 : 0),
+      0.08,
+      0.2,
+    )
 
     if (
-      this.previewEnemyTowerHpRatio <= 0.11
-      || (this.currentObjectivePhase === 'siege' && this.previewEnemyTowerHpRatio <= 0.16)
-      || (this.objectiveProgressRatio >= 0.98 && allyMomentum >= enemyMomentum - 0.02)
+      this.previewEnemyTowerHpRatio <= victoryTowerThreshold
+      || (this.currentObjectivePhase === 'siege' && this.previewEnemyTowerHpRatio <= siegeVictoryThreshold)
+      || (this.objectiveProgressRatio >= progressVictoryThreshold && allyMomentum >= enemyMomentum - progressMomentumAllowance)
+      || (
+        this.currentObjectivePhase === 'skill-burst'
+        && routeInfluence.matchesPreferred
+        && routeBias.manaRoute
+        && this.objectiveProgressRatio >= progressVictoryThreshold - 0.04
+        && this.previewManaRatio >= 0.66
+      )
     ) {
-      this.resolveBattleOutcome('victory', 'enemy tower pressure collapsed')
+      this.resolveBattleOutcome(
+        'victory',
+        routeInfluence.matchesPreferred
+          ? `enemy line collapsed under ${routeInfluence.stanceLabel}`
+          : 'enemy tower pressure collapsed',
+      )
       return
     }
 
     if (
-      this.previewOwnTowerHpRatio <= 0.12
-      || (this.previewOwnTowerHpRatio <= 0.18 && enemyMomentum - allyMomentum > 0.12)
-      || (this.currentObjectivePhase === 'lane-control' && enemyMomentum > 0.9 && this.objectiveProgressRatio < 0.28)
+      this.previewOwnTowerHpRatio <= defeatTowerThreshold
+      || (this.previewOwnTowerHpRatio <= collapseTowerThreshold && enemyMomentum - allyMomentum > defeatMomentumGap)
+      || (
+        this.currentObjectivePhase === 'lane-control'
+        && enemyMomentum > 0.9
+        && this.objectiveProgressRatio < (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 0.22 : 0.28)
+      )
     ) {
-      this.resolveBattleOutcome('defeat', 'enemy lane pressure breached the guard line')
+      this.resolveBattleOutcome(
+        'defeat',
+        routeInfluence.preferredRouteLabel !== null && !routeInfluence.matchesPreferred
+          ? `branch pressure broke the tower line (${routeInfluence.stanceLabel})`
+          : 'enemy lane pressure breached the guard line',
+      )
     }
   }
 
