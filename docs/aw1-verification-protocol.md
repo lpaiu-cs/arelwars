@@ -32,7 +32,10 @@ Produce stage-by-stage evidence that the remake matches the original in:
   - [AW1.golden_capture_suite.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.golden_capture_suite.json)
 - Optional comparison report:
   - generated with [compare_aw1_verification_trace.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/compare_aw1_verification_trace.py)
-  - current phase15 report: [AW1.phase15_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.phase15_report.json)
+- current phase15 report: [AW1.phase15_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.phase15_report.json)
+- side-by-side certification comparator:
+  - [compare_aw1_side_by_side.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/compare_aw1_side_by_side.py)
+  - [AW1.side_by_side_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.side_by_side_report.json)
 
 ## Required Exact Checks
 
@@ -99,6 +102,18 @@ python3 /Users/lpaiu/vs/others/arelwars/tools/arel_wars1/compare_aw1_verificatio
   --candidate /path/to/remake-trace.json \
   --reference /path/to/legacy-reference-trace.json \
   --output /path/to/comparison-report.json
+```
+
+Run the certification-track side-by-side comparator:
+
+```bash
+python3 /Users/lpaiu/vs/others/arelwars/tools/arel_wars1/compare_aw1_side_by_side.py \
+  --reference-bundle /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.original_reference_bundle.json \
+  --candidate-suite /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.candidate_replay_suite.json \
+  --reference-suite /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.golden_capture_suite.json \
+  --runtime-blueprint /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json \
+  --preview-manifest /Users/lpaiu/vs/others/arelwars/remake/arel-wars1/public/recovery/analysis/preview_manifest.json \
+  --output /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.side_by_side_report.json
 ```
 
 Regenerate the replay-baseline golden suite from a verified candidate suite:

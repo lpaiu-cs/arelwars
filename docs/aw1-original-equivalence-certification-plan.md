@@ -122,6 +122,8 @@ The comparator should separate:
 Exit condition:
 
 - machine-readable comparison report exists for one stage and one regression stem
+- bootstrap comparator report:
+  - [AW1.side_by_side_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.side_by_side_report.json)
 
 ### Stage 3. Certify The Regression Stem Set First
 

@@ -6,6 +6,8 @@ from collections import Counter
 import json
 from pathlib import Path
 import shutil
+import struct
+import zlib
 
 from formats import read_pzx_root_resource_graph
 
@@ -76,10 +78,147 @@ def classify_timing_source(source: object) -> str:
     return "runtime-consistent heuristic"
 
 
+def read_pzx_root_offsets(data: bytes) -> tuple[int, int, int] | None:
+    if len(data) < 16 or data[:4] != b"PZX\x01":
+        return None
+    return struct.unpack("<III", data[4:16])
+
+
+def read_embedded_resource_summary(data: bytes, offset: int) -> dict[str, object] | None:
+    if offset < 0 or offset + 3 > len(data):
+        return None
+
+    header = int(data[offset])
+    content_count = struct.unpack("<H", data[offset + 1 : offset + 3])[0]
+    if content_count <= 0:
+        return None
+
+    table_start = offset + 3
+    table_end = table_start + content_count * 4
+    if table_end > len(data):
+        return None
+
+    index_offsets = [
+        struct.unpack("<I", data[table_start + index * 4 : table_start + index * 4 + 4])[0]
+        for index in range(content_count)
+    ]
+    storage_mode = header & 0x0F
+    format_variant = header >> 4
+
+    if storage_mode == 0:
+        payload_offset = table_end
+        payload = data[payload_offset:]
+        packed_size = None
+    else:
+        if table_end + 8 > len(data):
+            return None
+        unpacked_size = struct.unpack("<I", data[table_end : table_end + 4])[0]
+        packed_size = struct.unpack("<I", data[table_end + 4 : table_end + 8])[0]
+        payload_offset = table_end + 8
+        payload_end = payload_offset + packed_size
+        if payload_end > len(data):
+            return None
+        try:
+            payload = zlib.decompress(data[payload_offset:payload_end])
+        except zlib.error:
+            return None
+        if len(payload) != unpacked_size:
+            return None
+
+    return {
+        "header": header,
+        "storageMode": storage_mode,
+        "formatVariant": format_variant,
+        "contentCount": content_count,
+        "indexOffsets": index_offsets,
+        "packedSize": packed_size,
+        "payload": payload,
+    }
+
+
+def summarize_indexed_embedded_resource(resource: dict[str, object] | None, *, certainty_level: str) -> dict[str, object] | None:
+    if not isinstance(resource, dict):
+        return None
+    payload = bytes(resource["payload"])
+    return {
+        "certaintyLevel": certainty_level,
+        "offset": None,
+        "tag": int(resource["header"]),
+        "frameCount": int(resource["contentCount"]),
+        "decodedSize": len(payload),
+        "compressedSize": resource["packedSize"],
+        "reserved": int(resource["storageMode"]),
+    }
+
+
+def summarize_pza_embedded_resource(resource: dict[str, object] | None) -> dict[str, object] | None:
+    if not isinstance(resource, dict):
+        return None
+
+    payload = bytes(resource["payload"])
+    offsets = [int(value) for value in resource["indexOffsets"]]
+    if any(offset < 0 or offset > len(payload) for offset in offsets):
+        return None
+
+    clip_summaries: list[dict[str, object]] = []
+    cursor = 0
+    for clip_index, end_offset in enumerate(offsets):
+        if end_offset < cursor or end_offset > len(payload):
+            return None
+        clip = payload[cursor:end_offset]
+        cursor = end_offset
+        if not clip:
+            clip_summaries.append(
+                {
+                    "clipIndex": clip_index,
+                    "frameCount": 0,
+                    "frameIndexRange": None,
+                    "uniqueDelayTicks": [],
+                    "dominantDelayTick": None,
+                }
+            )
+            continue
+
+        frame_count = int(clip[0])
+        expected_size = 1 + frame_count * 8
+        if len(clip) < expected_size:
+            return None
+
+        frame_indices: list[int] = []
+        delays: list[int] = []
+        pointer = 1
+        for _ in range(frame_count):
+            frame_indices.append(struct.unpack("<H", clip[pointer : pointer + 2])[0])
+            delays.append(int(clip[pointer + 2]))
+            pointer += 8
+        clip_summaries.append(
+            {
+                "clipIndex": clip_index,
+                "frameCount": frame_count,
+                "frameIndexRange": [min(frame_indices), max(frame_indices)] if frame_indices else None,
+                "uniqueDelayTicks": sorted(set(delays)),
+                "dominantDelayTick": max(set(delays), key=delays.count) if delays else None,
+            }
+        )
+
+    return {
+        "certaintyLevel": "native-confirmed",
+        "offset": None,
+        "tag": int(resource["header"]),
+        "clipCount": int(resource["contentCount"]),
+        "decodedSize": len(payload),
+        "compressedSize": resource["packedSize"],
+        "reserved": int(resource["storageMode"]),
+        "timingRule": "PZA clip delay bytes are the authoritative native playback timing source for the base clip.",
+        "clipSummaries": clip_summaries,
+    }
+
+
 def summarize_pzx_resource_graph(pzx_path: Path) -> dict[str, object] | None:
     if not pzx_path.exists():
         return None
-    graph = read_pzx_root_resource_graph(pzx_path.read_bytes())
+    data = pzx_path.read_bytes()
+    graph = read_pzx_root_resource_graph(data)
     if graph is None:
         return None
 
@@ -115,6 +254,15 @@ def summarize_pzx_resource_graph(pzx_path: Path) -> dict[str, object] | None:
             "compressedSize": graph.pzf.compressed_size,
             "reserved": graph.pzf.reserved,
         }
+    else:
+        offsets = read_pzx_root_offsets(data)
+        if offsets is not None:
+            pzf_fallback = read_embedded_resource_summary(data, offsets[1])
+            if pzf_fallback is not None:
+                pzf_summary = summarize_indexed_embedded_resource(pzf_fallback, certainty_level="asset-structural")
+                if pzf_summary is not None:
+                    pzf_summary["offset"] = offsets[1]
+                    payload["pzf"] = pzf_summary
 
     if graph.pza is not None:
         clip_summaries: list[dict[str, object]] = []
@@ -142,6 +290,15 @@ def summarize_pzx_resource_graph(pzx_path: Path) -> dict[str, object] | None:
             "timingRule": "PZA clip delay bytes are the authoritative native playback timing source for the base clip.",
             "clipSummaries": clip_summaries,
         }
+    else:
+        offsets = read_pzx_root_offsets(data)
+        if offsets is not None:
+            pza_fallback = read_embedded_resource_summary(data, offsets[2])
+            if pza_fallback is not None:
+                pza_summary = summarize_pza_embedded_resource(pza_fallback)
+                if pza_summary is not None:
+                    pza_summary["offset"] = offsets[2]
+                    payload["pza"] = pza_summary
 
     return payload
 
