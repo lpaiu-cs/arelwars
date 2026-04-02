@@ -140,6 +140,7 @@ References:
     - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
     - [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
     - [AW1.hero_runtime_archetypes.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json)
+    - [AW1.engine_schema.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.engine_schema.json)
     - [AW1.battle_model.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_model.json)
     - [AW1.opcode_action_map.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json)
     - [AW1.runtime_blueprint.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json)
@@ -208,6 +209,7 @@ References:
     - battle state is now derived from deterministic unit and projectile collections instead of direct aggregate pressure writes, so dispatches, waves, hero deploys, skills, items, and scripted chains all enter the same `spawn -> move -> attack -> hit -> die -> derive lane state` loop
     - the Phaser lane preview now renders those runtime entities and projectiles directly, which means the on-screen combat line is finally reading from the same deterministic core that resolves tower damage, frontline shifts, and wave pressure
     - `AW1.battle_model.json` now exports engine-facing unit, projectile, effect, skill, item, hero, and resource templates from recovered tables, and the runtime consumes those templates for actual mana spending, population caps, cooldown scheduling, spawn gating, projectile/effect playback, and allied/enemy AI ticks instead of treating those systems as HUD-only hints
+    - `AW1.engine_schema.json` now fixes `XlsUnit`, `XlsHero`, `XlsHero_Ai`, `XlsSkill_Ai`, `XlsProjectile`, `XlsEffect`, `XlsParticle`, and `XlsBalance` into one canonical engine-input export with raw slots plus stable `engineHints`, and `AW1.battle_model.json` now derives the covered sections from that schema instead of re-reading those tables indirectly
     - phase-2 hardening also moved runtime tower HP changes behind shared `damage/repair` helpers and made direct entity spawns respect battle population caps unless a scene seed explicitly bypasses them, which closes the main remaining preview-era escape hatches in the combat core
     - result resolution no longer keys off lane-pressure momentum thresholds; it now reads actual wave-dispatch exhaustion, on-field entity/projectile clearance, secured lane counts, queue/mana exhaustion, and tower collapse state before declaring victory or defeat
     - route/branch selection is now elevated into a shared route-bias layer, so briefing text, tactical bias, favored lane, wave plan cadence, deploy summaries, and member-specific behavior all react to `primary` vs `secondary` route semantics instead of treating branch labels as cosmetic

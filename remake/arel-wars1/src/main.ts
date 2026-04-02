@@ -5,6 +5,7 @@ import type {
   RecoveryBattleModel,
   RecoveryCatalog,
   RecoveryDialogueEvent,
+  RecoveryEngineSchema,
   RecoveryPreviewManifest,
   RecoveryPreviewStem,
   RecoveryRuntimeBlueprint,
@@ -104,16 +105,18 @@ async function bootstrap(): Promise<void> {
     return
   }
 
-  const [catalogResult, previewResult, blueprintResult, battleModelResult] = await Promise.allSettled([
+  const [catalogResult, previewResult, blueprintResult, battleModelResult, engineSchemaResult] = await Promise.allSettled([
     fetchJson<RecoveryCatalog>('/recovery/catalog.json'),
     fetchJson<RecoveryPreviewManifest>('/recovery/analysis/preview_manifest.json'),
     fetchJson<RecoveryRuntimeBlueprint>('/recovery/analysis/aw1_runtime_blueprint.json'),
     fetchJson<RecoveryBattleModel>('/recovery/analysis/aw1_battle_model.json'),
+    fetchJson<RecoveryEngineSchema>('/recovery/analysis/aw1_engine_schema.json'),
   ])
 
   const previewManifest = previewResult.status === 'fulfilled' ? previewResult.value : null
   const runtimeBlueprint = blueprintResult.status === 'fulfilled' ? blueprintResult.value : null
   const battleModel = battleModelResult.status === 'fulfilled' ? battleModelResult.value : null
+  const engineSchema = engineSchemaResult.status === 'fulfilled' ? engineSchemaResult.value : null
   let stageSystem: RecoveryStageSystem | null = null
 
   if (catalogResult.status === 'fulfilled') {
@@ -123,9 +126,9 @@ async function bootstrap(): Promise<void> {
     }
     game = createGame(stageSystem)
     stage.textContent = previewManifest
-      ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapProofCount ?? 0} map proofs / ${battleModel?.summary.unitTemplateCount ?? 0} unit templates)`
+      ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapProofCount ?? 0} map proofs / ${battleModel?.summary.unitTemplateCount ?? 0} unit templates / ${engineSchema?.summary.unitCount ?? 0} schema units)`
       : 'ZT1 decoded, Android APK verified'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapProofCount} scored map proofs, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics, ${runtimeBlueprint.summary.tutorialChainCount} mirrored tutorial chains.` : ''}${battleModel ? ` Battle model: ${battleModel.summary.unitTemplateCount} unit templates, ${battleModel.summary.projectileTemplateCount} projectiles, ${battleModel.summary.effectTemplateCount} effects, ${battleModel.summary.heroTemplateCount} hero AI profiles.` : ''} Android packaging has been verified on a modern emulator.`
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapProofCount} scored map proofs, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics, ${runtimeBlueprint.summary.tutorialChainCount} mirrored tutorial chains.` : ''}${engineSchema ? ` Engine schema: ${engineSchema.summary.unitCount} units, ${engineSchema.summary.heroCount} heroes, ${engineSchema.summary.heroAiProfileCount} hero AI rows, ${engineSchema.summary.skillAiProfileCount} skill AI rows, ${engineSchema.summary.projectileCount} projectiles, ${engineSchema.summary.effectCount} effects, ${engineSchema.summary.particleCount} particles, ${engineSchema.summary.balanceRowCount} balance rows.` : ''}${battleModel ? ` Battle model: ${battleModel.summary.unitTemplateCount} unit templates, ${battleModel.summary.projectileTemplateCount} projectiles, ${battleModel.summary.effectTemplateCount} effects, ${battleModel.summary.heroTemplateCount} hero AI profiles.` : ''} Android packaging has been verified on a modern emulator.`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
@@ -134,6 +137,8 @@ async function bootstrap(): Promise<void> {
       statCard('Web-safe', String(catalog.inventory.webSafeAssetCount)),
       statCard('Timeline Stems', String(previewManifest?.activeStemCount ?? 0)),
       statCard('Archetypes', String(runtimeBlueprint?.summary.archetypeCount ?? 0)),
+      statCard('Schema Units', String(engineSchema?.summary.unitCount ?? 0)),
+      statCard('Schema Heroes', String(engineSchema?.summary.heroCount ?? 0)),
       statCard('Units', String(battleModel?.summary.unitTemplateCount ?? 0)),
       statCard('Effects', String(battleModel?.summary.effectTemplateCount ?? 0)),
       statCard('Stage Plans', String(runtimeBlueprint?.summary.stageBlueprintCount ?? 0)),

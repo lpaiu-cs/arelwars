@@ -237,6 +237,21 @@ export interface RecoveryRuntimeBlueprint {
   findings: string[]
 }
 
+export interface RecoveryEngineSchema {
+  summary: {
+    unitCount: number
+    heroCount: number
+    heroAiProfileCount: number
+    skillAiProfileCount: number
+    projectileCount: number
+    effectCount: number
+    particleCount: number
+    balanceRowCount: number
+  }
+  sourceTables: Record<string, string>
+  findings: string[]
+}
+
 export interface RecoveryBattleUnitTemplate {
   id: string
   label: string

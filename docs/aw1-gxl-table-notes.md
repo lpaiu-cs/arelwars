@@ -224,6 +224,7 @@ Evidence:
 ### XlsHero_Ai
 
 - English parsed export now exists under [`XlsHero_Ai.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsHero_Ai.eng.parsed.json).
+- Canonical engine export now also exists under [`AW1.engine_schema.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.engine_schema.json), fixing this table under `heroAiProfiles[]` with stable `engineHints` for aggression, support, burst, and cadence.
 - Current practical slot model:
   - byte `0`: `heroIdCandidate`
   - byte `1`: `profileGroupCandidate`
@@ -238,6 +239,7 @@ Evidence:
 ### XlsSkill_Ai
 
 - English parsed export now exists under [`XlsSkill_Ai.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsSkill_Ai.eng.parsed.json).
+- The same canonical engine export now fixes this table under `skillAiProfiles[]`, preserving raw trigger windows while adding stable `engineHints.tailModeKey`, `primaryTriggerBeat`, `secondaryTriggerBeat`, and `triggerPolicy`.
 - Current practical slot model:
   - byte `0`: `skillIdCandidate`
   - bytes `1..5`: trigger window A
@@ -360,6 +362,7 @@ Evidence:
 ### XlsProjectile
 
 - English parsed export now exists under [`XlsProjectile.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsProjectile.eng.parsed.json).
+- Canonical engine export now also exists under [`AW1.engine_schema.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.engine_schema.json), fixing this table under `projectiles[]` with stable `engineHints.speed`, `ttlBeats`, `strengthScale`, `movementKind`, and `rangeClass`.
 - Current practical slot model:
   - byte `0`: `familyCandidate`
   - byte `1`: `projectileIdCandidate`
@@ -374,6 +377,7 @@ Evidence:
 ### XlsEffect
 
 - English parsed export now exists under [`XlsEffect.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsEffect.eng.parsed.json).
+- The same canonical engine export now fixes this table under `effects[]`, preserving raw flags while adding stable `engineHints.durationBeats`, `intensity`, `blendMode`, and `looping`.
 - Current practical slot model:
   - byte `0`: `familyCandidate`
   - byte `1`: `effectIdCandidate`
@@ -398,6 +402,9 @@ Evidence:
   - all `10/10` nonzero secondary ids also map directly to `ptc/NNN.ptc`
   - the repeated primary id `48` across rows `0, 1, 7, 8, 9` looks like a shared emitter template with alternate secondary embellishment layers
 - `XlsCorrespondence` currently looks like a `5 x 7` slot-mask table rather than free-form data.
+- Canonical engine export now also fixes:
+  - `XlsParticle` under `particles[]`, including `ptcBridge.primaryStem/secondaryStem` and emitter hints
+  - `XlsBalance` under `balance[]`, including stable slot labels for mana/population/cooldown baselines
 - Strongest current reading:
   - this is a compact effect playback definition table rather than a content string table
   - early rows look like family-indexed effect variants with one-byte loop/blend flags
@@ -405,6 +412,7 @@ Evidence:
 ### XlsUnit
 
 - English parsed export now exists under [`XlsUnit.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsUnit.eng.parsed.json).
+- Canonical engine export now also exists under [`AW1.engine_schema.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.engine_schema.json), fixing this table under `units[]` with raw slots plus stable `engineHints.roleHint`, `engineHints.manaTier`, and candidate stat slots.
 - Current practical slot model:
   - byte `0`: unknown lead byte
   - bytes `1..76`: name slot plus pre-description numeric fields

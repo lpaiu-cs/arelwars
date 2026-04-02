@@ -11,6 +11,7 @@ from typing import Any
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export an engine-facing AW1 battle model")
     parser.add_argument("--battle-catalog", type=Path, required=True, help="Path to AW1.battle_catalog.json")
+    parser.add_argument("--engine-schema", type=Path, required=True, help="Path to AW1.engine_schema.json")
     parser.add_argument("--hero-archetypes", type=Path, required=True, help="Path to AW1.hero_runtime_archetypes.json")
     parser.add_argument("--output", type=Path, required=True, help="Path to write the local battle model json")
     parser.add_argument("--web-output", type=Path, help="Optional path under public/ to copy the same json")
@@ -233,18 +234,22 @@ def summarize_hero_ai(profiles: list[dict[str, Any]]) -> dict[str, Any]:
 def main() -> None:
     args = parse_args()
     battle_catalog = read_json(args.battle_catalog.resolve())
+    engine_schema = read_json(args.engine_schema.resolve())
     hero_archetypes = read_json(args.hero_archetypes.resolve())
 
     base_attacks = list(battle_catalog.get("baseAttacks", []))
-    projectiles = list(battle_catalog.get("projectiles", []))
-    effects = list(battle_catalog.get("effects", []))
+    projectiles = list(engine_schema.get("projectiles", []))
+    effects = list(engine_schema.get("effects", []))
     items = list(battle_catalog.get("items", []))
-    heroes = list(battle_catalog.get("heroes", []))
+    heroes = list(engine_schema.get("heroes", []))
     hero_skills = list(battle_catalog.get("heroSkills", []))
     hero_active_profiles = list(battle_catalog.get("heroActiveSkillProfiles", []))
-    skill_ai_profiles = list(battle_catalog.get("skillAiProfiles", []))
-    balance_rows = list(battle_catalog.get("balanceRows", []))
+    skill_ai_profiles = list(engine_schema.get("skillAiProfiles", []))
+    hero_ai_profiles = list(engine_schema.get("heroAiProfiles", []))
+    balance_rows = list(engine_schema.get("balance", []))
     correspondence_rows = list(battle_catalog.get("correspondenceRows", []))
+    units = list(engine_schema.get("units", []))
+    particles = list(engine_schema.get("particles", []))
 
     projectile_templates = []
     for row in projectiles:
@@ -330,6 +335,9 @@ def main() -> None:
     }
     hero_skill_lookup = {str(row["name"]).lower(): row for row in hero_skills}
     item_lookup = {str(row["name"]).lower(): row for row in items}
+    hero_ai_by_id: dict[int, list[dict[str, Any]]] = {}
+    for profile in hero_ai_profiles:
+        hero_ai_by_id.setdefault(int(profile.get("heroIdCandidate", -1)), []).append(profile)
     hero_templates = []
     for hero in heroes:
         hero_name = str(hero["name"])
@@ -367,13 +375,13 @@ def main() -> None:
         }.get(hero_name, [])
         hero_templates.append({
             "id": f"hero-{hero_name.lower()}",
-            "heroId": int(hero["heroId"]),
+            "heroId": int(hero.get("candidateHeroId", hero.get("heroId", -1))),
             "name": hero_name,
             "memberRole": member_role,
             "unitTemplateId": f"hero-{hero_name.lower()}",
             "preferredSkillNames": [hero_skill_lookup[name]["name"] for name in preferred_skills_by_name if name in hero_skill_lookup],
             "preferredItemNames": [item_lookup[name]["name"] for name in preferred_items_by_name if name in item_lookup],
-            "ai": summarize_hero_ai(list(hero.get("profiles", []))),
+            "ai": summarize_hero_ai(hero_ai_by_id.get(int(hero.get("candidateHeroId", hero.get("heroId", -1))), [])),
         })
 
     skill_templates = []
@@ -456,6 +464,7 @@ def main() -> None:
         "itemTemplates": item_templates,
         "heroTemplates": hero_templates,
         "findings": [
+            f"Canonical engine schema source counts: {engine_schema.get('summary', {}).get('unitCount', len(units))} units, {engine_schema.get('summary', {}).get('heroCount', len(heroes))} heroes, {engine_schema.get('summary', {}).get('particleCount', len(particles))} particles.",
             "Base attack parameter bytes provide the best current data-backed source for unit power, cadence, and range.",
             "Projectile speed/range candidates and effect duration candidates now feed deterministic projectile and effect templates.",
             "Hero AI timing and priority grids are compacted into runtime cadence/weight hints rather than ignored.",

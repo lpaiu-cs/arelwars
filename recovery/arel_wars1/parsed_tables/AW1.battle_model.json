@@ -3093,6 +3093,7 @@
     }
   ],
   "findings": [
+    "Canonical engine schema source counts: 55 units, 6 heroes, 12 particles.",
     "Base attack parameter bytes provide the best current data-backed source for unit power, cadence, and range.",
     "Projectile speed/range candidates and effect duration candidates now feed deterministic projectile and effect templates.",
     "Hero AI timing and priority grids are compacted into runtime cadence/weight hints rather than ignored.",
