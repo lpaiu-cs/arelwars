@@ -1314,6 +1314,55 @@ export class RecoveryStageSystem {
     return loadout.heroRosterMembers.some((member) => member.toLowerCase() === memberName.toLowerCase())
   }
 
+  private deriveStoryboardRouteBias(
+    storyboard: RecoveryStageStoryboard | null,
+  ): {
+    routeLabel: string
+    directRoute: boolean
+    flankingRoute: boolean
+    sustainRoute: boolean
+    manaRoute: boolean
+    preferredLane: 'upper' | 'lower' | null
+    pressureShift: number
+    cadenceShift: number
+    heroShift: number
+  } {
+    const stage = storyboard?.stageBlueprint ?? null
+    const routeLabel = stage?.mapBinding?.storyBranch ?? 'route-unknown'
+    const title = (stage?.title ?? '').toLowerCase()
+    const hint = (stage?.hintText ?? '').toLowerCase()
+    const reward = (stage?.rewardText ?? '').toLowerCase()
+    const joined = `${routeLabel} ${title} ${hint} ${reward}`
+    const favoredLane = this.currentStageBattleProfile.favoredLane
+    const alternateLane = favoredLane === 'upper' ? 'lower' : 'upper'
+
+    const flankingRoute =
+      routeLabel === 'secondary'
+      || includesAny(joined, ['secondary', 'flank', 'side', 'alternate', 'detour', 'ambush'])
+    const directRoute =
+      routeLabel === 'primary'
+      || includesAny(joined, ['primary', 'front', 'main', 'direct', 'charge'])
+    const sustainRoute = includesAny(joined, ['defend', 'hold', 'guard', 'supply', 'reward', 'bonus'])
+    const manaRoute = includesAny(joined, ['mana', 'skill', 'arcane', 'magic'])
+
+    return {
+      routeLabel,
+      directRoute,
+      flankingRoute,
+      sustainRoute,
+      manaRoute,
+      preferredLane:
+        favoredLane === null
+          ? null
+          : flankingRoute
+            ? alternateLane
+            : favoredLane,
+      pressureShift: directRoute ? 0.03 : flankingRoute ? 0.02 : sustainRoute ? -0.01 : 0,
+      cadenceShift: flankingRoute ? -1 : sustainRoute ? 1 : 0,
+      heroShift: flankingRoute || manaRoute ? 0.03 : directRoute ? 0.02 : 0,
+    }
+  }
+
   private deriveCurrentStageScriptBias(): {
     label: string
     siegeBias: boolean
@@ -1330,28 +1379,35 @@ export class RecoveryStageSystem {
     const hint = (stage?.hintText ?? '').toLowerCase()
     const reward = (stage?.rewardText ?? '').toLowerCase()
     const familyId = stage?.familyId ?? storyboard?.scriptFamilyId ?? '000'
-    const favoredLane = this.currentStageBattleProfile.favoredLane
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const favoredLane = routeBias.preferredLane ?? this.currentStageBattleProfile.favoredLane
     const alternateLane = favoredLane === 'upper' ? 'lower' : 'upper'
     const joined = `${title} ${hint} ${reward}`
 
     const siegeBias =
       this.currentObjectivePhase === 'siege'
+      || routeBias.directRoute
       || includesAny(joined, ['seize', 'siege', 'defeat', 'enemy camp', 'proxy', 'hunt', 'break'])
     const sustainBias =
       this.currentObjectivePhase === 'tower-management'
       || this.currentObjectivePhase === 'lane-control'
+      || routeBias.sustainRoute
       || includesAny(joined, ['defend', 'hold', 'protect', 'guard', 'survive', 'wall'])
     const dispatchBias =
       this.currentObjectivePhase === 'lane-control'
+      || routeBias.flankingRoute
       || includesAny(joined, ['advance', 'dispatch', 'lane', 'escort', 'forward', 'charge', 'proxies'])
     const heroBias =
       this.currentObjectivePhase === 'hero-pressure'
+      || routeBias.flankingRoute
       || includesAny(joined, ['hero', 'champion', 'captain', 'leader', 'boss', 'elite'])
     const manaBias =
       this.currentObjectivePhase === 'skill-burst'
+      || routeBias.manaRoute
       || includesAny(joined, ['mana', 'skill', 'arcane', 'magic', 'burst', 'spell'])
     const rewardBias =
       this.currentObjectivePhase === 'quest-resolution'
+      || routeBias.sustainRoute
       || includesAny(joined, ['reward', 'bonus', 'quest', 'treasure', 'bounty'])
 
     const familyNumber = Number.parseInt(familyId, 10)
@@ -1369,6 +1425,7 @@ export class RecoveryStageSystem {
       heroBias ? 'hero' : null,
       manaBias ? 'mana' : null,
       rewardBias ? 'reward' : null,
+      routeBias.flankingRoute ? 'route-flank' : routeBias.directRoute ? 'route-main' : null,
     ].filter((value): value is string => value !== null)
 
     return {
@@ -1828,6 +1885,7 @@ export class RecoveryStageSystem {
   private buildCampaignBriefing(storyboard: RecoveryStageStoryboard): RecoveryStageSnapshot['campaignState']['briefing'] {
     const profile = this.deriveStageBattleProfile(storyboard)
     const objectiveSeed = this.deriveObjectiveSeed(storyboard, profile)
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
     const recommendedArchetypes = profile.archetypeLabels.length > 0
       ? profile.archetypeLabels
       : (storyboard.stageBlueprint?.recommendedArchetypeIds ?? []).slice(0, 3)
@@ -1839,9 +1897,9 @@ export class RecoveryStageSystem {
       .map((directive) => `W${directive.waveNumber} ${directive.role} ${directive.laneId} x${directive.unitBurst}`)
     return {
       objectivePhase: objectiveSeed.phase,
-      objectiveLabel: objectiveSeed.label,
+      objectiveLabel: `${objectiveSeed.label} [${routeBias.routeLabel}${routeBias.flankingRoute ? ' flank' : routeBias.directRoute ? ' main' : routeBias.sustainRoute ? ' hold' : ''}]`,
       favoredLane: profile.favoredLane,
-      tacticalBias: profile.tacticalBias,
+      tacticalBias: `${profile.tacticalBias} / ${routeBias.routeLabel}`,
       totalWaves: objectiveSeed.totalWaveCount,
       stageTier: profile.stageTier,
       effectIntensity: profile.effectIntensity,
@@ -1858,10 +1916,11 @@ export class RecoveryStageSystem {
     totalWaveCount: number,
   ): RecoveryBattleWaveDirective[] {
     const stage = storyboard.stageBlueprint
-    const favoredLane = profile.favoredLane ?? 'upper'
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const favoredLane = routeBias.preferredLane ?? profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
     const stageTier = stage?.runtimeFields?.tierCandidate ?? 10
-    const storyBranch = stage?.mapBinding?.storyBranch ?? 'primary'
+    const storyBranch = routeBias.routeLabel
     const title = (stage?.title ?? '').toLowerCase()
     const hintText = (stage?.hintText ?? '').toLowerCase()
     const signals = new Set(profile.archetypeSignals)
@@ -1885,20 +1944,26 @@ export class RecoveryStageSystem {
             ? favoredLane
             : role === 'hero-bait'
               ? supportLane
-              : storyBranch === 'secondary'
+              : routeBias.flankingRoute
                 ? (waveNumber % 2 === 0 ? favoredLane : supportLane)
                 : (waveNumber % 2 === 0 ? supportLane : favoredLane)
         const unitBurst = clamp(
-          1 + Math.floor(stageTier / 20) + (highIntensity ? 1 : 0) + (role === 'siege' ? 1 : 0),
+          1
+          + Math.floor(stageTier / 20)
+          + (highIntensity ? 1 : 0)
+          + (role === 'siege' ? 1 : 0)
+          + (routeBias.directRoute ? 1 : 0)
+          - (routeBias.sustainRoute && role === 'screen' ? 0 : 0),
           1,
-          4,
+          5,
         )
         const pressureBias = clamp(
           0.04
           + stageTier * 0.002
+          + routeBias.pressureShift
           + (role === 'siege' ? 0.12 : role === 'push' ? 0.08 : role === 'hero-bait' ? 0.06 : 0.04),
           0.04,
-          0.32,
+          0.36,
         )
         return {
           waveNumber,
@@ -1927,24 +1992,26 @@ export class RecoveryStageSystem {
           ? supportLane
           : role === 'skill-window'
             ? favoredLane
-            : waveNumber % 2 === 0 && signals.has('dispatch')
+            : waveNumber % 2 === 0 && (signals.has('dispatch') || routeBias.flankingRoute)
               ? supportLane
               : favoredLane
       const unitBurst = clamp(
         1
         + (signals.has('dispatch') ? 1 : 0)
+        + (routeBias.directRoute ? 1 : 0)
         + (role === 'skill-window' ? 1 : 0)
         + (role === 'siege' ? 1 : 0),
         1,
-        4,
+        5,
       )
       const pressureBias = clamp(
         0.03
         + profile.dispatchBoost * 0.3
+        + routeBias.pressureShift
         + profile.heroImpact * 0.1
         + (role === 'support' ? 0.03 : role === 'tower-rally' ? 0.04 : role === 'skill-window' ? 0.06 : 0.05),
         0.03,
-        0.28,
+        0.32,
       )
       return {
         waveNumber,
@@ -3118,7 +3185,7 @@ export class RecoveryStageSystem {
     const stageTier = stage?.runtimeFields?.tierCandidate ?? 10
     const archetypeCount = stage?.recommendedArchetypeIds.length ?? 0
     const eventCount = Math.max(storyboard.scriptEventCount, storyboard.scriptEvents.length, 1)
-    const storyBranch = stage?.mapBinding?.storyBranch ?? 'unknown'
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
     const title = stage?.title ?? storyboard.scriptFamilyId
     const hintText = stage?.hintText ?? ''
     const effectIntensity = stage?.renderIntent?.effectIntensity ?? 'medium'
@@ -3130,20 +3197,20 @@ export class RecoveryStageSystem {
     )
     const objectiveProgressRatio = clamp(
       0.06
-      + (storyBranch === 'secondary' ? 0.03 : 0.01)
+      + (routeBias.flankingRoute ? 0.03 : routeBias.directRoute ? 0.02 : 0.01)
       + (effectIntensity === 'high' ? 0.03 : effectIntensity === 'medium' ? 0.015 : 0),
       0.04,
       0.18,
     )
     const enemyWaveCountdownBeats = Math.max(
       1,
-      profile.enemyWaveCadenceBeats - (effectIntensity === 'high' ? 1 : 0),
+      profile.enemyWaveCadenceBeats - (effectIntensity === 'high' ? 1 : 0) + Math.max(routeBias.cadenceShift, 0),
     )
-    const alliedWaveCountdownBeats = Math.max(1, profile.alliedWaveCadenceBeats)
+    const alliedWaveCountdownBeats = Math.max(1, profile.alliedWaveCadenceBeats + Math.min(routeBias.cadenceShift, 0))
     const enemyWavePlan = this.buildWavePlanForProfile(storyboard, 'enemy', profile, totalWaveCount)
     const alliedWavePlan = this.buildWavePlanForProfile(storyboard, 'allied', profile, totalWaveCount)
 
-    if (includesAny(title, ['defeat', 'siege', 'seize', 'enemy camp'])) {
+    if (routeBias.directRoute || includesAny(title, ['defeat', 'siege', 'seize', 'enemy camp'])) {
       return {
         totalWaveCount,
         objectiveProgressRatio,
@@ -3152,10 +3219,10 @@ export class RecoveryStageSystem {
         enemyWavePlan,
         alliedWavePlan,
         phase: 'siege',
-        label: 'break the enemy defensive line',
+        label: `break the enemy defensive line via ${routeBias.routeLabel}`,
       }
     }
-    if (includesAny(hintText, ['hero', 'eliminate'])) {
+    if (routeBias.flankingRoute || includesAny(hintText, ['hero', 'eliminate'])) {
       return {
         totalWaveCount,
         objectiveProgressRatio,
@@ -3164,10 +3231,10 @@ export class RecoveryStageSystem {
         enemyWavePlan,
         alliedWavePlan,
         phase: 'hero-pressure',
-        label: 'use the hero to disrupt clustered enemies',
+        label: `use the hero to disrupt clustered enemies on the ${routeBias.routeLabel} route`,
       }
     }
-    if (includesAny(hintText, ['bonus', 'reward', 'clear the stage'])) {
+    if (routeBias.sustainRoute || includesAny(hintText, ['bonus', 'reward', 'clear the stage'])) {
       return {
         totalWaveCount,
         objectiveProgressRatio,
@@ -3176,7 +3243,7 @@ export class RecoveryStageSystem {
         enemyWavePlan,
         alliedWavePlan,
         phase: 'lane-control',
-        label: 'secure lanes before the bonus window closes',
+        label: `secure lanes before the ${routeBias.routeLabel} bonus window closes`,
       }
     }
 
@@ -3188,7 +3255,7 @@ export class RecoveryStageSystem {
       enemyWavePlan,
       alliedWavePlan,
       phase: 'opening',
-      label: 'stabilize the opening lane',
+      label: `stabilize the opening lane on the ${routeBias.routeLabel} route`,
     }
   }
 
@@ -3230,6 +3297,7 @@ export class RecoveryStageSystem {
     storyboard: RecoveryStageStoryboard,
   ): RecoveryStageSnapshot['campaignState']['loadouts'] {
     const profile = this.deriveStageBattleProfile(storyboard)
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
     const favoredLane = profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
     const defaultRoster = ['Vincent', 'Helba', 'Juno']
@@ -3242,7 +3310,7 @@ export class RecoveryStageSystem {
         loadoutIndex: 1,
         id: 'balanced-vanguard',
         label: 'Balanced Vanguard',
-        summary: `${favoredLane} lane stability with one queued unit and neutral tower stance`,
+        summary: `${favoredLane} lane stability with one queued unit and neutral tower stance on ${routeBias.routeLabel}`,
         recommended: archetypes.length === 0,
         heroRosterLabel: 'Core Squad',
         heroRosterRole: 'balanced',
@@ -3282,8 +3350,8 @@ export class RecoveryStageSystem {
       const summaryParts: string[] = []
 
       if (signals.has('dispatch')) {
-        startingQueue += 2
-        dispatchLane = favoredLane
+        startingQueue += routeBias.flankingRoute ? 3 : 2
+        dispatchLane = routeBias.preferredLane ?? favoredLane
         heroRosterLabel = 'Forward Vanguard'
         heroRosterRole = 'vanguard'
         heroRosterMembers = ['Vincent', 'Rogan']
@@ -3291,7 +3359,7 @@ export class RecoveryStageSystem {
         skillPresetKind = 'orders'
         towerPolicyLabel = 'Population First'
         towerPolicyKind = 'population-first'
-        summaryParts.push(`${favoredLane} lane opening push`)
+        summaryParts.push(`${dispatchLane ?? favoredLane} lane opening push on ${routeBias.routeLabel}`)
       }
       if (signals.has('tower-defense')) {
         towerUpgrades.attack = 2
@@ -3306,7 +3374,7 @@ export class RecoveryStageSystem {
         }
         towerPolicyLabel = 'Attack First'
         towerPolicyKind = 'attack-first'
-        summaryParts.push('reinforced tower line')
+        summaryParts.push(`reinforced tower line on ${routeBias.routeLabel}`)
       }
       if (signals.has('mana-surge')) {
         towerUpgrades.mana = 2
@@ -3321,7 +3389,7 @@ export class RecoveryStageSystem {
         }
         towerPolicyLabel = 'Mana First'
         towerPolicyKind = 'mana-first'
-        summaryParts.push('high mana opening')
+        summaryParts.push(`high mana opening on ${routeBias.routeLabel}`)
       }
       if (signals.has('armageddon')) {
         startingManaRatio += 0.18
@@ -3331,12 +3399,12 @@ export class RecoveryStageSystem {
         heroRosterMembers = ['Juno', 'Manos']
         skillPresetLabel = 'Burst Window'
         skillPresetKind = 'burst'
-        summaryParts.push('skill burst primed')
+        summaryParts.push(`skill burst primed for ${routeBias.routeLabel}`)
       }
       if (signals.has('recall')) {
         heroStartMode = 'field'
-        heroLane = supportLane
-        dispatchLane = supportLane
+        heroLane = routeBias.preferredLane ?? supportLane
+        dispatchLane = routeBias.preferredLane ?? supportLane
         heroRosterLabel = 'Recovery Wing'
         heroRosterRole = 'support'
         heroRosterMembers = ['Helba', 'Juno']
@@ -3344,7 +3412,7 @@ export class RecoveryStageSystem {
           skillPresetLabel = 'Support Recall'
           skillPresetKind = 'support'
         }
-        summaryParts.push(`${supportLane} lane hero anchor`)
+        summaryParts.push(`${heroLane ?? supportLane} lane hero anchor via ${routeBias.routeLabel}`)
       }
       if (signals.has('healing')) {
         towerUpgrades.population = Math.max(towerUpgrades.population, 2)
@@ -3352,10 +3420,10 @@ export class RecoveryStageSystem {
         if (towerPolicyKind === 'balanced') {
           towerPolicyLabel = 'Balanced Sustain'
         }
-        summaryParts.push('healing buffer')
+        summaryParts.push(`healing buffer for ${routeBias.routeLabel}`)
       }
       if (summaryParts.length === 0) {
-        summaryParts.push('specialized stage channel')
+        summaryParts.push(`specialized stage channel on ${routeBias.routeLabel}`)
       }
 
       loadouts.push({
@@ -3399,9 +3467,10 @@ export class RecoveryStageSystem {
   private applyDeployLoadout(
     loadout: RecoveryStageSnapshot['campaignState']['loadouts'][number],
   ): void {
+    const routeBias = this.deriveStoryboardRouteBias(this.storyboards[this.storyboardIndex] ?? null)
     this.activeDeployLoadout = loadout
     this.panelOverride = loadout.openingPanel
-    this.selectedDispatchLane = loadout.dispatchLane
+    this.selectedDispatchLane = routeBias.preferredLane ?? loadout.dispatchLane
     this.queuedUnitCount = loadout.startingQueue
     this.previewManaRatio = clamp(Math.max(this.previewManaRatio, loadout.startingManaRatio), 0.06, 1)
     this.previewManaUpgradeProgressRatio = clamp(
@@ -3422,12 +3491,13 @@ export class RecoveryStageSystem {
     }
 
     if (loadout.dispatchLane) {
-      this.laneBattleState[loadout.dispatchLane].alliedUnits = Math.min(
-        this.laneBattleState[loadout.dispatchLane].alliedUnits + Math.min(loadout.startingQueue, 2),
+      const openingLane = routeBias.preferredLane ?? loadout.dispatchLane
+      this.laneBattleState[openingLane].alliedUnits = Math.min(
+        this.laneBattleState[openingLane].alliedUnits + Math.min(loadout.startingQueue + (routeBias.flankingRoute ? 1 : 0), 3),
         8,
       )
-      this.laneBattleState[loadout.dispatchLane].alliedPressure = clamp(
-        this.laneBattleState[loadout.dispatchLane].alliedPressure + loadout.startingQueue * 0.04,
+      this.laneBattleState[openingLane].alliedPressure = clamp(
+        this.laneBattleState[openingLane].alliedPressure + loadout.startingQueue * 0.04 + routeBias.pressureShift,
         0.08,
         1,
       )
@@ -3445,12 +3515,13 @@ export class RecoveryStageSystem {
 
     if (loadout.heroStartMode === 'field') {
       this.heroOverrideMode = 'field'
-      this.heroAssignedLane = loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
+      this.heroAssignedLane = routeBias.preferredLane ?? loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
       this.laneBattleState[this.heroAssignedLane].heroPresent = true
       this.previewEnemyTowerHpRatio = clamp(
         this.previewEnemyTowerHpRatio
         - 0.05
         - this.currentStageBattleProfile.heroImpact * 0.08
+        - routeBias.heroShift
         - (loadout.heroRosterRole === 'raider' ? 0.03 : loadout.heroRosterRole === 'vanguard' ? 0.02 : 0),
         0.08,
         1,
@@ -3468,6 +3539,7 @@ export class RecoveryStageSystem {
     const stage = storyboard.stageBlueprint
     const runtimeFields = stage?.runtimeFields
     const mapBinding = stage?.mapBinding
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
     const archetypes = (stage?.recommendedArchetypeIds ?? [])
       .map((archetypeId) => this.featuredArchetypesById.get(archetypeId))
       .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
@@ -3512,14 +3584,16 @@ export class RecoveryStageSystem {
     const stageTier = runtimeFields?.tierCandidate ?? 10
     const effectIntensity = stage?.renderIntent?.effectIntensity ?? 'medium'
     const favoredLane =
-      mapBinding?.inlinePairBranchIndexCandidate !== null && mapBinding?.inlinePairBranchIndexCandidate !== undefined
+      routeBias.preferredLane
+      ?? (mapBinding?.inlinePairBranchIndexCandidate !== null && mapBinding?.inlinePairBranchIndexCandidate !== undefined
         ? (mapBinding.inlinePairBranchIndexCandidate % 2 === 0 ? 'upper' : 'lower')
-        : ((runtimeFields?.variantCandidate ?? 1) % 2 === 0 ? 'lower' : 'upper')
+        : ((runtimeFields?.variantCandidate ?? 1) % 2 === 0 ? 'lower' : 'upper'))
     const alliedPressureScale = clamp(
       0.18
       + archetypes.length * 0.03
       + activeRowCount * 0.004
       + buffRowCount * 0.003
+      + routeBias.pressureShift
       + (effectIntensity === 'high' ? 0.05 : effectIntensity === 'medium' ? 0.025 : 0),
       0.16,
       0.64,
@@ -3528,17 +3602,18 @@ export class RecoveryStageSystem {
       0.22
       + stageTier * 0.006
       + (runtimeFields?.regionCandidate ?? 5) * 0.012
+      + (routeBias.directRoute ? 0.03 : routeBias.flankingRoute ? -0.01 : 0)
       + (runtimeFields?.storyFlagCandidate ?? 0) * 0.04,
       0.2,
       0.72,
     )
     const alliedWaveCadenceBeats = Math.max(
       3,
-      Math.min(7, 7 - Math.floor(Math.min(activeRowCount, 12) / 3) - (signalSet.has('dispatch') ? 1 : 0)),
+      Math.min(7, 7 - Math.floor(Math.min(activeRowCount, 12) / 3) - (signalSet.has('dispatch') ? 1 : 0) + Math.max(routeBias.cadenceShift, 0)),
     )
-    const enemyWaveCadenceBeats = Math.max(3, Math.min(7, 7 - Math.floor(stageTier / 15)))
-    const heroImpact = clamp(0.1 + exactTailHitCount * 0.028 + buffRowCount * 0.008 + recallSwing * 0.12, 0.1, 0.36)
-    const tacticalBias = `${mapBinding?.storyBranch ?? 'branch-unknown'} / ${favoredLane} initiative${signalSet.size > 0 ? ` / ${Array.from(signalSet).join('+')}` : ''}`
+    const enemyWaveCadenceBeats = Math.max(3, Math.min(7, 7 - Math.floor(stageTier / 15) + Math.min(routeBias.cadenceShift, 0)))
+    const heroImpact = clamp(0.1 + exactTailHitCount * 0.028 + buffRowCount * 0.008 + recallSwing * 0.12 + routeBias.heroShift, 0.1, 0.36)
+    const tacticalBias = `${mapBinding?.storyBranch ?? 'branch-unknown'} / ${favoredLane} initiative / ${routeBias.routeLabel}${signalSet.size > 0 ? ` / ${Array.from(signalSet).join('+')}` : ''}`
     return {
       label: `${stage?.title ?? storyboard.scriptFamilyId} / tier ${stageTier}`,
       favoredLane,
