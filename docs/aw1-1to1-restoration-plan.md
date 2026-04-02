@@ -185,6 +185,7 @@ References:
     - dialogue-level tutorial and opcode cues now trigger one-shot scripted battle beats as the scene advances, which lets recovered lines automatically prime lanes, queue units, deploy or recall the hero, fire skills or items, and advance tower upgrades while keeping manual input state separate
     - the lane simulation now tracks an explicit battle objective phase plus allied/enemy wave countdowns, so storyboard playback exposes opening, lane-control, hero-pressure, tower-management, skill-burst, quest-resolution, and siege transitions instead of only raw pressure numbers
     - stage blueprints now also emit per-wave allied/enemy spawn directives, so each reconstructed storyboard carries its own lane-focused reinforcement pattern instead of only one global cadence rule
+    - dialogue-level tutorial and opcode transitions can now immediately fire the current stage-specific wave directive, so major scene beats advance or materialize reinforcements instead of waiting only on countdown cadence
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest

@@ -600,14 +600,17 @@ export class RecoveryStageSystem {
     switch (tutorialCue?.chainId) {
       case 'battle-hud-guard-hp':
         this.setObjectiveState('lane-control', 'hold the tower line', 0.03)
-        this.lastScriptedBeatNote = 'tutorial fixed own-tower objective'
+        this.triggerSceneWave('enemy', 'tutorial guard line screen', false)
+        this.lastScriptedBeatNote = 'tutorial fixed own-tower objective and triggered enemy screen'
         return
       case 'battle-hud-goal-hp':
         this.setObjectiveState('siege', 'break the enemy tower', 0.05)
-        this.lastScriptedBeatNote = 'tutorial fixed siege objective'
+        this.triggerSceneWave('enemy', 'tutorial revealed siege wave', true)
+        this.lastScriptedBeatNote = 'tutorial fixed siege objective and advanced siege wave'
         return
       case 'battle-hud-dispatch-arrows': {
         this.setObjectiveState('lane-control', `establish ${favoredLane} lane control`, 0.04)
+        this.triggerSceneWave('allied', `tutorial triggered ${favoredLane} dispatch wave`, false)
         this.selectedDispatchLane = favoredLane
         this.queuedUnitCount = Math.max(
           this.queuedUnitCount,
@@ -621,6 +624,7 @@ export class RecoveryStageSystem {
       }
       case 'battle-hud-unit-card':
         this.setObjectiveState('lane-control', 'build a dispatch reserve', 0.03)
+        this.triggerSceneWave('allied', 'tutorial primed reserve wave', false)
         if (this.applyScriptedAction('produce-unit', 'tutorial queued unit production')) {
           return
         }
@@ -636,6 +640,7 @@ export class RecoveryStageSystem {
         return
       case 'battle-hud-hero-sortie':
         this.setObjectiveState('hero-pressure', 'deploy the hero strike lane', 0.05)
+        this.triggerSceneWave('allied', 'tutorial opened hero pressure wave', true)
         if (this.applyScriptedAction('deploy-hero', `tutorial auto-deployed hero to ${favoredLane}`)) {
           return
         }
@@ -677,6 +682,7 @@ export class RecoveryStageSystem {
         return
       case 'skill-slot-highlight':
         this.setObjectiveState('skill-burst', 'fire a burst through the skill window', 0.05)
+        this.triggerSceneWave('allied', 'tutorial opened skill burst wave', true)
         this.panelOverride = 'skill'
         if (this.applyScriptedAction('cast-skill', 'tutorial fired skill beat')) {
           return
@@ -724,6 +730,7 @@ export class RecoveryStageSystem {
 
     if (includesAny(opcodeCue.action, ['pose', 'emphasis', 'shock'])) {
       this.setObjectiveState('hero-pressure', 'capitalize on the pressure swing', 0.03)
+      this.triggerSceneWave('enemy', `opcode surged ${opcodeCue.action}`, false)
       const targetLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
       this.laneBattleState[targetLane].alliedPressure = clamp(
         this.laneBattleState[targetLane].alliedPressure + 0.03,
@@ -756,6 +763,84 @@ export class RecoveryStageSystem {
       return null
     }
     return plan[Math.min(Math.max(this.currentWaveIndex - 1, 0), plan.length - 1)] ?? null
+  }
+
+  private resetWaveCountdown(
+    side: 'enemy' | 'allied',
+    directive: RecoveryBattleWaveDirective | null,
+  ): void {
+    if (side === 'enemy') {
+      this.enemyWaveCountdownBeats = Math.max(
+        1,
+        this.currentStageBattleProfile.enemyWaveCadenceBeats
+        - (directive?.role === 'siege' ? 1 : 0)
+        - Math.min(Math.floor(this.currentWaveIndex / 3), 2),
+      )
+      return
+    }
+    this.alliedWaveCountdownBeats = Math.max(
+      1,
+      this.currentStageBattleProfile.alliedWaveCadenceBeats
+      - (directive?.role === 'push' ? 1 : 0)
+      - (this.heroAssignedLane === directive?.laneId ? 1 : 0),
+    )
+  }
+
+  private applyWaveDirective(
+    side: 'enemy' | 'allied',
+    directive: RecoveryBattleWaveDirective | null,
+  ): void {
+    if (!directive) {
+      return
+    }
+
+    const lane = this.laneBattleState[directive.laneId]
+    if (side === 'enemy') {
+      lane.enemyUnits = Math.min(lane.enemyUnits + directive.unitBurst, 8)
+      lane.enemyPressure = clamp(lane.enemyPressure + directive.unitBurst * 0.06 + directive.pressureBias, 0.08, 1)
+      if (directive.role === 'siege') {
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio - 0.018, 0.1, 1)
+      }
+      return
+    }
+
+    lane.alliedUnits = Math.min(lane.alliedUnits + directive.unitBurst, 8)
+    lane.alliedPressure = clamp(
+      lane.alliedPressure + directive.unitBurst * (0.04 + this.currentStageBattleProfile.dispatchBoost * 0.08) + directive.pressureBias,
+      0.08,
+      1,
+    )
+    if (directive.role === 'push' || directive.role === 'siege' || directive.role === 'skill-window') {
+      this.selectedDispatchLane = directive.laneId
+    }
+    if (directive.role === 'tower-rally' || directive.role === 'support') {
+      this.previewOwnTowerHpRatio = clamp(
+        this.previewOwnTowerHpRatio + 0.012 + this.currentStageBattleProfile.towerDefenseBias * 0.05,
+        0.1,
+        1,
+      )
+    }
+  }
+
+  private triggerSceneWave(
+    side: 'enemy' | 'allied',
+    note: string,
+    advanceWave: boolean,
+  ): void {
+    if (advanceWave && this.currentWaveIndex < this.totalWaveCount) {
+      this.currentWaveIndex += 1
+      this.objectiveProgressRatio = clamp(
+        Math.max(this.objectiveProgressRatio, this.currentWaveIndex / this.totalWaveCount - 0.08),
+        0.04,
+        1,
+      )
+    }
+
+    const plan = side === 'enemy' ? this.enemyWavePlan : this.alliedWavePlan
+    const directive = this.currentWaveDirective(plan)
+    this.applyWaveDirective(side, directive)
+    this.resetWaveCountdown(side, directive)
+    this.lastScriptedBeatNote = directive ? `${note} (${directive.label})` : note
   }
 
   private buildWavePlan(
@@ -1894,18 +1979,16 @@ export class RecoveryStageSystem {
         1 + Math.floor((this.currentWaveIndex - 1) / 2) + (profile.effectIntensity === 'high' ? 1 : 0),
         3,
       )
-      this.laneBattleState[laneId].enemyUnits = Math.min(this.laneBattleState[laneId].enemyUnits + reinforcements, 8)
-      this.laneBattleState[laneId].enemyPressure = clamp(
-        this.laneBattleState[laneId].enemyPressure + reinforcements * 0.06 + (enemyDirective?.pressureBias ?? 0),
-        0.08,
-        1,
-      )
-      this.enemyWaveCountdownBeats = Math.max(
-        1,
-        profile.enemyWaveCadenceBeats
-        - Math.min(Math.floor(this.currentWaveIndex / 3), 2)
-        - (enemyDirective?.role === 'siege' ? 1 : 0),
-      )
+      const fallbackDirective: RecoveryBattleWaveDirective = {
+        waveNumber: this.currentWaveIndex,
+        laneId,
+        role: 'push',
+        unitBurst: reinforcements,
+        pressureBias: 0,
+        label: `enemy push ${laneId}`,
+      }
+      this.applyWaveDirective('enemy', enemyDirective ?? fallbackDirective)
+      this.resetWaveCountdown('enemy', enemyDirective)
     }
 
     this.alliedWaveCountdownBeats = Math.max(this.alliedWaveCountdownBeats - 1, 0)
@@ -1914,21 +1997,17 @@ export class RecoveryStageSystem {
       const reinforcements = this.queuedUnitCount > 0
         ? Math.min(this.queuedUnitCount, alliedDirective?.unitBurst ?? 2)
         : (alliedDirective?.unitBurst ?? 1)
-      this.laneBattleState[laneId].alliedUnits = Math.min(this.laneBattleState[laneId].alliedUnits + reinforcements, 8)
-      this.laneBattleState[laneId].alliedPressure = clamp(
-        this.laneBattleState[laneId].alliedPressure
-        + reinforcements * (0.04 + profile.dispatchBoost * 0.08)
-        + (alliedDirective?.pressureBias ?? 0),
-        0.08,
-        1,
-      )
+      const fallbackDirective: RecoveryBattleWaveDirective = {
+        waveNumber: this.currentWaveIndex,
+        laneId,
+        role: 'push',
+        unitBurst: reinforcements,
+        pressureBias: 0,
+        label: `ally push ${laneId}`,
+      }
+      this.applyWaveDirective('allied', alliedDirective ?? fallbackDirective)
       this.queuedUnitCount = Math.max(this.queuedUnitCount - Math.min(this.queuedUnitCount, reinforcements), 0)
-      this.alliedWaveCountdownBeats = Math.max(
-        1,
-        profile.alliedWaveCadenceBeats
-        - (this.heroAssignedLane === laneId ? 1 : 0)
-        - (alliedDirective?.role === 'push' ? 1 : 0),
-      )
+      this.resetWaveCountdown('allied', alliedDirective)
     }
 
     ;(['upper', 'lower'] as const).forEach((laneId, index) => {
