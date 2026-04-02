@@ -2,7 +2,7 @@
 **/__pycache__/
 **/*.pyc
 
-arel_wars2/
+/arel_wars2/
 
 recovery/arel_wars1/apk_unzip/
 recovery/arel_wars1/jadx/
@@ -12,6 +12,7 @@ recovery/arel_wars1/analysis_preview2/
 recovery/arel_wars1/mpl_palette_probes/
 recovery/arel_wars1/disassembly/
 recovery/arel_wars1/native_tmp/
+recovery/arel_wars2/native_tmp/
 
 remake/arel-wars1/node_modules/
 remake/arel-wars1/dist/
