@@ -530,6 +530,19 @@ export interface RecoveryCampaignNodeState {
   recommended: boolean
 }
 
+export interface RecoveryCampaignBriefing {
+  objectivePhase: RecoveryBattleObjectiveState['phase']
+  objectiveLabel: string
+  favoredLane: 'upper' | 'lower' | null
+  tacticalBias: string
+  totalWaves: number
+  stageTier: number
+  effectIntensity: string
+  recommendedArchetypes: string[]
+  alliedForecast: string[]
+  enemyForecast: string[]
+}
+
 export interface RecoveryCampaignState {
   currentNodeIndex: number
   selectedNodeIndex: number
@@ -550,6 +563,7 @@ export interface RecoveryCampaignState {
   selectedRouteLabel: string
   selectedHintText: string | null
   selectedRewardText: string | null
+  briefing: RecoveryCampaignBriefing
   nodes: RecoveryCampaignNodeState[]
 }
 

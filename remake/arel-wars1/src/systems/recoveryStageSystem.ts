@@ -619,6 +619,7 @@ export class RecoveryStageSystem {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     const selectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
     const selectedStoryboard = this.storyboards[selectedNodeIndex] ?? currentStoryboard
+    const selectedBriefing = this.buildCampaignBriefing(selectedStoryboard)
     const activeStageTitle = currentStoryboard.stageBlueprint?.title ?? currentStoryboard.scriptPath
     const nextUnlock = this.campaignUnlockedStageCount < this.storyboards.length
       ? this.storyboards[this.campaignUnlockedStageCount]?.stageBlueprint?.title
@@ -663,6 +664,7 @@ export class RecoveryStageSystem {
       selectedRouteLabel: selectedStoryboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
       selectedHintText: selectedStoryboard.stageBlueprint?.hintText ?? null,
       selectedRewardText: selectedStoryboard.stageBlueprint?.rewardText ?? null,
+      briefing: selectedBriefing,
       nodes: this.storyboards.map((storyboard, index) => ({
         nodeIndex: index + 1,
         label: storyboard.stageBlueprint?.title ?? storyboard.scriptPath.replace('assets/', ''),
@@ -1101,25 +1103,53 @@ export class RecoveryStageSystem {
     }
   }
 
-  private buildWavePlan(
+  private buildCampaignBriefing(storyboard: RecoveryStageStoryboard): RecoveryStageSnapshot['campaignState']['briefing'] {
+    const profile = this.deriveStageBattleProfile(storyboard)
+    const objectiveSeed = this.deriveObjectiveSeed(storyboard, profile)
+    const recommendedArchetypes = profile.archetypeLabels.length > 0
+      ? profile.archetypeLabels
+      : (storyboard.stageBlueprint?.recommendedArchetypeIds ?? []).slice(0, 3)
+    const alliedForecast = objectiveSeed.alliedWavePlan
+      .slice(0, 3)
+      .map((directive) => `W${directive.waveNumber} ${directive.role} ${directive.laneId} x${directive.unitBurst}`)
+    const enemyForecast = objectiveSeed.enemyWavePlan
+      .slice(0, 3)
+      .map((directive) => `W${directive.waveNumber} ${directive.role} ${directive.laneId} x${directive.unitBurst}`)
+    return {
+      objectivePhase: objectiveSeed.phase,
+      objectiveLabel: objectiveSeed.label,
+      favoredLane: profile.favoredLane,
+      tacticalBias: profile.tacticalBias,
+      totalWaves: objectiveSeed.totalWaveCount,
+      stageTier: profile.stageTier,
+      effectIntensity: profile.effectIntensity,
+      recommendedArchetypes,
+      alliedForecast,
+      enemyForecast,
+    }
+  }
+
+  private buildWavePlanForProfile(
     storyboard: RecoveryStageStoryboard,
     side: 'enemy' | 'allied',
+    profile: RecoveryStageBattleProfile,
+    totalWaveCount: number,
   ): RecoveryBattleWaveDirective[] {
     const stage = storyboard.stageBlueprint
-    const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+    const favoredLane = profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
     const stageTier = stage?.runtimeFields?.tierCandidate ?? 10
     const storyBranch = stage?.mapBinding?.storyBranch ?? 'primary'
     const title = (stage?.title ?? '').toLowerCase()
     const hintText = (stage?.hintText ?? '').toLowerCase()
-    const signals = new Set(this.currentStageBattleProfile.archetypeSignals)
+    const signals = new Set(profile.archetypeSignals)
     const highIntensity = (stage?.renderIntent?.effectIntensity ?? 'medium') === 'high'
 
-    return Array.from({ length: this.totalWaveCount }, (_, index) => {
+    return Array.from({ length: totalWaveCount }, (_, index) => {
       const waveNumber = index + 1
       if (side === 'enemy') {
         const role: RecoveryBattleWaveDirective['role'] =
-          waveNumber === this.totalWaveCount || includesAny(title, ['seize', 'siege', 'enemy camp', 'defeat'])
+          waveNumber === totalWaveCount || includesAny(title, ['seize', 'siege', 'enemy camp', 'defeat'])
             ? 'siege'
             : includesAny(hintText, ['hero', 'eliminate']) && waveNumber % 3 === 0
               ? 'hero-bait'
@@ -1159,9 +1189,9 @@ export class RecoveryStageSystem {
       }
 
       const role: RecoveryBattleWaveDirective['role'] =
-        signals.has('armageddon') && waveNumber >= Math.max(this.totalWaveCount - 1, 2)
+        signals.has('armageddon') && waveNumber >= Math.max(totalWaveCount - 1, 2)
           ? 'skill-window'
-          : signals.has('dispatch') && waveNumber <= Math.ceil(this.totalWaveCount / 2)
+          : signals.has('dispatch') && waveNumber <= Math.ceil(totalWaveCount / 2)
             ? 'push'
             : signals.has('tower-defense') && waveNumber === 1
               ? 'support'
@@ -1188,8 +1218,8 @@ export class RecoveryStageSystem {
       )
       const pressureBias = clamp(
         0.03
-        + this.currentStageBattleProfile.dispatchBoost * 0.3
-        + this.currentStageBattleProfile.heroImpact * 0.1
+        + profile.dispatchBoost * 0.3
+        + profile.heroImpact * 0.1
         + (role === 'support' ? 0.03 : role === 'tower-rally' ? 0.04 : role === 'skill-window' ? 0.06 : 0.05),
         0.03,
         0.28,
@@ -2118,6 +2148,31 @@ export class RecoveryStageSystem {
   }
 
   private seedBattleObjectiveState(storyboard: RecoveryStageStoryboard): void {
+    const seed = this.deriveObjectiveSeed(storyboard, this.currentStageBattleProfile)
+    this.totalWaveCount = seed.totalWaveCount
+    this.currentWaveIndex = 1
+    this.objectiveProgressRatio = seed.objectiveProgressRatio
+    this.enemyWaveCountdownBeats = seed.enemyWaveCountdownBeats
+    this.alliedWaveCountdownBeats = seed.alliedWaveCountdownBeats
+    this.enemyWavePlan = seed.enemyWavePlan
+    this.alliedWavePlan = seed.alliedWavePlan
+    this.currentObjectivePhase = seed.phase
+    this.currentObjectiveLabel = seed.label
+  }
+
+  private deriveObjectiveSeed(
+    storyboard: RecoveryStageStoryboard,
+    profile: RecoveryStageBattleProfile,
+  ): {
+    totalWaveCount: number
+    objectiveProgressRatio: number
+    enemyWaveCountdownBeats: number
+    alliedWaveCountdownBeats: number
+    enemyWavePlan: RecoveryBattleWaveDirective[]
+    alliedWavePlan: RecoveryBattleWaveDirective[]
+    phase: RecoveryBattleObjectiveState['phase']
+    label: string
+  } {
     const stage = storyboard.stageBlueprint
     const stageTier = stage?.runtimeFields?.tierCandidate ?? 10
     const archetypeCount = stage?.recommendedArchetypeIds.length ?? 0
@@ -2127,45 +2182,73 @@ export class RecoveryStageSystem {
     const hintText = stage?.hintText ?? ''
     const effectIntensity = stage?.renderIntent?.effectIntensity ?? 'medium'
 
-    this.totalWaveCount = clamp(
+    const totalWaveCount = clamp(
       Math.round(eventCount / 24) + Math.max(Math.round(stageTier / 20), 1) + Math.min(archetypeCount, 2),
       3,
       8,
     )
-    this.currentWaveIndex = 1
-    this.objectiveProgressRatio = clamp(
+    const objectiveProgressRatio = clamp(
       0.06
       + (storyBranch === 'secondary' ? 0.03 : 0.01)
       + (effectIntensity === 'high' ? 0.03 : effectIntensity === 'medium' ? 0.015 : 0),
       0.04,
       0.18,
     )
-    this.enemyWaveCountdownBeats = Math.max(
+    const enemyWaveCountdownBeats = Math.max(
       1,
-      this.currentStageBattleProfile.enemyWaveCadenceBeats - (effectIntensity === 'high' ? 1 : 0),
+      profile.enemyWaveCadenceBeats - (effectIntensity === 'high' ? 1 : 0),
     )
-    this.alliedWaveCountdownBeats = Math.max(1, this.currentStageBattleProfile.alliedWaveCadenceBeats)
-    this.enemyWavePlan = this.buildWavePlan(storyboard, 'enemy')
-    this.alliedWavePlan = this.buildWavePlan(storyboard, 'allied')
+    const alliedWaveCountdownBeats = Math.max(1, profile.alliedWaveCadenceBeats)
+    const enemyWavePlan = this.buildWavePlanForProfile(storyboard, 'enemy', profile, totalWaveCount)
+    const alliedWavePlan = this.buildWavePlanForProfile(storyboard, 'allied', profile, totalWaveCount)
 
     if (includesAny(title, ['defeat', 'siege', 'seize', 'enemy camp'])) {
-      this.currentObjectivePhase = 'siege'
-      this.currentObjectiveLabel = 'break the enemy defensive line'
-      return
+      return {
+        totalWaveCount,
+        objectiveProgressRatio,
+        enemyWaveCountdownBeats,
+        alliedWaveCountdownBeats,
+        enemyWavePlan,
+        alliedWavePlan,
+        phase: 'siege',
+        label: 'break the enemy defensive line',
+      }
     }
     if (includesAny(hintText, ['hero', 'eliminate'])) {
-      this.currentObjectivePhase = 'hero-pressure'
-      this.currentObjectiveLabel = 'use the hero to disrupt clustered enemies'
-      return
+      return {
+        totalWaveCount,
+        objectiveProgressRatio,
+        enemyWaveCountdownBeats,
+        alliedWaveCountdownBeats,
+        enemyWavePlan,
+        alliedWavePlan,
+        phase: 'hero-pressure',
+        label: 'use the hero to disrupt clustered enemies',
+      }
     }
     if (includesAny(hintText, ['bonus', 'reward', 'clear the stage'])) {
-      this.currentObjectivePhase = 'lane-control'
-      this.currentObjectiveLabel = 'secure lanes before the bonus window closes'
-      return
+      return {
+        totalWaveCount,
+        objectiveProgressRatio,
+        enemyWaveCountdownBeats,
+        alliedWaveCountdownBeats,
+        enemyWavePlan,
+        alliedWavePlan,
+        phase: 'lane-control',
+        label: 'secure lanes before the bonus window closes',
+      }
     }
 
-    this.currentObjectivePhase = 'opening'
-    this.currentObjectiveLabel = 'stabilize the opening lane'
+    return {
+      totalWaveCount,
+      objectiveProgressRatio,
+      enemyWaveCountdownBeats,
+      alliedWaveCountdownBeats,
+      enemyWavePlan,
+      alliedWavePlan,
+      phase: 'opening',
+      label: 'stabilize the opening lane',
+    }
   }
 
   private deriveStageBattleProfile(storyboard: RecoveryStageStoryboard): RecoveryStageBattleProfile {

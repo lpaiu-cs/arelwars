@@ -326,6 +326,28 @@ h2 {
   margin-top: 14px;
 }
 
+.story-briefing {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(220, 194, 135, 0.14);
+  background: rgba(12, 17, 20, 0.78);
+}
+
+.story-briefing p {
+  margin: 0;
+  color: rgba(231, 223, 204, 0.82);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.story-briefing p + p {
+  margin-top: 6px;
+}
+
+.story-briefing strong {
+  color: #f2d7aa;
+}
+
 .campaign-node {
   display: flex;
   flex-direction: column;
