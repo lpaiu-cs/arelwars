@@ -4,6 +4,25 @@ import { RecoveryStageSystem } from '../systems/recoveryStageSystem'
 
 const ICON_KEY = 'recovery-icon'
 
+type FocusRegionKind = 'rect' | 'circle'
+
+interface FocusRegion {
+  kind: FocusRegionKind
+  x: number
+  y: number
+  width?: number
+  height?: number
+  radius?: number
+  label: string
+}
+
+interface FocusLayoutBounds {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
 export class RecoveryBootScene extends Phaser.Scene {
   private readonly stageSystem: RecoveryStageSystem | null
 
@@ -308,6 +327,7 @@ export class RecoveryBootScene extends Phaser.Scene {
         : 0x4c676f
     graphics.lineStyle(2, borderColor, 0.8)
     graphics.strokeRoundedRect(x, y, width, height, 14)
+    this.drawTutorialFocus(graphics, snapshot, { x, y, width, height })
 
     const channelStates = snapshot.channelStates.slice(0, 4)
     channelStates.forEach((channel, index) => {
@@ -329,6 +349,96 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.lineStyle(2, 0xdca863, 0.22)
         graphics.strokeCircle(this.previewImage.x + 96, this.previewImage.y - 52, radius)
       }
+    }
+  }
+
+  private drawTutorialFocus(
+    graphics: Phaser.GameObjects.Graphics,
+    snapshot: RecoveryStageSnapshot,
+    bounds: FocusLayoutBounds,
+  ): void {
+    const regions = this.focusRegionsForCue(snapshot, bounds)
+    if (regions.length === 0) {
+      return
+    }
+
+    graphics.lineStyle(2, 0xf0b45e, 0.95)
+    graphics.fillStyle(0xf0b45e, 0.12)
+
+    regions.forEach((region, index) => {
+      if (region.kind === 'rect' && region.width && region.height) {
+        graphics.fillRoundedRect(region.x, region.y, region.width, region.height, 8)
+        graphics.strokeRoundedRect(region.x, region.y, region.width, region.height, 8)
+      } else if (region.kind === 'circle' && region.radius) {
+        graphics.fillCircle(region.x, region.y, region.radius)
+        graphics.strokeCircle(region.x, region.y, region.radius)
+      }
+
+      const anchorX = region.kind === 'circle' ? region.x : region.x + (region.width ?? 0) / 2
+      const anchorY = region.kind === 'circle' ? region.y : region.y + (region.height ?? 0) / 2
+      const calloutX = bounds.x + bounds.width + 18
+      const calloutY = bounds.y + 22 + index * 18
+      graphics.lineStyle(1.5, 0xf0b45e, 0.7)
+      graphics.lineBetween(anchorX, anchorY, calloutX - 8, calloutY + 6)
+      graphics.fillStyle(0xf0b45e, 0.72)
+      graphics.fillCircle(calloutX, calloutY + 6, 3)
+    })
+  }
+
+  private focusRegionsForCue(snapshot: RecoveryStageSnapshot, bounds: FocusLayoutBounds): FocusRegion[] {
+    const chainId = snapshot.activeTutorialCue?.chainId
+    if (!chainId) {
+      return []
+    }
+    const rect = (x: number, y: number, width: number, height: number, label: string): FocusRegion => ({
+      kind: 'rect',
+      x: bounds.x + x * bounds.width,
+      y: bounds.y + y * bounds.height,
+      width: width * bounds.width,
+      height: height * bounds.height,
+      label,
+    })
+    const circle = (x: number, y: number, radius: number, label: string): FocusRegion => ({
+      kind: 'circle',
+      x: bounds.x + x * bounds.width,
+      y: bounds.y + y * bounds.height,
+      radius: radius * Math.min(bounds.width, bounds.height),
+      label,
+    })
+
+    switch (chainId) {
+      case 'battle-hud-guard-hp':
+        return [rect(0.06, 0.06, 0.28, 0.08, 'Our tower HP')]
+      case 'battle-hud-goal-hp':
+        return [rect(0.66, 0.06, 0.28, 0.08, 'Enemy tower HP')]
+      case 'battle-hud-dispatch-arrows':
+        return [rect(0.88, 0.28, 0.07, 0.28, 'Path arrows'), rect(0.04, 0.36, 0.06, 0.16, 'Dispatch cue')]
+      case 'battle-hud-unit-card':
+        return [rect(0.02, 0.58, 0.18, 0.26, 'Unit cards')]
+      case 'battle-hud-mana-bar':
+        return [rect(0.06, 0.16, 0.26, 0.06, 'Mana bar')]
+      case 'battle-hud-hero-sortie':
+        return [circle(0.12, 0.84, 0.06, 'Hero sortie')]
+      case 'battle-hud-hero-return':
+        return [circle(0.12, 0.84, 0.06, 'Return to tower')]
+      case 'tower-menu-highlight':
+        return [rect(0.30, 0.78, 0.22, 0.12, 'Tower menu')]
+      case 'mana-upgrade-highlight':
+        return [circle(0.35, 0.84, 0.045, 'Mana upgrade')]
+      case 'population-upgrade-highlight':
+        return [circle(0.41, 0.84, 0.045, 'Population')]
+      case 'skill-menu-highlight':
+        return [rect(0.53, 0.78, 0.12, 0.12, 'Skill menu')]
+      case 'skill-slot-highlight':
+        return [rect(0.48, 0.60, 0.28, 0.12, 'Skill window')]
+      case 'item-menu-highlight':
+        return [rect(0.67, 0.78, 0.12, 0.12, 'Item menu')]
+      case 'system-menu-highlight':
+        return [circle(0.92, 0.10, 0.045, 'System')]
+      case 'quest-panel-highlight':
+        return [rect(0.74, 0.16, 0.20, 0.12, 'Quest panel')]
+      default:
+        return []
     }
   }
 }
