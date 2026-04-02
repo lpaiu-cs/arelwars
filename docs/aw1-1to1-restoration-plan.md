@@ -137,6 +137,7 @@ References:
     - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
     - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
     - [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
+    - [AW1.hero_runtime_archetypes.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json)
   - current strongest runtime-field candidates in `XlsAi` are:
     - `tierCandidate = numericBlock[13]`
     - `variantCandidate = numericBlock[15]`
@@ -161,6 +162,12 @@ References:
       - `Defend Tower` as a hero-specific tower-defense family on `6/13/23`
       - shared-slot hybrids on `11`, `14`, and `15`
       - `29/30/31` as special command slots outside the passive/active row range
+    - `AW1.hero_runtime_archetypes.json` now turns those clusters into engine-facing archetype candidates:
+      - `Dispatch` -> `respawn-redeploy-cooldown-ladder`
+      - `Tower Defense` -> `tower-defense-stance-ladder`
+      - `Natural Healing` / `Recall` -> slot-11 shared channel
+      - `Mana Wall` / `Armageddon` -> slot-15 shared channel
+      - `Smoke` regular skill and `Smoke (Special)` are now separated instead of being conflated by name
 
 ### Phase 4. Build Deterministic Runtime Systems
 
@@ -210,6 +217,11 @@ References:
    - `HP Up / Return to Nature`
    - `Mana Wall / Armageddon`
    - `Mana Gain`
+7. Turn those archetypes into actual runtime systems in the remake engine:
+   - shared active channels
+   - buff trigger ladders
+   - hero-variant tower-defense stances
+   - special command payload handling for slots `29/30/31`
 
 ## First Opcode Findings
 

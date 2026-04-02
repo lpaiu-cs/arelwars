@@ -1,7 +1,7 @@
 {
   "summary": {
     "slotFamilyCount": 27,
-    "namedFamilyCount": 43,
+    "namedFamilyCount": 44,
     "slotRuntimeTypeHistogram": {
       "passive-active": 3,
       "passive-active-buff": 5,
@@ -10,12 +10,12 @@
       "special-command-slot": 3
     },
     "namedFamilyTypeHistogram": {
-      "multi-slot-ladder": 2,
+      "multi-slot-ladder": 1,
       "multi-slot-ladder-with-buff": 3,
-      "shared-slot-hybrid": 27,
+      "shared-slot-hybrid": 28,
       "shared-slot-hybrid-with-buff": 5,
       "single-slot-family": 4,
-      "special-family": 2
+      "special-family": 3
     },
     "specialSlots": [
       29,
@@ -3678,7 +3678,7 @@
       "slot": 29,
       "runtimeType": "special-command-slot",
       "canonicalFamilyIds": [
-        "stun"
+        "special-stun"
       ],
       "heroSkillRows": [
         {
@@ -3707,7 +3707,7 @@
       "slot": 30,
       "runtimeType": "special-command-slot",
       "canonicalFamilyIds": [
-        "smoke"
+        "special-smoke"
       ],
       "heroSkillRows": [
         {
@@ -3760,7 +3760,7 @@
       "slot": 31,
       "runtimeType": "special-command-slot",
       "canonicalFamilyIds": [
-        "armageddonbuff"
+        "special-armageddonbuff"
       ],
       "heroSkillRows": [
         {
@@ -3899,43 +3899,6 @@
       ],
       "skillAiByAiCodeIndices": [
         1,
-        3
-      ]
-    },
-    {
-      "familyId": "armageddonbuff",
-      "label": "Armageddon Buff",
-      "familyType": "special-family",
-      "slots": [
-        31
-      ],
-      "rowNames": [
-        "Armageddon Buff"
-      ],
-      "passiveNames": [],
-      "heroSkillRows": [
-        {
-          "index": 50,
-          "name": "Armageddon Buff",
-          "skillCodeCandidate": 255,
-          "aiCodeCandidate": 8,
-          "modeKey": "0:2",
-          "slotOrPowerCandidate": 31,
-          "description": "None",
-          "tags": [
-            "mode-0:2",
-            "skill-ai-ai-code",
-            "special-slot-29plus"
-          ]
-        }
-      ],
-      "slotRuntimeTypes": [
-        "special-command-slot"
-      ],
-      "activeRowIndices": [],
-      "buffTailRowIndices": [],
-      "skillAiBySkillCodeIndices": [],
-      "skillAiByAiCodeIndices": [
         3
       ]
     },
@@ -5524,10 +5487,9 @@
     {
       "familyId": "smoke",
       "label": "Smoke",
-      "familyType": "multi-slot-ladder",
+      "familyType": "shared-slot-hybrid",
       "slots": [
-        4,
-        30
+        4
       ],
       "rowNames": [
         "Smoke"
@@ -5549,25 +5511,10 @@
             "active-slot-linked",
             "active-tail-hint"
           ]
-        },
-        {
-          "index": 49,
-          "name": "Smoke",
-          "skillCodeCandidate": 255,
-          "aiCodeCandidate": 8,
-          "modeKey": "0:2",
-          "slotOrPowerCandidate": 30,
-          "description": "None",
-          "tags": [
-            "mode-0:2",
-            "skill-ai-ai-code",
-            "special-slot-29plus"
-          ]
         }
       ],
       "slotRuntimeTypes": [
-        "shared-slot-multi-skill",
-        "special-command-slot"
+        "shared-slot-multi-skill"
       ],
       "activeRowIndices": [
         4
@@ -5624,8 +5571,82 @@
       ]
     },
     {
-      "familyId": "stun",
-      "label": "Stun",
+      "familyId": "special-armageddonbuff",
+      "label": "Armageddon Buff (Special)",
+      "familyType": "special-family",
+      "slots": [
+        31
+      ],
+      "rowNames": [
+        "Armageddon Buff"
+      ],
+      "passiveNames": [],
+      "heroSkillRows": [
+        {
+          "index": 50,
+          "name": "Armageddon Buff",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 8,
+          "modeKey": "0:2",
+          "slotOrPowerCandidate": 31,
+          "description": "None",
+          "tags": [
+            "mode-0:2",
+            "skill-ai-ai-code",
+            "special-slot-29plus"
+          ]
+        }
+      ],
+      "slotRuntimeTypes": [
+        "special-command-slot"
+      ],
+      "activeRowIndices": [],
+      "buffTailRowIndices": [],
+      "skillAiBySkillCodeIndices": [],
+      "skillAiByAiCodeIndices": [
+        3
+      ]
+    },
+    {
+      "familyId": "special-smoke",
+      "label": "Smoke (Special)",
+      "familyType": "special-family",
+      "slots": [
+        30
+      ],
+      "rowNames": [
+        "Smoke"
+      ],
+      "passiveNames": [],
+      "heroSkillRows": [
+        {
+          "index": 49,
+          "name": "Smoke",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 8,
+          "modeKey": "0:2",
+          "slotOrPowerCandidate": 30,
+          "description": "None",
+          "tags": [
+            "mode-0:2",
+            "skill-ai-ai-code",
+            "special-slot-29plus"
+          ]
+        }
+      ],
+      "slotRuntimeTypes": [
+        "special-command-slot"
+      ],
+      "activeRowIndices": [],
+      "buffTailRowIndices": [],
+      "skillAiBySkillCodeIndices": [],
+      "skillAiByAiCodeIndices": [
+        3
+      ]
+    },
+    {
+      "familyId": "special-stun",
+      "label": "Stun (Special)",
       "familyType": "special-family",
       "slots": [
         29

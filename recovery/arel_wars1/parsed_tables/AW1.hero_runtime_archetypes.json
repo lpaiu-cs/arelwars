@@ -1,0 +1,8682 @@
+{
+  "summary": {
+    "archetypeCount": 44,
+    "archetypeKindHistogram": {
+      "multi-tier-runtime-ladder": 1,
+      "reactive-mana-proc": 1,
+      "respawn-redeploy-cooldown-ladder": 1,
+      "shared-defensive-barrier-channel": 1,
+      "shared-heal-channel": 1,
+      "shared-meteor-buff-channel": 1,
+      "shared-relocation-channel": 1,
+      "shared-resource-conversion-channel": 1,
+      "shared-runtime-channel": 28,
+      "single-slot-runtime": 3,
+      "special-command": 3,
+      "stat-ladder-with-shared-channel": 1,
+      "tower-defense-stance-ladder": 1
+    },
+    "confidenceHistogram": {
+      "high": 3,
+      "low": 3,
+      "medium": 38
+    }
+  },
+  "archetypes": [
+    {
+      "archetypeId": "align",
+      "label": "Align",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        5
+      ],
+      "rowNames": [
+        "Align"
+      ],
+      "passiveNames": [
+        "Build Tower"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 41,
+          "name": "Align",
+          "skillCodeCandidate": 3,
+          "aiCodeCandidate": 4,
+          "modeKey": "1:2",
+          "slotOrPowerCandidate": 5,
+          "description": "Send Melee units to the front and the Long-ranged to the back.",
+          "tags": [
+            "mode-1:2",
+            "active-slot-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 5,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 5,
+          "activeRowIndex": 5,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 5,
+          "name": "Build Tower",
+          "valueA": 20,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 5,
+          "headerBytes": [
+            0,
+            1,
+            0,
+            100
+          ],
+          "timingWindowA": [
+            0,
+            244,
+            1,
+            10
+          ],
+          "timingWindowB": [
+            44,
+            1,
+            30,
+            0,
+            15,
+            0,
+            2,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            244,
+            1,
+            10
+          ],
+          "timingWindowBCompact": [
+            44,
+            1,
+            30,
+            0,
+            15,
+            0,
+            2,
+            0
+          ],
+          "tailPairBE": [
+            65400,
+            32,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "armageddon",
+      "label": "Armageddon",
+      "archetypeKind": "shared-meteor-buff-channel",
+      "familyType": "shared-slot-hybrid-with-buff",
+      "confidence": "medium",
+      "slots": [
+        15
+      ],
+      "rowNames": [
+        "Armageddon"
+      ],
+      "passiveNames": [
+        "Mana Wall"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 47,
+          "name": "Armageddon",
+          "skillCodeCandidate": 31,
+          "aiCodeCandidate": 8,
+          "modeKey": "0:0",
+          "slotOrPowerCandidate": 15,
+          "description": "Deliver a meteor attack, and then increase your tower's Mana Regeneration.",
+          "tags": [
+            "mode-0:0",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 15,
+          "runtimeType": "shared-slot-multi-skill-buff",
+          "passiveRowIndex": 15,
+          "activeRowIndex": 15,
+          "buffTailRowIndices": [
+            35
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 15,
+          "name": "Mana Wall",
+          "valueA": 20,
+          "valueB": 10,
+          "tailU16": [
+            64,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 15,
+          "headerBytes": [
+            2,
+            3,
+            0,
+            20
+          ],
+          "timingWindowA": [
+            0,
+            100,
+            0,
+            10
+          ],
+          "timingWindowB": [
+            100,
+            0,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            100,
+            0,
+            10
+          ],
+          "timingWindowBCompact": [
+            100,
+            0
+          ],
+          "tailPairBE": [
+            65535,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 35,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 3,
+          "skillCodeCandidate": 8,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "shares slot 15 with Mana Wall",
+        "description points to a meteor attack followed by mana regeneration",
+        "best current engine model is a burst attack over the same shared channel that also emits a buff side effect"
+      ],
+      "evidence": [
+        "has explicit XlsHeroBuffSkill tail-link rows"
+      ]
+    },
+    {
+      "archetypeId": "assassinate",
+      "label": "Assassinate",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        3
+      ],
+      "rowNames": [
+        "Assassinate"
+      ],
+      "passiveNames": [
+        "Assassinate"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 6,
+          "name": "Assassinate",
+          "skillCodeCandidate": 27,
+          "aiCodeCandidate": 11,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 3,
+          "description": "Create a chance of finishing an enemy with one hit.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 3,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 3,
+          "activeRowIndex": 3,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 3,
+          "name": "Assassinate",
+          "valueA": 10,
+          "valueB": 2,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 3,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65464,
+            3000,
+            3071,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        },
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "atkup",
+      "label": "ATK Up",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        9
+      ],
+      "rowNames": [
+        "ATK Up"
+      ],
+      "passiveNames": [
+        "ATK Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 18,
+          "name": "ATK Up",
+          "skillCodeCandidate": 11,
+          "aiCodeCandidate": 10,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 9,
+          "description": "Increase your hero's basic Attack Strength.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 9,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 9,
+          "activeRowIndex": 9,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 9,
+          "name": "ATK Up",
+          "valueA": 10,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 9,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65368,
+            656,
+            511,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "balance",
+      "label": "Balance",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        13
+      ],
+      "rowNames": [
+        "Balance"
+      ],
+      "passiveNames": [
+        "Helba Tower Defense"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 42,
+          "name": "Balance",
+          "skillCodeCandidate": 9,
+          "aiCodeCandidate": 3,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 13,
+          "description": "Equalize the HP of surrounding units.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 13,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 13,
+          "activeRowIndex": 13,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 13,
+          "name": "Helba Tower Defense",
+          "valueA": 20,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "tower-defense-alias"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 13,
+          "headerBytes": [
+            1,
+            3,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65344,
+            16,
+            0,
+            3
+          ],
+          "tailLink": {
+            "index": 13,
+            "headerBytes": [
+              1,
+              3,
+              0,
+              255
+            ],
+            "tailPairBE": [
+              65344,
+              16,
+              0,
+              3
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  0,
+                  3
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [
+                  {
+                    "index": 3,
+                    "familyCandidate": 0,
+                    "effectIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 0,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 0,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 10,
+                    "motionCandidate": 2
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "berserk",
+      "label": "Berserk",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        1
+      ],
+      "rowNames": [
+        "Berserk"
+      ],
+      "passiveNames": [
+        "Dodge"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 26,
+          "name": "Berserk",
+          "skillCodeCandidate": 9,
+          "aiCodeCandidate": 5,
+          "modeKey": "1:2",
+          "slotOrPowerCandidate": 1,
+          "description": "Increase the Attack Speed of surrounding units.",
+          "tags": [
+            "mode-1:2",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 1,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 1,
+          "activeRowIndex": 1,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 1,
+          "name": "Dodge",
+          "valueA": 25,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 1,
+          "headerBytes": [
+            0,
+            0,
+            0,
+            20
+          ],
+          "timingWindowA": [
+            0,
+            100,
+            0,
+            20
+          ],
+          "timingWindowB": [
+            100,
+            0,
+            10,
+            0,
+            5,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            100,
+            0,
+            20
+          ],
+          "timingWindowBCompact": [
+            100,
+            0,
+            10,
+            0,
+            5,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            3,
+            2,
+            255,
+            65535
+          ],
+          "tailLink": {
+            "index": 1,
+            "headerBytes": [
+              0,
+              0,
+              0,
+              20
+            ],
+            "tailPairBE": [
+              3,
+              2,
+              255,
+              65535
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  3,
+                  2
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [
+                  {
+                    "index": 26,
+                    "familyCandidate": 3,
+                    "effectIdCandidate": 2,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "bomb",
+      "label": "Bomb",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        5
+      ],
+      "rowNames": [
+        "Bomb"
+      ],
+      "passiveNames": [
+        "Build Tower"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 10,
+          "name": "Bomb",
+          "skillCodeCandidate": 9,
+          "aiCodeCandidate": 7,
+          "modeKey": "255:0",
+          "slotOrPowerCandidate": 5,
+          "description": "Throw a bomb that pushes enemies backward with damage.",
+          "tags": [
+            "mode-255:0",
+            "active-slot-linked",
+            "skill-ai-skill-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 5,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 5,
+          "activeRowIndex": 5,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 5,
+          "name": "Build Tower",
+          "valueA": 20,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 5,
+          "headerBytes": [
+            0,
+            1,
+            0,
+            100
+          ],
+          "timingWindowA": [
+            0,
+            244,
+            1,
+            10
+          ],
+          "timingWindowB": [
+            44,
+            1,
+            30,
+            0,
+            15,
+            0,
+            2,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            244,
+            1,
+            10
+          ],
+          "timingWindowBCompact": [
+            44,
+            1,
+            30,
+            0,
+            15,
+            0,
+            2,
+            0
+          ],
+          "tailPairBE": [
+            65400,
+            32,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "buildtower",
+      "label": "Build Tower",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        5
+      ],
+      "rowNames": [
+        "Build Tower"
+      ],
+      "passiveNames": [
+        "Build Tower"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 7,
+          "name": "Build Tower",
+          "skillCodeCandidate": 31,
+          "aiCodeCandidate": 13,
+          "modeKey": "0:1",
+          "slotOrPowerCandidate": 5,
+          "description": "Increase your tower's Defense.",
+          "tags": [
+            "mode-0:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 5,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 5,
+          "activeRowIndex": 5,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 5,
+          "name": "Build Tower",
+          "valueA": 20,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 5,
+          "headerBytes": [
+            0,
+            1,
+            0,
+            100
+          ],
+          "timingWindowA": [
+            0,
+            244,
+            1,
+            10
+          ],
+          "timingWindowB": [
+            44,
+            1,
+            30,
+            0,
+            15,
+            0,
+            2,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            244,
+            1,
+            10
+          ],
+          "timingWindowBCompact": [
+            44,
+            1,
+            30,
+            0,
+            15,
+            0,
+            2,
+            0
+          ],
+          "tailPairBE": [
+            65400,
+            32,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "charge",
+      "label": "Charge",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        2
+      ],
+      "rowNames": [
+        "Charge"
+      ],
+      "passiveNames": [
+        "Shuriken"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 24,
+          "name": "Charge",
+          "skillCodeCandidate": 1,
+          "aiCodeCandidate": 6,
+          "modeKey": "1:2",
+          "slotOrPowerCandidate": 2,
+          "description": "Increase the Movement Speed of surrounding units.",
+          "tags": [
+            "mode-1:2",
+            "active-slot-linked",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 2,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 2,
+          "activeRowIndex": 2,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 2,
+          "name": "Shuriken",
+          "valueA": 20,
+          "valueB": 20,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 2,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            50,
+            0,
+            10
+          ],
+          "timingWindowB": [
+            20,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            50,
+            0,
+            10
+          ],
+          "timingWindowBCompact": [
+            20,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            3,
+            0,
+            8,
+            4
+          ],
+          "tailLink": {
+            "index": 2,
+            "headerBytes": [
+              0,
+              3,
+              0,
+              1
+            ],
+            "tailPairBE": [
+              3,
+              0,
+              8,
+              4
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  3,
+                  0
+                ],
+                "projectileExactMatches": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ],
+                "effectExactMatches": [
+                  {
+                    "index": 24,
+                    "familyCandidate": 3,
+                    "effectIdCandidate": 0,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  8,
+                  4
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 8,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 8,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 15,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "convertspirit",
+      "label": "Convert Spirit",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        12
+      ],
+      "rowNames": [
+        "Convert Spirit"
+      ],
+      "passiveNames": [
+        "Deflect"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 45,
+          "name": "Convert Spirit",
+          "skillCodeCandidate": 21,
+          "aiCodeCandidate": 2,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 12,
+          "description": "Convert your hero's HP to MP.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 12,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 12,
+          "activeRowIndex": 12,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 12,
+          "name": "Deflect",
+          "valueA": 2,
+          "valueB": 2,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 12,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65330,
+            0,
+            1,
+            1
+          ],
+          "tailLink": {
+            "index": 12,
+            "headerBytes": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "tailPairBE": [
+              65330,
+              0,
+              1,
+              1
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  1,
+                  1
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [
+                  {
+                    "index": 11,
+                    "familyCandidate": 1,
+                    "effectIdCandidate": 1,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 1
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 2,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 1,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 10,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "defensestance",
+      "label": "Defense Stance",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        0
+      ],
+      "rowNames": [
+        "Defense Stance"
+      ],
+      "passiveNames": [
+        "HP Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 13,
+          "name": "Defense Stance",
+          "skillCodeCandidate": 21,
+          "aiCodeCandidate": 4,
+          "modeKey": "0:2",
+          "slotOrPowerCandidate": 0,
+          "description": "Command your soldiers to take a defensive stance.",
+          "tags": [
+            "mode-0:2",
+            "active-slot-linked",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 0,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 0,
+          "activeRowIndex": 0,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 0,
+          "name": "HP Up",
+          "valueA": 200,
+          "valueB": 200,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 0,
+          "headerBytes": [
+            2,
+            0,
+            0,
+            15
+          ],
+          "timingWindowA": [
+            39,
+            50,
+            0,
+            5
+          ],
+          "timingWindowB": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "timingWindowACompact": [
+            39,
+            50,
+            0,
+            5
+          ],
+          "timingWindowBCompact": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailPairBE": [
+            4,
+            1,
+            6,
+            2
+          ],
+          "tailLink": {
+            "index": 0,
+            "headerBytes": [
+              2,
+              0,
+              0,
+              15
+            ],
+            "tailPairBE": [
+              4,
+              1,
+              6,
+              2
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  4,
+                  1
+                ],
+                "projectileExactMatches": [
+                  {
+                    "index": 5,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 4,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 5,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 4,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  6,
+                  2
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 6,
+                    "familyCandidate": 5,
+                    "projectileIdCandidate": 6,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 20,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "deflect",
+      "label": "Deflect",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        12
+      ],
+      "rowNames": [
+        "Deflect"
+      ],
+      "passiveNames": [
+        "Deflect"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 21,
+          "name": "Deflect",
+          "skillCodeCandidate": 23,
+          "aiCodeCandidate": 13,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 12,
+          "description": "Build muscle to deflect attackers.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 12,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 12,
+          "activeRowIndex": 12,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 12,
+          "name": "Deflect",
+          "valueA": 2,
+          "valueB": 2,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 12,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65330,
+            0,
+            1,
+            1
+          ],
+          "tailLink": {
+            "index": 12,
+            "headerBytes": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "tailPairBE": [
+              65330,
+              0,
+              1,
+              1
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  1,
+                  1
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [
+                  {
+                    "index": 11,
+                    "familyCandidate": 1,
+                    "effectIdCandidate": 1,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 1
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 2,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 1,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 10,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "defup",
+      "label": "DEF Up",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        8
+      ],
+      "rowNames": [
+        "DEF Up"
+      ],
+      "passiveNames": [
+        "DEF Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 19,
+          "name": "DEF Up",
+          "skillCodeCandidate": 15,
+          "aiCodeCandidate": 9,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 8,
+          "description": "Increase your hero's Defense.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 8,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 8,
+          "activeRowIndex": 8,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 8,
+          "name": "DEF Up",
+          "valueA": 20,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 8,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            40,
+            10,
+            160,
+            16
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "dispatch",
+      "label": "Dispatch",
+      "archetypeKind": "respawn-redeploy-cooldown-ladder",
+      "familyType": "multi-slot-ladder-with-buff",
+      "confidence": "high",
+      "slots": [
+        20,
+        21,
+        22
+      ],
+      "rowNames": [
+        "Dispatch"
+      ],
+      "passiveNames": [
+        "Dispatch"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 4,
+          "name": "Dispatch",
+          "skillCodeCandidate": 19,
+          "aiCodeCandidate": 0,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 20,
+          "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "buff-tail-linked"
+          ]
+        },
+        {
+          "index": 23,
+          "name": "Dispatch",
+          "skillCodeCandidate": 31,
+          "aiCodeCandidate": 0,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 21,
+          "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "buff-tail-linked"
+          ]
+        },
+        {
+          "index": 38,
+          "name": "Dispatch",
+          "skillCodeCandidate": 27,
+          "aiCodeCandidate": 0,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 22,
+          "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 20,
+          "runtimeType": "passive-active-buff",
+          "passiveRowIndex": 20,
+          "activeRowIndex": 20,
+          "buffTailRowIndices": [
+            1
+          ]
+        },
+        {
+          "slot": 21,
+          "runtimeType": "passive-active-buff",
+          "passiveRowIndex": 21,
+          "activeRowIndex": 21,
+          "buffTailRowIndices": [
+            2
+          ]
+        },
+        {
+          "slot": 22,
+          "runtimeType": "passive-active-buff",
+          "passiveRowIndex": 22,
+          "activeRowIndex": 22,
+          "buffTailRowIndices": [
+            3
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 20,
+          "name": "Dispatch",
+          "valueA": 65376,
+          "valueB": 65376,
+          "tailU16": [
+            65520,
+            65520
+          ],
+          "matchKind": "exact-name"
+        },
+        {
+          "index": 21,
+          "name": "Dispatch",
+          "valueA": 65376,
+          "valueB": 65376,
+          "tailU16": [
+            65520,
+            65520
+          ],
+          "matchKind": "exact-name"
+        },
+        {
+          "index": 22,
+          "name": "Dispatch",
+          "valueA": 65376,
+          "valueB": 65376,
+          "tailU16": [
+            65520,
+            65520
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 20,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            208,
+            7,
+            0
+          ],
+          "timingWindowB": [
+            0,
+            0,
+            10,
+            0,
+            10,
+            0,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            208,
+            7,
+            0
+          ],
+          "timingWindowBCompact": [
+            0,
+            0,
+            10,
+            0,
+            10,
+            0
+          ],
+          "tailPairBE": [
+            65340,
+            0,
+            255,
+            65535
+          ]
+        },
+        {
+          "index": 21,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            160,
+            15,
+            0
+          ],
+          "timingWindowB": [
+            0,
+            0,
+            20,
+            0,
+            20,
+            0,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            160,
+            15,
+            0
+          ],
+          "timingWindowBCompact": [
+            0,
+            0,
+            20,
+            0,
+            20,
+            0
+          ],
+          "tailPairBE": [
+            65360,
+            0,
+            255,
+            65535
+          ]
+        },
+        {
+          "index": 22,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            232,
+            3,
+            0
+          ],
+          "timingWindowB": [
+            0,
+            0,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            232,
+            3,
+            0
+          ],
+          "timingWindowBCompact": [
+            0,
+            0
+          ],
+          "tailPairBE": [
+            65300,
+            0,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 1,
+          "familyCandidate": 0,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 2,
+          "skillCodeCandidate": 11,
+          "profileCandidate": 5
+        },
+        {
+          "index": 2,
+          "familyCandidate": 0,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 2,
+          "skillCodeCandidate": 9,
+          "profileCandidate": 3
+        },
+        {
+          "index": 3,
+          "familyCandidate": 0,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 2,
+          "skillCodeCandidate": 9,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        },
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [],
+      "mechanicHints": [
+        "multi-tier reduction of hero redispatch or respawn delay",
+        "each tier has its own active cadence and triggerMode=2 buff row",
+        "best current engine model is a progression ladder, not three unrelated skills"
+      ],
+      "evidence": [
+        "has explicit XlsHeroBuffSkill tail-link rows",
+        "spans multiple slots, which is consistent with tier ladders or hero variants"
+      ]
+    },
+    {
+      "archetypeId": "dodge",
+      "label": "Dodge",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        1
+      ],
+      "rowNames": [
+        "Dodge"
+      ],
+      "passiveNames": [
+        "Dodge"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 5,
+          "name": "Dodge",
+          "skillCodeCandidate": 23,
+          "aiCodeCandidate": 9,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 1,
+          "description": "Create a chance of evading the enemy's attack.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 1,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 1,
+          "activeRowIndex": 1,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 1,
+          "name": "Dodge",
+          "valueA": 25,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 1,
+          "headerBytes": [
+            0,
+            0,
+            0,
+            20
+          ],
+          "timingWindowA": [
+            0,
+            100,
+            0,
+            20
+          ],
+          "timingWindowB": [
+            100,
+            0,
+            10,
+            0,
+            5,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            100,
+            0,
+            20
+          ],
+          "timingWindowBCompact": [
+            100,
+            0,
+            10,
+            0,
+            5,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            3,
+            2,
+            255,
+            65535
+          ],
+          "tailLink": {
+            "index": 1,
+            "headerBytes": [
+              0,
+              0,
+              0,
+              20
+            ],
+            "tailPairBE": [
+              3,
+              2,
+              255,
+              65535
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  3,
+                  2
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [
+                  {
+                    "index": 26,
+                    "familyCandidate": 3,
+                    "effectIdCandidate": 2,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "draft",
+      "label": "Draft",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        4
+      ],
+      "rowNames": [
+        "Draft"
+      ],
+      "passiveNames": [
+        "Snatch"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 28,
+          "name": "Draft",
+          "skillCodeCandidate": 17,
+          "aiCodeCandidate": 8,
+          "modeKey": "0:2",
+          "slotOrPowerCandidate": 4,
+          "description": "Draft soldiers to reduce Respawn Delay.",
+          "tags": [
+            "mode-0:2",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "active-tail-hint"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 4,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 4,
+          "activeRowIndex": 4,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 4,
+          "name": "Snatch",
+          "valueA": 10,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 4,
+          "headerBytes": [
+            2,
+            3,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65285,
+            1,
+            24,
+            8
+          ],
+          "tailLink": {
+            "index": 4,
+            "headerBytes": [
+              2,
+              3,
+              0,
+              255
+            ],
+            "tailPairBE": [
+              65285,
+              1,
+              24,
+              8
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  24,
+                  8
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 24,
+                    "familyCandidate": 7,
+                    "projectileIdCandidate": 24,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 1,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has projectile or effect hints in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "encourage",
+      "label": "Encourage",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        6
+      ],
+      "rowNames": [
+        "Encourage"
+      ],
+      "passiveNames": [
+        "Thief Tower Defense"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 40,
+          "name": "Encourage",
+          "skillCodeCandidate": 1,
+          "aiCodeCandidate": 5,
+          "modeKey": "1:2",
+          "slotOrPowerCandidate": 6,
+          "description": "Increase the damage and range of Long-ranged units.",
+          "tags": [
+            "mode-1:2",
+            "active-slot-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 6,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 6,
+          "activeRowIndex": 6,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 6,
+          "name": "Thief Tower Defense",
+          "valueA": 65528,
+          "valueB": 65528,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "tower-defense-alias"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 6,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            15
+          ],
+          "timingWindowA": [
+            39,
+            232,
+            3,
+            10
+          ],
+          "timingWindowB": [
+            244,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "timingWindowACompact": [
+            39,
+            232,
+            3,
+            10
+          ],
+          "timingWindowBCompact": [
+            244,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailPairBE": [
+            65282,
+            2,
+            120,
+            32
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "feast",
+      "label": "Feast",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        9
+      ],
+      "rowNames": [
+        "Feast"
+      ],
+      "passiveNames": [
+        "ATK Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 25,
+          "name": "Feast",
+          "skillCodeCandidate": 5,
+          "aiCodeCandidate": 3,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 9,
+          "description": "Eat meat to restore HP.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 9,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 9,
+          "activeRowIndex": 9,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 9,
+          "name": "ATK Up",
+          "valueA": 10,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 9,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65368,
+            656,
+            511,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "hpup",
+      "label": "HP Up",
+      "archetypeKind": "stat-ladder-with-shared-channel",
+      "familyType": "multi-slot-ladder-with-buff",
+      "confidence": "medium",
+      "slots": [
+        0,
+        7,
+        14
+      ],
+      "rowNames": [
+        "HP Up"
+      ],
+      "passiveNames": [
+        "HP Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 1,
+          "name": "HP Up",
+          "skillCodeCandidate": 7,
+          "aiCodeCandidate": 14,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 0,
+          "description": "Increase your hero's Max HP.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "active-exact-tail-hit"
+          ]
+        },
+        {
+          "index": 16,
+          "name": "HP Up",
+          "skillCodeCandidate": 3,
+          "aiCodeCandidate": 15,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 7,
+          "description": "Increase your hero's Max HP.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "active-tail-hint"
+          ]
+        },
+        {
+          "index": 32,
+          "name": "HP Up",
+          "skillCodeCandidate": 5,
+          "aiCodeCandidate": 14,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 14,
+          "description": "Increase your hero's Max HP.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "active-tail-hint",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 0,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 0,
+          "activeRowIndex": 0,
+          "buffTailRowIndices": []
+        },
+        {
+          "slot": 7,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 7,
+          "activeRowIndex": 7,
+          "buffTailRowIndices": []
+        },
+        {
+          "slot": 14,
+          "runtimeType": "shared-slot-multi-skill-buff",
+          "passiveRowIndex": 14,
+          "activeRowIndex": 14,
+          "buffTailRowIndices": [
+            36,
+            37
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 0,
+          "name": "HP Up",
+          "valueA": 200,
+          "valueB": 200,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        },
+        {
+          "index": 7,
+          "name": "HP Up",
+          "valueA": 300,
+          "valueB": 300,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        },
+        {
+          "index": 14,
+          "name": "HP Up",
+          "valueA": 100,
+          "valueB": 100,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 0,
+          "headerBytes": [
+            2,
+            0,
+            0,
+            15
+          ],
+          "timingWindowA": [
+            39,
+            50,
+            0,
+            5
+          ],
+          "timingWindowB": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "timingWindowACompact": [
+            39,
+            50,
+            0,
+            5
+          ],
+          "timingWindowBCompact": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailPairBE": [
+            4,
+            1,
+            6,
+            2
+          ],
+          "tailLink": {
+            "index": 0,
+            "headerBytes": [
+              2,
+              0,
+              0,
+              15
+            ],
+            "tailPairBE": [
+              4,
+              1,
+              6,
+              2
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  4,
+                  1
+                ],
+                "projectileExactMatches": [
+                  {
+                    "index": 5,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 4,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 5,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 4,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  6,
+                  2
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 6,
+                    "familyCandidate": 5,
+                    "projectileIdCandidate": 6,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 20,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "index": 7,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            100
+          ],
+          "timingWindowA": [
+            0,
+            10,
+            0,
+            5
+          ],
+          "timingWindowB": [
+            2,
+            0,
+            10,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            10,
+            0,
+            5
+          ],
+          "timingWindowBCompact": [
+            2,
+            0,
+            10,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            48,
+            16,
+            32,
+            16
+          ],
+          "tailLink": {
+            "index": 7,
+            "headerBytes": [
+              0,
+              3,
+              0,
+              100
+            ],
+            "tailPairBE": [
+              48,
+              16,
+              32,
+              16
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  32,
+                  16
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 33,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 32,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 6,
+                    "motionCandidate": 2
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "index": 14,
+          "headerBytes": [
+            1,
+            3,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65310,
+            0,
+            30,
+            8
+          ],
+          "tailLink": {
+            "index": 14,
+            "headerBytes": [
+              1,
+              3,
+              0,
+              255
+            ],
+            "tailPairBE": [
+              65310,
+              0,
+              30,
+              8
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  30,
+                  8
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 31,
+                    "familyCandidate": 6,
+                    "projectileIdCandidate": 30,
+                    "variantCandidate": 255,
+                    "speedOrRangeCandidate": 0,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 36,
+          "familyCandidate": 0,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 3,
+          "skillCodeCandidate": 11,
+          "profileCandidate": 1
+        },
+        {
+          "index": 37,
+          "familyCandidate": 0,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 3,
+          "skillCodeCandidate": 0,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        },
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "three HP Up rows span slots 0, 7, and 14",
+        "slot 14 is shared with Return to Nature and already carries buff rows",
+        "best current engine model is a stat ladder that later shares its channel with an active conversion skill"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE",
+        "has explicit XlsHeroBuffSkill tail-link rows",
+        "spans multiple slots, which is consistent with tier ladders or hero variants"
+      ]
+    },
+    {
+      "archetypeId": "lightning",
+      "label": "Lightning",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        6
+      ],
+      "rowNames": [
+        "Lightning"
+      ],
+      "passiveNames": [
+        "Thief Tower Defense"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 14,
+          "name": "Lightning",
+          "skillCodeCandidate": 25,
+          "aiCodeCandidate": 8,
+          "modeKey": "255:0",
+          "slotOrPowerCandidate": 6,
+          "description": "Drop lightning to inflict damage to the entire enemy.",
+          "tags": [
+            "mode-255:0",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 6,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 6,
+          "activeRowIndex": 6,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 6,
+          "name": "Thief Tower Defense",
+          "valueA": 65528,
+          "valueB": 65528,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "tower-defense-alias"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 6,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            15
+          ],
+          "timingWindowA": [
+            39,
+            232,
+            3,
+            10
+          ],
+          "timingWindowB": [
+            244,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "timingWindowACompact": [
+            39,
+            232,
+            3,
+            10
+          ],
+          "timingWindowBCompact": [
+            244,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailPairBE": [
+            65282,
+            2,
+            120,
+            32
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "lionroar",
+      "label": "Lion Roar",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        7
+      ],
+      "rowNames": [
+        "Lion Roar"
+      ],
+      "passiveNames": [
+        "HP Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 29,
+          "name": "Lion Roar",
+          "skillCodeCandidate": 21,
+          "aiCodeCandidate": 1,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 7,
+          "description": "Shout out loud to Stun enemies and push them backward.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "active-tail-hint"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 7,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 7,
+          "activeRowIndex": 7,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 7,
+          "name": "HP Up",
+          "valueA": 300,
+          "valueB": 300,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 7,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            100
+          ],
+          "timingWindowA": [
+            0,
+            10,
+            0,
+            5
+          ],
+          "timingWindowB": [
+            2,
+            0,
+            10,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            10,
+            0,
+            5
+          ],
+          "timingWindowBCompact": [
+            2,
+            0,
+            10,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            48,
+            16,
+            32,
+            16
+          ],
+          "tailLink": {
+            "index": 7,
+            "headerBytes": [
+              0,
+              3,
+              0,
+              100
+            ],
+            "tailPairBE": [
+              48,
+              16,
+              32,
+              16
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  32,
+                  16
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 33,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 32,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 6,
+                    "motionCandidate": 2
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has projectile or effect hints in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "lotusblizzard",
+      "label": "Lotus Blizzard",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        2
+      ],
+      "rowNames": [
+        "Lotus Blizzard"
+      ],
+      "passiveNames": [
+        "Shuriken"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 15,
+          "name": "Lotus Blizzard",
+          "skillCodeCandidate": 29,
+          "aiCodeCandidate": 3,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 2,
+          "description": "Throw a flurry of blades.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 2,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 2,
+          "activeRowIndex": 2,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 2,
+          "name": "Shuriken",
+          "valueA": 20,
+          "valueB": 20,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 2,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            50,
+            0,
+            10
+          ],
+          "timingWindowB": [
+            20,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            50,
+            0,
+            10
+          ],
+          "timingWindowBCompact": [
+            20,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            3,
+            0,
+            8,
+            4
+          ],
+          "tailLink": {
+            "index": 2,
+            "headerBytes": [
+              0,
+              3,
+              0,
+              1
+            ],
+            "tailPairBE": [
+              3,
+              0,
+              8,
+              4
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  3,
+                  0
+                ],
+                "projectileExactMatches": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ],
+                "effectExactMatches": [
+                  {
+                    "index": 24,
+                    "familyCandidate": 3,
+                    "effectIdCandidate": 0,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  8,
+                  4
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 8,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 8,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 15,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "managain",
+      "label": "Mana Gain",
+      "archetypeKind": "reactive-mana-proc",
+      "familyType": "single-slot-family",
+      "confidence": "high",
+      "slots": [
+        19
+      ],
+      "rowNames": [
+        "Mana Gain"
+      ],
+      "passiveNames": [
+        "Mana Gain"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 39,
+          "name": "Mana Gain",
+          "skillCodeCandidate": 29,
+          "aiCodeCandidate": 13,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 19,
+          "description": "Create a chance of regaining mana when attacked.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 19,
+          "runtimeType": "passive-active-buff",
+          "passiveRowIndex": 19,
+          "activeRowIndex": 19,
+          "buffTailRowIndices": [
+            5
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 19,
+          "name": "Mana Gain",
+          "valueA": 1,
+          "valueB": 1,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 19,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            232,
+            3,
+            0
+          ],
+          "timingWindowB": [
+            0,
+            0,
+            5,
+            0,
+            5,
+            0,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            232,
+            3,
+            0
+          ],
+          "timingWindowBCompact": [
+            0,
+            0,
+            5,
+            0,
+            5,
+            0
+          ],
+          "tailPairBE": [
+            65320,
+            0,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 5,
+          "familyCandidate": 0,
+          "tierCandidate": 2,
+          "triggerModeCandidate": 2,
+          "skillCodeCandidate": 21,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "single-slot passive-active-buff family on slot 19",
+        "description points to mana gain on being hit, which matches a reactive trigger model",
+        "best current engine model is a passive proc with its own active timing gate and buff trigger row"
+      ],
+      "evidence": [
+        "has explicit XlsHeroBuffSkill tail-link rows"
+      ]
+    },
+    {
+      "archetypeId": "manawall",
+      "label": "Mana Wall",
+      "archetypeKind": "shared-defensive-barrier-channel",
+      "familyType": "shared-slot-hybrid-with-buff",
+      "confidence": "medium",
+      "slots": [
+        15
+      ],
+      "rowNames": [
+        "Mana Wall"
+      ],
+      "passiveNames": [
+        "Mana Wall"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 35,
+          "name": "Mana Wall",
+          "skillCodeCandidate": 16,
+          "aiCodeCandidate": 9,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 15,
+          "description": "Create a shield that neutralizes Long-ranged attacks while protecting nearby units.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 15,
+          "runtimeType": "shared-slot-multi-skill-buff",
+          "passiveRowIndex": 15,
+          "activeRowIndex": 15,
+          "buffTailRowIndices": [
+            35
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 15,
+          "name": "Mana Wall",
+          "valueA": 20,
+          "valueB": 10,
+          "tailU16": [
+            64,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 15,
+          "headerBytes": [
+            2,
+            3,
+            0,
+            20
+          ],
+          "timingWindowA": [
+            0,
+            100,
+            0,
+            10
+          ],
+          "timingWindowB": [
+            100,
+            0,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            100,
+            0,
+            10
+          ],
+          "timingWindowBCompact": [
+            100,
+            0
+          ],
+          "tailPairBE": [
+            65535,
+            65535,
+            65535,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 35,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 3,
+          "skillCodeCandidate": 8,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "shares slot 15 with Armageddon",
+        "passive row, active timing, and buff row all live on the same slot",
+        "best current engine model is a defensive barrier channel that can be repurposed by a stronger hero skill mode"
+      ],
+      "evidence": [
+        "has explicit XlsHeroBuffSkill tail-link rows"
+      ]
+    },
+    {
+      "archetypeId": "manespikes",
+      "label": "Mane Spikes",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        10
+      ],
+      "rowNames": [
+        "Mane Spikes"
+      ],
+      "passiveNames": [
+        "Mane Spikes"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 20,
+          "name": "Mane Spikes",
+          "skillCodeCandidate": 19,
+          "aiCodeCandidate": 11,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 10,
+          "description": "Spike your hero's mane to counter his attacker.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 10,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 10,
+          "activeRowIndex": 10,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 10,
+          "name": "Mane Spikes",
+          "valueA": 10,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 10,
+          "headerBytes": [
+            1,
+            1,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65344,
+            16,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "multishot",
+      "label": "Multi Shot",
+      "archetypeKind": "single-slot-runtime",
+      "familyType": "single-slot-family",
+      "confidence": "medium",
+      "slots": [
+        16
+      ],
+      "rowNames": [
+        "Multi Shot"
+      ],
+      "passiveNames": [
+        "Multi Shot"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 34,
+          "name": "Multi Shot",
+          "skillCodeCandidate": 13,
+          "aiCodeCandidate": 10,
+          "modeKey": "0:1",
+          "slotOrPowerCandidate": 16,
+          "description": "Increase your number of Magic Spheres.",
+          "tags": [
+            "mode-0:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 16,
+          "runtimeType": "passive-active",
+          "passiveRowIndex": 16,
+          "activeRowIndex": 16,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 16,
+          "name": "Multi Shot",
+          "valueA": 1,
+          "valueB": 1,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 16,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            100,
+            0,
+            10
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            10,
+            0,
+            2,
+            0,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            100,
+            0,
+            10
+          ],
+          "timingWindowBCompact": [
+            10,
+            0,
+            2,
+            0
+          ],
+          "tailPairBE": [
+            65380,
+            0,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "naturalhealing",
+      "label": "Natural Healing",
+      "archetypeKind": "shared-heal-channel",
+      "familyType": "shared-slot-hybrid-with-buff",
+      "confidence": "medium",
+      "slots": [
+        11
+      ],
+      "rowNames": [
+        "Natural Healing"
+      ],
+      "passiveNames": [
+        "Natural Healing"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 17,
+          "name": "Natural Healing",
+          "skillCodeCandidate": 7,
+          "aiCodeCandidate": 12,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 11,
+          "description": "Improve your natural healing power to restore HP with time.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 11,
+          "runtimeType": "shared-slot-multi-skill-buff",
+          "passiveRowIndex": 11,
+          "activeRowIndex": 11,
+          "buffTailRowIndices": [
+            29,
+            32,
+            33,
+            34
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 11,
+          "name": "Natural Healing",
+          "valueA": 5,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 11,
+          "headerBytes": [
+            1,
+            0,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65344,
+            16,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 29,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 1,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        },
+        {
+          "index": 32,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 0,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        },
+        {
+          "index": 33,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 0,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        },
+        {
+          "index": 34,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 0,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "shares slot 11 with Recall",
+        "best current engine model is a shared runtime channel whose mode changes the outcome from heal-over-time to relocation",
+        "slot 11 has the densest buff bundle in the current data"
+      ],
+      "evidence": [
+        "has explicit XlsHeroBuffSkill tail-link rows"
+      ]
+    },
+    {
+      "archetypeId": "parry",
+      "label": "Parry",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        8
+      ],
+      "rowNames": [
+        "Parry"
+      ],
+      "passiveNames": [
+        "DEF Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 27,
+          "name": "Parry",
+          "skillCodeCandidate": 13,
+          "aiCodeCandidate": 2,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 8,
+          "description": "Return damage to attackers with no damage on your end.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "skill-ai-skill-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 8,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 8,
+          "activeRowIndex": 8,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 8,
+          "name": "DEF Up",
+          "valueA": 20,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 8,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            40,
+            10,
+            160,
+            16
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "poisonmist",
+      "label": "Poison Mist",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        0
+      ],
+      "rowNames": [
+        "Poison Mist"
+      ],
+      "passiveNames": [
+        "HP Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 11,
+          "name": "Poison Mist",
+          "skillCodeCandidate": 13,
+          "aiCodeCandidate": 2,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 0,
+          "description": "Create a poisonous mist that inflicts damage on all surrounding enemies.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 0,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 0,
+          "activeRowIndex": 0,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 0,
+          "name": "HP Up",
+          "valueA": 200,
+          "valueB": 200,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 0,
+          "headerBytes": [
+            2,
+            0,
+            0,
+            15
+          ],
+          "timingWindowA": [
+            39,
+            50,
+            0,
+            5
+          ],
+          "timingWindowB": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "timingWindowACompact": [
+            39,
+            50,
+            0,
+            5
+          ],
+          "timingWindowBCompact": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailPairBE": [
+            4,
+            1,
+            6,
+            2
+          ],
+          "tailLink": {
+            "index": 0,
+            "headerBytes": [
+              2,
+              0,
+              0,
+              15
+            ],
+            "tailPairBE": [
+              4,
+              1,
+              6,
+              2
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  4,
+                  1
+                ],
+                "projectileExactMatches": [
+                  {
+                    "index": 5,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 4,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 5,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 4,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  6,
+                  2
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 6,
+                    "familyCandidate": 5,
+                    "projectileIdCandidate": 6,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 20,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "rally",
+      "label": "Rally",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        10
+      ],
+      "rowNames": [
+        "Rally"
+      ],
+      "passiveNames": [
+        "Mane Spikes"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 31,
+          "name": "Rally",
+          "skillCodeCandidate": 29,
+          "aiCodeCandidate": 4,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 10,
+          "description": "Summon units to your hero's side.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "skill-ai-skill-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 10,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 10,
+          "activeRowIndex": 10,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 10,
+          "name": "Mane Spikes",
+          "valueA": 10,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 10,
+          "headerBytes": [
+            1,
+            1,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65344,
+            16,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "recall",
+      "label": "Recall",
+      "archetypeKind": "shared-relocation-channel",
+      "familyType": "shared-slot-hybrid-with-buff",
+      "confidence": "medium",
+      "slots": [
+        11
+      ],
+      "rowNames": [
+        "Recall"
+      ],
+      "passiveNames": [
+        "Natural Healing"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 44,
+          "name": "Recall",
+          "skillCodeCandidate": 17,
+          "aiCodeCandidate": 1,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 11,
+          "description": "Recall your hero along with surrounding units to the front of your tower.",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 11,
+          "runtimeType": "shared-slot-multi-skill-buff",
+          "passiveRowIndex": 11,
+          "activeRowIndex": 11,
+          "buffTailRowIndices": [
+            29,
+            32,
+            33,
+            34
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 11,
+          "name": "Natural Healing",
+          "valueA": 5,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 11,
+          "headerBytes": [
+            1,
+            0,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65344,
+            16,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 29,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 1,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        },
+        {
+          "index": 32,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 0,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        },
+        {
+          "index": 33,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 0,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        },
+        {
+          "index": 34,
+          "familyCandidate": 1,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 0,
+          "skillCodeCandidate": 15,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "shares slot 11 with Natural Healing",
+        "mode 1:0 differentiates it from the passive-flavored Natural Healing row",
+        "best current engine model is a relocation or regroup command layered on the same runtime slot"
+      ],
+      "evidence": [
+        "has explicit XlsHeroBuffSkill tail-link rows"
+      ]
+    },
+    {
+      "archetypeId": "recharge",
+      "label": "Recharge",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        7
+      ],
+      "rowNames": [
+        "Recharge"
+      ],
+      "passiveNames": [
+        "HP Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 43,
+          "name": "Recharge",
+          "skillCodeCandidate": 11,
+          "aiCodeCandidate": 6,
+          "modeKey": "255:2",
+          "slotOrPowerCandidate": 7,
+          "description": "Increase Mana Regeneration Speed at the cost of your unit production for the skill's duration.",
+          "tags": [
+            "mode-255:2",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "active-tail-hint"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 7,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 7,
+          "activeRowIndex": 7,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 7,
+          "name": "HP Up",
+          "valueA": 300,
+          "valueB": 300,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 7,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            100
+          ],
+          "timingWindowA": [
+            0,
+            10,
+            0,
+            5
+          ],
+          "timingWindowB": [
+            2,
+            0,
+            10,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            10,
+            0,
+            5
+          ],
+          "timingWindowBCompact": [
+            2,
+            0,
+            10,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            48,
+            16,
+            32,
+            16
+          ],
+          "tailLink": {
+            "index": 7,
+            "headerBytes": [
+              0,
+              3,
+              0,
+              100
+            ],
+            "tailPairBE": [
+              48,
+              16,
+              32,
+              16
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  32,
+                  16
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 33,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 32,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 6,
+                    "motionCandidate": 2
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has projectile or effect hints in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "repair",
+      "label": "Repair",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        3
+      ],
+      "rowNames": [
+        "Repair"
+      ],
+      "passiveNames": [
+        "Assassinate"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 8,
+          "name": "Repair",
+          "skillCodeCandidate": 1,
+          "aiCodeCandidate": 5,
+          "modeKey": "255:0",
+          "slotOrPowerCandidate": 3,
+          "description": "Repair your tower to restore its HP.",
+          "tags": [
+            "mode-255:0",
+            "active-slot-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 3,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 3,
+          "activeRowIndex": 3,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 3,
+          "name": "Assassinate",
+          "valueA": 10,
+          "valueB": 2,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 3,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65464,
+            3000,
+            3071,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        },
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "returntonature",
+      "label": "Return to Nature",
+      "archetypeKind": "shared-resource-conversion-channel",
+      "familyType": "shared-slot-hybrid-with-buff",
+      "confidence": "medium",
+      "slots": [
+        14
+      ],
+      "rowNames": [
+        "Return to Nature"
+      ],
+      "passiveNames": [
+        "HP Up"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 46,
+          "name": "Return to Nature",
+          "skillCodeCandidate": 25,
+          "aiCodeCandidate": 7,
+          "modeKey": "0:0",
+          "slotOrPowerCandidate": 14,
+          "description": "Convert low-HP units into mana. Increase this skill's Level for a higher conversion rate.",
+          "tags": [
+            "mode-0:0",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "active-tail-hint",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 14,
+          "runtimeType": "shared-slot-multi-skill-buff",
+          "passiveRowIndex": 14,
+          "activeRowIndex": 14,
+          "buffTailRowIndices": [
+            36,
+            37
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 14,
+          "name": "HP Up",
+          "valueA": 100,
+          "valueB": 100,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 14,
+          "headerBytes": [
+            1,
+            3,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65310,
+            0,
+            30,
+            8
+          ],
+          "tailLink": {
+            "index": 14,
+            "headerBytes": [
+              1,
+              3,
+              0,
+              255
+            ],
+            "tailPairBE": [
+              65310,
+              0,
+              30,
+              8
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  30,
+                  8
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 31,
+                    "familyCandidate": 6,
+                    "projectileIdCandidate": 30,
+                    "variantCandidate": 255,
+                    "speedOrRangeCandidate": 0,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 36,
+          "familyCandidate": 0,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 3,
+          "skillCodeCandidate": 11,
+          "profileCandidate": 1
+        },
+        {
+          "index": 37,
+          "familyCandidate": 0,
+          "tierCandidate": 0,
+          "triggerModeCandidate": 3,
+          "skillCodeCandidate": 0,
+          "profileCandidate": 1
+        }
+      ],
+      "skillAiBySkillCode": [
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "shares slot 14 with HP Up",
+        "description and skill-ai linkage both point to mana conversion instead of a pure passive stat change",
+        "best current engine model is an active conversion skill layered on the HP Up channel"
+      ],
+      "evidence": [
+        "has projectile or effect hints in XlsHeroActiveSkill.tailPairBE",
+        "has explicit XlsHeroBuffSkill tail-link rows"
+      ]
+    },
+    {
+      "archetypeId": "shuriken",
+      "label": "Shuriken",
+      "archetypeKind": "multi-tier-runtime-ladder",
+      "familyType": "multi-slot-ladder",
+      "confidence": "medium",
+      "slots": [
+        1,
+        2
+      ],
+      "rowNames": [
+        "Shuriken"
+      ],
+      "passiveNames": [
+        "Dodge",
+        "Shuriken"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 2,
+          "name": "Shuriken",
+          "skillCodeCandidate": 11,
+          "aiCodeCandidate": 10,
+          "modeKey": "0:1",
+          "slotOrPowerCandidate": 2,
+          "description": "Increase your hero's  Long-ranged Attack Strength, even while defending the tower.",
+          "tags": [
+            "mode-0:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code",
+            "active-exact-tail-hit"
+          ]
+        },
+        {
+          "index": 9,
+          "name": "Shuriken",
+          "skillCodeCandidate": 5,
+          "aiCodeCandidate": 1,
+          "modeKey": "1:0",
+          "slotOrPowerCandidate": 1,
+          "description": "Throw a giant shuriken that pushes an enemy backward with a shock wave. ",
+          "tags": [
+            "mode-1:0",
+            "active-slot-linked",
+            "active-exact-tail-hit"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 1,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 1,
+          "activeRowIndex": 1,
+          "buffTailRowIndices": []
+        },
+        {
+          "slot": 2,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 2,
+          "activeRowIndex": 2,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 1,
+          "name": "Dodge",
+          "valueA": 25,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        },
+        {
+          "index": 2,
+          "name": "Shuriken",
+          "valueA": 20,
+          "valueB": 20,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 1,
+          "headerBytes": [
+            0,
+            0,
+            0,
+            20
+          ],
+          "timingWindowA": [
+            0,
+            100,
+            0,
+            20
+          ],
+          "timingWindowB": [
+            100,
+            0,
+            10,
+            0,
+            5,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            100,
+            0,
+            20
+          ],
+          "timingWindowBCompact": [
+            100,
+            0,
+            10,
+            0,
+            5,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            3,
+            2,
+            255,
+            65535
+          ],
+          "tailLink": {
+            "index": 1,
+            "headerBytes": [
+              0,
+              0,
+              0,
+              20
+            ],
+            "tailPairBE": [
+              3,
+              2,
+              255,
+              65535
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  3,
+                  2
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [
+                  {
+                    "index": 26,
+                    "familyCandidate": 3,
+                    "effectIdCandidate": 2,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "index": 2,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            50,
+            0,
+            10
+          ],
+          "timingWindowB": [
+            20,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "timingWindowACompact": [
+            0,
+            50,
+            0,
+            10
+          ],
+          "timingWindowBCompact": [
+            20,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "tailPairBE": [
+            3,
+            0,
+            8,
+            4
+          ],
+          "tailLink": {
+            "index": 2,
+            "headerBytes": [
+              0,
+              3,
+              0,
+              1
+            ],
+            "tailPairBE": [
+              3,
+              0,
+              8,
+              4
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  3,
+                  0
+                ],
+                "projectileExactMatches": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ],
+                "effectExactMatches": [
+                  {
+                    "index": 24,
+                    "familyCandidate": 3,
+                    "effectIdCandidate": 0,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 4,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 8,
+                    "motionCandidate": 0
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  8,
+                  4
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 8,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 8,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 15,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family spans multiple slots, so upgrade tier or hero variant should be modeled as indexed runtime rows",
+        "multiple active rows exist, so the remake engine should not collapse them into a single timing profile"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE",
+        "spans multiple slots, which is consistent with tier ladders or hero variants"
+      ]
+    },
+    {
+      "archetypeId": "smoke",
+      "label": "Smoke",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        4
+      ],
+      "rowNames": [
+        "Smoke"
+      ],
+      "passiveNames": [
+        "Snatch"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 12,
+          "name": "Smoke",
+          "skillCodeCandidate": 17,
+          "aiCodeCandidate": 6,
+          "modeKey": "255:0",
+          "slotOrPowerCandidate": 4,
+          "description": "Create smoke in front of your tower to incapacitate the enemy.",
+          "tags": [
+            "mode-255:0",
+            "active-slot-linked",
+            "active-tail-hint"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 4,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 4,
+          "activeRowIndex": 4,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 4,
+          "name": "Snatch",
+          "valueA": 10,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 4,
+          "headerBytes": [
+            2,
+            3,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65285,
+            1,
+            24,
+            8
+          ],
+          "tailLink": {
+            "index": 4,
+            "headerBytes": [
+              2,
+              3,
+              0,
+              255
+            ],
+            "tailPairBE": [
+              65285,
+              1,
+              24,
+              8
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  24,
+                  8
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 24,
+                    "familyCandidate": 7,
+                    "projectileIdCandidate": 24,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 1,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has projectile or effect hints in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "snatch",
+      "label": "Snatch",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        4
+      ],
+      "rowNames": [
+        "Snatch"
+      ],
+      "passiveNames": [
+        "Snatch"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 0,
+          "name": "Snatch",
+          "skillCodeCandidate": 3,
+          "aiCodeCandidate": 12,
+          "modeKey": "0:1",
+          "slotOrPowerCandidate": 4,
+          "description": "Use your hero to kill an enemy and steal mana. The higher the Skill Level is, the more mana stolen.",
+          "tags": [
+            "mode-0:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "active-tail-hint"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 4,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 4,
+          "activeRowIndex": 4,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 4,
+          "name": "Snatch",
+          "valueA": 10,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 4,
+          "headerBytes": [
+            2,
+            3,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65285,
+            1,
+            24,
+            8
+          ],
+          "tailLink": {
+            "index": 4,
+            "headerBytes": [
+              2,
+              3,
+              0,
+              255
+            ],
+            "tailPairBE": [
+              65285,
+              1,
+              24,
+              8
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  24,
+                  8
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 24,
+                    "familyCandidate": 7,
+                    "projectileIdCandidate": 24,
+                    "variantCandidate": 1,
+                    "speedOrRangeCandidate": 1,
+                    "motionCandidate": 0
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": [
+        "has projectile or effect hints in XlsHeroActiveSkill.tailPairBE"
+      ]
+    },
+    {
+      "archetypeId": "special-armageddonbuff",
+      "label": "Armageddon Buff (Special)",
+      "archetypeKind": "special-command",
+      "familyType": "special-family",
+      "confidence": "low",
+      "slots": [
+        31
+      ],
+      "rowNames": [
+        "Armageddon Buff"
+      ],
+      "passiveNames": [],
+      "heroSkillRows": [
+        {
+          "index": 50,
+          "name": "Armageddon Buff",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 8,
+          "modeKey": "0:2",
+          "slotOrPowerCandidate": 31,
+          "description": "None",
+          "tags": [
+            "mode-0:2",
+            "skill-ai-ai-code",
+            "special-slot-29plus"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 31,
+          "runtimeType": "special-command-slot",
+          "passiveRowIndex": null,
+          "activeRowIndex": null,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [],
+      "activeRows": [],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "special slot outside the passive and active runtime tables",
+        "best current treatment is a follow-up buff command tied to Armageddon rather than a standalone learnable skill"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "special-smoke",
+      "label": "Smoke (Special)",
+      "archetypeKind": "special-command",
+      "familyType": "special-family",
+      "confidence": "low",
+      "slots": [
+        30
+      ],
+      "rowNames": [
+        "Smoke"
+      ],
+      "passiveNames": [],
+      "heroSkillRows": [
+        {
+          "index": 49,
+          "name": "Smoke",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 8,
+          "modeKey": "0:2",
+          "slotOrPowerCandidate": 30,
+          "description": "None",
+          "tags": [
+            "mode-0:2",
+            "skill-ai-ai-code",
+            "special-slot-29plus"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 30,
+          "runtimeType": "special-command-slot",
+          "passiveRowIndex": null,
+          "activeRowIndex": null,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [],
+      "activeRows": [],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "special slot outside the passive and active runtime tables",
+        "shares aiCode 8 lineage with Armageddon Buff, which suggests effect-script usage rather than a normal hero-skill row"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "special-stun",
+      "label": "Stun (Special)",
+      "archetypeKind": "special-command",
+      "familyType": "special-family",
+      "confidence": "low",
+      "slots": [
+        29
+      ],
+      "rowNames": [
+        "Stun"
+      ],
+      "passiveNames": [],
+      "heroSkillRows": [
+        {
+          "index": 48,
+          "name": "Stun",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 0,
+          "modeKey": "0:2",
+          "slotOrPowerCandidate": 29,
+          "description": "None",
+          "tags": [
+            "mode-0:2",
+            "special-slot-29plus"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 29,
+          "runtimeType": "special-command-slot",
+          "passiveRowIndex": null,
+          "activeRowIndex": null,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [],
+      "activeRows": [],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [],
+      "mechanicHints": [
+        "special slot outside the passive and active runtime tables",
+        "current best treatment is as an event-only command or status opcode payload"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "temptation",
+      "label": "Temptation",
+      "archetypeKind": "single-slot-runtime",
+      "familyType": "single-slot-family",
+      "confidence": "medium",
+      "slots": [
+        17
+      ],
+      "rowNames": [
+        "Temptation"
+      ],
+      "passiveNames": [
+        "Temptation"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 37,
+          "name": "Temptation",
+          "skillCodeCandidate": 23,
+          "aiCodeCandidate": 11,
+          "modeKey": "0:1",
+          "slotOrPowerCandidate": 17,
+          "description": "Create a chance of convering enemy units to your side.",
+          "tags": [
+            "mode-0:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 17,
+          "runtimeType": "passive-active",
+          "passiveRowIndex": 17,
+          "activeRowIndex": 17,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 17,
+          "name": "Temptation",
+          "valueA": 1,
+          "valueB": 1,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 17,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            200,
+            0,
+            10
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            15,
+            0,
+            3,
+            0,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            200,
+            0,
+            10
+          ],
+          "timingWindowBCompact": [
+            15,
+            0,
+            3,
+            0
+          ],
+          "tailPairBE": [
+            65430,
+            0,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "tower-defense",
+      "label": "Defend Tower / Tower Defense",
+      "archetypeKind": "tower-defense-stance-ladder",
+      "familyType": "multi-slot-ladder-with-buff",
+      "confidence": "high",
+      "slots": [
+        6,
+        13,
+        23
+      ],
+      "rowNames": [
+        "Defend Tower"
+      ],
+      "passiveNames": [
+        "Helba Tower Defense",
+        "Juno Tower Defense",
+        "Thief Tower Defense"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 3,
+          "name": "Defend Tower",
+          "skillCodeCandidate": 15,
+          "aiCodeCandidate": 15,
+          "modeKey": "255:1",
+          "slotOrPowerCandidate": 6,
+          "description": "Attack with shurikens while in the tower. Increase this skill's Level to increase Attack Speed.",
+          "tags": [
+            "mode-255:1",
+            "passive-slot-linked",
+            "tower-defense-alias",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code"
+          ]
+        },
+        {
+          "index": 22,
+          "name": "Defend Tower",
+          "skillCodeCandidate": 27,
+          "aiCodeCandidate": 14,
+          "modeKey": "255:1",
+          "slotOrPowerCandidate": 13,
+          "description": "Attack the enemy while in your tower. Increase this skill's Level for improved damage.",
+          "tags": [
+            "mode-255:1",
+            "passive-slot-linked",
+            "tower-defense-alias",
+            "active-slot-linked",
+            "skill-ai-skill-code",
+            "skill-ai-ai-code",
+            "active-exact-tail-hit"
+          ]
+        },
+        {
+          "index": 33,
+          "name": "Defend Tower",
+          "skillCodeCandidate": 7,
+          "aiCodeCandidate": 15,
+          "modeKey": "255:1",
+          "slotOrPowerCandidate": 23,
+          "description": "Enable to shoot Magic Spheres while in your tower. Increase this skill's Level for a broader Attack Range.",
+          "tags": [
+            "mode-255:1",
+            "passive-slot-linked",
+            "tower-defense-alias",
+            "active-slot-linked",
+            "skill-ai-ai-code",
+            "buff-tail-linked"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 6,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 6,
+          "activeRowIndex": 6,
+          "buffTailRowIndices": []
+        },
+        {
+          "slot": 13,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 13,
+          "activeRowIndex": 13,
+          "buffTailRowIndices": []
+        },
+        {
+          "slot": 23,
+          "runtimeType": "passive-active-buff",
+          "passiveRowIndex": 23,
+          "activeRowIndex": 23,
+          "buffTailRowIndices": [
+            6
+          ]
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 6,
+          "name": "Thief Tower Defense",
+          "valueA": 65528,
+          "valueB": 65528,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "tower-defense-alias"
+        },
+        {
+          "index": 13,
+          "name": "Helba Tower Defense",
+          "valueA": 20,
+          "valueB": 10,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "tower-defense-alias"
+        },
+        {
+          "index": 23,
+          "name": "Juno Tower Defense",
+          "valueA": 8,
+          "valueB": 8,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "tower-defense-alias"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 6,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            15
+          ],
+          "timingWindowA": [
+            39,
+            232,
+            3,
+            10
+          ],
+          "timingWindowB": [
+            244,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "timingWindowACompact": [
+            39,
+            232,
+            3,
+            10
+          ],
+          "timingWindowBCompact": [
+            244,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailPairBE": [
+            65282,
+            2,
+            120,
+            32
+          ]
+        },
+        {
+          "index": 13,
+          "headerBytes": [
+            1,
+            3,
+            0,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65344,
+            16,
+            0,
+            3
+          ],
+          "tailLink": {
+            "index": 13,
+            "headerBytes": [
+              1,
+              3,
+              0,
+              255
+            ],
+            "tailPairBE": [
+              65344,
+              16,
+              0,
+              3
+            ],
+            "pairReports": [
+              {
+                "pair": [
+                  0,
+                  3
+                ],
+                "projectileExactMatches": [],
+                "effectExactMatches": [
+                  {
+                    "index": 3,
+                    "familyCandidate": 0,
+                    "effectIdCandidate": 3,
+                    "variantCandidate": 0,
+                    "frameOrDurationCandidate": 1,
+                    "loopFlagCandidate": 1,
+                    "blendFlagCandidate": 0
+                  }
+                ],
+                "particleExactMatches": [],
+                "projectileIdHints": [
+                  {
+                    "index": 0,
+                    "familyCandidate": 0,
+                    "projectileIdCandidate": 0,
+                    "variantCandidate": 0,
+                    "speedOrRangeCandidate": 10,
+                    "motionCandidate": 2
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "index": 23,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            232,
+            3,
+            0
+          ],
+          "timingWindowB": [
+            0,
+            0,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            232,
+            3,
+            0
+          ],
+          "timingWindowBCompact": [
+            0,
+            0
+          ],
+          "tailPairBE": [
+            65320,
+            0,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [
+        {
+          "index": 6,
+          "familyCandidate": 0,
+          "tierCandidate": 4,
+          "triggerModeCandidate": 2,
+          "skillCodeCandidate": 13,
+          "profileCandidate": 10
+        }
+      ],
+      "skillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        },
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        },
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        },
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        },
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "hero-specific tower-defense variants share the same master family",
+        "slot 23 carries the clearest buff bridge, which suggests a hero-variant overlay rather than a separate mechanic family",
+        "best current engine model is a tower-stance attack channel with hero-specific projectile or range tuning"
+      ],
+      "evidence": [
+        "has exact projectile or effect hits in XlsHeroActiveSkill.tailPairBE",
+        "has explicit XlsHeroBuffSkill tail-link rows",
+        "spans multiple slots, which is consistent with tier ladders or hero variants"
+      ]
+    },
+    {
+      "archetypeId": "vampire",
+      "label": "Vampire",
+      "archetypeKind": "single-slot-runtime",
+      "familyType": "single-slot-family",
+      "confidence": "medium",
+      "slots": [
+        18
+      ],
+      "rowNames": [
+        "Vampire"
+      ],
+      "passiveNames": [
+        "Vampire"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 36,
+          "name": "Vampire",
+          "skillCodeCandidate": 19,
+          "aiCodeCandidate": 12,
+          "modeKey": "1:1",
+          "slotOrPowerCandidate": 18,
+          "description": "Restore HP while attacking.",
+          "tags": [
+            "mode-1:1",
+            "passive-slot-linked",
+            "active-slot-linked",
+            "skill-ai-ai-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 18,
+          "runtimeType": "passive-active",
+          "passiveRowIndex": 18,
+          "activeRowIndex": 18,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 18,
+          "name": "Vampire",
+          "valueA": 5,
+          "valueB": 5,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 18,
+          "headerBytes": [
+            0,
+            3,
+            0,
+            1
+          ],
+          "timingWindowA": [
+            0,
+            144,
+            1,
+            10
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            20,
+            0,
+            4,
+            0,
+            255,
+            255
+          ],
+          "timingWindowACompact": [
+            0,
+            144,
+            1,
+            10
+          ],
+          "timingWindowBCompact": [
+            20,
+            0,
+            4,
+            0
+          ],
+          "tailPairBE": [
+            65480,
+            0,
+            255,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [],
+      "skillAiByAiCode": [
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    },
+    {
+      "archetypeId": "wave",
+      "label": "Wave",
+      "archetypeKind": "shared-runtime-channel",
+      "familyType": "shared-slot-hybrid",
+      "confidence": "medium",
+      "slots": [
+        3
+      ],
+      "rowNames": [
+        "Wave"
+      ],
+      "passiveNames": [
+        "Assassinate"
+      ],
+      "heroSkillRows": [
+        {
+          "index": 30,
+          "name": "Wave",
+          "skillCodeCandidate": 25,
+          "aiCodeCandidate": 7,
+          "modeKey": "1:2",
+          "slotOrPowerCandidate": 3,
+          "description": "Muster energy to attack. Increase Movement and Attack Strengths at the cost of your entire Defense.",
+          "tags": [
+            "mode-1:2",
+            "active-slot-linked",
+            "skill-ai-skill-code"
+          ]
+        }
+      ],
+      "slotPayloads": [
+        {
+          "slot": 3,
+          "runtimeType": "shared-slot-multi-skill",
+          "passiveRowIndex": 3,
+          "activeRowIndex": 3,
+          "buffTailRowIndices": []
+        }
+      ],
+      "passiveRows": [
+        {
+          "index": 3,
+          "name": "Assassinate",
+          "valueA": 10,
+          "valueB": 2,
+          "tailU16": [
+            0,
+            0
+          ],
+          "matchKind": "exact-name"
+        }
+      ],
+      "activeRows": [
+        {
+          "index": 3,
+          "headerBytes": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowA": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowB": [
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ],
+          "timingWindowACompact": [],
+          "timingWindowBCompact": [],
+          "tailPairBE": [
+            65464,
+            3000,
+            3071,
+            65535
+          ]
+        }
+      ],
+      "buffRows": [],
+      "skillAiBySkillCode": [
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        },
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "skillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "mechanicHints": [
+        "family currently behaves like one compact runtime row with limited slot variance"
+      ],
+      "evidence": []
+    }
+  ],
+  "findings": [
+    "Dispatch, Tower Defense, HP Up, and other repeated hero-skill names now resolve to engine-facing runtime archetypes rather than only raw slot links.",
+    "Shared-slot hybrids on 11, 14, and 15 are now explicit archetypes, which means the remake runtime can model them as channel-sharing skills instead of unrelated rows.",
+    "Special slots 29, 30, and 31 remain outside the passive and active tables and should still be treated as command or effect-script payloads until stronger evidence appears."
+  ]
+}

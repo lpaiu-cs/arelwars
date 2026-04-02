@@ -44,6 +44,9 @@ def normalize_name(value: str) -> str:
 def canonical_family_id(row: dict[str, Any]) -> str:
     passive = row.get("passiveSlotMatch")
     passive_name = str(passive["name"]) if passive else ""
+    slot = int(row["slotOrPowerCandidate"])
+    if slot >= 29:
+        return f"special-{normalize_name(str(row['name']))}"
     if row["name"] == "Defend Tower" or passive_name.lower().endswith("tower defense"):
         return "tower-defense"
     return normalize_name(str(row["name"]))
@@ -52,6 +55,8 @@ def canonical_family_id(row: dict[str, Any]) -> str:
 def canonical_family_label(family_id: str, rows: list[dict[str, Any]]) -> str:
     if family_id == "tower-defense":
         return "Defend Tower / Tower Defense"
+    if family_id.startswith("special-"):
+        return f"{rows[0]['name']} (Special)"
     counts = Counter(str(row["name"]) for row in rows)
     return counts.most_common(1)[0][0]
 

@@ -17,6 +17,7 @@ Primary outputs:
 - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
 - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
 - [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
+- [AW1.hero_runtime_archetypes.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json)
 
 `AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
 It did not yet reveal a hard `stage -> map payload` pointer on its own.
@@ -273,6 +274,18 @@ Evidence:
     - slot `14`: `HP Up` + `Return to Nature`
     - slot `15`: `Mana Wall` + `Armageddon`
   - slots `29/30/31` remain `special-command-slot` candidates outside the passive/active row range
+  - `Smoke` is now split correctly into:
+    - regular `Smoke` on slot `4`
+    - `Smoke (Special)` on special slot `30`
+- The new engine-facing export [`AW1.hero_runtime_archetypes.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json) promotes those families into remake-ready runtime channels:
+  - `Dispatch` -> `respawn-redeploy-cooldown-ladder`
+  - `Defend Tower / Tower Defense` -> `tower-defense-stance-ladder`
+  - `Natural Healing` -> `shared-heal-channel`
+  - `Recall` -> `shared-relocation-channel`
+  - `Mana Wall` -> `shared-defensive-barrier-channel`
+  - `Armageddon` -> `shared-meteor-buff-channel`
+  - `Mana Gain` -> `reactive-mana-proc`
+  - special slots `29/30/31` -> `special-command`
 
 ### XlsHeroActiveSkill
 
@@ -319,6 +332,7 @@ Evidence:
   - rows `29/32/33/34` form the densest shared-slot bundle and currently back slot `11` (`Natural Healing` + `Recall`)
   - rows `36/37` back slot `14` (`HP Up` + `Return to Nature`)
   - row `35` backs slot `15` (`Mana Wall` + `Armageddon`)
+  - these same clusters now flow directly into `AW1.hero_runtime_archetypes.json`, which means they are ready to become engine-side buff archetypes rather than just reverse-engineering notes
 
 ### XlsHeroPassiveSkill
 
@@ -411,5 +425,5 @@ Evidence:
 1. Compare `XlsAi` English/Korean rows to isolate localized byte spans from numeric byte spans.
 2. Correlate `XlsAi` row order with story/stage order from script files.
 3. Use the new `tier/variant/region/storyFlag` candidates to search the remaining battle/runtime payloads for the first hard stage-to-map pointer.
-4. Use `AW1.hero_runtime_families.json` to turn slot-linked hero skills into actual runtime archetypes for the remake battle engine.
+4. Use `AW1.hero_runtime_archetypes.json` to build actual battle-engine channels for `Dispatch`, `Tower Defense`, `Recall`, `Armageddon`, and other shared-slot families.
 5. Promote `XlsHero_Ai`, `XlsSkill_Ai`, `XlsProjectile`, and `XlsEffect` from byte-block candidates to named gameplay schemas.
