@@ -51,6 +51,7 @@ Those featured archetypes now also inject concrete lane rules: Dispatch boosts a
 Keyboard actions in the recovery scene now pass through that summary layer, which lets the preview accept or reject panel, quest, dispatch, production, and hero toggles according to the current tutorial state.
 Dialogue changes now also emit one-shot scripted battle beats from the same cue layer, so tutorial focus lines can automatically queue units, push a lane, deploy or recall the hero, trigger skill or item bursts, and advance tower upgrades without overwriting the manual input log.
 The runtime now resolves every active prefix into a full `activeSceneCommands[]` list and interprets scene-layout, focus, presentation, emphasis, and transition commands directly instead of pattern-matching one `opcodeCue.action` string.
+Those resolved commands are now compiled into explicit `sceneScriptSteps[]` per storyboard, which means dialogue advancement runs a step interpreter over objective, panel, wave, dispatch, mana, and scripted-action directives instead of a cue-only switch tree.
 
 ### Tutorial / UI Guidance Cluster
 

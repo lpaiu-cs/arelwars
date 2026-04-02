@@ -471,6 +471,44 @@ export interface RecoveryPreviewManifest {
   stems: RecoveryPreviewStem[]
 }
 
+export interface RecoverySceneScriptDirective {
+  kind:
+    | 'set-objective'
+    | 'set-panel'
+    | 'trigger-wave'
+    | 'set-selected-lane'
+    | 'ensure-queue'
+    | 'commit-dispatch'
+    | 'invoke-action'
+    | 'restore-mana'
+    | 'spawn-unit'
+    | 'shift-lane'
+    | 'note'
+  phase?: RecoveryBattleObjectiveState['phase']
+  label?: string
+  progressDelta?: number
+  panel?: RecoveryGameplayState['openPanel']
+  side?: 'allied' | 'enemy'
+  advanceWave?: boolean
+  laneId?: 'upper' | 'lower'
+  queueCount?: number
+  actionId?: RecoveryGameplayActionId
+  manaScale?: number
+  role?: RecoveryBattleWaveDirective['role']
+  powerScale?: number
+  shiftDelta?: number
+  note?: string
+}
+
+export interface RecoverySceneScriptStep {
+  dialogueIndex: number
+  stepId: string
+  label: string
+  sources: string[]
+  tags: string[]
+  directives: RecoverySceneScriptDirective[]
+}
+
 export interface RecoveryStageStoryboard {
   id: string
   scriptPath: string
@@ -478,6 +516,7 @@ export interface RecoveryStageStoryboard {
   locale: string | null
   scriptEventCount: number
   scriptEvents: RecoveryDialogueEvent[]
+  sceneScriptSteps: RecoverySceneScriptStep[]
   previewStem: RecoveryPreviewStem
   stageBlueprint: RecoveryStageBlueprint | null
 }

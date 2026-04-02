@@ -219,6 +219,7 @@ References:
     - phase-6 opcode export now covers all `64` currently observed non-dialogue `cmd-XX` families with `unresolvedOpcodeCount = 0`, and every exported mnemonic/variant now carries stable `commandId`, `commandType`, and `target` fields in `AW1.opcode_action_map.json`
     - the prefix sanitizer now strips ASCII spill without dropping stable tutorial raw chains, so `AW1.tutorial_opcode_chains.json` is back to `15/15` matched chains after the opcode export widened to full-family coverage
     - the runtime scene interpreter now resolves `activeSceneCommands[]` per dialogue event and consumes scene-layout, focus, presentation, emphasis, and transition commands directly instead of only picking one representative opcode string
+    - dialogue playback is now backed by precompiled `sceneScriptSteps[]` per storyboard, so objective changes, panel transitions, wave triggers, dispatch commits, mana restores, scripted actions, and scene notes are executed from an explicit step directive list instead of a large cue-switch inside `applyDialogueBeat()`
 
 ### Phase 4. Build Deterministic Runtime Systems
 

@@ -26,6 +26,8 @@ import type {
   RecoveryPreviewStem,
   RecoveryRuntimeBlueprint,
   RecoveryScriptEntry,
+  RecoverySceneScriptDirective,
+  RecoverySceneScriptStep,
   RecoveryStageBattleProfile,
   RecoveryStageBlueprint,
   RecoveryStageRenderState,
@@ -163,6 +165,7 @@ function buildStoryboards(
       locale: script.locale,
       scriptEventCount: script.eventCount ?? script.eventPreview?.length ?? 0,
       scriptEvents: normalizeScriptEvents(script),
+      sceneScriptSteps: [],
       previewStem,
       stageBlueprint: stageBlueprintsByFamily.get(familyId) ?? null,
     }
@@ -471,6 +474,9 @@ export class RecoveryStageSystem {
       this.heroTemplatesByName.set(entry.name.toLowerCase(), entry)
     })
     this.storyboards = buildStoryboards(catalog, previewManifest, runtimeBlueprint)
+    this.storyboards.forEach((storyboard) => {
+      storyboard.sceneScriptSteps = this.buildSceneScript(storyboard)
+    })
     if (this.storyboards.length > 0) {
       this.campaignPreferredRouteLabel = this.deriveStoryboardRouteBias(this.storyboards[0]).routeLabel
       this.campaignRouteCommitment = 1
@@ -626,8 +632,9 @@ export class RecoveryStageSystem {
     const activeTutorialCue = this.resolveTutorialCue(currentStoryboard, activeDialogueEvent)
     const activeSceneCommands = this.resolveSceneCommands(activeDialogueEvent)
     const activeOpcodeCue = this.resolvePrimarySceneCommand(activeSceneCommands)
+    const activeSceneStep = currentStoryboard.sceneScriptSteps[this.dialogueIndex] ?? null
     const channelStates = this.buildChannelStates(currentStoryboard)
-    const hudState = this.buildHudState(currentStoryboard, activeTutorialCue, activeOpcodeCue, channelStates)
+    const hudState = this.buildHudState(currentStoryboard, activeSceneStep, activeOpcodeCue, channelStates)
     const battlePreviewState = this.buildBattlePreviewState()
     return {
       storyboardIndex: this.storyboardIndex,
@@ -644,6 +651,7 @@ export class RecoveryStageSystem {
       renderState: this.buildRenderState(currentStoryboard, channelStates),
       hudState,
       gameplayState: this.buildGameplayState(
+        activeSceneStep,
         activeTutorialCue,
         activeOpcodeCue,
         hudState,
@@ -1174,6 +1182,272 @@ export class RecoveryStageSystem {
     return signals
   }
 
+  private buildSceneScript(storyboard: RecoveryStageStoryboard): RecoverySceneScriptStep[] {
+    return storyboard.scriptEvents.map((event, dialogueIndex) => this.compileSceneScriptStep(storyboard, dialogueIndex, event))
+  }
+
+  private compileSceneScriptStep(
+    storyboard: RecoveryStageStoryboard,
+    dialogueIndex: number,
+    event: RecoveryDialogueEvent,
+  ): RecoverySceneScriptStep {
+    const tutorialCue = this.resolveTutorialCue(storyboard, event)
+    const sceneCommands = this.resolveSceneCommands(event)
+    const primaryCommand = this.resolvePrimarySceneCommand(sceneCommands)
+    const sceneSignals = this.buildSceneCommandSignals(sceneCommands)
+    const directives: RecoverySceneScriptDirective[] = []
+    const tags = new Set<string>()
+    const sources = new Set<string>()
+
+    const addDirective = (directive: RecoverySceneScriptDirective): void => {
+      directives.push(directive)
+    }
+    const addSource = (value: string | null | undefined): void => {
+      if (value) {
+        sources.add(value)
+      }
+    }
+    const addTag = (value: string | null | undefined): void => {
+      if (value) {
+        tags.add(value)
+      }
+    }
+
+    sceneCommands.forEach((command) => {
+      addSource(`scene:${command.commandId}`)
+      addTag(command.commandType)
+    })
+
+    if (tutorialCue) {
+      addSource(`tutorial:${tutorialCue.chainId}`)
+      addTag(tutorialCue.chainId)
+    }
+    if (sceneSignals.hasBattleHudFocus) addTag('battle-hud-focus')
+    if (sceneSignals.hasGuidedFocus) addTag('guided-focus')
+    if (sceneSignals.hasTowerFocus) addTag('tower-focus')
+    if (sceneSignals.hasManaFocus) addTag('mana-focus')
+    if (sceneSignals.hasPopulationFocus) addTag('population-focus')
+    if (sceneSignals.hasSkillFocus) addTag('skill-focus')
+    if (sceneSignals.hasItemFocus) addTag('item-focus')
+    if (sceneSignals.hasSystemFocus) addTag('system-focus')
+    if (sceneSignals.hasQuestFocus) addTag('quest-focus')
+    if (sceneSignals.hasPresentation) addTag('presentation-pulse')
+    if (sceneSignals.hasEmphasis) addTag('emphasis-pulse')
+    if (sceneSignals.hasSceneLayout) addTag('layout-preset')
+    if (sceneSignals.hasSceneTransition) addTag('transition-preset')
+
+    switch (tutorialCue?.chainId) {
+      case 'battle-hud-guard-hp':
+        addTag('guard-focus')
+        addDirective({ kind: 'set-objective', phase: 'lane-control', label: 'hold the tower line', progressDelta: 0.03 })
+        addDirective({ kind: 'trigger-wave', side: 'enemy', label: 'tutorial guard line screen', advanceWave: false })
+        addDirective({ kind: 'note', note: 'tutorial fixed own-tower objective and triggered enemy screen' })
+        break
+      case 'battle-hud-goal-hp':
+        addTag('siege-focus')
+        addDirective({ kind: 'set-objective', phase: 'siege', label: 'break the enemy tower', progressDelta: 0.05 })
+        addDirective({ kind: 'trigger-wave', side: 'enemy', label: 'tutorial revealed siege wave', advanceWave: true })
+        addDirective({ kind: 'note', note: 'tutorial fixed siege objective and advanced siege wave' })
+        break
+      case 'battle-hud-dispatch-arrows':
+        addTag('dispatch-focus')
+        addDirective({ kind: 'set-objective', phase: 'lane-control', label: 'establish favored lane control', progressDelta: 0.04 })
+        addDirective({ kind: 'trigger-wave', side: 'allied', label: 'tutorial triggered favored dispatch wave', advanceWave: false })
+        addDirective({ kind: 'set-selected-lane' })
+        addDirective({ kind: 'ensure-queue', queueCount: 1 })
+        addDirective({ kind: 'commit-dispatch' })
+        addDirective({ kind: 'note', note: 'tutorial scripted favored-lane push' })
+        break
+      case 'battle-hud-unit-card':
+        addTag('unit-production')
+        addDirective({ kind: 'set-objective', phase: 'lane-control', label: 'build a dispatch reserve', progressDelta: 0.03 })
+        addDirective({ kind: 'trigger-wave', side: 'allied', label: 'tutorial primed reserve wave', advanceWave: false })
+        addDirective({ kind: 'invoke-action', actionId: 'produce-unit', note: 'tutorial queued unit production' })
+        break
+      case 'battle-hud-mana-bar':
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'restore mana tempo', progressDelta: 0.02 })
+        addDirective({ kind: 'restore-mana', side: 'allied', manaScale: 0.08 })
+        addDirective({ kind: 'note', note: 'tutorial restored mana context' })
+        break
+      case 'battle-hud-hero-sortie':
+        addTag('hero-sortie')
+        addDirective({ kind: 'set-objective', phase: 'hero-pressure', label: 'deploy the hero strike lane', progressDelta: 0.05 })
+        addDirective({ kind: 'trigger-wave', side: 'allied', label: 'tutorial opened hero pressure wave', advanceWave: true })
+        addDirective({ kind: 'invoke-action', actionId: 'deploy-hero', note: 'tutorial auto-deployed hero to favored lane' })
+        break
+      case 'battle-hud-hero-return':
+        addTag('hero-return')
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'regroup hero at tower', progressDelta: 0.03 })
+        addDirective({ kind: 'invoke-action', actionId: 'return-to-tower', note: 'tutorial recalled hero to tower' })
+        break
+      case 'tower-menu-highlight':
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'open tower management', progressDelta: 0.02 })
+        addDirective({ kind: 'set-panel', panel: 'tower' })
+        addDirective({ kind: 'note', note: 'tutorial focused tower panel' })
+        break
+      case 'mana-upgrade-highlight':
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'advance mana economy', progressDelta: 0.03 })
+        addDirective({ kind: 'set-panel', panel: 'tower' })
+        addDirective({ kind: 'invoke-action', actionId: 'upgrade-tower-stat', note: 'tutorial advanced mana upgrade' })
+        break
+      case 'population-upgrade-highlight':
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'raise population ceiling', progressDelta: 0.03 })
+        addDirective({ kind: 'set-panel', panel: 'tower' })
+        addDirective({ kind: 'invoke-action', actionId: 'upgrade-tower-stat', note: 'tutorial advanced population upgrade' })
+        break
+      case 'skill-menu-highlight':
+        addDirective({ kind: 'set-objective', phase: 'skill-burst', label: 'prepare skill burst window', progressDelta: 0.03 })
+        addDirective({ kind: 'set-panel', panel: 'skill' })
+        addDirective({ kind: 'note', note: 'tutorial opened skill channel' })
+        break
+      case 'skill-slot-highlight':
+        addDirective({ kind: 'set-objective', phase: 'skill-burst', label: 'fire a burst through the skill window', progressDelta: 0.05 })
+        addDirective({ kind: 'trigger-wave', side: 'allied', label: 'tutorial opened skill burst wave', advanceWave: true })
+        addDirective({ kind: 'set-panel', panel: 'skill' })
+        addDirective({ kind: 'invoke-action', actionId: 'cast-skill', note: 'tutorial fired skill beat' })
+        break
+      case 'item-menu-highlight':
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'stabilize the line with items', progressDelta: 0.03 })
+        addDirective({ kind: 'set-panel', panel: 'item' })
+        addDirective({ kind: 'invoke-action', actionId: 'use-item', note: 'tutorial fired item beat' })
+        break
+      case 'system-menu-highlight':
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'pause and review battle state', progressDelta: 0.01 })
+        addDirective({ kind: 'set-panel', panel: 'system' })
+        addDirective({ kind: 'note', note: 'tutorial surfaced system panel' })
+        break
+      case 'quest-panel-highlight':
+        addDirective({ kind: 'set-objective', phase: 'quest-resolution', label: 'review quest and bonus objectives', progressDelta: 0.04 })
+        addDirective({ kind: 'set-panel', panel: 'system' })
+        addDirective({ kind: 'note', note: 'tutorial surfaced quest rewards' })
+        break
+      default:
+        break
+    }
+
+    if (directives.length === 0 && primaryCommand) {
+      if (sceneSignals.hasTowerFocus || sceneSignals.hasManaFocus || sceneSignals.hasPopulationFocus) {
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'rebalance tower economy', progressDelta: 0.02 })
+        addDirective({ kind: 'set-panel', panel: 'tower' })
+      } else if (sceneSignals.hasSkillFocus) {
+        addDirective({ kind: 'set-objective', phase: 'skill-burst', label: 'open a skill timing window', progressDelta: 0.02 })
+        addDirective({ kind: 'set-panel', panel: 'skill' })
+      } else if (sceneSignals.hasItemFocus) {
+        addDirective({ kind: 'set-objective', phase: 'tower-management', label: 'stabilize with an item route', progressDelta: 0.02 })
+        addDirective({ kind: 'set-panel', panel: 'item' })
+      } else if (sceneSignals.hasSystemFocus || sceneSignals.hasQuestFocus) {
+        addDirective({ kind: 'set-objective', phase: 'quest-resolution', label: 'review auxiliary objectives', progressDelta: 0.02 })
+        addDirective({ kind: 'set-panel', panel: 'system' })
+      } else if (sceneSignals.hasSceneLayout || sceneSignals.hasSceneTransition) {
+        addDirective({ kind: 'set-objective', phase: 'opening', label: 'advance dialogue scene layout', progressDelta: 0.01 })
+      }
+
+      if (sceneSignals.hasPresentation || sceneSignals.hasEmphasis) {
+        addDirective({ kind: 'set-objective', phase: 'hero-pressure', label: 'capitalize on the pressure swing', progressDelta: 0.03 })
+        addDirective({ kind: 'trigger-wave', side: 'enemy', label: `scene command surged ${primaryCommand.commandId}`, advanceWave: false })
+        addDirective({ kind: 'spawn-unit', side: 'allied', role: 'push', label: `opcode:${primaryCommand.mnemonic}`, powerScale: 1.08 })
+        addDirective({ kind: 'shift-lane', side: 'allied', shiftDelta: 0.02 })
+        addDirective({ kind: 'note', note: `scene pulse ${primaryCommand.commandId}` })
+      } else if (sceneSignals.hasFocus) {
+        addDirective({ kind: 'note', note: `scene focus ${primaryCommand.commandId}` })
+      } else if (sceneSignals.hasSceneLayout || sceneSignals.hasSceneTransition) {
+        addDirective({ kind: 'note', note: `scene layout ${primaryCommand.commandId}` })
+      }
+    }
+
+    return {
+      dialogueIndex,
+      stepId: `${storyboard.id}:dialogue:${dialogueIndex}`,
+      label: tutorialCue?.label ?? primaryCommand?.label ?? `dialogue-step-${dialogueIndex + 1}`,
+      sources: [...sources],
+      tags: [...tags],
+      directives,
+    }
+  }
+
+  private executeSceneScriptStep(
+    step: RecoverySceneScriptStep | null,
+    favoredLane: 'upper' | 'lower',
+  ): boolean {
+    if (!step || step.directives.length === 0) {
+      return false
+    }
+
+    let handled = false
+    step.directives.forEach((directive) => {
+      switch (directive.kind) {
+        case 'set-objective':
+          this.setObjectiveState(directive.phase ?? 'opening', directive.label ?? 'advance scene', directive.progressDelta ?? 0)
+          handled = true
+          break
+        case 'set-panel':
+          this.panelOverride = directive.panel ?? null
+          handled = true
+          break
+        case 'trigger-wave':
+          this.triggerSceneWave(directive.side ?? 'enemy', directive.label ?? step.label, directive.advanceWave ?? false)
+          handled = true
+          break
+        case 'set-selected-lane':
+          this.selectedDispatchLane = directive.laneId ?? favoredLane
+          handled = true
+          break
+        case 'ensure-queue':
+          this.queuedUnitCount = Math.max(this.queuedUnitCount, directive.queueCount ?? 1)
+          handled = true
+          break
+        case 'commit-dispatch': {
+          const dispatchLane = directive.laneId ?? this.selectedDispatchLane ?? favoredLane
+          this.selectedDispatchLane = dispatchLane
+          const previousActionNote = this.lastActionNote
+          this.commitLaneDispatch(dispatchLane)
+          this.lastActionNote = previousActionNote
+          handled = true
+          break
+        }
+        case 'invoke-action':
+          if (directive.actionId) {
+            this.applyScriptedAction(directive.actionId, directive.note ?? step.label)
+            handled = true
+          }
+          break
+        case 'restore-mana': {
+          const side = directive.side ?? 'allied'
+          const capacity = side === 'allied' ? this.manaCapacityValue : this.enemyManaCapacityValue
+          this.restoreMana(side, capacity * (directive.manaScale ?? 0.08))
+          handled = true
+          break
+        }
+        case 'spawn-unit':
+          this.spawnBattleUnit(
+            directive.side ?? 'allied',
+            directive.laneId ?? favoredLane,
+            directive.role ?? 'push',
+            directive.label ?? step.stepId,
+            { powerScale: directive.powerScale ?? 1 },
+          )
+          handled = true
+          break
+        case 'shift-lane':
+          if (directive.side) {
+            this.shiftLaneUnits(directive.laneId ?? favoredLane, directive.side, directive.shiftDelta ?? 0.02)
+            handled = true
+          }
+          break
+        case 'note':
+          if (directive.note) {
+            this.lastScriptedBeatNote = directive.note
+            handled = true
+          }
+          break
+        default:
+          break
+      }
+    })
+
+    return handled
+  }
+
   private applyDialogueBeat(
     storyboard: RecoveryStageStoryboard,
     event: RecoveryDialogueEvent | null,
@@ -1182,165 +1456,12 @@ export class RecoveryStageSystem {
     if (!event) {
       return
     }
-
-    const tutorialCue = this.resolveTutorialCue(storyboard, event)
-    const sceneCommands = this.resolveSceneCommands(event)
-    const opcodeCue = this.resolvePrimarySceneCommand(sceneCommands)
-    const sceneSignals = this.buildSceneCommandSignals(sceneCommands)
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-
-    if (this.applyLoadoutCuePattern(tutorialCue, sceneCommands, favoredLane)) {
+    const step = storyboard.sceneScriptSteps[Math.min(this.dialogueIndex, Math.max(storyboard.sceneScriptSteps.length - 1, 0))] ?? null
+    const executedBaseStep = this.executeSceneScriptStep(step, favoredLane)
+    const executedLoadoutStep = this.applyLoadoutCuePattern(step, favoredLane)
+    if (executedBaseStep || executedLoadoutStep) {
       return
-    }
-
-    switch (tutorialCue?.chainId) {
-      case 'battle-hud-guard-hp':
-        this.setObjectiveState('lane-control', 'hold the tower line', 0.03)
-        this.triggerSceneWave('enemy', 'tutorial guard line screen', false)
-        this.lastScriptedBeatNote = 'tutorial fixed own-tower objective and triggered enemy screen'
-        return
-      case 'battle-hud-goal-hp':
-        this.setObjectiveState('siege', 'break the enemy tower', 0.05)
-        this.triggerSceneWave('enemy', 'tutorial revealed siege wave', true)
-        this.lastScriptedBeatNote = 'tutorial fixed siege objective and advanced siege wave'
-        return
-      case 'battle-hud-dispatch-arrows': {
-        this.setObjectiveState('lane-control', `establish ${favoredLane} lane control`, 0.04)
-        this.triggerSceneWave('allied', `tutorial triggered ${favoredLane} dispatch wave`, false)
-        this.selectedDispatchLane = favoredLane
-        this.queuedUnitCount = Math.max(
-          this.queuedUnitCount,
-          this.currentStageBattleProfile.dispatchBoost >= 0.16 ? 2 : 1,
-        )
-        const previousActionNote = this.lastActionNote
-        this.commitLaneDispatch(favoredLane)
-        this.lastActionNote = previousActionNote
-        this.lastScriptedBeatNote = `tutorial scripted ${favoredLane} lane push`
-        return
-      }
-      case 'battle-hud-unit-card':
-        this.setObjectiveState('lane-control', 'build a dispatch reserve', 0.03)
-        this.triggerSceneWave('allied', 'tutorial primed reserve wave', false)
-        if (this.applyScriptedAction('produce-unit', 'tutorial queued unit production')) {
-          return
-        }
-        break
-      case 'battle-hud-mana-bar':
-        this.setObjectiveState('tower-management', 'restore mana tempo', 0.02)
-        this.restoreMana('allied', this.manaCapacityValue * (0.08 + this.currentStageBattleProfile.manaSurge * 0.14))
-        this.lastScriptedBeatNote = 'tutorial restored mana context'
-        return
-      case 'battle-hud-hero-sortie':
-        this.setObjectiveState('hero-pressure', 'deploy the hero strike lane', 0.05)
-        this.triggerSceneWave('allied', 'tutorial opened hero pressure wave', true)
-        if (this.applyScriptedAction('deploy-hero', `tutorial auto-deployed hero to ${favoredLane}`)) {
-          return
-        }
-        break
-      case 'battle-hud-hero-return':
-        this.setObjectiveState('tower-management', 'regroup hero at tower', 0.03)
-        if (this.applyScriptedAction('return-to-tower', 'tutorial recalled hero to tower')) {
-          return
-        }
-        break
-      case 'tower-menu-highlight':
-        this.setObjectiveState('tower-management', 'open tower management', 0.02)
-        this.panelOverride = 'tower'
-        this.lastScriptedBeatNote = 'tutorial focused tower panel'
-        return
-      case 'mana-upgrade-highlight':
-      case 'population-upgrade-highlight':
-        this.setObjectiveState(
-          'tower-management',
-          tutorialCue.chainId === 'mana-upgrade-highlight' ? 'advance mana economy' : 'raise population ceiling',
-          0.03,
-        )
-        this.panelOverride = 'tower'
-        if (
-          this.applyScriptedAction(
-            'upgrade-tower-stat',
-            tutorialCue.chainId === 'mana-upgrade-highlight'
-              ? 'tutorial advanced mana upgrade'
-              : 'tutorial advanced population upgrade',
-          )
-        ) {
-          return
-        }
-        break
-      case 'skill-menu-highlight':
-        this.setObjectiveState('skill-burst', 'prepare skill burst window', 0.03)
-        this.panelOverride = 'skill'
-        this.lastScriptedBeatNote = 'tutorial opened skill channel'
-        return
-      case 'skill-slot-highlight':
-        this.setObjectiveState('skill-burst', 'fire a burst through the skill window', 0.05)
-        this.triggerSceneWave('allied', 'tutorial opened skill burst wave', true)
-        this.panelOverride = 'skill'
-        if (this.applyScriptedAction('cast-skill', 'tutorial fired skill beat')) {
-          return
-        }
-        break
-      case 'item-menu-highlight':
-        this.setObjectiveState('tower-management', 'stabilize the line with items', 0.03)
-        this.panelOverride = 'item'
-        if (this.applyScriptedAction('use-item', 'tutorial fired item beat')) {
-          return
-        }
-        this.lastScriptedBeatNote = 'tutorial opened item channel'
-        return
-      case 'system-menu-highlight':
-        this.setObjectiveState('tower-management', 'pause and review battle state', 0.01)
-        this.panelOverride = 'system'
-        this.lastScriptedBeatNote = 'tutorial surfaced system panel'
-        return
-      case 'quest-panel-highlight':
-        this.setObjectiveState('quest-resolution', 'review quest and bonus objectives', 0.04)
-        this.panelOverride = 'system'
-        this.lastScriptedBeatNote = 'tutorial surfaced quest rewards'
-        return
-      default:
-        break
-    }
-
-    if (!opcodeCue) {
-      return
-    }
-
-    if (sceneSignals.hasTowerFocus || sceneSignals.hasManaFocus || sceneSignals.hasPopulationFocus) {
-      this.setObjectiveState('tower-management', 'rebalance tower economy', 0.02)
-      this.panelOverride = 'tower'
-    } else if (sceneSignals.hasSkillFocus) {
-      this.setObjectiveState('skill-burst', 'open a skill timing window', 0.02)
-      this.panelOverride = 'skill'
-    } else if (sceneSignals.hasItemFocus) {
-      this.setObjectiveState('tower-management', 'stabilize with an item route', 0.02)
-      this.panelOverride = 'item'
-    } else if (sceneSignals.hasSystemFocus || sceneSignals.hasQuestFocus) {
-      this.setObjectiveState('quest-resolution', 'review auxiliary objectives', 0.02)
-      this.panelOverride = 'system'
-    } else if (sceneSignals.hasSceneLayout || sceneSignals.hasSceneTransition) {
-      this.setObjectiveState('opening', 'advance dialogue scene layout', 0.01)
-    }
-
-    if (sceneSignals.hasPresentation || sceneSignals.hasEmphasis) {
-      this.setObjectiveState('hero-pressure', 'capitalize on the pressure swing', 0.03)
-      this.triggerSceneWave('enemy', `scene command surged ${opcodeCue.commandId}`, false)
-      const targetLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-      this.spawnBattleUnit('allied', targetLane, 'push', `opcode:${opcodeCue.mnemonic}`, {
-        powerScale: 1.08,
-      })
-      this.shiftLaneUnits(targetLane, 'allied', 0.02)
-      this.lastScriptedBeatNote = `scene pulse ${opcodeCue.commandId}`
-      return
-    }
-
-    if (sceneSignals.hasFocus) {
-      this.lastScriptedBeatNote = `scene focus ${opcodeCue.commandId}`
-      return
-    }
-
-    if (sceneSignals.hasSceneLayout || sceneSignals.hasSceneTransition) {
-      this.lastScriptedBeatNote = `scene layout ${opcodeCue.commandId}`
     }
   }
 
@@ -2257,8 +2378,7 @@ export class RecoveryStageSystem {
   }
 
   private applyLoadoutCuePattern(
-    tutorialCue: RecoveryTutorialChainCue | null,
-    sceneCommands: RecoveryResolvedOpcodeCue[],
+    step: RecoverySceneScriptStep | null,
     favoredLane: 'upper' | 'lower',
   ): boolean {
     const activeLoadout = this.activeDeployLoadout
@@ -2266,8 +2386,8 @@ export class RecoveryStageSystem {
       return false
     }
 
-    const tutorialChainId = tutorialCue?.chainId ?? ''
-    const sceneSignals = this.buildSceneCommandSignals(sceneCommands)
+    const stepTags = new Set(step?.tags ?? [])
+    const hasTag = (value: string): boolean => stepTags.has(value)
     const rosterRole = activeLoadout.heroRosterRole
     const skillPresetKind = activeLoadout.skillPresetKind
     const towerPolicyKind = activeLoadout.towerPolicyKind
@@ -2287,11 +2407,11 @@ export class RecoveryStageSystem {
         && hasVincent
         && hasManos
         && (
-          tutorialChainId === 'battle-hud-goal-hp'
-          || tutorialChainId === 'skill-slot-highlight'
+          hasTag('siege-focus')
+          || hasTag('skill-focus')
           || stageBias.siegeBias
-          || sceneSignals.hasEmphasis
-          || sceneSignals.hasPresentation
+          || hasTag('emphasis-pulse')
+          || hasTag('presentation-pulse')
         )
       ) {
         this.selectedDispatchLane = preferredLane
@@ -2315,11 +2435,11 @@ export class RecoveryStageSystem {
         && hasRogan
         && hasVincent
         && (
-          tutorialChainId === 'battle-hud-dispatch-arrows'
-          || tutorialChainId === 'battle-hud-unit-card'
+          hasTag('dispatch-focus')
+          || hasTag('unit-production')
           || stageBias.dispatchBias
-          || sceneSignals.hasGuidedFocus
-          || sceneSignals.hasBattleHudFocus
+          || hasTag('guided-focus')
+          || hasTag('battle-hud-focus')
         )
       ) {
         this.selectedDispatchLane = preferredLane
@@ -2342,17 +2462,15 @@ export class RecoveryStageSystem {
         && hasHelba
         && hasCaesar
         && (
-          tutorialChainId === 'battle-hud-guard-hp'
-          || tutorialChainId === 'tower-menu-highlight'
-          || tutorialChainId === 'quest-panel-highlight'
+          hasTag('guard-focus')
+          || hasTag('tower-focus')
+          || hasTag('quest-focus')
           || stageBias.sustainBias
           || stageBias.rewardBias
-          || sceneSignals.hasTowerFocus
-          || sceneSignals.hasQuestFocus
-          || sceneSignals.hasPopulationFocus
+          || hasTag('population-focus')
         )
       ) {
-        this.panelOverride = tutorialChainId === 'quest-panel-highlight' ? 'item' : 'tower'
+        this.panelOverride = hasTag('quest-focus') ? 'item' : 'tower'
       if (
           this.triggerRosterActionChain(
             ['Helba', 'Caesar'],
@@ -2370,14 +2488,11 @@ export class RecoveryStageSystem {
         routeInfluence.stanceLabel.includes('branch-hold')
         && hasJuno
         && (
-          tutorialChainId === 'battle-hud-mana-bar'
-          || tutorialChainId === 'skill-slot-highlight'
-          || tutorialChainId === 'mana-upgrade-highlight'
+          hasTag('mana-focus')
+          || hasTag('skill-focus')
           || stageBias.manaBias
-          || sceneSignals.hasManaFocus
-          || sceneSignals.hasSkillFocus
-          || sceneSignals.hasSystemFocus
-          || sceneSignals.hasEmphasis
+          || hasTag('system-focus')
+          || hasTag('emphasis-pulse')
         )
       ) {
         this.panelOverride = 'skill'
@@ -2398,13 +2513,13 @@ export class RecoveryStageSystem {
     if (
       hasVincent
       && (
-        tutorialChainId === 'battle-hud-dispatch-arrows'
-        || tutorialChainId === 'battle-hud-hero-sortie'
-        || tutorialChainId === 'battle-hud-goal-hp'
+        hasTag('dispatch-focus')
+        || hasTag('hero-sortie')
+        || hasTag('siege-focus')
         || stageBias.siegeBias
         || stageBias.heroBias
-        || sceneSignals.hasBattleHudFocus
-        || sceneSignals.hasEmphasis
+        || hasTag('battle-hud-focus')
+        || hasTag('emphasis-pulse')
       )
     ) {
       this.selectedDispatchLane = preferredLane
@@ -2417,11 +2532,11 @@ export class RecoveryStageSystem {
     if (
       hasRogan
       && (
-        tutorialChainId === 'battle-hud-unit-card'
-        || tutorialChainId === 'battle-hud-dispatch-arrows'
+        hasTag('unit-production')
+        || hasTag('dispatch-focus')
         || stageBias.dispatchBias
-        || sceneSignals.hasGuidedFocus
-        || sceneSignals.hasBattleHudFocus
+        || hasTag('guided-focus')
+        || hasTag('battle-hud-focus')
       )
     ) {
       this.selectedDispatchLane = preferredLane
@@ -2433,22 +2548,19 @@ export class RecoveryStageSystem {
     if (
       hasHelba
       && (
-        tutorialChainId === 'mana-upgrade-highlight'
-        || tutorialChainId === 'tower-menu-highlight'
-        || tutorialChainId === 'item-menu-highlight'
+        hasTag('mana-focus')
+        || hasTag('tower-focus')
+        || hasTag('item-focus')
         || stageBias.sustainBias
         || stageBias.rewardBias
-        || sceneSignals.hasTowerFocus
-        || sceneSignals.hasManaFocus
-        || sceneSignals.hasItemFocus
-        || sceneSignals.hasQuestFocus
+        || hasTag('quest-focus')
       )
     ) {
-      this.panelOverride = tutorialChainId === 'item-menu-highlight' ? 'item' : 'tower'
+      this.panelOverride = hasTag('item-focus') ? 'item' : 'tower'
       if (
         this.applyScriptedAction(
-          tutorialChainId === 'item-menu-highlight' ? 'use-item' : 'upgrade-tower-stat',
-          tutorialChainId === 'item-menu-highlight'
+          hasTag('item-focus') ? 'use-item' : 'upgrade-tower-stat',
+          hasTag('item-focus')
             ? `Helba auto-secured the defense item (${stageBias.label})`
             : `Helba auto-fortified the tower line (${stageBias.label})`,
         )
@@ -2460,14 +2572,12 @@ export class RecoveryStageSystem {
     if (
       hasJuno
       && (
-        tutorialChainId === 'skill-slot-highlight'
-        || tutorialChainId === 'battle-hud-mana-bar'
-        || tutorialChainId === 'battle-hud-goal-hp'
+        hasTag('skill-focus')
+        || hasTag('mana-focus')
+        || hasTag('siege-focus')
         || stageBias.manaBias
         || stageBias.heroBias
-        || sceneSignals.hasSkillFocus
-        || sceneSignals.hasManaFocus
-        || sceneSignals.hasEmphasis
+        || hasTag('emphasis-pulse')
       )
     ) {
       this.panelOverride = 'skill'
@@ -2479,11 +2589,11 @@ export class RecoveryStageSystem {
     if (
       hasManos
       && (
-        tutorialChainId === 'battle-hud-goal-hp'
-        || tutorialChainId === 'skill-slot-highlight'
+        hasTag('siege-focus')
+        || hasTag('skill-focus')
         || stageBias.siegeBias
-        || sceneSignals.hasEmphasis
-        || sceneSignals.hasPresentation
+        || hasTag('emphasis-pulse')
+        || hasTag('presentation-pulse')
       )
     ) {
       this.panelOverride = 'skill'
@@ -2495,14 +2605,11 @@ export class RecoveryStageSystem {
     if (
       hasCaesar
       && (
-        tutorialChainId === 'battle-hud-guard-hp'
-        || tutorialChainId === 'population-upgrade-highlight'
-        || tutorialChainId === 'quest-panel-highlight'
+        hasTag('guard-focus')
+        || hasTag('population-focus')
+        || hasTag('quest-focus')
         || stageBias.sustainBias
         || stageBias.rewardBias
-        || sceneSignals.hasTowerFocus
-        || sceneSignals.hasQuestFocus
-        || sceneSignals.hasPopulationFocus
       )
     ) {
       this.panelOverride = 'tower'
@@ -2513,7 +2620,7 @@ export class RecoveryStageSystem {
 
     if (
       (rosterRole === 'vanguard' || rosterRole === 'raider')
-      && (tutorialChainId === 'battle-hud-dispatch-arrows' || sceneSignals.hasBattleHudFocus || sceneSignals.hasEmphasis)
+      && (hasTag('dispatch-focus') || hasTag('battle-hud-focus') || hasTag('emphasis-pulse'))
     ) {
       this.selectedDispatchLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
       this.queuedUnitCount = Math.max(this.queuedUnitCount, rosterRole === 'raider' ? 2 : 1)
@@ -2525,13 +2632,10 @@ export class RecoveryStageSystem {
     if (
       (rosterRole === 'defender' || rosterRole === 'support')
       && (
-        tutorialChainId === 'mana-upgrade-highlight'
-        || tutorialChainId === 'population-upgrade-highlight'
-        || tutorialChainId === 'tower-menu-highlight'
-        || sceneSignals.hasTowerFocus
-        || sceneSignals.hasManaFocus
-        || sceneSignals.hasPopulationFocus
-        || sceneSignals.hasQuestFocus
+        hasTag('mana-focus')
+        || hasTag('population-focus')
+        || hasTag('tower-focus')
+        || hasTag('quest-focus')
       )
     ) {
       this.panelOverride = 'tower'
@@ -2543,13 +2647,10 @@ export class RecoveryStageSystem {
     if (
       (skillPresetKind === 'support' || skillPresetKind === 'utility')
       && (
-        tutorialChainId === 'battle-hud-mana-bar'
-        || tutorialChainId === 'item-menu-highlight'
-        || tutorialChainId === 'quest-panel-highlight'
-        || sceneSignals.hasItemFocus
-        || sceneSignals.hasQuestFocus
-        || sceneSignals.hasManaFocus
-        || sceneSignals.hasSystemFocus
+        hasTag('mana-focus')
+        || hasTag('item-focus')
+        || hasTag('quest-focus')
+        || hasTag('system-focus')
       )
     ) {
       if (this.applyScriptedAction('use-item', `${activeLoadout.skillPresetLabel} auto-stabilized the lane`)) {
@@ -2560,11 +2661,10 @@ export class RecoveryStageSystem {
     if (
       (skillPresetKind === 'burst' || skillPresetKind === 'orders')
       && (
-        tutorialChainId === 'skill-slot-highlight'
-        || tutorialChainId === 'battle-hud-goal-hp'
-        || sceneSignals.hasSkillFocus
-        || sceneSignals.hasPresentation
-        || sceneSignals.hasEmphasis
+        hasTag('skill-focus')
+        || hasTag('siege-focus')
+        || hasTag('presentation-pulse')
+        || hasTag('emphasis-pulse')
       )
     ) {
       this.panelOverride = 'skill'
@@ -2575,7 +2675,7 @@ export class RecoveryStageSystem {
 
     if (
       towerPolicyKind === 'population-first'
-      && (tutorialChainId === 'battle-hud-unit-card' || sceneSignals.hasGuidedFocus || sceneSignals.hasBattleHudFocus)
+      && (hasTag('unit-production') || hasTag('guided-focus') || hasTag('battle-hud-focus'))
     ) {
       if (this.applyScriptedAction('produce-unit', `${activeLoadout.towerPolicyLabel} auto-queued reinforcements`)) {
         return true
@@ -3197,7 +3297,7 @@ export class RecoveryStageSystem {
 
   private buildHudState(
     storyboard: RecoveryStageStoryboard,
-    activeTutorialCue: RecoveryTutorialChainCue | null,
+    activeSceneStep: RecoverySceneScriptStep | null,
     _activeOpcodeCue: RecoveryResolvedOpcodeCue | null,
     channelStates: RecoveryBattleChannelState[],
   ): RecoveryHudGhostState {
@@ -3228,80 +3328,88 @@ export class RecoveryStageSystem {
     let leftDispatchCueVisible = false
     const skillCooldownRatio = this.cooldownRatio(this.skillCooldownEndsAtMs, SKILL_COOLDOWN_MS)
     const itemCooldownRatio = this.cooldownRatio(this.itemCooldownEndsAtMs, ITEM_COOLDOWN_MS)
+    const stepTags = new Set(activeSceneStep?.tags ?? [])
+    const stepDirectives = activeSceneStep?.directives ?? []
+    const hasTag = (value: string): boolean => stepTags.has(value)
+    const hasDirective = (kind: RecoverySceneScriptDirective['kind']): boolean =>
+      stepDirectives.some((directive) => directive.kind === kind)
+    const invokedActionIds = new Set(
+      stepDirectives
+        .filter((directive) => directive.kind === 'invoke-action')
+        .map((directive) => directive.actionId)
+        .filter((value): value is RecoveryGameplayActionId => value !== undefined),
+    )
+    const panelDirective = stepDirectives.find((directive) => directive.kind === 'set-panel') ?? null
 
-    switch (activeTutorialCue?.chainId) {
-      case 'battle-hud-guard-hp':
-        ownTowerHpRatio = 0.16
-        break
-      case 'battle-hud-goal-hp':
-        enemyTowerHpRatio = 0.14
-        break
-      case 'battle-hud-dispatch-arrows':
-        dispatchArrowsHighlighted = true
-        leftDispatchCueVisible = true
-        break
-      case 'battle-hud-unit-card':
-        highlightedUnitCardIndex = 0
-        manaRatio = Math.max(manaRatio, 0.62)
-        break
-      case 'battle-hud-mana-bar':
-        manaRatio = 0.34
-        manaUpgradeProgressRatio = 0.12
-        break
-      case 'battle-hud-hero-sortie':
-        heroDeployed = false
-        heroPortraitHighlighted = true
-        returnCooldownRatio = 0
-        break
-      case 'battle-hud-hero-return':
-        heroDeployed = true
-        heroPortraitHighlighted = true
-        returnCooldownRatio = 0.78
-        break
-      case 'tower-menu-highlight':
-        activePanel = 'tower'
-        highlightedMenuId = 'tower'
-        break
-      case 'mana-upgrade-highlight':
-        activePanel = 'tower'
-        highlightedMenuId = 'tower'
-        highlightedTowerUpgradeId = 'mana'
-        manaRatio = 1
-        manaUpgradeProgressRatio = 0.82
-        break
-      case 'population-upgrade-highlight':
-        activePanel = 'tower'
-        highlightedMenuId = 'tower'
-        highlightedTowerUpgradeId = 'population'
-        break
-      case 'skill-menu-highlight':
-        activePanel = 'skill'
-        highlightedMenuId = 'skill'
-        skillWindowVisible = true
-        break
-      case 'skill-slot-highlight':
-        activePanel = 'skill'
-        highlightedMenuId = 'skill'
-        skillWindowVisible = true
-        skillSlotHighlighted = true
-        break
-      case 'item-menu-highlight':
-        activePanel = 'item'
-        highlightedMenuId = 'item'
-        itemWindowVisible = true
-        itemSlotHighlighted = true
-        break
-      case 'system-menu-highlight':
-        activePanel = 'system'
-        highlightedMenuId = 'system'
-        break
-      case 'quest-panel-highlight':
-        questVisible = true
-        questRewardReady = true
-        highlightedMenuId = 'system'
-        break
-      default:
-        break
+    if (hasTag('guard-focus')) {
+      ownTowerHpRatio = 0.16
+    }
+    if (hasTag('siege-focus')) {
+      enemyTowerHpRatio = 0.14
+    }
+    if (hasTag('dispatch-focus') || hasDirective('set-selected-lane') || hasDirective('commit-dispatch')) {
+      dispatchArrowsHighlighted = true
+      leftDispatchCueVisible = true
+    }
+    if (hasTag('unit-production') || invokedActionIds.has('produce-unit')) {
+      highlightedUnitCardIndex = 0
+      manaRatio = Math.max(manaRatio, 0.62)
+    }
+    if (hasTag('mana-focus') || hasDirective('restore-mana')) {
+      manaRatio = 0.34
+      manaUpgradeProgressRatio = 0.12
+    }
+    if (hasTag('hero-sortie') || invokedActionIds.has('deploy-hero')) {
+      heroDeployed = false
+      heroPortraitHighlighted = true
+      returnCooldownRatio = 0
+    }
+    if (hasTag('hero-return') || invokedActionIds.has('return-to-tower')) {
+      heroDeployed = true
+      heroPortraitHighlighted = true
+      returnCooldownRatio = 0.78
+    }
+
+    if (panelDirective?.panel) {
+      activePanel = panelDirective.panel
+      highlightedMenuId = panelDirective.panel
+    }
+    if (hasTag('tower-focus') || hasTag('tower-menu-highlight')) {
+      activePanel = 'tower'
+      highlightedMenuId = 'tower'
+    }
+    if (hasTag('mana-focus') || hasTag('mana-upgrade-highlight')) {
+      activePanel = 'tower'
+      highlightedMenuId = 'tower'
+      highlightedTowerUpgradeId = 'mana'
+      manaRatio = 1
+      manaUpgradeProgressRatio = 0.82
+    }
+    if (hasTag('population-focus') || hasTag('population-upgrade-highlight')) {
+      activePanel = 'tower'
+      highlightedMenuId = 'tower'
+      highlightedTowerUpgradeId = 'population'
+    }
+    if (hasTag('skill-focus') || hasTag('skill-menu-highlight') || hasTag('skill-slot-highlight')) {
+      activePanel = 'skill'
+      highlightedMenuId = 'skill'
+      skillWindowVisible = true
+      skillSlotHighlighted = hasTag('skill-slot-highlight') || invokedActionIds.has('cast-skill')
+    }
+    if (hasTag('item-focus') || hasTag('item-menu-highlight') || invokedActionIds.has('use-item')) {
+      activePanel = 'item'
+      highlightedMenuId = 'item'
+      itemWindowVisible = true
+      itemSlotHighlighted = true
+    }
+    if (hasTag('system-focus') || hasTag('system-menu-highlight')) {
+      activePanel = 'system'
+      highlightedMenuId = 'system'
+    }
+    if (hasTag('quest-focus') || hasTag('quest-panel-highlight')) {
+      questVisible = true
+      questRewardReady = true
+      highlightedMenuId = 'system'
     }
 
     if (activePanel === null && questVisible) {
@@ -3371,11 +3479,35 @@ export class RecoveryStageSystem {
   }
 
   private buildGameplayState(
+    activeSceneStep: RecoverySceneScriptStep | null,
     activeTutorialCue: RecoveryTutorialChainCue | null,
     activeOpcodeCue: RecoveryResolvedOpcodeCue | null,
     hudState: RecoveryHudGhostState,
   ): RecoveryGameplayState {
-    let mode: RecoveryGameplayState['mode'] = activeTutorialCue ? 'tutorial-lock' : activeOpcodeCue ? 'guided-preview' : 'free-preview'
+    const stepTags = new Set(activeSceneStep?.tags ?? [])
+    const stepDirectives = activeSceneStep?.directives ?? []
+    const stepSources = activeSceneStep?.sources ?? []
+    const hasTag = (value: string): boolean => stepTags.has(value)
+    const hasDirective = (kind: RecoverySceneScriptDirective['kind']): boolean =>
+      stepDirectives.some((directive) => directive.kind === kind)
+    const firstDirective = (kind: RecoverySceneScriptDirective['kind']): RecoverySceneScriptDirective | null =>
+      stepDirectives.find((directive) => directive.kind === kind) ?? null
+    const invokedActionIds = new Set(
+      stepDirectives
+        .filter((directive) => directive.kind === 'invoke-action')
+        .map((directive) => directive.actionId)
+        .filter((value): value is RecoveryGameplayActionId => value !== undefined),
+    )
+    const panelDirective = firstDirective('set-panel')
+    const objectiveDirective = firstDirective('set-objective')
+    const hasTutorialSource = stepSources.some((value) => value.startsWith('tutorial:'))
+    let mode: RecoveryGameplayState['mode'] = hasTutorialSource
+      ? 'tutorial-lock'
+      : activeSceneStep && stepDirectives.length > 0
+        ? 'guided-preview'
+        : activeOpcodeCue
+          ? 'guided-preview'
+          : 'free-preview'
     let openPanel: RecoveryGameplayState['openPanel'] = hudState.activePanel
     let heroMode: RecoveryGameplayState['heroMode'] = hudState.heroDeployed
       ? (hudState.returnCooldownRatio > 0.05 ? 'return-cooldown' : 'field')
@@ -3388,7 +3520,7 @@ export class RecoveryStageSystem {
         : 'hidden'
     const enabledInputs = new Set<RecoveryGameplayActionId>()
     const blockedInputs = new Set<RecoveryGameplayActionId>()
-    let primaryHint = activeTutorialCue?.label ?? activeOpcodeCue?.label ?? 'free-preview'
+    let primaryHint = activeSceneStep?.label ?? activeTutorialCue?.label ?? activeOpcodeCue?.label ?? 'free-preview'
 
     const blockCommonBattleInputs = (): void => {
       blockedInputs.add('open-skill-menu')
@@ -3396,126 +3528,126 @@ export class RecoveryStageSystem {
       blockedInputs.add('open-system-menu')
     }
 
-    switch (activeTutorialCue?.chainId) {
-      case 'battle-hud-guard-hp':
-        objectiveMode = 'defend-own-tower'
-        enabledInputs.add('inspect-own-tower-hp')
-        enabledInputs.add('read-loss-condition')
-        blockCommonBattleInputs()
-        primaryHint = 'Protect your tower HP'
-        break
-      case 'battle-hud-goal-hp':
-        objectiveMode = 'attack-enemy-tower'
-        enabledInputs.add('inspect-enemy-tower-hp')
-        enabledInputs.add('read-win-condition')
-        blockCommonBattleInputs()
-        primaryHint = 'Reduce enemy tower HP to zero'
-        break
-      case 'battle-hud-dispatch-arrows':
-        objectiveMode = 'dispatch-lanes'
-        enabledInputs.add('dispatch-up-lane')
-        enabledInputs.add('dispatch-down-lane')
-        blockedInputs.add('produce-unit')
-        blockedInputs.add('toggle-hero-sortie')
-        primaryHint = 'Choose a lane for unit dispatch'
-        break
-      case 'battle-hud-unit-card':
-        objectiveMode = 'produce-units'
-        enabledInputs.add('produce-unit')
-        enabledInputs.add('inspect-unit-card')
-        blockedInputs.add('dispatch-up-lane')
-        blockedInputs.add('dispatch-down-lane')
-        primaryHint = 'Produce a unit from the left card tray'
-        break
-      case 'battle-hud-mana-bar':
-        objectiveMode = 'produce-units'
-        enabledInputs.add('inspect-mana-bar')
-        blockedInputs.add('open-skill-menu')
-        blockedInputs.add('open-item-menu')
-        primaryHint = 'Mana is spent on unit production'
-        break
-      case 'battle-hud-hero-sortie':
-        objectiveMode = 'dispatch-lanes'
-        enabledInputs.add('toggle-hero-sortie')
-        enabledInputs.add('deploy-hero')
-        blockedInputs.add('return-to-tower')
-        primaryHint = 'Deploy the hero from the portrait button'
-        break
-      case 'battle-hud-hero-return':
-        objectiveMode = 'dispatch-lanes'
-        enabledInputs.add('return-to-tower')
-        blockedInputs.add('deploy-hero')
-        primaryHint = 'Return to the tower and wait out cooldown'
-        break
-      case 'tower-menu-highlight':
-      case 'mana-upgrade-highlight':
-      case 'population-upgrade-highlight':
-        objectiveMode = 'manage-tower'
-        openPanel = 'tower'
-        enabledInputs.add('open-tower-menu')
-        enabledInputs.add('upgrade-tower-stat')
-        blockedInputs.add('cast-skill')
-        blockedInputs.add('use-item')
-        primaryHint =
-          activeTutorialCue.chainId === 'mana-upgrade-highlight'
-            ? 'Upgrade mana when the bar is full'
-            : activeTutorialCue.chainId === 'population-upgrade-highlight'
-              ? 'Increase population before unit cap blocks production'
-              : 'Open the tower panel'
-        break
-      case 'skill-menu-highlight':
-      case 'skill-slot-highlight':
-        objectiveMode = 'cast-skills'
-        openPanel = 'skill'
-        enabledInputs.add('open-skill-menu')
-        enabledInputs.add('cast-skill')
-        blockedInputs.add('use-item')
-        primaryHint =
-          activeTutorialCue.chainId === 'skill-slot-highlight'
-            ? 'Use a skill from the visible skill window'
-            : 'Open the skill panel'
-        break
-      case 'item-menu-highlight':
-        objectiveMode = 'use-items'
-        openPanel = 'item'
-        enabledInputs.add('open-item-menu')
-        enabledInputs.add('use-item')
-        blockedInputs.add('cast-skill')
-        primaryHint = 'Use an equipped item from the item panel'
-        break
-      case 'system-menu-highlight':
-        objectiveMode = 'system-navigation'
-        openPanel = 'system'
-        enabledInputs.add('open-system-menu')
-        enabledInputs.add('resume-battle')
-        enabledInputs.add('open-settings')
-        primaryHint = 'Use the system menu for pause, resume, and settings'
-        break
-      case 'quest-panel-highlight':
-        objectiveMode = 'review-quests'
-        openPanel = 'system'
-        enabledInputs.add('open-system-menu')
-        enabledInputs.add('review-quest-rewards')
-        primaryHint = 'Review quest rewards from the quest panel'
-        break
-      default:
-        if (openPanel) {
-          objectiveMode =
-            openPanel === 'tower'
-              ? 'manage-tower'
-              : openPanel === 'skill'
-                ? 'cast-skills'
-                : openPanel === 'item'
-                  ? 'use-items'
-                  : 'system-navigation'
-        } else if (hudState.highlightedUnitCardIndex !== null) {
-          objectiveMode = 'produce-units'
-        } else if (hudState.dispatchArrowsHighlighted) {
-          objectiveMode = 'dispatch-lanes'
-        } else if (questState !== 'hidden') {
-          objectiveMode = 'review-quests'
-        }
-        break
+    if (panelDirective?.panel) {
+      openPanel = panelDirective.panel
+    }
+
+    if (hasTag('guard-focus')) {
+      objectiveMode = 'defend-own-tower'
+      enabledInputs.add('inspect-own-tower-hp')
+      enabledInputs.add('read-loss-condition')
+      blockCommonBattleInputs()
+      primaryHint = 'Protect your tower HP'
+    } else if (hasTag('siege-focus') || objectiveDirective?.phase === 'siege') {
+      objectiveMode = 'attack-enemy-tower'
+      enabledInputs.add('inspect-enemy-tower-hp')
+      enabledInputs.add('read-win-condition')
+      blockCommonBattleInputs()
+      primaryHint = 'Reduce enemy tower HP to zero'
+    } else if (
+      hasTag('dispatch-focus')
+      || hasDirective('commit-dispatch')
+      || hasDirective('set-selected-lane')
+    ) {
+      objectiveMode = 'dispatch-lanes'
+      enabledInputs.add('dispatch-up-lane')
+      enabledInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('toggle-hero-sortie')
+      primaryHint = 'Choose a lane for unit dispatch'
+    } else if (hasTag('unit-production') || invokedActionIds.has('produce-unit')) {
+      objectiveMode = 'produce-units'
+      enabledInputs.add('produce-unit')
+      enabledInputs.add('inspect-unit-card')
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      primaryHint = 'Produce a unit from the left card tray'
+    } else if (hasTag('mana-focus') || hasDirective('restore-mana')) {
+      objectiveMode = 'produce-units'
+      enabledInputs.add('inspect-mana-bar')
+      blockedInputs.add('open-skill-menu')
+      blockedInputs.add('open-item-menu')
+      primaryHint = 'Mana is spent on unit production'
+    } else if (hasTag('hero-sortie') || invokedActionIds.has('deploy-hero')) {
+      objectiveMode = 'dispatch-lanes'
+      enabledInputs.add('toggle-hero-sortie')
+      enabledInputs.add('deploy-hero')
+      blockedInputs.add('return-to-tower')
+      primaryHint = 'Deploy the hero from the portrait button'
+    } else if (hasTag('hero-return') || invokedActionIds.has('return-to-tower')) {
+      objectiveMode = 'dispatch-lanes'
+      enabledInputs.add('return-to-tower')
+      blockedInputs.add('deploy-hero')
+      primaryHint = 'Return to the tower and wait out cooldown'
+    } else if (
+      openPanel === 'tower'
+      || hasTag('tower-focus')
+      || hasTag('population-focus')
+      || invokedActionIds.has('upgrade-tower-stat')
+      || objectiveDirective?.phase === 'tower-management'
+    ) {
+      objectiveMode = 'manage-tower'
+      openPanel = 'tower'
+      enabledInputs.add('open-tower-menu')
+      enabledInputs.add('upgrade-tower-stat')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      primaryHint = hasTag('mana-focus')
+        ? 'Upgrade mana when the bar is full'
+        : hasTag('population-focus')
+          ? 'Increase population before unit cap blocks production'
+          : 'Open the tower panel'
+    } else if (
+      openPanel === 'skill'
+      || hasTag('skill-focus')
+      || invokedActionIds.has('cast-skill')
+      || objectiveDirective?.phase === 'skill-burst'
+    ) {
+      objectiveMode = 'cast-skills'
+      openPanel = 'skill'
+      enabledInputs.add('open-skill-menu')
+      enabledInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      primaryHint = invokedActionIds.has('cast-skill')
+        ? 'Use a skill from the visible skill window'
+        : 'Open the skill panel'
+    } else if (
+      openPanel === 'item'
+      || hasTag('item-focus')
+      || invokedActionIds.has('use-item')
+    ) {
+      objectiveMode = 'use-items'
+      openPanel = 'item'
+      enabledInputs.add('open-item-menu')
+      enabledInputs.add('use-item')
+      blockedInputs.add('cast-skill')
+      primaryHint = 'Use an equipped item from the item panel'
+    } else if (
+      hasTag('quest-focus')
+      || objectiveDirective?.phase === 'quest-resolution'
+      || questState !== 'hidden'
+    ) {
+      objectiveMode = 'review-quests'
+      openPanel = 'system'
+      enabledInputs.add('open-system-menu')
+      enabledInputs.add('review-quest-rewards')
+      primaryHint = 'Review quest rewards from the quest panel'
+    } else if (
+      openPanel === 'system'
+      || hasTag('system-focus')
+      || hasTag('transition-preset')
+      || hasTag('layout-preset')
+    ) {
+      objectiveMode = 'system-navigation'
+      openPanel = 'system'
+      enabledInputs.add('open-system-menu')
+      enabledInputs.add('resume-battle')
+      enabledInputs.add('open-settings')
+      primaryHint = 'Use the system menu for pause, resume, and settings'
+    } else if (hudState.highlightedUnitCardIndex !== null) {
+      objectiveMode = 'produce-units'
+    } else if (hudState.dispatchArrowsHighlighted) {
+      objectiveMode = 'dispatch-lanes'
     }
 
     if (objectiveMode === 'dispatch-lanes' && hudState.selectedDispatchLane) {
@@ -3529,7 +3661,7 @@ export class RecoveryStageSystem {
     }
 
     if (this.battlePaused) {
-      mode = activeTutorialCue ? 'guided-preview' : 'free-preview'
+      mode = hasTutorialSource || stepDirectives.length > 0 ? 'guided-preview' : 'free-preview'
       openPanel = 'system'
       objectiveMode = 'worldmap-selection'
       primaryHint = 'Battle paused; choose an unlocked campaign node or resume the battle'
