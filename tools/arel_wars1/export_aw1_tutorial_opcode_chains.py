@@ -333,7 +333,9 @@ def load_hits(
                     "chainId": definition["chainId"],
                     "label": definition["label"],
                     "action": definition["action"],
+                    "category": definition["category"],
                     "confidence": definition["confidence"],
+                    "groupId": definition["groupId"],
                     "prefixNeedle": definition["prefixNeedle"],
                 }
             )
@@ -356,6 +358,7 @@ def load_hits(
                     "action": definition["action"],
                     "category": definition["category"],
                     "confidence": definition["confidence"],
+                    "groupId": definition["groupId"],
                     "prefixNeedle": definition["prefixNeedle"],
                 }
             )

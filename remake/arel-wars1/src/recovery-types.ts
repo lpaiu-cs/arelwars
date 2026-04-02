@@ -26,6 +26,17 @@ export interface RecoveryDialogueEvent {
   speaker: string | null
   speakerTag: number | null
   text: string
+  offset?: number
+  prefixHex?: string | null
+  prefixCommands?: RecoveryDialoguePrefixCommand[]
+  prefixTrailingHex?: string | null
+  byteLength?: number
+}
+
+export interface RecoveryDialoguePrefixCommand {
+  opcode: number
+  args: number[]
+  mnemonic: string
 }
 
 export interface RecoveryOpcodeCounterEntry {
@@ -157,7 +168,18 @@ export interface RecoveryTutorialChainCue {
   action: string
   category: string
   confidence: string
+  groupId: string
   prefixNeedle: string
+}
+
+export interface RecoveryResolvedOpcodeCue {
+  mnemonic: string
+  label: string
+  action: string
+  category: string
+  confidence: string
+  source: 'variant' | 'mnemonic'
+  variant?: string
 }
 
 export interface RecoveryStageBlueprint {
@@ -337,6 +359,9 @@ export interface RecoveryStageSnapshot {
   frameIndex: number
   elapsedStoryboardMs: number
   currentStoryboard: RecoveryStageStoryboard
+  activeDialogueEvent: RecoveryDialogueEvent | null
+  activeTutorialCue: RecoveryTutorialChainCue | null
+  activeOpcodeCue: RecoveryResolvedOpcodeCue | null
   channelStates: RecoveryBattleChannelState[]
   renderState: RecoveryStageRenderState
 }

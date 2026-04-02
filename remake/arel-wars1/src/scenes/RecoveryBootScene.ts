@@ -221,7 +221,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       `${mapLine} · ${this.formatKind(previewStem.timelineKind)} · ${snapshot.currentStoryboard.scriptPath.replace('assets/', '')}`,
     )
     this.spriteFooter.setText(
-      `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}`,
+      `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
     this.drawBattleOverlay(snapshot)
@@ -282,10 +282,10 @@ export class RecoveryBootScene extends Phaser.Scene {
       .slice(0, 3)
       .map((entry) => `${entry.label} ${entry.phaseLabel}`)
       .join(' · ')
-    const opcodeCueEntry = snapshot.currentStoryboard.stageBlueprint?.opcodeCues[0]
-    const opcodeCue = opcodeCueEntry ? `${opcodeCueEntry.label}/${opcodeCueEntry.action}` : null
+    const opcodeCue = snapshot.activeOpcodeCue ? `${snapshot.activeOpcodeCue.label}/${snapshot.activeOpcodeCue.action}` : null
+    const tutorialCue = snapshot.activeTutorialCue ? `${snapshot.activeTutorialCue.label}/${snapshot.activeTutorialCue.action}` : null
     const packed = snapshot.renderState.packedPixelStemRule ? '179 shade' : 'std render'
-    return `${headline} · fx ${snapshot.renderState.effectPulseCount} · ${packed}${opcodeCue ? ` · ${opcodeCue}` : ''}`
+    return `${headline} · fx ${snapshot.renderState.effectPulseCount} · ${packed}${tutorialCue ? ` · ${tutorialCue}` : ''}${opcodeCue ? ` · ${opcodeCue}` : ''}`
   }
 
   private drawBattleOverlay(snapshot: RecoveryStageSnapshot): void {
@@ -301,7 +301,11 @@ export class RecoveryBootScene extends Phaser.Scene {
     const x = this.previewImage.x - width / 2
     const y = this.previewImage.y - height / 2
 
-    const borderColor = snapshot.renderState.bankOverlayActive ? 0xe3c17d : 0x4c676f
+    const borderColor = snapshot.activeTutorialCue
+      ? 0xd58b39
+      : snapshot.renderState.bankOverlayActive
+        ? 0xe3c17d
+        : 0x4c676f
     graphics.lineStyle(2, borderColor, 0.8)
     graphics.strokeRoundedRect(x, y, width, height, 14)
 

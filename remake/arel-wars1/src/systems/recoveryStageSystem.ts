@@ -2,6 +2,7 @@ import type {
   RecoveryBattleChannelState,
   RecoveryCatalog,
   RecoveryDialogueEvent,
+  RecoveryResolvedOpcodeCue,
   RecoveryPreviewFrame,
   RecoveryPreviewManifest,
   RecoveryPreviewStem,
@@ -11,11 +12,20 @@ import type {
   RecoveryStageRenderState,
   RecoveryStageSnapshot,
   RecoveryStageStoryboard,
+  RecoveryTutorialChainCue,
 } from '../recovery-types'
 
 const MIN_DIALOGUE_DURATION_MS = 1400
 const MAX_DIALOGUE_DURATION_MS = 4200
 const STORYBOARD_GAP_MS = 900
+const GENERIC_OPCODE_VARIANTS = new Set([
+  'cmd-02:05',
+  'cmd-05:03',
+  'cmd-08:00',
+  'cmd-10:00',
+  'cmd-18:00',
+  'cmd-43:00',
+])
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
@@ -111,6 +121,8 @@ export class RecoveryStageSystem {
 
   private readonly featuredArchetypesById = new Map<string, RecoveryRuntimeBlueprint['featuredArchetypes'][number]>()
 
+  private readonly opcodeHeuristicsByMnemonic = new Map<string, RecoveryRuntimeBlueprint['opcodeHeuristics'][number]>()
+
   private storyboardIndex = 0
 
   private dialogueIndex = 0
@@ -137,6 +149,9 @@ export class RecoveryStageSystem {
     this.runtimeBlueprint = runtimeBlueprint
     runtimeBlueprint?.featuredArchetypes.forEach((entry) => {
       this.featuredArchetypesById.set(entry.archetypeId, entry)
+    })
+    runtimeBlueprint?.opcodeHeuristics.forEach((entry) => {
+      this.opcodeHeuristicsByMnemonic.set(entry.mnemonic, entry)
     })
     this.storyboards = buildStoryboards(catalog, previewManifest, runtimeBlueprint)
   }
@@ -171,6 +186,9 @@ export class RecoveryStageSystem {
     if (!currentStoryboard) {
       return null
     }
+    const activeDialogueEvent = this.currentDialogueEvent(currentStoryboard)
+    const activeTutorialCue = this.resolveTutorialCue(currentStoryboard, activeDialogueEvent)
+    const activeOpcodeCue = this.resolveOpcodeCue(activeDialogueEvent)
     const channelStates = this.buildChannelStates(currentStoryboard)
     return {
       storyboardIndex: this.storyboardIndex,
@@ -178,6 +196,9 @@ export class RecoveryStageSystem {
       frameIndex: this.frameIndex,
       elapsedStoryboardMs: Math.max(this.lastUpdateNowMs - this.storyboardStartedAtMs, 0),
       currentStoryboard,
+      activeDialogueEvent,
+      activeTutorialCue,
+      activeOpcodeCue,
       channelStates,
       renderState: this.buildRenderState(currentStoryboard, channelStates),
     }
@@ -229,12 +250,19 @@ export class RecoveryStageSystem {
   }
 
   private currentDialogueDuration(): number {
-    const snapshot = this.getSnapshot()
-    const event = snapshot?.currentStoryboard.scriptEvents[snapshot.dialogueIndex]
+    const storyboard = this.storyboards[this.storyboardIndex]
+    const event = storyboard ? this.currentDialogueEvent(storyboard) : null
     if (!event) {
       return 1800
     }
     return dialogueDurationMs(event)
+  }
+
+  private currentDialogueEvent(storyboard: RecoveryStageStoryboard): RecoveryDialogueEvent | null {
+    if (storyboard.scriptEvents.length === 0) {
+      return null
+    }
+    return storyboard.scriptEvents[Math.min(this.dialogueIndex, storyboard.scriptEvents.length - 1)] ?? null
   }
 
   private scheduleNextFrame(entry: RecoveryPreviewStem, nowMs: number): void {
@@ -291,6 +319,80 @@ export class RecoveryStageSystem {
     }
 
     this.frameIndex += 1
+  }
+
+  private resolveTutorialCue(
+    storyboard: RecoveryStageStoryboard,
+    event: RecoveryDialogueEvent | null,
+  ): RecoveryTutorialChainCue | null {
+    const prefixHex = event?.prefixHex
+    if (!prefixHex || !storyboard.stageBlueprint?.tutorialChainCues?.length) {
+      return null
+    }
+
+    const matches = storyboard.stageBlueprint.tutorialChainCues.filter((cue) => prefixHex.includes(cue.prefixNeedle))
+    if (matches.length === 0) {
+      return null
+    }
+    matches.sort((left, right) => right.prefixNeedle.length - left.prefixNeedle.length)
+    return matches[0] ?? null
+  }
+
+  private resolveOpcodeCue(event: RecoveryDialogueEvent | null): RecoveryResolvedOpcodeCue | null {
+    const commands = event?.prefixCommands ?? []
+    if (commands.length === 0) {
+      return null
+    }
+
+    const exactVariantCandidates: Array<RecoveryResolvedOpcodeCue & { commandIndex: number }> = []
+    const mnemonicCandidates: Array<RecoveryResolvedOpcodeCue & { commandIndex: number }> = []
+
+    commands.forEach((command, commandIndex) => {
+      const heuristic = this.opcodeHeuristicsByMnemonic.get(command.mnemonic)
+      if (!heuristic) {
+        return
+      }
+      const variantKey = `${command.mnemonic}:${command.args.length > 0 ? command.args.map((value) => value.toString(16).padStart(2, '0')).join(',') : '-'}`
+      const variantHint = heuristic.variantHints?.find((hint) => hint.variant === variantKey)
+      if (variantHint) {
+        exactVariantCandidates.push({
+          mnemonic: command.mnemonic,
+          label: variantHint.label,
+          action: variantHint.action,
+          category: heuristic.category,
+          confidence: variantHint.confidence,
+          source: 'variant',
+          variant: variantKey,
+          commandIndex,
+        })
+        return
+      }
+      mnemonicCandidates.push({
+        mnemonic: command.mnemonic,
+        label: heuristic.label,
+        action: heuristic.action,
+        category: heuristic.category,
+        confidence: heuristic.confidence,
+        source: 'mnemonic',
+        commandIndex,
+      })
+    })
+
+    const nonGenericVariants = exactVariantCandidates.filter((entry) => !GENERIC_OPCODE_VARIANTS.has(entry.variant ?? ''))
+    const pickedVariant = (nonGenericVariants.length > 0 ? nonGenericVariants : exactVariantCandidates).sort(
+      (left, right) => right.commandIndex - left.commandIndex,
+    )[0]
+    if (pickedVariant) {
+      const { commandIndex: _commandIndex, ...cue } = pickedVariant
+      return cue
+    }
+
+    const pickedMnemonic = mnemonicCandidates.sort((left, right) => right.commandIndex - left.commandIndex)[0]
+    if (!pickedMnemonic) {
+      return null
+    }
+    const { commandIndex: _commandIndex, ...cue } = pickedMnemonic
+    return cue
   }
 
   private buildChannelStates(storyboard: RecoveryStageStoryboard): RecoveryBattleChannelState[] {

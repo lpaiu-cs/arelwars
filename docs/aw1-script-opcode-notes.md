@@ -34,6 +34,7 @@ This keeps the runtime-facing labels stable without pretending the binary gramma
 
 `AW1.tutorial_opcode_chains.json` adds a third layer for cases where the current parser still under-reads selector bytes.
 That proof layer uses exact raw-prefix needles mirrored across tutorial families.
+The Phaser recovery runtime now consumes those needles per dialogue event, so the active HUD/tutorial target shown on screen is no longer only a family-level guess.
 
 ### Tutorial / UI Guidance Cluster
 

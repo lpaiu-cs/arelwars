@@ -215,6 +215,7 @@ def build_stage_blueprints(
                     "action": item.get("action"),
                     "category": item.get("category"),
                     "confidence": item.get("confidence"),
+                    "groupId": item.get("groupId"),
                     "prefixNeedle": item.get("prefixNeedle"),
                 }
                 for item in tutorial_family_hit.get("chains", [])

@@ -324,7 +324,14 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const mapLine = stage?.mapBinding
     ? `Map ${stage.mapBinding.mapPairIndices.join('/')} → ${stage.mapBinding.preferredMapIndexHeuristic ?? 'n/a'} (${stage.mapBinding.proofType} ${stage.mapBinding.proofScore.toFixed(2)})`
     : 'Map unresolved'
-  const opcodeAction = stage?.opcodeCues[0] ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}` : null
+  const activeTutorial = snapshot.activeTutorialCue
+    ? `${snapshot.activeTutorialCue.label} / ${snapshot.activeTutorialCue.action}`
+    : null
+  const activeOpcode = snapshot.activeOpcodeCue
+    ? `${snapshot.activeOpcodeCue.label} / ${snapshot.activeOpcodeCue.action}`
+    : stage?.opcodeCues[0]
+      ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}`
+      : null
   return `
     <article class="story-card">
       <header class="story-card-header">
@@ -345,11 +352,12 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         <p class="story-text">${escapeHtml(activeEvent.text)}</p>
       </div>
       <div class="story-tags">
+        ${activeTutorial ? `<span class="story-pill story-pill-accent">${escapeHtml(activeTutorial)}</span>` : ''}
         ${opcodePills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
         ${tutorialPills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
         ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
       </div>
-      <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${opcodeAction ? ` · ${escapeHtml(opcodeAction)}` : ''}</p>
+      <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${activeOpcode ? ` · ${escapeHtml(activeOpcode)}` : ''}</p>
       <div class="story-strip">
         <img src="${previewStem.timelineStrip.pngPath}" alt="Timeline strip for stem ${previewStem.stem}" loading="lazy" />
       </div>

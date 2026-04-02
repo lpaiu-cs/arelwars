@@ -992,49 +992,63 @@
           "chainId": "battle-hud-dispatch-arrows",
           "label": "dispatch-arrow-highlight",
           "action": "focus-dispatch-arrows",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "060d0240"
         },
         {
           "chainId": "battle-hud-goal-hp",
           "label": "focus-enemy-tower-hp",
           "action": "focus-enemy-tower-hp-win-condition",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0140"
         },
         {
           "chainId": "battle-hud-guard-hp",
           "label": "guard-own-tower-hp",
           "action": "focus-own-tower-hp-loss-condition",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0040"
         },
         {
           "chainId": "battle-hud-hero-return",
           "label": "hero-return-button-highlight",
           "action": "focus-return-to-tower-button",
+          "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
         },
         {
           "chainId": "battle-hud-hero-sortie",
           "label": "hero-sortie-button-highlight",
           "action": "focus-hero-sortie-button",
+          "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0540"
         },
         {
           "chainId": "battle-hud-mana-bar",
           "label": "mana-bar-highlight",
           "action": "focus-mana-bar",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0440"
         },
         {
           "chainId": "battle-hud-unit-card",
           "label": "unit-card-highlight",
           "action": "focus-unit-production-card",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0340"
         }
       ]
@@ -1058,56 +1072,72 @@
           "chainId": "item-menu-highlight",
           "label": "item-menu-highlight",
           "action": "focus-item-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0c40"
         },
         {
           "chainId": "mana-upgrade-highlight",
           "label": "mana-upgrade-highlight",
           "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0840"
         },
         {
           "chainId": "population-upgrade-highlight",
           "label": "population-upgrade-highlight",
           "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0940"
         },
         {
           "chainId": "quest-panel-highlight",
           "label": "quest-panel-highlight",
           "action": "focus-quest-panel",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0e40"
         },
         {
           "chainId": "skill-menu-highlight",
           "label": "skill-menu-highlight",
           "action": "focus-skill-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0a40"
         },
         {
           "chainId": "skill-slot-highlight",
           "label": "skill-slot-highlight",
           "action": "focus-skill-window-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0b40"
         },
         {
           "chainId": "system-menu-highlight",
           "label": "system-menu-highlight",
           "action": "focus-system-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0d40"
         },
         {
           "chainId": "tower-menu-highlight",
           "label": "tower-menu-highlight",
           "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0740"
         }
       ]
@@ -1130,49 +1160,63 @@
           "chainId": "battle-hud-dispatch-arrows",
           "label": "dispatch-arrow-highlight",
           "action": "focus-dispatch-arrows",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "060d0240"
         },
         {
           "chainId": "battle-hud-goal-hp",
           "label": "focus-enemy-tower-hp",
           "action": "focus-enemy-tower-hp-win-condition",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0140"
         },
         {
           "chainId": "battle-hud-guard-hp",
           "label": "guard-own-tower-hp",
           "action": "focus-own-tower-hp-loss-condition",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0040"
         },
         {
           "chainId": "battle-hud-hero-return",
           "label": "hero-return-button-highlight",
           "action": "focus-return-to-tower-button",
+          "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
         },
         {
           "chainId": "battle-hud-hero-sortie",
           "label": "hero-sortie-button-highlight",
           "action": "focus-hero-sortie-button",
+          "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0540"
         },
         {
           "chainId": "battle-hud-mana-bar",
           "label": "mana-bar-highlight",
           "action": "focus-mana-bar",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0440"
         },
         {
           "chainId": "battle-hud-unit-card",
           "label": "unit-card-highlight",
           "action": "focus-unit-production-card",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0340"
         }
       ]
@@ -1196,56 +1240,72 @@
           "chainId": "item-menu-highlight",
           "label": "item-menu-highlight",
           "action": "focus-item-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0c40"
         },
         {
           "chainId": "mana-upgrade-highlight",
           "label": "mana-upgrade-highlight",
           "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0840"
         },
         {
           "chainId": "population-upgrade-highlight",
           "label": "population-upgrade-highlight",
           "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0940"
         },
         {
           "chainId": "quest-panel-highlight",
           "label": "quest-panel-highlight",
           "action": "focus-quest-panel",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0e40"
         },
         {
           "chainId": "skill-menu-highlight",
           "label": "skill-menu-highlight",
           "action": "focus-skill-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0a40"
         },
         {
           "chainId": "skill-slot-highlight",
           "label": "skill-slot-highlight",
           "action": "focus-skill-window-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0b40"
         },
         {
           "chainId": "system-menu-highlight",
           "label": "system-menu-highlight",
           "action": "focus-system-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0d40"
         },
         {
           "chainId": "tower-menu-highlight",
           "label": "tower-menu-highlight",
           "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0740"
         }
       ]
@@ -1268,49 +1328,63 @@
           "chainId": "battle-hud-dispatch-arrows",
           "label": "dispatch-arrow-highlight",
           "action": "focus-dispatch-arrows",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "060d0240"
         },
         {
           "chainId": "battle-hud-goal-hp",
           "label": "focus-enemy-tower-hp",
           "action": "focus-enemy-tower-hp-win-condition",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0140"
         },
         {
           "chainId": "battle-hud-guard-hp",
           "label": "guard-own-tower-hp",
           "action": "focus-own-tower-hp-loss-condition",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0040"
         },
         {
           "chainId": "battle-hud-hero-return",
           "label": "hero-return-button-highlight",
           "action": "focus-return-to-tower-button",
+          "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
         },
         {
           "chainId": "battle-hud-hero-sortie",
           "label": "hero-sortie-button-highlight",
           "action": "focus-hero-sortie-button",
+          "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0540"
         },
         {
           "chainId": "battle-hud-mana-bar",
           "label": "mana-bar-highlight",
           "action": "focus-mana-bar",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0440"
         },
         {
           "chainId": "battle-hud-unit-card",
           "label": "unit-card-highlight",
           "action": "focus-unit-production-card",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0340"
         }
       ]
@@ -1334,56 +1408,72 @@
           "chainId": "item-menu-highlight",
           "label": "item-menu-highlight",
           "action": "focus-item-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0c40"
         },
         {
           "chainId": "mana-upgrade-highlight",
           "label": "mana-upgrade-highlight",
           "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0840"
         },
         {
           "chainId": "population-upgrade-highlight",
           "label": "population-upgrade-highlight",
           "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0940"
         },
         {
           "chainId": "quest-panel-highlight",
           "label": "quest-panel-highlight",
           "action": "focus-quest-panel",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0e40"
         },
         {
           "chainId": "skill-menu-highlight",
           "label": "skill-menu-highlight",
           "action": "focus-skill-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0a40"
         },
         {
           "chainId": "skill-slot-highlight",
           "label": "skill-slot-highlight",
           "action": "focus-skill-window-slot",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0b40"
         },
         {
           "chainId": "system-menu-highlight",
           "label": "system-menu-highlight",
           "action": "focus-system-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0d40"
         },
         {
           "chainId": "tower-menu-highlight",
           "label": "tower-menu-highlight",
           "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0740"
         }
       ]
@@ -1411,6 +1501,7 @@
           "action": "focus-dispatch-arrows",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "060d0240"
         },
         {
@@ -1419,6 +1510,7 @@
           "action": "focus-enemy-tower-hp-win-condition",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0140"
         },
         {
@@ -1427,6 +1519,7 @@
           "action": "focus-own-tower-hp-loss-condition",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0040"
         },
         {
@@ -1435,6 +1528,7 @@
           "action": "focus-return-to-tower-button",
           "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
         },
         {
@@ -1443,6 +1537,7 @@
           "action": "focus-hero-sortie-button",
           "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0540"
         },
         {
@@ -1451,6 +1546,7 @@
           "action": "focus-mana-bar",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0440"
         },
         {
@@ -1459,6 +1555,7 @@
           "action": "focus-unit-production-card",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0340"
         }
       ]
@@ -1485,6 +1582,7 @@
           "action": "focus-item-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0c40"
         },
         {
@@ -1493,6 +1591,7 @@
           "action": "focus-mana-upgrade-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0840"
         },
         {
@@ -1501,6 +1600,7 @@
           "action": "focus-population-upgrade-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0940"
         },
         {
@@ -1509,6 +1609,7 @@
           "action": "focus-quest-panel",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0e40"
         },
         {
@@ -1517,6 +1618,7 @@
           "action": "focus-skill-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0a40"
         },
         {
@@ -1525,6 +1627,7 @@
           "action": "focus-skill-window-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0b40"
         },
         {
@@ -1533,6 +1636,7 @@
           "action": "focus-system-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0d40"
         },
         {
@@ -1541,6 +1645,7 @@
           "action": "focus-tower-upgrade-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0740"
         }
       ]
@@ -1566,6 +1671,7 @@
           "action": "focus-dispatch-arrows",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "060d0240"
         },
         {
@@ -1574,6 +1680,7 @@
           "action": "focus-enemy-tower-hp-win-condition",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0140"
         },
         {
@@ -1582,6 +1689,7 @@
           "action": "focus-own-tower-hp-loss-condition",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0040"
         },
         {
@@ -1590,6 +1698,7 @@
           "action": "focus-return-to-tower-button",
           "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
         },
         {
@@ -1598,6 +1707,7 @@
           "action": "focus-hero-sortie-button",
           "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0540"
         },
         {
@@ -1606,6 +1716,7 @@
           "action": "focus-mana-bar",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0440"
         },
         {
@@ -1614,6 +1725,7 @@
           "action": "focus-unit-production-card",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0340"
         }
       ]
@@ -1640,6 +1752,7 @@
           "action": "focus-item-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0c40"
         },
         {
@@ -1648,6 +1761,7 @@
           "action": "focus-mana-upgrade-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0840"
         },
         {
@@ -1656,6 +1770,7 @@
           "action": "focus-population-upgrade-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0940"
         },
         {
@@ -1664,6 +1779,7 @@
           "action": "focus-quest-panel",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0e40"
         },
         {
@@ -1672,6 +1788,7 @@
           "action": "focus-skill-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0a40"
         },
         {
@@ -1680,6 +1797,7 @@
           "action": "focus-skill-window-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0b40"
         },
         {
@@ -1688,6 +1806,7 @@
           "action": "focus-system-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0d40"
         },
         {
@@ -1696,6 +1815,7 @@
           "action": "focus-tower-upgrade-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0740"
         }
       ]
@@ -1721,6 +1841,7 @@
           "action": "focus-dispatch-arrows",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "060d0240"
         },
         {
@@ -1729,6 +1850,7 @@
           "action": "focus-enemy-tower-hp-win-condition",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0140"
         },
         {
@@ -1737,6 +1859,7 @@
           "action": "focus-own-tower-hp-loss-condition",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0040"
         },
         {
@@ -1745,6 +1868,7 @@
           "action": "focus-return-to-tower-button",
           "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
         },
         {
@@ -1753,6 +1877,7 @@
           "action": "focus-hero-sortie-button",
           "category": "ui-focus",
           "confidence": "medium",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0540"
         },
         {
@@ -1761,6 +1886,7 @@
           "action": "focus-mana-bar",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0440"
         },
         {
@@ -1769,6 +1895,7 @@
           "action": "focus-unit-production-card",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "battle-hud",
           "prefixNeedle": "000d0340"
         }
       ]
@@ -1795,6 +1922,7 @@
           "action": "focus-item-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0c40"
         },
         {
@@ -1803,6 +1931,7 @@
           "action": "focus-mana-upgrade-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0840"
         },
         {
@@ -1811,6 +1940,7 @@
           "action": "focus-population-upgrade-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0940"
         },
         {
@@ -1819,6 +1949,7 @@
           "action": "focus-quest-panel",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0e40"
         },
         {
@@ -1827,6 +1958,7 @@
           "action": "focus-skill-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0a40"
         },
         {
@@ -1835,6 +1967,7 @@
           "action": "focus-skill-window-slot",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0b40"
         },
         {
@@ -1843,6 +1976,7 @@
           "action": "focus-system-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0d40"
         },
         {
@@ -1851,6 +1985,7 @@
           "action": "focus-tower-upgrade-menu",
           "category": "ui-focus",
           "confidence": "high",
+          "groupId": "menu-training",
           "prefixNeedle": "060d0740"
         }
       ]

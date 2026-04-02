@@ -174,6 +174,7 @@ References:
       - `Smoke` regular skill and `Smoke (Special)` are now separated instead of being conflated by name
     - `AW1.opcode_action_map.json` now separates mnemonic-wide opcode labels from variant-local action hints
     - `AW1.tutorial_opcode_chains.json` now records exact raw-prefix tutorial chains for the battle HUD and menu-training families, which is important where the current prefix parser still under-reads selector bytes
+    - the recovery runtime now resolves those tutorial chains per dialogue event instead of only exposing them as family-level metadata
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest
