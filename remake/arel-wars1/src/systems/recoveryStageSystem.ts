@@ -1,9 +1,17 @@
 import type {
   RecoveryBattleChainState,
   RecoveryBattleEntityState,
+  RecoveryBattleEffectState,
+  RecoveryBattleModel,
   RecoveryBattleObjectiveState,
   RecoveryBattleProjectileState,
   RecoveryBattlePreviewState,
+  RecoveryBattleEffectTemplate,
+  RecoveryBattleHeroTemplate,
+  RecoveryBattleItemTemplate,
+  RecoveryBattleProjectileTemplate,
+  RecoveryBattleSkillTemplate,
+  RecoveryBattleUnitTemplate,
   RecoveryBattleWaveDirective,
   RecoveryBattleChannelState,
   RecoveryCatalog,
@@ -33,7 +41,6 @@ const STORYBOARD_GAP_MS = 900
 const RESULT_HOLD_MS = 1800
 const WORLDMAP_HOLD_MS = 1600
 const DEPLOY_BRIEFING_MS = 1800
-const MANA_RECOVERY_PER_BEAT = 0.018
 const UPGRADE_PROGRESS_RECOVERY_PER_BEAT = 0.012
 const SKILL_COOLDOWN_MS = 2600
 const ITEM_COOLDOWN_MS = 3200
@@ -164,6 +171,12 @@ interface RecoveryBattleUnitRuntime {
   cooldownBeats: number
   attackPeriodBeats: number
   positionRatio: number
+  templateId: string
+  projectileTemplateId: string | null
+  effectTemplateId: string | null
+  populationCost: number
+  manaCost: number
+  attackStyle: 'melee' | 'projectile' | 'siege' | 'support'
 }
 
 interface RecoveryBattleProjectileRuntime {
@@ -175,12 +188,37 @@ interface RecoveryBattleProjectileRuntime {
   velocity: number
   strength: number
   ttlBeats: number
+  effectTemplateId: string | null
+}
+
+interface RecoveryBattleEffectRuntime {
+  id: number
+  side: RecoveryBattleSide
+  laneId: RecoveryBattleLaneId
+  positionRatio: number
+  kind: string
+  ttlBeats: number
+  intensity: number
 }
 
 export class RecoveryStageSystem {
   private readonly storyboards: RecoveryStageStoryboard[]
 
   private readonly runtimeBlueprint: RecoveryRuntimeBlueprint | null
+
+  private readonly battleModel: RecoveryBattleModel | null
+
+  private readonly unitTemplatesById = new Map<string, RecoveryBattleUnitTemplate>()
+
+  private readonly projectileTemplatesById = new Map<string, RecoveryBattleProjectileTemplate>()
+
+  private readonly effectTemplatesById = new Map<string, RecoveryBattleEffectTemplate>()
+
+  private readonly skillTemplatesByName = new Map<string, RecoveryBattleSkillTemplate>()
+
+  private readonly itemTemplatesByName = new Map<string, RecoveryBattleItemTemplate>()
+
+  private readonly heroTemplatesByName = new Map<string, RecoveryBattleHeroTemplate>()
 
   private readonly featuredArchetypesById = new Map<string, RecoveryRuntimeBlueprint['featuredArchetypes'][number]>()
 
@@ -351,6 +389,8 @@ export class RecoveryStageSystem {
 
   private nextBattleProjectileId = 1
 
+  private nextBattleEffectId = 1
+
   private readonly laneEntities: Record<RecoveryBattleLaneId, Record<RecoveryBattleSide, RecoveryBattleUnitRuntime[]>> = {
     upper: { allied: [], enemy: [] },
     lower: { allied: [], enemy: [] },
@@ -358,17 +398,51 @@ export class RecoveryStageSystem {
 
   private readonly battleProjectiles: RecoveryBattleProjectileRuntime[] = []
 
+  private readonly battleEffects: RecoveryBattleEffectRuntime[] = []
+
+  private alliedManaValue = 0
+
+  private enemyManaValue = 0
+
+  private manaCapacityValue = 100
+
+  private enemyManaCapacityValue = 100
+
+  private populationCapacity = 6
+
+  private enemyPopulationCapacity = 6
+
   constructor(
     catalog: RecoveryCatalog,
     previewManifest: RecoveryPreviewManifest,
     runtimeBlueprint: RecoveryRuntimeBlueprint | null = null,
+    battleModel: RecoveryBattleModel | null = null,
   ) {
     this.runtimeBlueprint = runtimeBlueprint
+    this.battleModel = battleModel
     runtimeBlueprint?.featuredArchetypes.forEach((entry) => {
       this.featuredArchetypesById.set(entry.archetypeId, entry)
     })
     runtimeBlueprint?.opcodeHeuristics.forEach((entry) => {
       this.opcodeHeuristicsByMnemonic.set(entry.mnemonic, entry)
+    })
+    battleModel?.unitTemplates.forEach((entry) => {
+      this.unitTemplatesById.set(entry.id, entry)
+    })
+    battleModel?.projectileTemplates.forEach((entry) => {
+      this.projectileTemplatesById.set(entry.id, entry)
+    })
+    battleModel?.effectTemplates.forEach((entry) => {
+      this.effectTemplatesById.set(entry.id, entry)
+    })
+    battleModel?.skillTemplates.forEach((entry) => {
+      this.skillTemplatesByName.set(entry.name.toLowerCase(), entry)
+    })
+    battleModel?.itemTemplates.forEach((entry) => {
+      this.itemTemplatesByName.set(entry.name.toLowerCase(), entry)
+    })
+    battleModel?.heroTemplates.forEach((entry) => {
+      this.heroTemplatesByName.set(entry.name.toLowerCase(), entry)
     })
     this.storyboards = buildStoryboards(catalog, previewManifest, runtimeBlueprint)
     if (this.storyboards.length > 0) {
@@ -976,11 +1050,7 @@ export class RecoveryStageSystem {
         break
       case 'battle-hud-mana-bar':
         this.setObjectiveState('tower-management', 'restore mana tempo', 0.02)
-        this.previewManaRatio = clamp(
-          this.previewManaRatio + 0.08 + this.currentStageBattleProfile.manaSurge * 0.14,
-          0.06,
-          1,
-        )
+        this.restoreMana('allied', this.manaCapacityValue * (0.08 + this.currentStageBattleProfile.manaSurge * 0.14))
         this.lastScriptedBeatNote = 'tutorial restored mana context'
         return
       case 'battle-hud-hero-sortie':
@@ -1439,8 +1509,9 @@ export class RecoveryStageSystem {
     }
 
     if (side === 'allied') {
+      const queueCapacity = this.battleModel?.resourceRules.queueCapacity ?? 6
       if (activeLoadout.skillPresetKind === 'orders' && (directive.role === 'push' || directive.role === 'siege')) {
-        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, queueCapacity)
         this.selectedDispatchLane = directive.laneId
       }
       if (activeLoadout.skillPresetKind === 'burst' && directive.role === 'skill-window') {
@@ -1451,11 +1522,11 @@ export class RecoveryStageSystem {
         this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.025, 0.1, 1)
       }
       if (activeLoadout.towerPolicyKind === 'mana-first') {
-        this.previewManaRatio = clamp(this.previewManaRatio + (source === 'scene' ? 0.05 : 0.03), 0.06, 1)
+        this.restoreMana('allied', this.manaCapacityValue * (source === 'scene' ? 0.05 : 0.03))
       } else if (activeLoadout.towerPolicyKind === 'attack-first' && (directive.role === 'push' || directive.role === 'siege')) {
         this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.016, 0.08, 1)
       } else if (activeLoadout.towerPolicyKind === 'population-first') {
-        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, queueCapacity)
       }
 
       if (activeLoadout.heroRosterRole === 'support' || activeLoadout.heroRosterRole === 'defender') {
@@ -2497,7 +2568,7 @@ export class RecoveryStageSystem {
       } else if (directive.role === 'tower-rally' && routeBias.sustainRoute) {
         this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.02 + routeInfluence.defenseDelta * 0.25, 0.1, 1)
       } else if (directive.role === 'skill-window' && routeBias.manaRoute) {
-        this.previewManaRatio = clamp(this.previewManaRatio + 0.04 + routeInfluence.manaDelta * 0.3, 0.06, 1)
+        this.restoreMana('allied', this.manaCapacityValue * (0.04 + routeInfluence.manaDelta * 0.3))
       }
     }
     this.resetWaveCountdown(side, directive)
@@ -2623,7 +2694,7 @@ export class RecoveryStageSystem {
         && routeInfluence.matchesPreferred
         && routeBias.manaRoute
         && this.objectiveProgressRatio >= progressVictoryThreshold - 0.04
-        && this.previewManaRatio >= 0.66
+        && this.alliedManaValue >= this.manaCapacityValue * 0.66
       )
     ) {
       this.resolveBattleOutcome(
@@ -3351,6 +3422,12 @@ export class RecoveryStageSystem {
     this.queuedUnitCount = 0
     this.previewManaRatio = 0.48
     this.previewManaUpgradeProgressRatio = 0.22
+    this.alliedManaValue = 0
+    this.enemyManaValue = 0
+    this.manaCapacityValue = this.battleModel?.resourceRules.manaCapacity ?? 100
+    this.enemyManaCapacityValue = this.battleModel?.resourceRules.enemyManaCapacity ?? 110
+    this.populationCapacity = this.battleModel?.resourceRules.populationBase ?? 7
+    this.enemyPopulationCapacity = this.battleModel?.resourceRules.enemyPopulationBase ?? 8
     this.previewOwnTowerHpRatio = 0.74
     this.previewEnemyTowerHpRatio = 0.58
     this.skillCooldownEndsAtMs = 0
@@ -3378,6 +3455,187 @@ export class RecoveryStageSystem {
     this.campaignScenePhase = 'battle'
     this.campaignWorldmapAutoEnterAtMs = 0
     this.campaignDeployBriefingEndsAtMs = 0
+  }
+
+  private pickLeadHeroTemplate(): RecoveryBattleHeroTemplate | null {
+    const members = this.activeDeployLoadout?.heroRosterMembers ?? []
+    for (const member of members) {
+      const heroTemplate = this.heroTemplateForMember(member)
+      if (heroTemplate) {
+        return heroTemplate
+      }
+    }
+    return null
+  }
+
+  private pickSkillTemplate(): RecoveryBattleSkillTemplate | null {
+    const heroTemplate = this.pickLeadHeroTemplate()
+    const preferredKinds = [
+      this.activeDeployLoadout?.skillPresetKind ?? 'balanced',
+      heroTemplate?.memberRole === 'caster' ? 'burst' : null,
+      heroTemplate?.memberRole === 'support' ? 'support' : null,
+      'balanced',
+    ].filter((value): value is RecoveryBattleSkillTemplate['kind'] => Boolean(value))
+
+    for (const kind of preferredKinds) {
+      for (const skillName of heroTemplate?.preferredSkillNames ?? []) {
+        const template = this.skillTemplatesByName.get(skillName.toLowerCase())
+        if (template && template.kind === kind) {
+          return template
+        }
+      }
+    }
+
+    for (const skillName of heroTemplate?.preferredSkillNames ?? []) {
+      const template = this.skillTemplatesByName.get(skillName.toLowerCase())
+      if (template) {
+        return template
+      }
+    }
+
+    return this.battleModel?.skillTemplates[0] ?? null
+  }
+
+  private pickItemTemplate(): RecoveryBattleItemTemplate | null {
+    const heroTemplate = this.pickLeadHeroTemplate()
+    const preferredKinds = [
+      this.activeDeployLoadout?.towerPolicyKind === 'mana-first' ? 'mana' : null,
+      this.activeDeployLoadout?.towerPolicyKind === 'attack-first' ? 'burst' : null,
+      this.activeDeployLoadout?.heroRosterRole === 'support' ? 'heal' : null,
+      'support',
+      'utility',
+    ].filter((value): value is RecoveryBattleItemTemplate['kind'] => Boolean(value))
+
+    for (const kind of preferredKinds) {
+      for (const itemName of heroTemplate?.preferredItemNames ?? []) {
+        const template = this.itemTemplatesByName.get(itemName.toLowerCase())
+        if (template && template.kind === kind) {
+          return template
+        }
+      }
+    }
+
+    for (const itemName of heroTemplate?.preferredItemNames ?? []) {
+      const template = this.itemTemplatesByName.get(itemName.toLowerCase())
+      if (template) {
+        return template
+      }
+    }
+
+    return this.battleModel?.itemTemplates[0] ?? null
+  }
+
+  private applySkillAction(nowMs: number): void {
+    const skillTemplate = this.pickSkillTemplate()
+    const activeLoadout = this.activeDeployLoadout
+    if (!skillTemplate) {
+      this.lastActionNote = 'no runtime skill template available'
+      return
+    }
+    if (!this.spendMana('allied', skillTemplate.manaCost)) {
+      this.lastActionNote = `${skillTemplate.name} blocked by mana`
+      return
+    }
+
+    const skillCooldownBase = this.battleModel?.resourceRules.skillCooldownBaseBeats ?? 5
+    this.skillCooldownEndsAtMs = nowMs + Math.max(skillTemplate.cooldownBeats, skillCooldownBase) * 120
+    const targetLane = this.heroAssignedLane ?? this.selectedDispatchLane ?? this.currentStageBattleProfile.favoredLane ?? 'upper'
+    const oppositeLane = targetLane === 'upper' ? 'lower' : 'upper'
+    this.createEffect('allied', targetLane, 0.54, skillTemplate.effectTemplateId, skillTemplate.kind, 1)
+
+    switch (skillTemplate.kind) {
+      case 'burst':
+        this.strikeLaneUnits(targetLane, 'enemy', 0.24 * skillTemplate.powerScale + this.currentStageBattleProfile.armageddonBurst * 0.32, 2)
+        this.damageTower('enemy', 0.018 * skillTemplate.powerScale)
+        this.spawnBattleUnit('allied', targetLane, 'skill-window', `skill:${skillTemplate.name}`, {
+          powerScale: skillTemplate.powerScale,
+        })
+        break
+      case 'support':
+        this.supportLaneUnits(targetLane, 'allied', 0.2 * skillTemplate.powerScale)
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04 * skillTemplate.powerScale, 0.1, 1)
+        break
+      case 'orders':
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 2, this.battleModel?.resourceRules.queueCapacity ?? 6)
+        this.spawnBattleUnit('allied', targetLane, 'push', `skill:${skillTemplate.name}`, {
+          powerScale: 1 + this.currentStageBattleProfile.dispatchBoost,
+        })
+        break
+      case 'utility':
+        this.strikeLaneUnits(oppositeLane, 'enemy', 0.12 * skillTemplate.powerScale, 1)
+        this.shiftLaneUnits(targetLane, 'allied', 0.03)
+        this.restoreMana('allied', this.manaCapacityValue * 0.05)
+        break
+      default:
+        this.spawnBattleUnit('allied', targetLane, 'support', `skill:${skillTemplate.name}`, {
+          powerScale: 1.02,
+        })
+        break
+    }
+
+    if (this.loadoutHasMember(activeLoadout, 'Juno')) {
+      this.restoreMana('allied', this.manaCapacityValue * 0.06)
+      this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 240, nowMs)
+    }
+    if (this.loadoutHasMember(activeLoadout, 'Manos')) {
+      this.strikeLaneUnits(targetLane, 'enemy', 0.14, 1)
+    }
+    if (this.loadoutHasMember(activeLoadout, 'Helba')) {
+      this.supportLaneUnits(targetLane, 'allied', 0.12)
+    }
+    this.lastActionNote = `skill cast ${skillTemplate.name}`
+  }
+
+  private applyItemAction(nowMs: number): void {
+    const itemTemplate = this.pickItemTemplate()
+    const activeLoadout = this.activeDeployLoadout
+    if (!itemTemplate) {
+      this.lastActionNote = 'no runtime item template available'
+      return
+    }
+    const resourceCost = Math.min(itemTemplate.cost / 12, this.manaCapacityValue * 0.3)
+    if (!this.spendMana('allied', resourceCost)) {
+      this.lastActionNote = `${itemTemplate.name} blocked by resource cost`
+      return
+    }
+
+    const itemCooldownBase = this.battleModel?.resourceRules.itemCooldownBaseBeats ?? 6
+    this.itemCooldownEndsAtMs = nowMs + Math.max(itemTemplate.cooldownBeats, itemCooldownBase) * 120
+    const targetLane = this.currentStageBattleProfile.favoredLane ?? this.selectedDispatchLane ?? 'upper'
+    this.createEffect('allied', targetLane, 0.34, itemTemplate.effectTemplateId, itemTemplate.kind, 1)
+
+    switch (itemTemplate.kind) {
+      case 'heal':
+      case 'support':
+        this.supportLaneUnits(targetLane, 'allied', 0.22 * itemTemplate.powerScale)
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06 * itemTemplate.powerScale, 0.1, 1)
+        break
+      case 'burst':
+        this.strikeLaneUnits(targetLane, 'enemy', 0.26 * itemTemplate.powerScale, 2)
+        this.damageTower('enemy', 0.012 * itemTemplate.powerScale)
+        break
+      case 'mana':
+        this.restoreMana('allied', this.manaCapacityValue * 0.16)
+        break
+      case 'orders':
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 2, this.battleModel?.resourceRules.queueCapacity ?? 6)
+        this.spawnBattleUnit('allied', targetLane, 'tower-rally', `item:${itemTemplate.name}`, {
+          powerScale: 1.06,
+        })
+        break
+      default:
+        this.shiftLaneUnits(targetLane, 'allied', 0.024)
+        this.strikeLaneUnits(targetLane, 'enemy', 0.1 * itemTemplate.powerScale, 1)
+        break
+    }
+
+    if (this.loadoutHasMember(activeLoadout, 'Rogan')) {
+      this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, this.battleModel?.resourceRules.queueCapacity ?? 6)
+    }
+    if (this.loadoutHasMember(activeLoadout, 'Caesar')) {
+      this.supportLaneUnits(targetLane, 'allied', 0.12)
+    }
+    this.lastActionNote = `item used ${itemTemplate.name}`
   }
 
   private applyAction(actionId: RecoveryGameplayActionId, snapshot: RecoveryStageSnapshot): void {
@@ -3412,111 +3670,12 @@ export class RecoveryStageSystem {
         this.applyTowerUpgrade(snapshot)
         break
       case 'cast-skill':
-        {
-          const activeLoadout = this.activeDeployLoadout
-          const skillPresetKind = activeLoadout?.skillPresetKind ?? 'balanced'
-          const hasJuno = this.loadoutHasMember(activeLoadout, 'Juno')
-          const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
-          const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
-          const cooldownScale =
-            skillPresetKind === 'burst'
-              ? 1.12
-              : skillPresetKind === 'support'
-                ? 0.84
-                : skillPresetKind === 'orders'
-                  ? 0.9
-                  : skillPresetKind === 'utility'
-                    ? 0.88
-                    : 1
-          const burstBonus =
-            skillPresetKind === 'burst'
-              ? 0.05
-              : skillPresetKind === 'orders'
-                ? 0.02
-                : skillPresetKind === 'utility'
-                  ? 0.025
-                  : 0
         this.panelOverride = 'skill'
-        this.skillCooldownEndsAtMs = nowMs + Math.round(SKILL_COOLDOWN_MS * cooldownScale)
-        this.previewEnemyTowerHpRatio = clamp(
-          this.previewEnemyTowerHpRatio - (0.07 + this.currentStageBattleProfile.armageddonBurst * 0.12 + burstBonus),
-          0.08,
-          1,
-        )
-        this.previewManaRatio = clamp(
-          this.previewManaRatio
-          - 0.08
-          + this.currentStageBattleProfile.manaSurge * 0.06
-          + (skillPresetKind === 'utility' ? 0.05 : 0)
-          + (skillPresetKind === 'support' ? 0.03 : 0),
-          0.06,
-          1,
-        )
-        if (this.currentStageBattleProfile.armageddonBurst > 0.12) {
-          ;(['upper', 'lower'] as const).forEach((laneId) => {
-            this.strikeLaneUnits(laneId, 'enemy', 0.28 + this.currentStageBattleProfile.armageddonBurst * 0.4, 2)
-          })
-        }
-          if (hasJuno) {
-            this.previewManaRatio = clamp(this.previewManaRatio + 0.04, 0.06, 1)
-            this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 220, nowMs)
-          }
-          if (hasManos) {
-            this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.022, 0.08, 1)
-            ;(['upper', 'lower'] as const).forEach((laneId) => {
-              this.strikeLaneUnits(laneId, 'enemy', 0.16, 1)
-            })
-          }
-          if (hasHelba) {
-            this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.025, 0.1, 1)
-          }
-          if (skillPresetKind === 'support') {
-            this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06, 0.1, 1)
-          } else if (skillPresetKind === 'orders' && this.selectedDispatchLane) {
-            this.spawnBattleUnit('allied', this.selectedDispatchLane, 'skill-window', 'orders-skill-window', {
-              powerScale: 1 + this.currentStageBattleProfile.dispatchBoost * 0.8,
-            })
-          }
-          this.lastActionNote = `skill cast preview accepted (${this.currentStageBattleProfile.archetypeSignals.join('/') || 'generic'} / ${activeLoadout?.skillPresetLabel ?? 'balanced'})`
-        }
+        this.applySkillAction(nowMs)
         break
       case 'use-item':
-        {
-          const activeLoadout = this.activeDeployLoadout
-          const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
-          const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
-          const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
         this.panelOverride = 'item'
-        this.itemCooldownEndsAtMs = nowMs + ITEM_COOLDOWN_MS
-        this.previewOwnTowerHpRatio = clamp(
-          this.previewOwnTowerHpRatio + 0.08 + this.currentStageBattleProfile.towerDefenseBias * 0.1,
-          0.1,
-          1,
-        )
-        if (this.currentStageBattleProfile.towerDefenseBias > 0.1) {
-          const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-          this.strikeLaneUnits(guardLane, 'enemy', 0.16 + this.currentStageBattleProfile.towerDefenseBias * 0.18, 2)
-          this.shiftLaneUnits(guardLane, 'allied', this.currentStageBattleProfile.towerDefenseBias * 0.04)
-        }
-          if (hasHelba) {
-            this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.03, 0.1, 1)
-          }
-          if (hasCaesar) {
-            const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-            this.strikeLaneUnits(guardLane, 'enemy', 0.18, 1)
-          }
-          if (hasRogan) {
-            this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
-          }
-          if (activeLoadout?.towerPolicyKind === 'mana-first') {
-            this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
-          } else if (activeLoadout?.towerPolicyKind === 'population-first') {
-            this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
-          } else if (activeLoadout?.towerPolicyKind === 'attack-first') {
-            this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.03, 0.08, 1)
-          }
-          this.lastActionNote = `item use preview accepted (${activeLoadout?.towerPolicyLabel ?? 'balanced towers'})`
-        }
+        this.applyItemAction(nowMs)
         break
       case 'dispatch-up-lane':
         this.commitLaneDispatch('upper')
@@ -3529,11 +3688,20 @@ export class RecoveryStageSystem {
         const activeLoadout = this.activeDeployLoadout
         const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
         const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
-        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
-        this.previewManaRatio = clamp(this.previewManaRatio - 0.16, 0.06, 1)
-        this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.08, 0.04, 1)
+        const pushTemplate = this.resolveUnitTemplate('allied', 'push')
+        const queueCapacity = this.battleModel?.resourceRules.queueCapacity ?? 6
+        const canQueue =
+          this.queuedUnitCount < queueCapacity
+          && (!!pushTemplate ? this.remainingPopulation('allied') >= pushTemplate.populationCost : true)
+          && (!!pushTemplate ? this.spendMana('allied', pushTemplate.manaCost) : this.consumeManaRatio(0.16))
+        if (!canQueue) {
+          this.lastActionNote = 'unit production blocked by mana or population'
+          break
+        }
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, queueCapacity)
+        this.applyUpgradeProgressDelta(0.08)
         if (hasRogan) {
-          this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+          this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, queueCapacity)
         }
         if (hasVincent && this.selectedDispatchLane) {
           this.spawnBattleUnit('allied', this.selectedDispatchLane, 'screen', 'vincent-production', {
@@ -3634,8 +3802,8 @@ export class RecoveryStageSystem {
         this.panelOverride = 'system'
         this.questRewardClaimed = true
         this.questRewardClaims += 1
-        this.previewManaRatio = clamp(this.previewManaRatio + 0.18, 0.06, 1)
-        this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.16, 0.04, 1)
+        this.restoreMana('allied', this.manaCapacityValue * 0.18)
+        this.applyUpgradeProgressDelta(0.16)
         this.lastActionNote = 'quest reward claimed'
         break
       default:
@@ -3731,8 +3899,8 @@ export class RecoveryStageSystem {
         this.supportLaneUnits(targetLane, 'allied', 0.16)
         break
       case 'mana':
-        this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
-        this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.06, 0.04, 1)
+        this.restoreMana('allied', this.manaCapacityValue * 0.08)
+        this.applyUpgradeProgressDelta(0.06)
         this.spawnBattleUnit('allied', targetLane, 'skill-window', `chain:${members.join('+')}:mana`, {
           powerScale: 1.1,
         })
@@ -3787,6 +3955,102 @@ export class RecoveryStageSystem {
     this.pauseStartedAtMs = 0
   }
 
+  private applyAiAction(actionId: RecoveryGameplayActionId, note: string): boolean {
+    const snapshot = this.getSnapshot()
+    if (!snapshot) {
+      return false
+    }
+    const previousActionNote = this.lastActionNote
+    this.applyAction(actionId, snapshot)
+    this.lastActionNote = previousActionNote
+    this.lastScriptedBeatNote = note
+    return true
+  }
+
+  private tickBattleAi(): void {
+    const beat = Math.max(this.lastChannelBeat, 0)
+    const loadout = this.activeDeployLoadout
+    const alliedMomentum = (this.laneBattleState.upper.alliedPressure + this.laneBattleState.lower.alliedPressure) / 2
+    const enemyMomentum = (this.laneBattleState.upper.enemyPressure + this.laneBattleState.lower.enemyPressure) / 2
+
+    for (const member of loadout?.heroRosterMembers ?? []) {
+      const heroTemplate = this.heroTemplateForMember(member)
+      if (!heroTemplate) {
+        continue
+      }
+      const lane = this.heroAssignedLane ?? this.selectedDispatchLane ?? this.currentStageBattleProfile.favoredLane ?? 'upper'
+      if (beat % heroTemplate.ai.spawnCadenceBeats === heroTemplate.heroId % heroTemplate.ai.spawnCadenceBeats) {
+        const pushTemplate = this.resolveUnitTemplate('allied', heroTemplate.memberRole === 'support' ? 'support' : heroTemplate.memberRole === 'guardian' ? 'screen' : 'push')
+        if (
+          pushTemplate
+          && this.queuedUnitCount < (this.battleModel?.resourceRules.queueCapacity ?? 6)
+          && this.remainingPopulation('allied') >= pushTemplate.populationCost
+          && this.alliedManaValue >= pushTemplate.manaCost
+        ) {
+          this.applyAiAction('produce-unit', `${member} queued reinforcements`)
+        }
+      }
+
+      if (
+        beat % heroTemplate.ai.skillCadenceBeats === heroTemplate.heroId % heroTemplate.ai.skillCadenceBeats
+        && this.lastUpdateNowMs >= this.skillCooldownEndsAtMs
+        && enemyMomentum >= 0.2 + heroTemplate.ai.burst * 0.25
+      ) {
+        this.applyAiAction('cast-skill', `${member} triggered AI skill timing`)
+      }
+
+      if (
+        beat % heroTemplate.ai.itemCadenceBeats === heroTemplate.heroId % heroTemplate.ai.itemCadenceBeats
+        && this.lastUpdateNowMs >= this.itemCooldownEndsAtMs
+        && (this.previewOwnTowerHpRatio <= 0.74 || heroTemplate.ai.support >= 0.5)
+      ) {
+        this.applyAiAction('use-item', `${member} triggered AI support item`)
+      }
+
+      if (
+        beat % heroTemplate.ai.heroCadenceBeats === heroTemplate.heroId % heroTemplate.ai.heroCadenceBeats
+        && this.heroOverrideMode !== 'field'
+        && (this.currentObjectivePhase === 'hero-pressure' || this.currentObjectivePhase === 'siege' || heroTemplate.ai.aggression >= 0.6)
+      ) {
+        this.applyAiAction('deploy-hero', `${member} forced hero sortie`)
+      } else if (
+        this.heroOverrideMode === 'field'
+        && this.heroAssignedLane === lane
+        && this.previewOwnTowerHpRatio <= 0.42
+        && heroTemplate.ai.support >= 0.4
+      ) {
+        this.applyAiAction('return-to-tower', `${member} recalled hero under tower threat`)
+      }
+    }
+
+    if (this.enemyManaValue >= 14 && beat % Math.max(this.currentStageBattleProfile.enemyWaveCadenceBeats - 1, 3) === 1) {
+      const enemyLane = this.currentWaveDirective(this.enemyWavePlan)?.laneId ?? this.currentStageBattleProfile.favoredLane ?? 'upper'
+      const role: RecoveryBattleWaveDirective['role'] =
+        this.currentObjectivePhase === 'siege'
+          ? 'siege'
+          : this.currentObjectivePhase === 'skill-burst'
+            ? 'skill-window'
+            : enemyMomentum < alliedMomentum
+              ? 'push'
+              : 'screen'
+      const enemyTemplate = this.resolveUnitTemplate('enemy', role)
+      if (enemyTemplate && this.remainingPopulation('enemy') >= enemyTemplate.populationCost && this.spendMana('enemy', enemyTemplate.manaCost)) {
+        this.spawnBattleUnit('enemy', enemyLane, role, `enemy-ai:${role}`, {
+          powerScale: 1 + this.currentStageBattleProfile.enemyPressureScale * 0.4,
+        })
+        this.createEffect('enemy', enemyLane, 0.7, enemyTemplate.effectTemplateId, `enemy-${role}`, 0.9)
+      }
+    }
+
+    if (this.enemyManaValue >= 18 && beat % 6 === 3 && this.previewOwnTowerHpRatio > 0.18) {
+      const lane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+      if (this.spendMana('enemy', 18)) {
+        this.strikeLaneUnits(lane, 'allied', 0.18 + this.currentStageBattleProfile.enemyPressureScale * 0.2, 2)
+        this.createEffect('enemy', lane, 0.4, null, 'enemy-burst', 1)
+      }
+    }
+  }
+
   private tickPersistentPreview(): void {
     Object.keys(this.rosterChainBoosts).forEach((member) => {
       const nextValue = Math.max((this.rosterChainBoosts[member] ?? 0) - 0.06, 0)
@@ -3820,18 +4084,14 @@ export class RecoveryStageSystem {
         : activeLoadout?.heroRosterRole === 'support'
           ? 0.004
           : 0
-    this.previewManaRatio = clamp(
-      this.previewManaRatio + MANA_RECOVERY_PER_BEAT + manaBonus + (hasJuno ? (stageBias.manaBias ? 0.007 : 0.004) : 0),
-      0.06,
-      1,
-    )
-    this.previewManaUpgradeProgressRatio = clamp(
-      this.previewManaUpgradeProgressRatio
-      + UPGRADE_PROGRESS_RECOVERY_PER_BEAT
+    const alliedManaRegen =
+      (this.battleModel?.resourceRules.manaRegenPerBeat ?? 6)
+      + this.manaCapacityValue * manaBonus
+      + (hasJuno ? this.manaCapacityValue * (stageBias.manaBias ? 0.007 : 0.004) : 0)
+    this.applyUpgradeProgressDelta(
+      UPGRADE_PROGRESS_RECOVERY_PER_BEAT
       + upgradeBonus
       + (hasRogan ? (stageBias.dispatchBias ? 0.007 : 0.004) : 0),
-      0.04,
-      1,
     )
 
     if (this.heroOverrideMode === 'field') {
@@ -3857,7 +4117,7 @@ export class RecoveryStageSystem {
       )
     }
 
-    if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.previewManaRatio > 0.18) {
+    if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.alliedManaValue > this.manaCapacityValue * 0.18) {
       this.previewEnemyTowerHpRatio = clamp(
         this.previewEnemyTowerHpRatio - 0.006 - (activeLoadout?.skillPresetKind === 'orders' ? 0.002 : 0),
         0.08,
@@ -3873,6 +4133,10 @@ export class RecoveryStageSystem {
       }
     }
 
+    this.restoreMana('allied', alliedManaRegen)
+    this.restoreMana('enemy', this.battleModel?.resourceRules.enemyManaRegenPerBeat ?? 5)
+    this.recalculatePopulationCaps()
+    this.tickBattleAi()
     this.tickLaneBattlePreview()
   }
 
@@ -3892,38 +4156,43 @@ export class RecoveryStageSystem {
               ? (this.towerUpgradeLevels.attack <= this.towerUpgradeLevels.population ? 'attack' : 'population')
               : towerPolicyKind === 'mana-first'
                 ? (this.towerUpgradeLevels.mana <= this.towerUpgradeLevels.population ? 'mana' : 'population')
-                : gameplayState.openPanel === 'tower' && this.towerUpgradeLevels.attack < this.towerUpgradeLevels.mana
+              : gameplayState.openPanel === 'tower' && this.towerUpgradeLevels.attack < this.towerUpgradeLevels.mana
                   ? 'attack'
                   : 'mana')
+    if (!this.spendMana('allied', this.manaCapacityValue * (0.22 - (towerPolicyKind === 'mana-first' ? 0.06 : 0)))) {
+      this.lastActionNote = `${upgradeId} upgrade blocked by mana`
+      return
+    }
     this.towerUpgradeLevels[upgradeId] = Math.min(this.towerUpgradeLevels[upgradeId] + 1, 5)
-    this.previewManaRatio = clamp(
-      this.previewManaRatio - 0.22 + (towerPolicyKind === 'mana-first' ? 0.06 : 0),
-      0.06,
-      1,
-    )
-    this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio - 0.3, 0.04, 1)
+    this.applyUpgradeProgressDelta(-0.3)
+    this.recalculatePopulationCaps()
     this.lastActionNote = `${upgradeId} upgrade advanced to tier ${this.towerUpgradeLevels[upgradeId]} (${this.activeDeployLoadout?.towerPolicyLabel ?? 'balanced towers'})`
   }
 
   private commitLaneDispatch(lane: 'upper' | 'lower'): void {
     this.selectedDispatchLane = lane
     if (this.queuedUnitCount > 0) {
-      const queueDamage = Math.min(this.queuedUnitCount * 0.04, 0.16)
       const commitCount = Math.min(
         this.queuedUnitCount,
         this.currentStageBattleProfile.dispatchBoost >= 0.16 ? 3 : 2,
       )
+      const pushTemplate = this.resolveUnitTemplate('allied', 'push')
+      const allowedCount = pushTemplate
+        ? Math.min(commitCount, Math.floor(this.remainingPopulation('allied') / Math.max(pushTemplate.populationCost, 1)))
+        : commitCount
+      const queueDamage = Math.min(allowedCount * 0.04, 0.16)
       this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - queueDamage, 0.08, 1)
-      for (let index = 0; index < commitCount; index += 1) {
+      for (let index = 0; index < allowedCount; index += 1) {
         this.spawnBattleUnit('allied', lane, 'push', 'dispatch-commit', {
           powerScale: 1 + this.currentStageBattleProfile.dispatchBoost * 1.2,
           speedScale: 1.08,
           initialPositionRatio: 0.12 + index * 0.026,
         })
       }
-      this.queuedUnitCount = Math.max(this.queuedUnitCount - commitCount, 0)
+      this.queuedUnitCount = Math.max(this.queuedUnitCount - allowedCount, 0)
+      this.recalculatePopulationCaps()
       this.rebuildLaneBattleState()
-      this.lastActionNote = `${lane} lane selected with ${commitCount} unit push`
+      this.lastActionNote = `${lane} lane selected with ${allowedCount} unit push`
       return
     }
     this.lastActionNote = `${lane} lane primed`
@@ -3983,15 +4252,26 @@ export class RecoveryStageSystem {
     }
     this.rebuildLaneBattleState()
 
-    this.previewManaRatio = clamp(
-      0.32 + this.currentStageBattleProfile.alliedPressureScale * 0.55 - this.currentStageBattleProfile.enemyPressureScale * 0.14,
-      0.2,
-      0.9,
+    this.manaCapacityValue = this.battleModel?.resourceRules.manaCapacity ?? 100
+    this.enemyManaCapacityValue = this.battleModel?.resourceRules.enemyManaCapacity ?? 110
+    this.alliedManaValue = clamp(
+      (0.32 + this.currentStageBattleProfile.alliedPressureScale * 0.55 - this.currentStageBattleProfile.enemyPressureScale * 0.14)
+      * this.manaCapacityValue,
+      this.manaCapacityValue * 0.2,
+      this.manaCapacityValue * 0.9,
     )
-    this.previewManaUpgradeProgressRatio = clamp(
-      0.16 + this.currentStageBattleProfile.alliedPressureScale * 0.34,
-      0.08,
-      0.92,
+    this.enemyManaValue = clamp(
+      (0.34 + this.currentStageBattleProfile.enemyPressureScale * 0.5)
+      * this.enemyManaCapacityValue,
+      this.enemyManaCapacityValue * 0.24,
+      this.enemyManaCapacityValue * 0.92,
+    )
+    this.setUpgradeProgressRatio(
+      clamp(
+        0.16 + this.currentStageBattleProfile.alliedPressureScale * 0.34,
+        0.08,
+        0.92,
+      ),
     )
     this.previewOwnTowerHpRatio = clamp(
       0.78 - this.currentStageBattleProfile.enemyPressureScale * 0.22,
@@ -4003,6 +4283,8 @@ export class RecoveryStageSystem {
       0.22,
       0.92,
     )
+    this.recalculatePopulationCaps()
+    this.syncResourcePreviewState()
   }
 
   private seedBattleObjectiveState(storyboard: RecoveryStageStoryboard): void {
@@ -4398,20 +4680,27 @@ export class RecoveryStageSystem {
     this.panelOverride = loadout.openingPanel
     this.selectedDispatchLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? loadout.dispatchLane
     this.queuedUnitCount = clamp(loadout.startingQueue + Math.max(0, Math.round(routeInfluence.queueDelta)), 0, 5)
-    this.previewManaRatio = clamp(Math.max(this.previewManaRatio, loadout.startingManaRatio + routeInfluence.manaDelta), 0.06, 1)
-    this.previewManaUpgradeProgressRatio = clamp(
-      Math.max(this.previewManaUpgradeProgressRatio, loadout.startingManaUpgradeProgressRatio + Math.max(routeInfluence.queueDelta, 0) * 0.03),
-      0.04,
-      1,
+    this.alliedManaValue = clamp(
+      Math.max(this.alliedManaValue, (loadout.startingManaRatio + routeInfluence.manaDelta) * this.manaCapacityValue),
+      this.manaCapacityValue * 0.06,
+      this.manaCapacityValue,
+    )
+    this.setUpgradeProgressRatio(
+      clamp(
+        Math.max(this.previewManaUpgradeProgressRatio, loadout.startingManaUpgradeProgressRatio + Math.max(routeInfluence.queueDelta, 0) * 0.03),
+        0.04,
+        1,
+      ),
     )
     this.towerUpgradeLevels.mana = Math.max(loadout.towerUpgrades.mana, routeInfluence.matchesPreferred && routeBias.manaRoute ? 2 : 1)
     this.towerUpgradeLevels.population = loadout.towerUpgrades.population
     this.towerUpgradeLevels.attack = Math.max(loadout.towerUpgrades.attack, routeInfluence.matchesPreferred && routeBias.sustainRoute ? 2 : 1)
+    this.recalculatePopulationCaps()
 
     if (loadout.towerPolicyKind === 'mana-first') {
-      this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
+      this.restoreMana('allied', this.manaCapacityValue * 0.08)
     } else if (loadout.towerPolicyKind === 'population-first') {
-      this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.1, 0.04, 1)
+      this.applyUpgradeProgressDelta(0.1)
     } else if (loadout.towerPolicyKind === 'attack-first') {
       this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.03, 0.08, 1)
     }
@@ -4457,6 +4746,7 @@ export class RecoveryStageSystem {
       this.clearHeroUnits()
     }
 
+    this.syncResourcePreviewState()
     this.rebuildLaneBattleState()
   }
 
@@ -4578,12 +4868,159 @@ export class RecoveryStageSystem {
     }
   }
 
+  private currentPopulationUsed(side: RecoveryBattleSide): number {
+    return (['upper', 'lower'] as const).reduce(
+      (sum, laneId) => sum + this.laneEntities[laneId][side].reduce((laneSum, unit) => laneSum + unit.populationCost, 0),
+      0,
+    )
+  }
+
+  private remainingPopulation(side: RecoveryBattleSide): number {
+    const capacity = side === 'allied' ? this.populationCapacity : this.enemyPopulationCapacity
+    return Math.max(capacity - this.currentPopulationUsed(side), 0)
+  }
+
+  private syncResourcePreviewState(): void {
+    this.previewManaRatio = clamp(
+      this.manaCapacityValue > 0 ? this.alliedManaValue / this.manaCapacityValue : 0,
+      0,
+      1,
+    )
+    this.previewManaUpgradeProgressRatio = clamp(
+      this.populationCapacity > 0
+        ? (this.remainingPopulation('allied') / this.populationCapacity) * 0.62 + (this.towerUpgradeLevels.population - 1) * 0.09
+        : 0.08,
+      0,
+      1,
+    )
+  }
+
+  private heroTemplateForMember(memberName: string | null): RecoveryBattleHeroTemplate | null {
+    if (!memberName) {
+      return null
+    }
+    return this.heroTemplatesByName.get(memberName.toLowerCase()) ?? null
+  }
+
+  private resolveUnitTemplate(
+    side: RecoveryBattleSide,
+    role: RecoveryBattleUnitRole,
+    memberLabel: string | null = null,
+  ): RecoveryBattleUnitTemplate | null {
+    if (role === 'hero' && memberLabel) {
+      const heroTemplate = this.heroTemplateForMember(memberLabel)
+      if (heroTemplate) {
+        return this.unitTemplatesById.get(heroTemplate.unitTemplateId) ?? null
+      }
+    }
+    const directId = `${side}-${role}`
+    return this.unitTemplatesById.get(directId) ?? null
+  }
+
+  private resolveProjectileTemplate(projectileTemplateId: string | null): RecoveryBattleProjectileTemplate | null {
+    if (!projectileTemplateId) {
+      return null
+    }
+    return this.projectileTemplatesById.get(projectileTemplateId) ?? null
+  }
+
+  private resolveEffectTemplate(effectTemplateId: string | null): RecoveryBattleEffectTemplate | null {
+    if (!effectTemplateId) {
+      return null
+    }
+    return this.effectTemplatesById.get(effectTemplateId) ?? null
+  }
+
+  private createEffect(
+    side: RecoveryBattleSide,
+    laneId: RecoveryBattleLaneId,
+    positionRatio: number,
+    effectTemplateId: string | null,
+    fallbackKind: string,
+    intensityScale = 1,
+  ): void {
+    const template = this.resolveEffectTemplate(effectTemplateId)
+    this.battleEffects.push({
+      id: this.nextBattleEffectId++,
+      side,
+      laneId,
+      positionRatio,
+      kind: template?.label ?? fallbackKind,
+      ttlBeats: Math.max(2, Math.round((template?.durationBeats ?? 3) * intensityScale)),
+      intensity: clamp((template?.intensity ?? 0.8) * intensityScale, 0.25, 2.2),
+    })
+  }
+
+  private spendMana(side: RecoveryBattleSide, amount: number): boolean {
+    if (amount <= 0) {
+      return true
+    }
+    if (side === 'allied') {
+      if (this.alliedManaValue < amount) {
+        return false
+      }
+      this.alliedManaValue -= amount
+      this.syncResourcePreviewState()
+      return true
+    }
+    if (this.enemyManaValue < amount) {
+      return false
+    }
+    this.enemyManaValue -= amount
+    return true
+  }
+
+  private restoreMana(side: RecoveryBattleSide, amount: number): void {
+    if (amount <= 0) {
+      return
+    }
+    if (side === 'allied') {
+      this.alliedManaValue = clamp(this.alliedManaValue + amount, 0, this.manaCapacityValue)
+      this.syncResourcePreviewState()
+      return
+    }
+    this.enemyManaValue = clamp(this.enemyManaValue + amount, 0, this.enemyManaCapacityValue)
+  }
+
+  private consumeManaRatio(deltaRatio: number): boolean {
+    if (!this.manaCapacityValue) {
+      return true
+    }
+    return this.spendMana('allied', Math.abs(deltaRatio) * this.manaCapacityValue)
+  }
+
+  private setUpgradeProgressRatio(value: number): void {
+    this.previewManaUpgradeProgressRatio = clamp(value, 0, 1)
+  }
+
+  private applyUpgradeProgressDelta(deltaRatio: number): void {
+    this.setUpgradeProgressRatio(this.previewManaUpgradeProgressRatio + deltaRatio)
+  }
+
+  private recalculatePopulationCaps(): void {
+    const resourceRules = this.battleModel?.resourceRules
+    const basePopulation = resourceRules?.populationBase ?? 7
+    const baseEnemyPopulation = resourceRules?.enemyPopulationBase ?? 8
+    const populationPerUpgrade = resourceRules?.populationPerUpgrade ?? 3
+    this.populationCapacity = basePopulation + Math.max(this.towerUpgradeLevels.population - 1, 0) * populationPerUpgrade
+    this.enemyPopulationCapacity = baseEnemyPopulation + Math.floor(this.currentStageBattleProfile.stageTier / 15)
+    this.setUpgradeProgressRatio(
+      clamp(
+        (this.remainingPopulation('allied') / Math.max(this.populationCapacity, 1)) * 0.62
+          + (this.towerUpgradeLevels.population - 1) * 0.09,
+        0,
+        1,
+      ),
+    )
+  }
+
   private clearBattleEntities(): void {
     ;(['upper', 'lower'] as const).forEach((laneId) => {
       this.laneEntities[laneId].allied.length = 0
       this.laneEntities[laneId].enemy.length = 0
     })
     this.battleProjectiles.length = 0
+    this.battleEffects.length = 0
   }
 
   private spawnBattleUnit(
@@ -4600,25 +5037,17 @@ export class RecoveryStageSystem {
       initialPositionRatio?: number
     } = {},
   ): RecoveryBattleUnitRuntime {
+    const template = this.resolveUnitTemplate(side, role, options.memberLabel ?? null)
     const hero = options.hero ?? role === 'hero'
     const powerScale = options.powerScale ?? 1
     const durabilityScale = options.durabilityScale ?? 1
     const speedScale = options.speedScale ?? 1
     const sideUnits = this.laneEntities[laneId][side]
-    const rangedRole = role === 'support' || role === 'skill-window' || role === 'hero'
-    const siegeRole = role === 'siege' || role === 'tower-rally'
-    const supportRole = role === 'support' || role === 'tower-rally'
-    const maxHp =
-      (hero ? 2.8 : siegeRole ? 1.85 : supportRole ? 1.45 : role === 'screen' ? 1.6 : 1.25)
-      * durabilityScale
-    const power =
-      (hero ? 0.44 : role === 'skill-window' ? 0.34 : siegeRole ? 0.32 : supportRole ? 0.24 : 0.22)
-      * powerScale
-    const speed =
-      (hero ? 0.032 : siegeRole ? 0.018 : supportRole ? 0.022 : 0.028)
-      * speedScale
-    const range = hero ? 0.14 : rangedRole ? 0.11 : 0.045
-    const attackPeriodBeats = hero ? 2 : role === 'support' ? 3 : role === 'skill-window' ? 2 : 2
+    const maxHp = (template?.maxHp ?? (hero ? 2.8 : 1.25)) * durabilityScale
+    const power = (template?.power ?? (hero ? 0.44 : 0.22)) * powerScale
+    const speed = (template?.speed ?? 0.028) * speedScale
+    const range = template?.range ?? (hero ? 0.14 : 0.045)
+    const attackPeriodBeats = template?.attackPeriodBeats ?? (hero ? 2 : 2)
     const spacing = 0.028
     const initialPositionRatio =
       options.initialPositionRatio
@@ -4642,6 +5071,19 @@ export class RecoveryStageSystem {
       cooldownBeats: 0,
       attackPeriodBeats,
       positionRatio: clamp(initialPositionRatio, 0.04, 0.96),
+      templateId: template?.id ?? `${side}-${role}`,
+      projectileTemplateId: template?.projectileTemplateId ?? null,
+      effectTemplateId: template?.effectTemplateId ?? null,
+      populationCost: template?.populationCost ?? (hero ? 0 : 1),
+      manaCost: template?.manaCost ?? 0,
+      attackStyle:
+        role === 'siege'
+          ? 'siege'
+          : role === 'support' || role === 'tower-rally'
+            ? 'support'
+            : role === 'skill-window' || role === 'hero' || (template?.projectileTemplateId ?? null)
+              ? 'projectile'
+              : 'melee',
     }
     sideUnits.push(unit)
     return unit
@@ -4657,13 +5099,21 @@ export class RecoveryStageSystem {
       return
     }
 
+    const template = this.resolveUnitTemplate(side, directive.role)
     for (let index = 0; index < directive.unitBurst; index += 1) {
+      if (template && this.remainingPopulation(side) < template.populationCost) {
+        break
+      }
+      if (template && !this.spendMana(side, template.manaCost)) {
+        break
+      }
       this.spawnBattleUnit(side, directive.laneId, directive.role, source, {
         powerScale: 1 + directive.pressureBias * 1.6 + extraPowerScale,
         durabilityScale: 1 + directive.pressureBias * 0.55,
         speedScale: 1 + (directive.role === 'push' ? 0.12 : directive.role === 'support' ? -0.05 : 0),
       })
     }
+    this.recalculatePopulationCaps()
   }
 
   private clearHeroUnits(): void {
@@ -4685,15 +5135,17 @@ export class RecoveryStageSystem {
   }
 
   private createProjectile(attacker: RecoveryBattleUnitRuntime, strength: number): void {
+    const projectileTemplate = this.resolveProjectileTemplate(attacker.projectileTemplateId)
     this.battleProjectiles.push({
       id: this.nextBattleProjectileId++,
       side: attacker.side,
       laneId: attacker.laneId,
       source: attacker.source,
       positionRatio: attacker.positionRatio,
-      velocity: attacker.side === 'allied' ? 0.12 : -0.12,
-      strength,
-      ttlBeats: 6,
+      velocity: (attacker.side === 'allied' ? 1 : -1) * (projectileTemplate?.speed ?? 0.12),
+      strength: strength * (projectileTemplate?.strengthScale ?? 1),
+      ttlBeats: projectileTemplate?.ttlBeats ?? 6,
+      effectTemplateId: attacker.effectTemplateId,
     })
   }
 
@@ -4703,7 +5155,7 @@ export class RecoveryStageSystem {
     damage: number,
     maxTargets = 2,
   ): void {
-    const targets = [...this.laneEntities[laneId][targetSide]]
+      const targets = [...this.laneEntities[laneId][targetSide]]
       .filter((unit) => unit.hp > 0)
       .sort((left, right) =>
         targetSide === 'allied' ? right.positionRatio - left.positionRatio : left.positionRatio - right.positionRatio,
@@ -4717,6 +5169,7 @@ export class RecoveryStageSystem {
 
     targets.forEach((unit) => {
       unit.hp = Math.max(unit.hp - damage, 0)
+      this.createEffect(targetSide === 'allied' ? 'enemy' : 'allied', laneId, unit.positionRatio, unit.effectTemplateId, 'hit', 0.75)
     })
   }
 
@@ -4740,6 +5193,7 @@ export class RecoveryStageSystem {
 
     units.forEach((unit) => {
       unit.hp = Math.min(unit.maxHp, unit.hp + heal)
+      this.createEffect(side, laneId, unit.positionRatio, unit.effectTemplateId, 'support', 0.6)
     })
   }
 
@@ -4837,6 +5291,7 @@ export class RecoveryStageSystem {
             this.createProjectile(unit, damage)
           } else {
             nearest.hp = Math.max(nearest.hp - damage / Math.max(this.unitBias(nearest, chainState).defense, 0.7), 0)
+            this.createEffect(unit.side, laneId, nearest.positionRatio, unit.effectTemplateId, 'melee-hit', 0.65)
           }
           unit.cooldownBeats = Math.max(1, Math.round(unit.attackPeriodBeats / Math.max(bias.attackRate, 0.6)))
         }
@@ -4847,6 +5302,7 @@ export class RecoveryStageSystem {
       const towerDistance = side === 'allied' ? 1 - unit.positionRatio : unit.positionRatio
       if (towerDistance <= unit.range + 0.03 && unit.cooldownBeats <= 0) {
         this.damageTower(opposingSide, unit.power * bias.power * (unit.role === 'siege' || unit.role === 'hero' ? 0.08 : 0.05))
+        this.createEffect(unit.side, laneId, clamp(side === 'allied' ? 0.96 : 0.04, 0.04, 0.96), unit.effectTemplateId, 'tower-hit', 0.9)
         unit.cooldownBeats = Math.max(1, Math.round(unit.attackPeriodBeats / Math.max(bias.attackRate, 0.6)))
         return
       }
@@ -4867,6 +5323,7 @@ export class RecoveryStageSystem {
       const target = targets[0]
       if (target && Math.abs(target.positionRatio - projectile.positionRatio) <= 0.04) {
         target.hp = Math.max(target.hp - projectile.strength / Math.max(this.unitBias(target, chainState).defense, 0.7), 0)
+        this.createEffect(projectile.side, projectile.laneId, target.positionRatio, projectile.effectTemplateId, 'projectile-hit', 0.8)
         this.battleProjectiles.splice(index, 1)
         continue
       }
@@ -4874,8 +5331,20 @@ export class RecoveryStageSystem {
       if (projectile.positionRatio <= 0.04 || projectile.positionRatio >= 0.96 || projectile.ttlBeats <= 0) {
         if (projectile.ttlBeats > 0) {
           this.damageTower(targetSide, projectile.strength * 0.04)
+          this.createEffect(projectile.side, projectile.laneId, clamp(projectile.positionRatio, 0.04, 0.96), projectile.effectTemplateId, 'tower-impact', 0.7)
         }
         this.battleProjectiles.splice(index, 1)
+      }
+    }
+  }
+
+  private tickBattleEffects(): void {
+    for (let index = this.battleEffects.length - 1; index >= 0; index -= 1) {
+      const effect = this.battleEffects[index]
+      effect.ttlBeats -= 1
+      effect.intensity = Math.max(effect.intensity * 0.92, 0.1)
+      if (effect.ttlBeats <= 0) {
+        this.battleEffects.splice(index, 1)
       }
     }
   }
@@ -4935,6 +5404,7 @@ export class RecoveryStageSystem {
       })
     })
     this.tickBattleProjectiles(chainState)
+    this.tickBattleEffects()
     this.rebuildLaneBattleState()
   }
 
@@ -4970,6 +5440,18 @@ export class RecoveryStageSystem {
     }))
   }
 
+  private buildBattleEffectSnapshot(): RecoveryBattleEffectState[] {
+    return this.battleEffects.map((effect) => ({
+      id: effect.id,
+      side: effect.side,
+      laneId: effect.laneId,
+      positionRatio: effect.positionRatio,
+      kind: effect.kind,
+      ttlBeats: effect.ttlBeats,
+      intensity: effect.intensity,
+    }))
+  }
+
   private buildBattlePreviewState(): RecoveryBattlePreviewState {
     const lanes: RecoveryLaneBattleState[] = (['upper', 'lower'] as const).map((laneId) => ({
       laneId,
@@ -4981,6 +5463,7 @@ export class RecoveryStageSystem {
       lanes,
       entities: this.buildBattleEntitySnapshot(),
       projectiles: this.buildBattleProjectileSnapshot(),
+      effects: this.buildBattleEffectSnapshot(),
       selectedLane: this.selectedDispatchLane,
       queuedReserve: this.queuedUnitCount,
       allyMomentum,
@@ -5116,7 +5599,7 @@ export class RecoveryStageSystem {
     if (chainState.active) {
       this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + chainState.intensity * 0.006, 0.04, 1)
       if (chainState.members.includes('Juno')) {
-        this.previewManaRatio = clamp(this.previewManaRatio + chainState.intensity * 0.01, 0.06, 1)
+        this.restoreMana('allied', this.manaCapacityValue * chainState.intensity * 0.01)
       }
       if (chainState.members.includes('Helba') || chainState.members.includes('Caesar')) {
         this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + chainState.intensity * 0.008, 0.1, 1)

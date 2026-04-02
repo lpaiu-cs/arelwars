@@ -237,6 +237,131 @@ export interface RecoveryRuntimeBlueprint {
   findings: string[]
 }
 
+export interface RecoveryBattleUnitTemplate {
+  id: string
+  label: string
+  side: 'allied' | 'enemy'
+  role: 'screen' | 'push' | 'support' | 'siege' | 'tower-rally' | 'skill-window' | 'hero'
+  hero: boolean
+  baseAttackIndex: number
+  projectileTemplateId: string | null
+  effectTemplateId: string | null
+  maxHp: number
+  power: number
+  speed: number
+  range: number
+  attackPeriodBeats: number
+  populationCost: number
+  manaCost: number
+  projectileSpeed: number
+  projectileStrengthScale: number
+  projectileTtlBeats: number
+}
+
+export interface RecoveryBattleProjectileTemplate {
+  id: string
+  label: string
+  projectileIndex: number
+  familyCandidate: number
+  variantCandidate: number
+  speed: number
+  ttlBeats: number
+  strengthScale: number
+  motionCandidate: number
+}
+
+export interface RecoveryBattleEffectTemplate {
+  id: string
+  label: string
+  effectIndex: number
+  familyCandidate: number
+  variantCandidate: number
+  durationBeats: number
+  intensity: number
+  loop: boolean
+  blendFlagCandidate: number
+}
+
+export interface RecoveryBattleSkillTemplate {
+  id: string
+  name: string
+  skillIndex: number
+  skillCodeCandidate: number
+  aiCodeCandidate: number
+  kind: 'balanced' | 'burst' | 'support' | 'orders' | 'utility'
+  slotCandidate: number
+  modeKey: string
+  manaCost: number
+  cooldownBeats: number
+  powerScale: number
+  projectileTemplateId: string | null
+  effectTemplateId: string | null
+}
+
+export interface RecoveryBattleItemTemplate {
+  id: string
+  name: string
+  itemIndex: number
+  itemCodeCandidate: number
+  categoryCandidate: number
+  kind: 'burst' | 'heal' | 'mana' | 'orders' | 'support' | 'utility'
+  cost: number
+  cooldownBeats: number
+  powerScale: number
+  projectileTemplateId: string | null
+  effectTemplateId: string | null
+}
+
+export interface RecoveryBattleHeroTemplate {
+  id: string
+  heroId: number
+  name: string
+  memberRole: string
+  unitTemplateId: string
+  preferredSkillNames: string[]
+  preferredItemNames: string[]
+  ai: {
+    aggression: number
+    support: number
+    burst: number
+    mana: number
+    spawnCadenceBeats: number
+    skillCadenceBeats: number
+    itemCadenceBeats: number
+    heroCadenceBeats: number
+  }
+}
+
+export interface RecoveryBattleModel {
+  summary: {
+    unitTemplateCount: number
+    projectileTemplateCount: number
+    effectTemplateCount: number
+    skillTemplateCount: number
+    itemTemplateCount: number
+    heroTemplateCount: number
+  }
+  resourceRules: {
+    manaCapacity: number
+    enemyManaCapacity: number
+    manaRegenPerBeat: number
+    enemyManaRegenPerBeat: number
+    populationBase: number
+    enemyPopulationBase: number
+    populationPerUpgrade: number
+    queueCapacity: number
+    skillCooldownBaseBeats: number
+    itemCooldownBaseBeats: number
+  }
+  unitTemplates: RecoveryBattleUnitTemplate[]
+  projectileTemplates: RecoveryBattleProjectileTemplate[]
+  effectTemplates: RecoveryBattleEffectTemplate[]
+  skillTemplates: RecoveryBattleSkillTemplate[]
+  itemTemplates: RecoveryBattleItemTemplate[]
+  heroTemplates: RecoveryBattleHeroTemplate[]
+  findings: string[]
+}
+
 export interface RecoveryCatalog {
   generatedAt: string
   apkPath: string
@@ -551,6 +676,16 @@ export interface RecoveryBattleProjectileState {
   source: string
 }
 
+export interface RecoveryBattleEffectState {
+  id: number
+  side: 'allied' | 'enemy'
+  laneId: 'upper' | 'lower'
+  positionRatio: number
+  kind: string
+  ttlBeats: number
+  intensity: number
+}
+
 export interface RecoveryCampaignNodeState {
   nodeIndex: number
   label: string
@@ -643,6 +778,7 @@ export interface RecoveryBattlePreviewState {
   lanes: RecoveryLaneBattleState[]
   entities: RecoveryBattleEntityState[]
   projectiles: RecoveryBattleProjectileState[]
+  effects: RecoveryBattleEffectState[]
   selectedLane: 'upper' | 'lower' | null
   queuedReserve: number
   allyMomentum: number

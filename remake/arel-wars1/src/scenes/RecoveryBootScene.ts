@@ -854,6 +854,15 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.fillStyle(projectile.side === 'allied' ? 0xaee7ff : 0xffd0b6, 0.88)
         graphics.fillRect(projectileX - 3, y - 2, 6, 4)
       })
+
+      snapshot.battlePreviewState.effects
+        .filter((effect) => effect.laneId === lane.laneId)
+        .forEach((effect) => {
+          const effectX = laneStartX + (laneEndX - laneStartX) * effect.positionRatio
+          const radius = 6 + effect.intensity * 7
+          graphics.lineStyle(1.2, effect.side === 'allied' ? 0x9fe7ff : 0xffca9f, 0.22 + effect.intensity * 0.18)
+          graphics.strokeCircle(effectX, y, radius)
+        })
     })
   }
 
