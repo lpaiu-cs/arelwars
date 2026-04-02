@@ -301,6 +301,11 @@ References:
    - the runtime can export a full `111`-stage replay suite, not just the currently active stage trace
    - `AW1.candidate_replay_suite.json`, `AW1.golden_capture_suite.json`, and `AW1.phase15_report.json` now provide a reproducible golden-baseline workflow
    - the current phase15 report is `111/111 pass`, `0` warnings, using exact spec checks plus replay-baseline comparison
+13. Phase16 baseline is now in place:
+   - Android release builds now enable shrink/minify, lint-vital, zipalign, and explicit WebView/network hardening
+   - manifest now declares backup/data-extraction rules and disables cleartext traffic
+   - release signing prefers env or `android/keystore.properties`, with a local debug-keystore fallback for machine-local verification
+   - release APK assembly and installation were revalidated after hardening
 
 ## First Opcode Findings
 
