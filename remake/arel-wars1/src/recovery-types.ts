@@ -572,6 +572,7 @@ export interface RecoveryCampaignLoadout {
 export interface RecoveryCampaignState {
   currentNodeIndex: number
   selectedNodeIndex: number
+  recommendedNodeIndex: number
   selectedLoadoutIndex: number
   unlockedNodeCount: number
   clearedStageCount: number
@@ -592,6 +593,9 @@ export interface RecoveryCampaignState {
   selectedRewardText: string | null
   selectedLoadoutLabel: string
   activeLoadoutLabel: string | null
+  recommendedRouteLabel: string | null
+  recommendedLoadoutLabel: string | null
+  recommendedReason: string | null
   briefing: RecoveryCampaignBriefing
   loadouts: RecoveryCampaignLoadout[]
   nodes: RecoveryCampaignNodeState[]

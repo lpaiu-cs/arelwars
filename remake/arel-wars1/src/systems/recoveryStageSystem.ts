@@ -366,11 +366,14 @@ export class RecoveryStageSystem {
     }
 
     this.campaignSelectedNodeIndex = nextIndex
-    this.campaignSelectedLoadoutIndex = 0
+    const targetStoryboard = this.storyboards[nextIndex]
+    this.campaignSelectedLoadoutIndex = targetStoryboard
+      ? this.deriveRecommendedLoadoutIndexForStoryboard(targetStoryboard).loadoutIndex
+      : 0
     if (this.campaignScenePhase === 'worldmap') {
       this.campaignWorldmapAutoEnterAtMs = this.lastUpdateNowMs + WORLDMAP_HOLD_MS
     }
-    const target = this.storyboards[nextIndex]
+    const target = targetStoryboard
     this.lastActionNote = `campaign route selected: ${target?.stageBlueprint?.title ?? target?.scriptPath ?? `node ${nextIndex + 1}`}`
     this.version += 1
     return true
@@ -624,12 +627,18 @@ export class RecoveryStageSystem {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     this.battlePaused = false
     this.pauseStartedAtMs = 0
-    if (this.battleResolutionOutcome === 'victory') {
+    const currentStoryboard = this.storyboards[this.storyboardIndex] ?? this.storyboards[0]
+    const recommendation = currentStoryboard ? this.deriveCampaignRecommendation(currentStoryboard) : null
+    if (recommendation) {
+      this.campaignSelectedNodeIndex = clamp(recommendation.nodeIndex, 0, unlockedCount - 1)
+      this.campaignSelectedLoadoutIndex = recommendation.loadoutIndex
+    } else if (this.battleResolutionOutcome === 'victory') {
       this.campaignSelectedNodeIndex = clamp(Math.min(this.storyboardIndex + 1, unlockedCount - 1), 0, unlockedCount - 1)
+      this.campaignSelectedLoadoutIndex = 0
     } else {
       this.campaignSelectedNodeIndex = clamp(this.storyboardIndex, 0, unlockedCount - 1)
+      this.campaignSelectedLoadoutIndex = 0
     }
-    this.campaignSelectedLoadoutIndex = 0
     this.campaignScenePhase = 'worldmap'
     this.campaignWorldmapAutoEnterAtMs = nowMs + WORLDMAP_HOLD_MS
     this.campaignDeployBriefingEndsAtMs = 0
@@ -641,8 +650,14 @@ export class RecoveryStageSystem {
     this.battlePaused = false
     this.pauseStartedAtMs = 0
     this.campaignSelectedNodeIndex = clamp(index, 0, unlockedCount - 1)
-    const loadoutCount = this.buildDeployLoadouts(this.storyboards[this.campaignSelectedNodeIndex] ?? this.storyboards[0]).length
-    this.campaignSelectedLoadoutIndex = clamp(this.campaignSelectedLoadoutIndex, 0, Math.max(loadoutCount - 1, 0))
+    const targetStoryboard = this.storyboards[this.campaignSelectedNodeIndex] ?? this.storyboards[0]
+    const recommendedLoadout = targetStoryboard ? this.deriveRecommendedLoadoutIndexForStoryboard(targetStoryboard) : null
+    const loadoutCount = this.buildDeployLoadouts(targetStoryboard ?? this.storyboards[0]).length
+    this.campaignSelectedLoadoutIndex = clamp(
+      recommendedLoadout?.loadoutIndex ?? this.campaignSelectedLoadoutIndex,
+      0,
+      Math.max(loadoutCount - 1, 0),
+    )
     this.campaignScenePhase = 'deploy-briefing'
     this.campaignWorldmapAutoEnterAtMs = 0
     this.campaignDeployBriefingEndsAtMs = nowMs + DEPLOY_BRIEFING_MS
@@ -669,6 +684,7 @@ export class RecoveryStageSystem {
 
   private buildCampaignState(currentStoryboard: RecoveryStageStoryboard): RecoveryStageSnapshot['campaignState'] {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    const recommendation = this.deriveCampaignRecommendation(currentStoryboard)
     const selectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
     const selectedStoryboard = this.storyboards[selectedNodeIndex] ?? currentStoryboard
     const loadouts = this.buildDeployLoadouts(selectedStoryboard)
@@ -681,9 +697,7 @@ export class RecoveryStageSystem {
         ?? this.storyboards[this.campaignUnlockedStageCount]?.scriptPath
         ?? null
       : null
-    const recommendedNodeIndex = this.battleResolutionOutcome === 'victory'
-      ? Math.min(this.storyboardIndex + 1, unlockedCount - 1)
-      : this.storyboardIndex
+    const recommendedNodeIndex = clamp(recommendation.nodeIndex, 0, unlockedCount - 1)
     const selectionMode = this.campaignScenePhase === 'result-hold'
       ? 'result-route-selection'
       : this.campaignScenePhase === 'worldmap' || this.battlePaused
@@ -702,6 +716,7 @@ export class RecoveryStageSystem {
     return {
       currentNodeIndex: this.storyboardIndex + 1,
       selectedNodeIndex: selectedNodeIndex + 1,
+      recommendedNodeIndex: recommendedNodeIndex + 1,
       selectedLoadoutIndex: selectedLoadoutIndex + 1,
       unlockedNodeCount: unlockedCount,
       clearedStageCount: this.campaignClearedStoryboardIds.size,
@@ -722,6 +737,9 @@ export class RecoveryStageSystem {
       selectedRewardText: selectedStoryboard.stageBlueprint?.rewardText ?? null,
       selectedLoadoutLabel: selectedLoadout?.label ?? 'Balanced Vanguard',
       activeLoadoutLabel: this.activeDeployLoadout?.label ?? null,
+      recommendedRouteLabel: recommendation.routeLabel,
+      recommendedLoadoutLabel: recommendation.loadoutLabel,
+      recommendedReason: recommendation.reason,
       briefing: selectedBriefing,
       loadouts,
       nodes: this.storyboards.map((storyboard, index) => ({
@@ -1360,6 +1378,184 @@ export class RecoveryStageSystem {
       pressureShift: directRoute ? 0.03 : flankingRoute ? 0.02 : sustainRoute ? -0.01 : 0,
       cadenceShift: flankingRoute ? -1 : sustainRoute ? 1 : 0,
       heroShift: flankingRoute || manaRoute ? 0.03 : directRoute ? 0.02 : 0,
+    }
+  }
+
+  private scoreLoadoutForRoute(
+    storyboard: RecoveryStageStoryboard,
+    loadout: RecoveryStageSnapshot['campaignState']['loadouts'][number],
+  ): number {
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    let score = loadout.recommended ? 0.08 : 0
+
+    if (routeBias.flankingRoute) {
+      if (loadout.heroRosterRole === 'vanguard') {
+        score += 0.2
+      }
+      if (loadout.skillPresetKind === 'orders') {
+        score += 0.22
+      }
+      if (loadout.towerPolicyKind === 'population-first') {
+        score += 0.16
+      }
+    }
+
+    if (routeBias.directRoute) {
+      if (loadout.heroRosterRole === 'raider' || loadout.heroRosterRole === 'vanguard') {
+        score += 0.18
+      }
+      if (loadout.skillPresetKind === 'burst') {
+        score += 0.22
+      }
+      if (loadout.towerPolicyKind === 'attack-first') {
+        score += 0.18
+      }
+    }
+
+    if (routeBias.sustainRoute) {
+      if (loadout.heroRosterRole === 'defender' || loadout.heroRosterRole === 'support') {
+        score += 0.22
+      }
+      if (loadout.skillPresetKind === 'support') {
+        score += 0.18
+      }
+      if (loadout.towerPolicyKind === 'balanced' || loadout.towerPolicyKind === 'mana-first') {
+        score += 0.1
+      }
+    }
+
+    if (routeBias.manaRoute) {
+      if (loadout.skillPresetKind === 'utility' || loadout.skillPresetKind === 'burst') {
+        score += 0.18
+      }
+      if (loadout.towerPolicyKind === 'mana-first') {
+        score += 0.22
+      }
+      if (this.loadoutHasMember(loadout, 'Juno')) {
+        score += 0.1
+      }
+    }
+
+    if (this.activeDeployLoadout && this.activeDeployLoadout.id === loadout.id) {
+      score += 0.04
+    }
+
+    return score
+  }
+
+  private deriveRecommendedLoadoutIndexForStoryboard(
+    storyboard: RecoveryStageStoryboard,
+  ): {
+    loadoutIndex: number
+    loadoutLabel: string | null
+  } {
+    const loadouts = this.buildDeployLoadouts(storyboard)
+    if (loadouts.length === 0) {
+      return { loadoutIndex: 0, loadoutLabel: null }
+    }
+
+    let bestIndex = 0
+    let bestScore = Number.NEGATIVE_INFINITY
+    loadouts.forEach((loadout, index) => {
+      const score = this.scoreLoadoutForRoute(storyboard, loadout)
+      if (score > bestScore) {
+        bestScore = score
+        bestIndex = index
+      }
+    })
+
+    return {
+      loadoutIndex: bestIndex,
+      loadoutLabel: loadouts[bestIndex]?.label ?? null,
+    }
+  }
+
+  private deriveCampaignRecommendation(
+    currentStoryboard: RecoveryStageStoryboard,
+  ): {
+    nodeIndex: number
+    routeLabel: string | null
+    loadoutIndex: number
+    loadoutLabel: string | null
+    reason: string
+  } {
+    const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    const currentRouteBias = this.deriveStoryboardRouteBias(currentStoryboard)
+    let bestIndex = clamp(
+      this.campaignLastOutcome === 'victory' ? this.storyboardIndex + 1 : this.storyboardIndex,
+      0,
+      unlockedCount - 1,
+    )
+    let bestScore = Number.NEGATIVE_INFINITY
+
+    for (let index = 0; index < unlockedCount; index += 1) {
+      const candidate = this.storyboards[index]
+      if (!candidate) {
+        continue
+      }
+      const candidateRouteBias = this.deriveStoryboardRouteBias(candidate)
+      let score = 0
+      score += this.campaignLastOutcome === 'victory'
+        ? index === Math.min(this.storyboardIndex + 1, unlockedCount - 1) ? 0.36 : 0
+        : index === this.storyboardIndex ? 0.28 : 0
+      score += Math.max(0, 0.14 - Math.abs(index - this.storyboardIndex) * 0.04)
+      if (candidateRouteBias.routeLabel === currentRouteBias.routeLabel) {
+        score += 0.12
+      }
+      if (candidateRouteBias.flankingRoute && currentRouteBias.flankingRoute) {
+        score += 0.14
+      }
+      if (candidateRouteBias.directRoute && currentRouteBias.directRoute) {
+        score += 0.14
+      }
+      if (candidateRouteBias.sustainRoute && currentRouteBias.sustainRoute) {
+        score += 0.12
+      }
+      if (candidateRouteBias.manaRoute && currentRouteBias.manaRoute) {
+        score += 0.1
+      }
+
+      if (this.activeDeployLoadout) {
+        if (candidateRouteBias.flankingRoute && (this.activeDeployLoadout.skillPresetKind === 'orders' || this.activeDeployLoadout.heroRosterRole === 'vanguard')) {
+          score += 0.16
+        }
+        if (candidateRouteBias.directRoute && (this.activeDeployLoadout.skillPresetKind === 'burst' || this.activeDeployLoadout.heroRosterRole === 'raider')) {
+          score += 0.16
+        }
+        if (candidateRouteBias.sustainRoute && (this.activeDeployLoadout.heroRosterRole === 'defender' || this.activeDeployLoadout.heroRosterRole === 'support')) {
+          score += 0.14
+        }
+        if (candidateRouteBias.manaRoute && (this.activeDeployLoadout.towerPolicyKind === 'mana-first' || this.activeDeployLoadout.skillPresetKind === 'utility')) {
+          score += 0.14
+        }
+      }
+
+      if (score > bestScore) {
+        bestScore = score
+        bestIndex = index
+      }
+    }
+
+    const recommendedStoryboard = this.storyboards[bestIndex] ?? currentStoryboard
+    const recommendedRouteBias = this.deriveStoryboardRouteBias(recommendedStoryboard)
+    const recommendedLoadout = this.deriveRecommendedLoadoutIndexForStoryboard(recommendedStoryboard)
+    const reason =
+      recommendedRouteBias.flankingRoute
+        ? 'route-flank-dispatch'
+        : recommendedRouteBias.directRoute
+          ? 'route-main-siege'
+          : recommendedRouteBias.sustainRoute
+            ? 'route-hold-defense'
+            : recommendedRouteBias.manaRoute
+              ? 'route-mana-cycle'
+              : 'route-continuity'
+
+    return {
+      nodeIndex: bestIndex,
+      routeLabel: recommendedRouteBias.routeLabel,
+      loadoutIndex: recommendedLoadout.loadoutIndex,
+      loadoutLabel: recommendedLoadout.loadoutLabel,
+      reason,
     }
   }
 
