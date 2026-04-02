@@ -665,6 +665,14 @@ export interface RecoveryStageRenderState {
   effectPulseCount: number
   effectIntensity: string
   ptcEmitterHint: string | null
+  cameraShakeIntensity: number
+  cameraShakeAxes: 'both' | 'x' | 'y'
+  overlayMode: string | null
+  overlayColor: number | null
+  overlayAlpha: number
+  burstPulseIntensity: number
+  particleBoostIntensity: number
+  hitFlashIntensity: number
 }
 
 export interface RecoveryTowerUpgradeLevels {
@@ -851,6 +859,11 @@ export interface RecoveryBattleEntityState {
   hero: boolean
   source: string
   memberLabel: string | null
+  spriteState: 'idle' | 'spawn' | 'advance' | 'attack' | 'cast' | 'support' | 'hit' | 'tower-hit' | 'heroic'
+  stateWeight: number
+  hitFlash: number
+  overlayMode: string | null
+  overlayAlpha: number
 }
 
 export interface RecoveryBattleProjectileState {

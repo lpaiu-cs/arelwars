@@ -23,6 +23,7 @@ It does not mean rebuilding the original binary. The original source is gone. Th
 - `PZX` first-stream decoding, frame/tail metadata splitting, timing inference, and `MPL` bank heuristics are operational enough for preview playback.
 - `179.pzx` now has a usable packed-pixel preview heuristic.
 - `PTC` is structurally parsed as stable parameter blocks.
+- battle rendering now drives sprite-state overlays, hit flash, burst pulses, particle boosts, and camera shake from deterministic combat events rather than static preview pulses.
 - Capacitor Android builds and runs the current recovery runtime.
 
 References:
@@ -52,9 +53,9 @@ References:
 
 ### 3. Rendering And Effects
 
-- `179.pzx` still uses a heuristic shade model.
-- `PTC` needs to become real effect playback, not just parsed metadata.
-- `PZX` tail metadata and `MPL` bank switching need to be connected to runtime sprite states, not just preview probes.
+- `179.pzx` still uses a heuristic shade model, even though that model now feeds the live renderer.
+- `PTC` semantics are now consumed by the runtime renderer, but emitter behavior is still reconstructed rather than confirmed from original engine code.
+- `PZX` tail metadata and `MPL` bank switching now drive runtime sprite states, overlays, and flashes, but they still need original-reference validation.
 
 ### 4. Full Game Flow
 

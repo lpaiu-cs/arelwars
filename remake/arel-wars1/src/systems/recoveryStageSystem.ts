@@ -225,6 +225,14 @@ interface RecoveryBattleEffectRuntime {
   intensity: number
 }
 
+interface RecoveryEntityVisualRuntime {
+  spriteState: RecoveryBattleEntityState['spriteState']
+  stateWeight: number
+  hitFlash: number
+  overlayMode: string | null
+  overlayAlpha: number
+}
+
 export class RecoveryStageSystem {
   private readonly storyboards: RecoveryStageStoryboard[]
 
@@ -431,6 +439,24 @@ export class RecoveryStageSystem {
   private readonly battleProjectiles: RecoveryBattleProjectileRuntime[] = []
 
   private readonly battleEffects: RecoveryBattleEffectRuntime[] = []
+
+  private readonly entityVisuals = new Map<number, RecoveryEntityVisualRuntime>()
+
+  private cameraShakeIntensity = 0
+
+  private cameraShakeAxes: RecoveryStageRenderState['cameraShakeAxes'] = 'both'
+
+  private overlayMode: string | null = null
+
+  private overlayColor: number | null = null
+
+  private overlayAlpha = 0
+
+  private burstPulseIntensity = 0
+
+  private particleBoostIntensity = 0
+
+  private hitFlashIntensity = 0
 
   private alliedManaValue = 0
 
@@ -3294,9 +3320,20 @@ export class RecoveryStageSystem {
       tailFlaggedCount: Number(currentFrame?.tailFlaggedCount ?? 0),
       packedPixelStemRule: specialRule?.heuristic ?? null,
       packedPixelBlendMode: specialRule?.highlightBlendMode ?? null,
-      effectPulseCount: channelStates.filter((entry) => entry.intensity > 0.62 && entry.hasBuffLayer).length,
+      effectPulseCount: Math.max(
+        channelStates.filter((entry) => entry.intensity > 0.62 && entry.hasBuffLayer).length,
+        Math.round(this.burstPulseIntensity * 4),
+      ),
       effectIntensity: storyboard.stageBlueprint?.renderIntent?.effectIntensity ?? 'medium',
       ptcEmitterHint: typeof familyRepresentatives.support === 'string' ? familyRepresentatives.support : null,
+      cameraShakeIntensity: this.cameraShakeIntensity,
+      cameraShakeAxes: this.cameraShakeAxes,
+      overlayMode: this.overlayMode,
+      overlayColor: this.overlayColor,
+      overlayAlpha: this.overlayAlpha,
+      burstPulseIntensity: this.burstPulseIntensity,
+      particleBoostIntensity: this.particleBoostIntensity,
+      hitFlashIntensity: this.hitFlashIntensity,
     }
   }
 
@@ -5320,7 +5357,7 @@ export class RecoveryStageSystem {
     intensityScale = 1,
   ): void {
     const template = this.resolveEffectTemplate(effectTemplateId)
-    this.battleEffects.push({
+    const effect: RecoveryBattleEffectRuntime = {
       id: this.nextBattleEffectId++,
       side,
       laneId,
@@ -5331,7 +5368,9 @@ export class RecoveryStageSystem {
       emitterSemanticId: template?.emitterSemanticId ?? null,
       ttlBeats: Math.max(2, Math.round((template?.durationBeats ?? 3) * intensityScale)),
       intensity: clamp((template?.intensity ?? 0.8) * intensityScale, 0.25, 2.2),
-    })
+    }
+    this.battleEffects.push(effect)
+    this.promoteEffectToRenderPulse(effect.renderFamily, Math.min(effect.intensity, 1.3), effect.blendMode)
   }
 
   private spendMana(side: RecoveryBattleSide, amount: number): boolean {
@@ -5404,6 +5443,146 @@ export class RecoveryStageSystem {
     })
     this.battleProjectiles.length = 0
     this.battleEffects.length = 0
+    this.entityVisuals.clear()
+    this.cameraShakeIntensity = 0
+    this.cameraShakeAxes = 'both'
+    this.overlayMode = null
+    this.overlayColor = null
+    this.overlayAlpha = 0
+    this.burstPulseIntensity = 0
+    this.particleBoostIntensity = 0
+    this.hitFlashIntensity = 0
+  }
+
+  private ensureEntityVisual(unitId: number): RecoveryEntityVisualRuntime {
+    const existing = this.entityVisuals.get(unitId)
+    if (existing) {
+      return existing
+    }
+    const created: RecoveryEntityVisualRuntime = {
+      spriteState: 'idle',
+      stateWeight: 0,
+      hitFlash: 0,
+      overlayMode: null,
+      overlayAlpha: 0,
+    }
+    this.entityVisuals.set(unitId, created)
+    return created
+  }
+
+  private setEntityVisualState(
+    unitId: number,
+    spriteState: RecoveryBattleEntityState['spriteState'],
+    stateWeight: number,
+    overlayMode: string | null = null,
+    overlayAlpha = 0,
+  ): void {
+    const visual = this.ensureEntityVisual(unitId)
+    visual.spriteState = spriteState
+    visual.stateWeight = Math.max(visual.stateWeight, stateWeight)
+    if (overlayMode) {
+      visual.overlayMode = overlayMode
+      visual.overlayAlpha = Math.max(visual.overlayAlpha, overlayAlpha)
+    }
+  }
+
+  private markEntityHit(unitId: number, intensity: number, overlayMode = 'impact-hit'): void {
+    const visual = this.ensureEntityVisual(unitId)
+    visual.spriteState = 'hit'
+    visual.stateWeight = Math.max(visual.stateWeight, intensity)
+    visual.hitFlash = Math.max(visual.hitFlash, intensity)
+    visual.overlayMode = overlayMode
+    visual.overlayAlpha = Math.max(visual.overlayAlpha, intensity * 0.48)
+    this.hitFlashIntensity = Math.max(this.hitFlashIntensity, intensity)
+  }
+
+  private overlayColorForMode(mode: string | null): number | null {
+    switch (mode) {
+      case 'spawn-aura':
+        return 0xb1f0ff
+      case 'support-aura':
+        return 0x97f3d3
+      case 'impact-hit':
+      case 'projectile-hit':
+        return 0xffffff
+      case 'tower-siege':
+      case 'tower-impact':
+        return 0xffbb7a
+      case 'burst-wave':
+      case 'burst-cast':
+        return 0xffc56d
+      default:
+        return null
+    }
+  }
+
+  private triggerCameraShake(intensity: number, axes: RecoveryStageRenderState['cameraShakeAxes'] = 'both'): void {
+    this.cameraShakeIntensity = Math.max(this.cameraShakeIntensity, clamp(intensity, 0, 1))
+    this.cameraShakeAxes = axes
+  }
+
+  private triggerOverlayPulse(mode: string, alpha: number, color: number | null = this.overlayColorForMode(mode)): void {
+    this.overlayMode = mode
+    this.overlayColor = color
+    this.overlayAlpha = Math.max(this.overlayAlpha, clamp(alpha, 0, 0.65))
+  }
+
+  private triggerBurstPulse(intensity: number, mode = 'burst-wave'): void {
+    const clamped = clamp(intensity, 0, 1)
+    this.burstPulseIntensity = Math.max(this.burstPulseIntensity, clamped)
+    this.particleBoostIntensity = Math.max(this.particleBoostIntensity, clamped)
+    this.triggerOverlayPulse(mode, 0.08 + clamped * 0.18)
+    this.triggerCameraShake(0.12 + clamped * 0.34, 'both')
+  }
+
+  private promoteEffectToRenderPulse(
+    renderFamily: RecoveryBattleEffectRuntime['renderFamily'],
+    intensity: number,
+    blendMode: string,
+  ): void {
+    if (renderFamily === 'burst') {
+      this.triggerBurstPulse(intensity, 'burst-cast')
+      return
+    }
+    if (renderFamily === 'impact') {
+      this.hitFlashIntensity = Math.max(this.hitFlashIntensity, clamp(intensity * 0.7, 0, 1))
+      this.particleBoostIntensity = Math.max(this.particleBoostIntensity, clamp(intensity * 0.46, 0, 1))
+      this.triggerOverlayPulse('impact-hit', 0.05 + intensity * 0.1)
+      this.triggerCameraShake(0.08 + intensity * 0.16, blendMode.includes('add') ? 'both' : 'x')
+      return
+    }
+    if (renderFamily === 'support') {
+      this.particleBoostIntensity = Math.max(this.particleBoostIntensity, clamp(intensity * 0.42, 0, 1))
+      this.triggerOverlayPulse('support-aura', 0.03 + intensity * 0.06)
+      return
+    }
+    this.particleBoostIntensity = Math.max(this.particleBoostIntensity, clamp(intensity * 0.25, 0, 1))
+  }
+
+  private tickRenderPulseState(): void {
+    this.cameraShakeIntensity = Math.max(this.cameraShakeIntensity * 0.78, 0)
+    this.overlayAlpha = Math.max(this.overlayAlpha * 0.82, 0)
+    if (this.overlayAlpha <= 0.01) {
+      this.overlayMode = null
+      this.overlayColor = null
+    }
+    this.burstPulseIntensity = Math.max(this.burstPulseIntensity * 0.76, 0)
+    this.particleBoostIntensity = Math.max(this.particleBoostIntensity * 0.84, 0)
+    this.hitFlashIntensity = Math.max(this.hitFlashIntensity * 0.7, 0)
+    for (const [unitId, visual] of this.entityVisuals) {
+      visual.stateWeight = Math.max(visual.stateWeight * 0.78, 0)
+      visual.hitFlash = Math.max(visual.hitFlash * 0.68, 0)
+      visual.overlayAlpha = Math.max(visual.overlayAlpha * 0.8, 0)
+      if (visual.stateWeight <= 0.06) {
+        visual.spriteState = 'idle'
+      }
+      if (visual.overlayAlpha <= 0.02) {
+        visual.overlayMode = null
+      }
+      if (visual.stateWeight <= 0.02 && visual.hitFlash <= 0.02 && visual.overlayAlpha <= 0.02) {
+        this.entityVisuals.delete(unitId)
+      }
+    }
   }
 
   private spawnBattleUnit(
@@ -5474,6 +5653,17 @@ export class RecoveryStageSystem {
               : 'melee',
     }
     sideUnits.push(unit)
+    this.setEntityVisualState(
+      unit.id,
+      hero ? 'heroic' : 'spawn',
+      hero ? 0.8 : 0.58,
+      'spawn-aura',
+      hero ? 0.32 : 0.18,
+    )
+    if (hero) {
+      this.triggerOverlayPulse('spawn-aura', 0.08)
+      this.particleBoostIntensity = Math.max(this.particleBoostIntensity, 0.16)
+    }
     this.syncResourcePreviewState()
     return unit
   }
@@ -5525,6 +5715,16 @@ export class RecoveryStageSystem {
 
   private createProjectile(attacker: RecoveryBattleUnitRuntime, strength: number): void {
     const projectileTemplate = this.resolveProjectileTemplate(attacker.projectileTemplateId)
+    this.setEntityVisualState(
+      attacker.id,
+      attacker.hero || attacker.role === 'skill-window' || attacker.role === 'support' ? 'cast' : 'attack',
+      attacker.hero ? 0.9 : 0.68,
+      attacker.hero || attacker.role === 'skill-window' ? 'burst-cast' : 'impact-hit',
+      attacker.hero ? 0.2 : 0.1,
+    )
+    if (attacker.hero || attacker.role === 'siege') {
+      this.triggerCameraShake(0.08 + Math.min(strength, 1.4) * 0.04, 'x')
+    }
     this.battleProjectiles.push({
       id: this.nextBattleProjectileId++,
       side: attacker.side,
@@ -5558,6 +5758,7 @@ export class RecoveryStageSystem {
 
     targets.forEach((unit) => {
       unit.hp = Math.max(unit.hp - damage, 0)
+      this.markEntityHit(unit.id, 0.7)
       this.createEffect(targetSide === 'allied' ? 'enemy' : 'allied', laneId, unit.positionRatio, unit.effectTemplateId, 'hit', 0.75)
     })
   }
@@ -5582,6 +5783,7 @@ export class RecoveryStageSystem {
 
     units.forEach((unit) => {
       unit.hp = Math.min(unit.maxHp, unit.hp + heal)
+      this.setEntityVisualState(unit.id, 'support', 0.62, 'support-aura', 0.24)
       this.createEffect(side, laneId, unit.positionRatio, unit.effectTemplateId, 'support', 0.6)
     })
   }
@@ -5597,6 +5799,10 @@ export class RecoveryStageSystem {
   }
 
   private damageTower(targetSide: RecoveryBattleSide, damage: number): void {
+    const impact = clamp(damage * 5.5, 0.05, 0.9)
+    this.hitFlashIntensity = Math.max(this.hitFlashIntensity, impact * 0.56)
+    this.triggerCameraShake(impact * 0.72, 'x')
+    this.triggerOverlayPulse(targetSide === 'allied' ? 'tower-impact' : 'tower-siege', 0.06 + impact * 0.16)
     if (targetSide === 'allied') {
       this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio - damage, 0.08, 1)
       return
@@ -5605,6 +5811,9 @@ export class RecoveryStageSystem {
   }
 
   private repairTower(targetSide: RecoveryBattleSide, amount: number): void {
+    const recovery = clamp(amount * 4.2, 0.03, 0.42)
+    this.particleBoostIntensity = Math.max(this.particleBoostIntensity, recovery * 0.6)
+    this.triggerOverlayPulse('support-aura', 0.02 + recovery * 0.08)
     if (targetSide === 'allied') {
       this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + amount, 0.1, 1)
       return
@@ -5687,8 +5896,19 @@ export class RecoveryStageSystem {
           if (ranged) {
             this.createProjectile(unit, damage)
           } else {
+            this.setEntityVisualState(
+              unit.id,
+              unit.hero ? 'heroic' : 'attack',
+              unit.hero ? 0.92 : 0.72,
+              unit.role === 'siege' ? 'tower-siege' : 'impact-hit',
+              unit.role === 'siege' ? 0.2 : 0.12,
+            )
             nearest.hp = Math.max(nearest.hp - damage / Math.max(this.unitBias(nearest, chainState).defense, 0.7), 0)
+            this.markEntityHit(nearest.id, unit.hero ? 0.9 : 0.7)
             this.createEffect(unit.side, laneId, nearest.positionRatio, unit.effectTemplateId, 'melee-hit', 0.65)
+            if (nearest.hp <= 0) {
+              this.triggerBurstPulse(unit.hero || unit.role === 'siege' ? 0.72 : 0.46)
+            }
           }
           unit.cooldownBeats = Math.max(1, Math.round(unit.attackPeriodBeats / Math.max(bias.attackRate, 0.6)))
         }
@@ -5698,12 +5918,14 @@ export class RecoveryStageSystem {
       const direction = side === 'allied' ? 1 : -1
       const towerDistance = side === 'allied' ? 1 - unit.positionRatio : unit.positionRatio
       if (towerDistance <= unit.range + 0.03 && unit.cooldownBeats <= 0) {
+        this.setEntityVisualState(unit.id, unit.hero ? 'heroic' : 'tower-hit', unit.hero ? 0.96 : 0.82, 'tower-siege', 0.24)
         this.damageTower(opposingSide, unit.power * bias.power * (unit.role === 'siege' || unit.role === 'hero' ? 0.08 : 0.05))
         this.createEffect(unit.side, laneId, clamp(side === 'allied' ? 0.96 : 0.04, 0.04, 0.96), unit.effectTemplateId, 'tower-hit', 0.9)
         unit.cooldownBeats = Math.max(1, Math.round(unit.attackPeriodBeats / Math.max(bias.attackRate, 0.6)))
         return
       }
 
+      this.setEntityVisualState(unit.id, unit.hero ? 'heroic' : 'advance', unit.hero ? 0.42 : 0.28)
       unit.positionRatio = clamp(unit.positionRatio + direction * unit.speed * bias.speed, 0.04, 0.96)
     })
   }
@@ -5720,7 +5942,11 @@ export class RecoveryStageSystem {
       const target = targets[0]
       if (target && Math.abs(target.positionRatio - projectile.positionRatio) <= 0.04) {
         target.hp = Math.max(target.hp - projectile.strength / Math.max(this.unitBias(target, chainState).defense, 0.7), 0)
+        this.markEntityHit(target.id, 0.84, 'projectile-hit')
         this.createEffect(projectile.side, projectile.laneId, target.positionRatio, projectile.effectTemplateId, 'projectile-hit', 0.8)
+        if (target.hp <= 0) {
+          this.triggerBurstPulse(0.52)
+        }
         this.battleProjectiles.splice(index, 1)
         continue
       }
@@ -5744,6 +5970,7 @@ export class RecoveryStageSystem {
         this.battleEffects.splice(index, 1)
       }
     }
+    this.tickRenderPulseState()
   }
 
   private rebuildLaneBattleState(): void {
@@ -5790,6 +6017,16 @@ export class RecoveryStageSystem {
         heroPresent: alliedUnits.some((unit) => unit.hero),
       }
     })
+    const activeEntityIds = new Set(
+      (['upper', 'lower'] as const).flatMap((laneId) =>
+        (['allied', 'enemy'] as const).flatMap((side) => this.laneEntities[laneId][side].map((unit) => unit.id)),
+      ),
+    )
+    for (const unitId of this.entityVisuals.keys()) {
+      if (!activeEntityIds.has(unitId)) {
+        this.entityVisuals.delete(unitId)
+      }
+    }
   }
 
   private tickBattleEntities(chainState: RecoveryBattleChainState): void {
@@ -5821,6 +6058,11 @@ export class RecoveryStageSystem {
             hero: unit.hero,
             source: unit.source,
             memberLabel: unit.memberLabel,
+            spriteState: this.entityVisuals.get(unit.id)?.spriteState ?? (unit.hero ? 'heroic' : 'advance'),
+            stateWeight: this.entityVisuals.get(unit.id)?.stateWeight ?? 0.24,
+            hitFlash: this.entityVisuals.get(unit.id)?.hitFlash ?? 0,
+            overlayMode: this.entityVisuals.get(unit.id)?.overlayMode ?? null,
+            overlayAlpha: this.entityVisuals.get(unit.id)?.overlayAlpha ?? 0,
           })),
       ),
     )

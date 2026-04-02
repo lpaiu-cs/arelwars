@@ -33,6 +33,10 @@ interface FocusLayoutBounds {
   height: number
 }
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
+}
+
 export class RecoveryBootScene extends Phaser.Scene {
   private readonly stageSystem: RecoveryStageSystem | null
 
@@ -73,6 +77,14 @@ export class RecoveryBootScene extends Phaser.Scene {
   private overlayGraphics: Phaser.GameObjects.Graphics | null = null
 
   private currentSnapshotKey = ''
+
+  private previewBaseX = 0
+
+  private previewBaseY = 0
+
+  private bankProbeBaseX = 0
+
+  private bankProbeBaseY = 0
 
   constructor(stageSystem: RecoveryStageSystem | null = null, renderPack: RecoveryRenderPack | null = null) {
     super('RecoveryBootScene')
@@ -236,11 +248,15 @@ export class RecoveryBootScene extends Phaser.Scene {
     this.previewImage = this.add.image(frame.x, frame.y - 18, this.resolvePreviewTexture(snapshot.currentStoryboard.previewStem, snapshot.frameIndex))
     this.fitImageToBox(this.previewImage, 320, 188)
     this.previewImage.setDepth(1)
+    this.previewBaseX = this.previewImage.x
+    this.previewBaseY = this.previewImage.y
 
     this.bankProbeImage = this.add.image(frame.x + 116, frame.y - 98, this.resolveFallbackBankProbeTexture())
     this.bankProbeImage.setVisible(false)
     this.bankProbeImage.setDepth(2.8)
     this.fitImageToBox(this.bankProbeImage, 86, 60)
+    this.bankProbeBaseX = this.bankProbeImage.x
+    this.bankProbeBaseY = this.bankProbeImage.y
 
     this.spriteLabel = this.add
       .text(frame.x - 156, frame.y + 96, '', {
@@ -302,6 +318,11 @@ export class RecoveryBootScene extends Phaser.Scene {
       return
     }
 
+    const shake = this.shakeOffset(snapshot)
+    this.previewImage.setPosition(this.previewBaseX + shake.x, this.previewBaseY + shake.y)
+    if (this.bankProbeImage) {
+      this.bankProbeImage.setPosition(this.bankProbeBaseX + shake.x * 0.7, this.bankProbeBaseY + shake.y * 0.7)
+    }
     const previewStem = snapshot.currentStoryboard.previewStem
     this.previewImage.setTexture(this.resolvePreviewTexture(previewStem, snapshot.frameIndex))
     this.fitImageToBox(this.previewImage, 320, 188)
@@ -464,6 +485,83 @@ export class RecoveryBootScene extends Phaser.Scene {
     return Phaser.BlendModes.NORMAL
   }
 
+  private overlayTint(mode: string | null | undefined, side: 'allied' | 'enemy'): number {
+    switch (mode) {
+      case 'spawn-aura':
+        return 0xb1f0ff
+      case 'support-aura':
+        return 0x97f3d3
+      case 'tower-siege':
+      case 'tower-impact':
+        return 0xffbe7f
+      case 'burst-wave':
+      case 'burst-cast':
+        return 0xffd37d
+      case 'impact-hit':
+      case 'projectile-hit':
+        return 0xffffff
+      default:
+        return side === 'allied' ? 0xb6efff : 0xffd78b
+    }
+  }
+
+  private entityStateScale(state: RecoveryBattleEntityState['spriteState'], weight: number): number {
+    switch (state) {
+      case 'spawn':
+        return 0.94 + weight * 0.22
+      case 'attack':
+        return 1 + weight * 0.16
+      case 'cast':
+        return 1.02 + weight * 0.2
+      case 'support':
+        return 1 + weight * 0.12
+      case 'hit':
+        return 0.97 + weight * 0.08
+      case 'tower-hit':
+        return 1.04 + weight * 0.18
+      case 'heroic':
+        return 1.05 + weight * 0.16
+      default:
+        return 1 + weight * 0.04
+    }
+  }
+
+  private entityStateAngle(
+    entity: RecoveryBattleEntityState,
+    state: RecoveryBattleEntityState['spriteState'],
+    weight: number,
+  ): number {
+    const direction = entity.side === 'allied' ? 1 : -1
+    switch (state) {
+      case 'attack':
+      case 'tower-hit':
+        return direction * (5 + weight * 12)
+      case 'cast':
+        return direction * (2 + weight * 5)
+      case 'hit':
+        return -direction * (4 + weight * 10)
+      case 'advance':
+        return direction * (1 + weight * 3)
+      default:
+        return 0
+    }
+  }
+
+  private shakeOffset(snapshot: RecoveryStageSnapshot): { x: number; y: number } {
+    const intensity = snapshot.renderState.cameraShakeIntensity
+    if (intensity <= 0.01) {
+      return { x: 0, y: 0 }
+    }
+    const amplitude = 3 + intensity * 11
+    const phase = snapshot.elapsedStoryboardMs / 40
+    const allowX = snapshot.renderState.cameraShakeAxes !== 'y'
+    const allowY = snapshot.renderState.cameraShakeAxes !== 'x'
+    return {
+      x: allowX ? Math.sin(phase * 1.4) * amplitude + Math.cos(phase * 2.3) * amplitude * 0.35 : 0,
+      y: allowY ? Math.cos(phase * 1.1) * amplitude * 0.55 + Math.sin(phase * 2.7) * amplitude * 0.18 : 0,
+    }
+  }
+
   private resolveEffectStemTexture(effect: RecoveryBattleEffectState, seed: number): string | null {
     if (!this.renderPack) {
       return null
@@ -530,6 +628,8 @@ export class RecoveryBootScene extends Phaser.Scene {
       const y = laneY(entity.laneId) + (entity.side === 'allied' ? -14 : 14)
       const scale = entity.hero ? 0.34 : entity.role === 'siege' || entity.role === 'skill-window' ? 0.24 : 0.2
       const tint = entity.side === 'allied' ? 0xe6f4ff : 0xffe1d0
+      const stateScale = this.entityStateScale(entity.spriteState, entity.stateWeight)
+      const hitTint = entity.hitFlash > 0.05 ? 0xffffff : tint
 
       let sprite = this.entitySprites.get(spriteKey)
       if (!sprite) {
@@ -538,10 +638,11 @@ export class RecoveryBootScene extends Phaser.Scene {
       }
       sprite.setTexture(textureKey)
       sprite.setPosition(x, y)
-      sprite.setScale(scale)
+      sprite.setScale(scale * stateScale)
       sprite.setFlipX(entity.side === 'enemy')
-      sprite.setTint(tint)
-      sprite.setAlpha(0.5 + entity.hpRatio * 0.5)
+      sprite.setTint(hitTint)
+      sprite.setAngle(this.entityStateAngle(entity, entity.spriteState, entity.stateWeight))
+      sprite.setAlpha(clamp(0.48 + entity.hpRatio * 0.44 + entity.hitFlash * 0.18, 0.35, 1))
 
       const overlayTexture = this.pickStemTexture(
         this.resolveEntityStemAsset(entity),
@@ -550,6 +651,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       )
       const overlayActive =
         snapshot.renderState.bankOverlayWeight > 0.04
+        || entity.overlayAlpha > 0.03
         || entity.role === 'hero'
         || entity.role === 'support'
         || entity.role === 'skill-window'
@@ -562,11 +664,11 @@ export class RecoveryBootScene extends Phaser.Scene {
         overlay.setVisible(true)
         overlay.setTexture(overlayTexture)
         overlay.setPosition(x, y)
-        overlay.setScale(scale * 1.05)
+        overlay.setScale(scale * stateScale * 1.05)
         overlay.setFlipX(entity.side === 'enemy')
-        overlay.setBlendMode(this.phaserBlendMode(snapshot.renderState.bankBlendMode))
-        overlay.setTint(snapshot.renderState.bankOverlayActive ? 0xffd78b : 0xb6efff)
-        overlay.setAlpha(0.16 + snapshot.renderState.bankOverlayWeight * 0.38)
+        overlay.setBlendMode(this.phaserBlendMode(entity.overlayMode ?? snapshot.renderState.bankBlendMode))
+        overlay.setTint(this.overlayTint(entity.overlayMode, entity.side))
+        overlay.setAlpha(Math.max(0.12 + snapshot.renderState.bankOverlayWeight * 0.24, entity.overlayAlpha))
       } else if (overlay) {
         overlay.setVisible(false)
       }
@@ -601,9 +703,9 @@ export class RecoveryBootScene extends Phaser.Scene {
       }
       sprite.setTexture(textureKey)
       sprite.setPosition(x, y)
-      sprite.setScale(0.12 + projectile.strength * 0.03)
+      sprite.setScale(0.12 + projectile.strength * 0.03 + snapshot.renderState.particleBoostIntensity * 0.04)
       sprite.setTint(projectile.side === 'allied' ? 0x9fe7ff : 0xffcca4)
-      sprite.setAlpha(0.84)
+      sprite.setAlpha(0.72 + snapshot.renderState.particleBoostIntensity * 0.16)
     })
     for (const [key, sprite] of this.projectileSprites) {
       if (!activeProjectileKeys.has(key)) {
@@ -627,12 +729,18 @@ export class RecoveryBootScene extends Phaser.Scene {
       sprite.setTexture(textureKey)
       sprite.setPosition(x, y)
       sprite.setBlendMode(this.phaserBlendMode(effect.blendMode))
-      sprite.setScale(0.14 + effect.intensity * 0.08)
+      sprite.setScale(0.14 + effect.intensity * 0.08 + snapshot.renderState.burstPulseIntensity * 0.05)
       sprite.setTint(effect.side === 'allied' ? 0xaee9ff : 0xffc69c)
-      sprite.setAlpha(0.24 + Math.min(effect.intensity, 1.4) * 0.22)
+      sprite.setAlpha(0.24 + Math.min(effect.intensity, 1.4) * 0.22 + snapshot.renderState.particleBoostIntensity * 0.12)
 
       const preset = this.resolveEmitterPreset(effect)
-      const particleCount = Math.max(2, Math.min(7, Math.round(((preset?.burstCount ?? 8) + (preset?.sustainCount ?? 0)) / 16) + 2))
+      const particleCount = Math.max(
+        2,
+        Math.min(
+          10,
+          Math.round(((preset?.burstCount ?? 8) + (preset?.sustainCount ?? 0)) / 16 + snapshot.renderState.particleBoostIntensity * 4) + 2,
+        ),
+      )
       for (let index = 0; index < particleCount; index += 1) {
         const particleKey = `${effectKey}-particle-${index}`
         activeEffectKeys.add(particleKey)
@@ -866,6 +974,10 @@ export class RecoveryBootScene extends Phaser.Scene {
       : snapshot.renderState.bankOverlayActive
         ? 0xe3c17d
         : 0x4c676f
+    if (snapshot.renderState.overlayAlpha > 0.01 && snapshot.renderState.overlayColor !== null) {
+      graphics.fillStyle(snapshot.renderState.overlayColor, snapshot.renderState.overlayAlpha)
+      graphics.fillRoundedRect(x, y, width, height, 14)
+    }
     graphics.lineStyle(2, borderColor, 0.8)
     graphics.strokeRoundedRect(x, y, width, height, 14)
     this.drawLaneBattlePreview(graphics, snapshot, { x, y, width, height })
@@ -893,6 +1005,18 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.lineStyle(2, 0xdca863, 0.22)
         graphics.strokeCircle(this.previewImage.x + 96, this.previewImage.y - 52, radius)
       }
+    }
+    if (snapshot.renderState.burstPulseIntensity > 0.02) {
+      const pulseCount = Math.max(1, Math.round(snapshot.renderState.burstPulseIntensity * 4))
+      for (let index = 0; index < pulseCount; index += 1) {
+        const radius = 26 + index * 18 + snapshot.renderState.burstPulseIntensity * 12
+        graphics.lineStyle(2.4, 0xffcf7b, 0.18 + snapshot.renderState.burstPulseIntensity * 0.14)
+        graphics.strokeCircle(this.previewImage.x, this.previewImage.y, radius)
+      }
+    }
+    if (snapshot.renderState.hitFlashIntensity > 0.02) {
+      graphics.lineStyle(4, 0xffffff, 0.12 + snapshot.renderState.hitFlashIntensity * 0.38)
+      graphics.strokeRoundedRect(x + 3, y + 3, width - 6, height - 6, 12)
     }
   }
 
