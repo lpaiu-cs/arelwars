@@ -1304,6 +1304,16 @@ export class RecoveryStageSystem {
     return `${activeLoadout.label} counter-script`
   }
 
+  private loadoutHasMember(
+    loadout: RecoveryStageSnapshot['campaignState']['loadouts'][number] | null,
+    memberName: string,
+  ): boolean {
+    if (!loadout) {
+      return false
+    }
+    return loadout.heroRosterMembers.some((member) => member.toLowerCase() === memberName.toLowerCase())
+  }
+
   private applyLoadoutCuePattern(
     tutorialCue: RecoveryTutorialChainCue | null,
     opcodeCue: RecoveryResolvedOpcodeCue | null,
@@ -1319,6 +1329,107 @@ export class RecoveryStageSystem {
     const rosterRole = activeLoadout.heroRosterRole
     const skillPresetKind = activeLoadout.skillPresetKind
     const towerPolicyKind = activeLoadout.towerPolicyKind
+    const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
+    const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
+    const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
+    const hasJuno = this.loadoutHasMember(activeLoadout, 'Juno')
+    const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
+    const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
+    const preferredLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
+
+    if (
+      hasVincent
+      && (
+        tutorialChainId === 'battle-hud-dispatch-arrows'
+        || tutorialChainId === 'battle-hud-hero-sortie'
+        || tutorialChainId === 'battle-hud-goal-hp'
+        || includesAny(opcodeAction, ['dispatch', 'hero', 'siege'])
+      )
+    ) {
+      this.selectedDispatchLane = preferredLane
+      this.queuedUnitCount = Math.max(this.queuedUnitCount, 1)
+      if (this.applyScriptedAction('deploy-hero', 'Vincent auto-led the assault lane')) {
+        return true
+      }
+    }
+
+    if (
+      hasRogan
+      && (
+        tutorialChainId === 'battle-hud-unit-card'
+        || tutorialChainId === 'battle-hud-dispatch-arrows'
+        || includesAny(opcodeAction, ['dispatch', 'focus', 'anchor'])
+      )
+    ) {
+      this.selectedDispatchLane = preferredLane
+      if (this.applyScriptedAction('produce-unit', 'Rogan auto-queued reinforcements')) {
+        return true
+      }
+    }
+
+    if (
+      hasHelba
+      && (
+        tutorialChainId === 'mana-upgrade-highlight'
+        || tutorialChainId === 'tower-menu-highlight'
+        || tutorialChainId === 'item-menu-highlight'
+        || includesAny(opcodeAction, ['tower', 'mana', 'item', 'quest'])
+      )
+    ) {
+      this.panelOverride = tutorialChainId === 'item-menu-highlight' ? 'item' : 'tower'
+      if (
+        this.applyScriptedAction(
+          tutorialChainId === 'item-menu-highlight' ? 'use-item' : 'upgrade-tower-stat',
+          tutorialChainId === 'item-menu-highlight' ? 'Helba auto-secured the defense item' : 'Helba auto-fortified the tower line',
+        )
+      ) {
+        return true
+      }
+    }
+
+    if (
+      hasJuno
+      && (
+        tutorialChainId === 'skill-slot-highlight'
+        || tutorialChainId === 'battle-hud-mana-bar'
+        || tutorialChainId === 'battle-hud-goal-hp'
+        || includesAny(opcodeAction, ['skill', 'mana', 'shock'])
+      )
+    ) {
+      this.panelOverride = 'skill'
+      if (this.applyScriptedAction('cast-skill', 'Juno auto-threaded an arcane strike window')) {
+        return true
+      }
+    }
+
+    if (
+      hasManos
+      && (
+        tutorialChainId === 'battle-hud-goal-hp'
+        || tutorialChainId === 'skill-slot-highlight'
+        || includesAny(opcodeAction, ['shock', 'siege', 'emphasis', 'pose'])
+      )
+    ) {
+      this.panelOverride = 'skill'
+      if (this.applyScriptedAction('cast-skill', 'Manos auto-pressed the siege burst')) {
+        return true
+      }
+    }
+
+    if (
+      hasCaesar
+      && (
+        tutorialChainId === 'battle-hud-guard-hp'
+        || tutorialChainId === 'population-upgrade-highlight'
+        || tutorialChainId === 'quest-panel-highlight'
+        || includesAny(opcodeAction, ['guard', 'tower', 'quest', 'population'])
+      )
+    ) {
+      this.panelOverride = 'tower'
+      if (this.applyScriptedAction('upgrade-tower-stat', 'Caesar auto-shored up the guard line')) {
+        return true
+      }
+    }
 
     if (
       (rosterRole === 'vanguard' || rosterRole === 'raider')
@@ -1409,6 +1520,12 @@ export class RecoveryStageSystem {
     let loadoutMode: string | null = null
     let focusLane: 'upper' | 'lower' | null = null
     let focusSource: 'roster' | 'skill' | 'policy' | null = null
+    const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
+    const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
+    const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
+    const hasJuno = this.loadoutHasMember(activeLoadout, 'Juno')
+    const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
+    const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
 
     if (
       activeLoadout.heroRosterRole === 'vanguard'
@@ -1483,6 +1600,43 @@ export class RecoveryStageSystem {
       loadoutMode = activeLoadout.towerPolicyLabel
       focusLane = activeLoadout.dispatchLane ?? favoredLane
       focusSource = 'policy'
+    }
+
+    if (hasVincent && signals.has('dispatch')) {
+      intensity += 0.06
+      resolvedPhaseLabel = this.currentObjectivePhase === 'hero-pressure' ? 'vincent-sortie' : 'vincent-drive'
+      loadoutMode = 'Vincent spearhead'
+      focusLane = activeLoadout.heroLane ?? favoredLane
+      focusSource = 'roster'
+    } else if (hasRogan && signals.has('dispatch')) {
+      intensity += 0.05
+      resolvedPhaseLabel = 'rogan-rally'
+      loadoutMode = 'Rogan reserves'
+      focusLane = activeLoadout.dispatchLane ?? favoredLane
+      focusSource = 'roster'
+    } else if (hasHelba && (signals.has('tower-defense') || signals.has('healing'))) {
+      intensity += 0.06
+      resolvedPhaseLabel = 'helba-ward'
+      loadoutMode = 'Helba ward'
+      focusLane = this.currentStageBattleProfile.favoredLane ?? favoredLane
+      focusSource = 'roster'
+    } else if (hasJuno && (signals.has('armageddon') || signals.has('mana-surge'))) {
+      intensity += 0.07
+      resolvedPhaseLabel = 'juno-arc'
+      loadoutMode = 'Juno arc'
+      focusSource = 'roster'
+    } else if (hasManos && signals.has('armageddon')) {
+      intensity += 0.08
+      resolvedPhaseLabel = this.currentObjectivePhase === 'siege' ? 'manos-break' : 'manos-charge'
+      loadoutMode = 'Manos break'
+      focusLane = activeLoadout.heroLane ?? favoredLane
+      focusSource = 'roster'
+    } else if (hasCaesar && signals.has('tower-defense')) {
+      intensity += 0.06
+      resolvedPhaseLabel = 'caesar-guard'
+      loadoutMode = 'Caesar guard'
+      focusLane = this.currentStageBattleProfile.favoredLane ?? favoredLane
+      focusSource = 'roster'
     }
 
     return {
@@ -2330,6 +2484,9 @@ export class RecoveryStageSystem {
         {
           const activeLoadout = this.activeDeployLoadout
           const skillPresetKind = activeLoadout?.skillPresetKind ?? 'balanced'
+          const hasJuno = this.loadoutHasMember(activeLoadout, 'Juno')
+          const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
+          const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
           const cooldownScale =
             skillPresetKind === 'burst'
               ? 1.12
@@ -2374,6 +2531,19 @@ export class RecoveryStageSystem {
             )
           })
         }
+          if (hasJuno) {
+            this.previewManaRatio = clamp(this.previewManaRatio + 0.04, 0.06, 1)
+            this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 220, nowMs)
+          }
+          if (hasManos) {
+            this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.022, 0.08, 1)
+            ;(['upper', 'lower'] as const).forEach((laneId) => {
+              this.laneBattleState[laneId].enemyPressure = clamp(this.laneBattleState[laneId].enemyPressure - 0.03, 0.08, 1)
+            })
+          }
+          if (hasHelba) {
+            this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.025, 0.1, 1)
+          }
           if (skillPresetKind === 'support') {
             this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06, 0.1, 1)
           } else if (skillPresetKind === 'orders' && this.selectedDispatchLane) {
@@ -2389,6 +2559,9 @@ export class RecoveryStageSystem {
       case 'use-item':
         {
           const activeLoadout = this.activeDeployLoadout
+          const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
+          const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
+          const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
         this.panelOverride = 'item'
         this.itemCooldownEndsAtMs = nowMs + ITEM_COOLDOWN_MS
         this.previewOwnTowerHpRatio = clamp(
@@ -2409,6 +2582,16 @@ export class RecoveryStageSystem {
             0.96,
           )
         }
+          if (hasHelba) {
+            this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.03, 0.1, 1)
+          }
+          if (hasCaesar) {
+            const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+            this.laneBattleState[guardLane].enemyPressure = clamp(this.laneBattleState[guardLane].enemyPressure - 0.035, 0.08, 1)
+          }
+          if (hasRogan) {
+            this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+          }
           if (activeLoadout?.towerPolicyKind === 'mana-first') {
             this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
           } else if (activeLoadout?.towerPolicyKind === 'population-first') {
@@ -2426,15 +2609,34 @@ export class RecoveryStageSystem {
         this.commitLaneDispatch('lower')
         break
       case 'produce-unit':
+        {
+        const activeLoadout = this.activeDeployLoadout
+        const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
+        const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
         this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
         this.previewManaRatio = clamp(this.previewManaRatio - 0.16, 0.06, 1)
         this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.08, 0.04, 1)
-        this.lastActionNote = 'unit production preview accepted'
+        if (hasRogan) {
+          this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+        }
+        if (hasVincent && this.selectedDispatchLane) {
+          this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
+            this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.03,
+            0.08,
+            1,
+          )
+        }
+        this.lastActionNote = `unit production preview accepted${activeLoadout ? ` (${activeLoadout.heroRosterLabel})` : ''}`
+        }
         break
       case 'deploy-hero':
       case 'toggle-hero-sortie':
         {
           const activeLoadout = this.activeDeployLoadout
+          const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
+          const hasJuno = this.loadoutHasMember(activeLoadout, 'Juno')
+          const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
+          const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
         if (gameplayState.heroMode === 'field') {
           this.heroOverrideMode = 'return-cooldown'
           this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
@@ -2467,6 +2669,18 @@ export class RecoveryStageSystem {
               1,
             )
           }
+          if (hasVincent && this.heroAssignedLane) {
+            this.laneBattleState[this.heroAssignedLane].frontline = clamp(this.laneBattleState[this.heroAssignedLane].frontline + 0.04, 0.04, 0.96)
+          }
+          if (hasJuno) {
+            this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 240, nowMs)
+          }
+          if (hasManos) {
+            this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.02, 0.08, 1)
+          }
+          if (hasCaesar && this.heroAssignedLane) {
+            this.laneBattleState[this.heroAssignedLane].alliedUnits = Math.min(this.laneBattleState[this.heroAssignedLane].alliedUnits + 1, 8)
+          }
           this.lastActionNote = `hero deployed to ${this.heroAssignedLane} lane (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
         }
         }
@@ -2474,6 +2688,8 @@ export class RecoveryStageSystem {
       case 'return-to-tower':
         {
           const activeLoadout = this.activeDeployLoadout
+          const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
+          const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
         this.heroOverrideMode = 'return-cooldown'
         this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
         if (this.heroAssignedLane) {
@@ -2492,10 +2708,14 @@ export class RecoveryStageSystem {
         }
         this.heroAssignedLane = null
         this.previewOwnTowerHpRatio = clamp(
-          this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.04 : 0),
+          this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.04 : 0) + (hasHelba ? 0.02 : 0),
           0.1,
           1,
         )
+        if (hasCaesar) {
+          const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+          this.laneBattleState[guardLane].alliedPressure = clamp(this.laneBattleState[guardLane].alliedPressure + 0.04, 0.08, 1)
+        }
         this.lastActionNote = `hero return cooldown started (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
         }
         break
@@ -2582,6 +2802,12 @@ export class RecoveryStageSystem {
 
   private tickPersistentPreview(): void {
     const activeLoadout = this.activeDeployLoadout
+    const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
+    const hasRogan = this.loadoutHasMember(activeLoadout, 'Rogan')
+    const hasHelba = this.loadoutHasMember(activeLoadout, 'Helba')
+    const hasJuno = this.loadoutHasMember(activeLoadout, 'Juno')
+    const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
+    const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
     const manaBonus =
       activeLoadout?.towerPolicyKind === 'mana-first'
         ? 0.01
@@ -2594,9 +2820,9 @@ export class RecoveryStageSystem {
         : activeLoadout?.heroRosterRole === 'support'
           ? 0.004
           : 0
-    this.previewManaRatio = clamp(this.previewManaRatio + MANA_RECOVERY_PER_BEAT + manaBonus, 0.06, 1)
+    this.previewManaRatio = clamp(this.previewManaRatio + MANA_RECOVERY_PER_BEAT + manaBonus + (hasJuno ? 0.004 : 0), 0.06, 1)
     this.previewManaUpgradeProgressRatio = clamp(
-      this.previewManaUpgradeProgressRatio + UPGRADE_PROGRESS_RECOVERY_PER_BEAT + upgradeBonus,
+      this.previewManaUpgradeProgressRatio + UPGRADE_PROGRESS_RECOVERY_PER_BEAT + upgradeBonus + (hasRogan ? 0.004 : 0),
       0.04,
       1,
     )
@@ -2605,14 +2831,16 @@ export class RecoveryStageSystem {
       this.previewEnemyTowerHpRatio = clamp(
         this.previewEnemyTowerHpRatio
         - 0.004
-        - (activeLoadout?.heroRosterRole === 'raider' ? 0.002 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.001 : 0),
+        - (activeLoadout?.heroRosterRole === 'raider' ? 0.002 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.001 : 0)
+        - (hasVincent ? 0.0015 : 0)
+        - (hasManos ? 0.0015 : 0),
         0.08,
         1,
       )
     }
 
     if (activeLoadout?.heroRosterRole === 'defender' || activeLoadout?.heroRosterRole === 'support') {
-      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.002, 0.1, 1)
+      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.002 + (hasHelba ? 0.002 : 0) + (hasCaesar ? 0.0015 : 0), 0.1, 1)
     }
 
     if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.previewManaRatio > 0.18) {
@@ -2621,6 +2849,9 @@ export class RecoveryStageSystem {
         0.08,
         1,
       )
+      if (hasRogan) {
+        this.laneBattleState[this.selectedDispatchLane].alliedUnits = Math.min(this.laneBattleState[this.selectedDispatchLane].alliedUnits + 1, 8)
+      }
     }
 
     this.tickLaneBattlePreview()
