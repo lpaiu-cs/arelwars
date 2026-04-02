@@ -305,6 +305,10 @@ export class RecoveryStageSystem {
 
   private lastScriptedBeatNote: string | null = null
 
+  private readonly rosterChainBoosts: Partial<Record<string, number>> = {}
+
+  private rosterChainFocusLane: 'upper' | 'lower' | null = null
+
   constructor(
     catalog: RecoveryCatalog,
     previewManifest: RecoveryPreviewManifest,
@@ -1981,10 +1985,13 @@ export class RecoveryStageSystem {
         this.selectedDispatchLane = preferredLane
         this.panelOverride = 'skill'
         this.queuedUnitCount = Math.max(this.queuedUnitCount, 1)
-        if (
-          this.applyScriptedActionChain(
+      if (
+          this.triggerRosterActionChain(
+            ['Vincent', 'Manos'],
+            preferredLane,
             ['deploy-hero', 'cast-skill'],
             `committed strike route chained Vincent and Manos (${routeInfluence.stanceLabel})`,
+            'assault',
           )
         ) {
           return true
@@ -2004,10 +2011,13 @@ export class RecoveryStageSystem {
       ) {
         this.selectedDispatchLane = preferredLane
         this.queuedUnitCount = Math.max(this.queuedUnitCount, 2)
-        if (
-          this.applyScriptedActionChain(
+      if (
+          this.triggerRosterActionChain(
+            ['Rogan', 'Vincent'],
+            preferredLane,
             ['produce-unit', 'deploy-hero'],
             `committed flank route chained Rogan and Vincent (${routeInfluence.stanceLabel})`,
+            'flank',
           )
         ) {
           return true
@@ -2028,10 +2038,13 @@ export class RecoveryStageSystem {
         )
       ) {
         this.panelOverride = tutorialChainId === 'quest-panel-highlight' ? 'item' : 'tower'
-        if (
-          this.applyScriptedActionChain(
+      if (
+          this.triggerRosterActionChain(
+            ['Helba', 'Caesar'],
+            preferredLane,
             ['upgrade-tower-stat', 'use-item'],
             `committed hold route chained Helba and Caesar (${routeInfluence.stanceLabel})`,
+            'hold',
           )
         ) {
           return true
@@ -2050,10 +2063,13 @@ export class RecoveryStageSystem {
         )
       ) {
         this.panelOverride = 'skill'
-        if (
-          this.applyScriptedActionChain(
+      if (
+          this.triggerRosterActionChain(
+            ['Juno'],
+            preferredLane,
             ['upgrade-tower-stat', 'cast-skill'],
             `committed mana route chained Juno channels (${routeInfluence.stanceLabel})`,
+            'mana',
           )
         ) {
           return true
@@ -2379,6 +2395,29 @@ export class RecoveryStageSystem {
       loadoutMode = `Caesar guard/${stageBias.label}`
       focusLane = stageBias.preferredLane ?? this.currentStageBattleProfile.favoredLane ?? favoredLane
       focusSource = 'roster'
+    }
+
+    if (Object.keys(this.rosterChainBoosts).length > 0) {
+      const memberBoosts = [
+        hasVincent ? this.rosterChainBoosts.Vincent ?? 0 : 0,
+        hasRogan ? this.rosterChainBoosts.Rogan ?? 0 : 0,
+        hasHelba ? this.rosterChainBoosts.Helba ?? 0 : 0,
+        hasJuno ? this.rosterChainBoosts.Juno ?? 0 : 0,
+        hasManos ? this.rosterChainBoosts.Manos ?? 0 : 0,
+        hasCaesar ? this.rosterChainBoosts.Caesar ?? 0 : 0,
+      ].filter((value) => value > 0)
+      const chainBoost = memberBoosts.length > 0 ? Math.max(...memberBoosts) : 0
+      if (chainBoost > 0) {
+        intensity += chainBoost * 0.22
+        if (this.rosterChainFocusLane) {
+          focusLane = this.rosterChainFocusLane
+          focusSource = 'roster'
+        }
+        if (chainBoost >= 0.22) {
+          resolvedPhaseLabel = `${resolvedPhaseLabel}-chain`
+          loadoutMode = loadoutMode ? `${loadoutMode} / chain` : 'route-chain'
+        }
+      }
     }
 
     return {
@@ -3633,6 +3672,56 @@ export class RecoveryStageSystem {
     return true
   }
 
+  private triggerRosterActionChain(
+    members: string[],
+    lane: 'upper' | 'lower' | null,
+    actionIds: RecoveryGameplayActionId[],
+    note: string,
+    emphasis: 'assault' | 'flank' | 'hold' | 'mana',
+  ): boolean {
+    if (!this.applyScriptedActionChain(actionIds, note)) {
+      return false
+    }
+
+    this.rosterChainFocusLane = lane
+    members.forEach((member) => {
+      const current = this.rosterChainBoosts[member] ?? 0
+      this.rosterChainBoosts[member] = clamp(current + 0.32, 0, 1)
+    })
+
+    const targetLane = lane ?? this.currentStageBattleProfile.favoredLane ?? 'upper'
+    const oppositeLane = targetLane === 'upper' ? 'lower' : 'upper'
+    switch (emphasis) {
+      case 'assault':
+        this.laneBattleState[targetLane].alliedUnits = Math.min(this.laneBattleState[targetLane].alliedUnits + 1, 8)
+        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.06, 0.08, 1)
+        this.laneBattleState[targetLane].frontline = clamp(this.laneBattleState[targetLane].frontline + 0.05, 0.04, 0.96)
+        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.035, 0.08, 1)
+        this.heroAssignedLane = targetLane
+        this.laneBattleState[targetLane].heroPresent = true
+        break
+      case 'flank':
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 5)
+        this.laneBattleState[targetLane].alliedUnits = Math.min(this.laneBattleState[targetLane].alliedUnits + 2, 8)
+        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.05, 0.08, 1)
+        this.laneBattleState[oppositeLane].enemyPressure = clamp(this.laneBattleState[oppositeLane].enemyPressure - 0.02, 0.08, 1)
+        break
+      case 'hold':
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
+        this.laneBattleState[targetLane].enemyPressure = clamp(this.laneBattleState[targetLane].enemyPressure - 0.05, 0.08, 1)
+        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.03, 0.08, 1)
+        break
+      case 'mana':
+        this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
+        this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.06, 0.04, 1)
+        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.025, 0.08, 1)
+        break
+    }
+
+    this.lastScriptedBeatNote = `${note} [${members.join('+')} ${emphasis}]`
+    return true
+  }
+
   private cooldownRatio(endsAtMs: number, totalMs: number): number {
     if (totalMs <= 0 || endsAtMs <= 0) {
       return 0
@@ -3677,6 +3766,18 @@ export class RecoveryStageSystem {
   }
 
   private tickPersistentPreview(): void {
+    Object.keys(this.rosterChainBoosts).forEach((member) => {
+      const nextValue = Math.max((this.rosterChainBoosts[member] ?? 0) - 0.06, 0)
+      if (nextValue <= 0) {
+        delete this.rosterChainBoosts[member]
+      } else {
+        this.rosterChainBoosts[member] = nextValue
+      }
+    })
+    if (Object.keys(this.rosterChainBoosts).length === 0) {
+      this.rosterChainFocusLane = null
+    }
+
     const activeLoadout = this.activeDeployLoadout
     const stageBias = this.deriveCurrentStageScriptBias()
     const hasVincent = this.loadoutHasMember(activeLoadout, 'Vincent')
@@ -3807,6 +3908,10 @@ export class RecoveryStageSystem {
   }
 
   private seedBattlePreviewState(storyboard: RecoveryStageStoryboard): void {
+    Object.keys(this.rosterChainBoosts).forEach((member) => {
+      delete this.rosterChainBoosts[member]
+    })
+    this.rosterChainFocusLane = null
     this.currentStageBattleProfile = this.deriveStageBattleProfile(storyboard)
     this.seedBattleObjectiveState(storyboard)
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
