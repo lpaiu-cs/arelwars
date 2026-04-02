@@ -2,6 +2,7 @@ import type {
   RecoveryBattleChannelState,
   RecoveryCatalog,
   RecoveryDialogueEvent,
+  RecoveryGameplayActionId,
   RecoveryGameplayState,
   RecoveryHudGhostState,
   RecoveryResolvedOpcodeCue,
@@ -28,6 +29,7 @@ const GENERIC_OPCODE_VARIANTS = new Set([
   'cmd-18:00',
   'cmd-43:00',
 ])
+const HERO_RETURN_COOLDOWN_MS = 2200
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
@@ -148,6 +150,20 @@ export class RecoveryStageSystem {
 
   private version = 0
 
+  private panelOverride: RecoveryGameplayState['openPanel'] = null
+
+  private heroOverrideMode: RecoveryGameplayState['heroMode'] | null = null
+
+  private heroReturnCooldownEndsAtMs = 0
+
+  private questRewardClaimed = false
+
+  private lastActionId: RecoveryGameplayActionId | null = null
+
+  private lastActionAccepted = false
+
+  private lastActionNote: string | null = null
+
   constructor(
     catalog: RecoveryCatalog,
     previewManifest: RecoveryPreviewManifest,
@@ -186,6 +202,29 @@ export class RecoveryStageSystem {
 
   getStoryboards(): RecoveryStageStoryboard[] {
     return this.storyboards
+  }
+
+  dispatchAction(actionId: RecoveryGameplayActionId): boolean {
+    const snapshot = this.getSnapshot()
+    if (!snapshot) {
+      return false
+    }
+
+    const gameplayState = snapshot.gameplayState
+    const accepted =
+      gameplayState.enabledInputs.includes(actionId) && !gameplayState.blockedInputs.includes(actionId)
+
+    this.lastActionId = actionId
+    this.lastActionAccepted = accepted
+    if (!accepted) {
+      this.lastActionNote = `${actionId} blocked in ${gameplayState.objectiveMode}`
+      this.version += 1
+      return false
+    }
+
+    this.applyAction(actionId, gameplayState)
+    this.version += 1
+    return true
   }
 
   getSnapshot(): RecoveryStageSnapshot | null {
@@ -259,6 +298,7 @@ export class RecoveryStageSystem {
     this.frameIndex = 0
     this.storyboardStartedAtMs = nowMs
     this.lastChannelBeat = -1
+    this.resetInteractionState()
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration()
     this.scheduleNextFrame(storyboard.previewStem, nowMs)
   }
@@ -307,6 +347,7 @@ export class RecoveryStageSystem {
     this.frameIndex = 0
     this.storyboardStartedAtMs = nowMs
     this.lastChannelBeat = -1
+    this.resetInteractionState()
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration() + STORYBOARD_GAP_MS
     this.scheduleNextFrame(this.storyboards[this.storyboardIndex].previewStem, nowMs)
   }
@@ -489,7 +530,7 @@ export class RecoveryStageSystem {
     let enemyTowerHpRatio = clamp(0.54 + oscillate(elapsed, 5300, 900) * 0.18, 0.1, 1)
     let manaRatio = clamp(0.42 + oscillate(elapsed, 3600, 1400) * 0.5, 0.06, 1)
     let manaUpgradeProgressRatio = clamp(0.18 + oscillate(elapsed, 4200, 600) * 0.72, 0.04, 1)
-    let activePanel: RecoveryHudGhostState['activePanel'] = null
+    let activePanel: RecoveryHudGhostState['activePanel'] = this.panelOverride
     let highlightedMenuId: RecoveryHudGhostState['highlightedMenuId'] = null
     let highlightedTowerUpgradeId: RecoveryHudGhostState['highlightedTowerUpgradeId'] = null
     let highlightedUnitCardIndex: number | null = null
@@ -584,6 +625,26 @@ export class RecoveryStageSystem {
       highlightedMenuId = highlightedMenuId ?? 'system'
     }
 
+    if (this.heroOverrideMode === 'field') {
+      heroDeployed = true
+      heroPortraitHighlighted = true
+      returnCooldownRatio = 0
+    } else if (this.heroOverrideMode === 'return-cooldown') {
+      const remaining = Math.max(this.heroReturnCooldownEndsAtMs - this.lastUpdateNowMs, 0)
+      if (remaining <= 0) {
+        this.heroOverrideMode = null
+        returnCooldownRatio = 0
+      } else {
+        heroDeployed = false
+        heroPortraitHighlighted = true
+        returnCooldownRatio = clamp(remaining / HERO_RETURN_COOLDOWN_MS, 0, 1)
+      }
+    }
+
+    if (this.questRewardClaimed) {
+      questRewardReady = false
+    }
+
     return {
       ownTowerHpRatio,
       enemyTowerHpRatio,
@@ -623,8 +684,8 @@ export class RecoveryStageSystem {
       : hudState.questVisible
         ? 'available'
         : 'hidden'
-    const enabledInputs = new Set<string>()
-    const blockedInputs = new Set<string>()
+    const enabledInputs = new Set<RecoveryGameplayActionId>()
+    const blockedInputs = new Set<RecoveryGameplayActionId>()
     let primaryHint = activeTutorialCue?.label ?? activeOpcodeCue?.label ?? 'free-preview'
 
     const blockCommonBattleInputs = (): void => {
@@ -777,6 +838,94 @@ export class RecoveryStageSystem {
       enabledInputs: Array.from(enabledInputs),
       blockedInputs: Array.from(blockedInputs),
       primaryHint,
+      lastActionId: this.lastActionId,
+      lastActionAccepted: this.lastActionAccepted,
+      lastActionNote: this.lastActionNote,
+    }
+  }
+
+  private resetInteractionState(): void {
+    this.panelOverride = null
+    this.heroOverrideMode = null
+    this.heroReturnCooldownEndsAtMs = 0
+    this.questRewardClaimed = false
+    this.lastActionId = null
+    this.lastActionAccepted = false
+    this.lastActionNote = null
+  }
+
+  private applyAction(actionId: RecoveryGameplayActionId, gameplayState: RecoveryGameplayState): void {
+    const nowMs = this.lastUpdateNowMs
+    switch (actionId) {
+      case 'open-tower-menu':
+        this.panelOverride = 'tower'
+        this.lastActionNote = 'tower panel opened'
+        break
+      case 'open-skill-menu':
+        this.panelOverride = 'skill'
+        this.lastActionNote = 'skill panel opened'
+        break
+      case 'open-item-menu':
+        this.panelOverride = 'item'
+        this.lastActionNote = 'item panel opened'
+        break
+      case 'open-system-menu':
+      case 'open-settings':
+        this.panelOverride = 'system'
+        this.lastActionNote = actionId === 'open-settings' ? 'settings route selected' : 'system panel opened'
+        break
+      case 'resume-battle':
+        this.panelOverride = null
+        this.lastActionNote = 'panel closed, battle resumed'
+        break
+      case 'upgrade-tower-stat':
+        this.panelOverride = 'tower'
+        this.lastActionNote = 'tower upgrade action queued'
+        break
+      case 'cast-skill':
+        this.panelOverride = 'skill'
+        this.lastActionNote = 'skill cast preview accepted'
+        break
+      case 'use-item':
+        this.panelOverride = 'item'
+        this.lastActionNote = 'item use preview accepted'
+        break
+      case 'dispatch-up-lane':
+      case 'dispatch-down-lane':
+        this.lastActionNote = actionId === 'dispatch-up-lane' ? 'upper lane selected' : 'lower lane selected'
+        break
+      case 'produce-unit':
+        this.lastActionNote = 'unit production preview accepted'
+        break
+      case 'deploy-hero':
+      case 'toggle-hero-sortie':
+        if (gameplayState.heroMode === 'field') {
+          this.heroOverrideMode = 'return-cooldown'
+          this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
+          this.lastActionNote = 'hero returned to tower'
+        } else {
+          this.heroOverrideMode = 'field'
+          this.heroReturnCooldownEndsAtMs = 0
+          this.lastActionNote = 'hero deployed to field'
+        }
+        break
+      case 'return-to-tower':
+        this.heroOverrideMode = 'return-cooldown'
+        this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
+        this.lastActionNote = 'hero return cooldown started'
+        break
+      case 'review-quest-rewards':
+        this.panelOverride = 'system'
+        this.lastActionNote = 'quest reward panel reviewed'
+        break
+      case 'claim-quest-reward':
+        this.panelOverride = 'system'
+        this.questRewardClaimed = true
+        this.lastActionNote = 'quest reward claimed'
+        break
+      default:
+        this.lastActionNote = `${actionId} accepted`
+        break
     }
   }
 }

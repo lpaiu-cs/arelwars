@@ -1,5 +1,10 @@
 import Phaser from 'phaser'
-import type { RecoveryBattleChannelState, RecoveryPreviewStem, RecoveryStageSnapshot } from '../recovery-types'
+import type {
+  RecoveryBattleChannelState,
+  RecoveryGameplayActionId,
+  RecoveryPreviewStem,
+  RecoveryStageSnapshot,
+} from '../recovery-types'
 import { RecoveryStageSystem } from '../systems/recoveryStageSystem'
 
 const ICON_KEY = 'recovery-icon'
@@ -146,6 +151,12 @@ export class RecoveryBootScene extends Phaser.Scene {
         wordWrap: { width: 540 },
       })
       .setAlpha(0.94)
+
+    if (this.stageSystem?.isReady()) {
+      this.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
+        this.handleActionKey(event.key)
+      })
+    }
   }
 
   update(): void {
@@ -323,7 +334,63 @@ export class RecoveryBootScene extends Phaser.Scene {
     const state = snapshot.gameplayState
     const panel = state.openPanel ?? 'none'
     const enabled = state.enabledInputs.slice(0, 3).join(', ') || 'observe-stage-preview'
-    return `${state.mode} · panel ${panel} · hero ${state.heroMode} · objective ${state.objectiveMode} · ${state.primaryHint} · inputs ${enabled}`
+    const lastAction = state.lastActionId
+      ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
+      : 'no-input-yet'
+    return `${state.mode} · panel ${panel} · hero ${state.heroMode} · objective ${state.objectiveMode} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
+  }
+
+  private handleActionKey(key: string): void {
+    if (!this.stageSystem?.isReady()) {
+      return
+    }
+    const snapshot = this.stageSystem.getSnapshot()
+    if (!snapshot) {
+      return
+    }
+    const actionId = this.resolveActionForKey(key, snapshot)
+    if (!actionId) {
+      return
+    }
+    this.stageSystem.dispatchAction(actionId)
+    const nextSnapshot = this.stageSystem.getSnapshot()
+    if (nextSnapshot) {
+      this.currentSnapshotKey = ''
+      this.applySnapshot(nextSnapshot)
+    }
+  }
+
+  private resolveActionForKey(key: string, snapshot: RecoveryStageSnapshot): RecoveryGameplayActionId | null {
+    const normalized = key.toLowerCase()
+    const gameplayState = snapshot.gameplayState
+    switch (normalized) {
+      case '1':
+        return 'open-tower-menu'
+      case '2':
+        return 'open-skill-menu'
+      case '3':
+        return 'open-item-menu'
+      case '4':
+        return 'open-system-menu'
+      case 'q':
+        return 'dispatch-up-lane'
+      case 'w':
+        return 'dispatch-down-lane'
+      case 'e':
+        return 'produce-unit'
+      case 'r':
+        return gameplayState.heroMode === 'field' ? 'return-to-tower' : 'toggle-hero-sortie'
+      case 't':
+        return 'cast-skill'
+      case 'y':
+        return 'use-item'
+      case 'u':
+        return gameplayState.questState === 'reward-ready' ? 'claim-quest-reward' : 'review-quest-rewards'
+      case 'escape':
+        return 'resume-battle'
+      default:
+        return null
+    }
   }
 
   private drawBattleOverlay(snapshot: RecoveryStageSnapshot): void {

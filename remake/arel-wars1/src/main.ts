@@ -333,7 +333,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}`
       : null
   const gameplayState = snapshot.gameplayState
-  const gameplayLine = `mode ${gameplayState.mode} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · objective ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}`
+  const gameplayLine = `mode ${gameplayState.mode} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · objective ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
   return `
     <article class="story-card">
       <header class="story-card-header">

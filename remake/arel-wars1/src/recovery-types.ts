@@ -375,6 +375,33 @@ export interface RecoveryHudGhostState {
   leftDispatchCueVisible: boolean
 }
 
+export type RecoveryGameplayActionId =
+  | 'open-tower-menu'
+  | 'open-skill-menu'
+  | 'open-item-menu'
+  | 'open-system-menu'
+  | 'resume-battle'
+  | 'open-settings'
+  | 'upgrade-tower-stat'
+  | 'cast-skill'
+  | 'use-item'
+  | 'dispatch-up-lane'
+  | 'dispatch-down-lane'
+  | 'produce-unit'
+  | 'deploy-hero'
+  | 'return-to-tower'
+  | 'toggle-hero-sortie'
+  | 'review-quest-rewards'
+  | 'claim-quest-reward'
+  | 'inspect-own-tower-hp'
+  | 'read-loss-condition'
+  | 'inspect-enemy-tower-hp'
+  | 'read-win-condition'
+  | 'inspect-unit-card'
+  | 'inspect-mana-bar'
+  | 'hero-combat-active'
+  | 'observe-stage-preview'
+
 export interface RecoveryGameplayState {
   mode: 'tutorial-lock' | 'guided-preview' | 'free-preview'
   openPanel: 'tower' | 'skill' | 'item' | 'system' | null
@@ -391,9 +418,12 @@ export interface RecoveryGameplayState {
     | 'system-navigation'
     | 'generic-preview'
   questState: 'hidden' | 'available' | 'reward-ready'
-  enabledInputs: string[]
-  blockedInputs: string[]
+  enabledInputs: RecoveryGameplayActionId[]
+  blockedInputs: RecoveryGameplayActionId[]
   primaryHint: string
+  lastActionId: RecoveryGameplayActionId | null
+  lastActionAccepted: boolean
+  lastActionNote: string | null
 }
 
 export interface RecoveryStageSnapshot {
