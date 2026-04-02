@@ -16,6 +16,7 @@ Primary outputs:
 - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
 - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
 - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
+- [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
 
 `AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
 It did not yet reveal a hard `stage -> map payload` pointer on its own.
@@ -264,6 +265,14 @@ Evidence:
   - slots `6`, `13`, and `23` are alias cases where `Defend Tower` in the master table maps to `Thief/Helba/Juno Tower Defense` in the passive table
   - `XlsHeroBuffSkill.tailLinkCandidate` is also slot-like when non-`255`, currently landing on slots `11`, `14`, `15`, `19`, `20`, `21`, `22`, and `23`
   - slots `29`, `30`, and `31` sit outside the passive table and currently host special `mode 0:2` rows: `Stun`, `Smoke`, and `Armageddon Buff`
+- The new family-level export [`AW1.hero_runtime_families.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json) is the current best runtime-facing summary:
+  - `Dispatch` is the clearest multi-slot ladder: slots `20/21/22` each carry one passive row, one active row, and one triggerMode `2` buff-tail row
+  - `Defend Tower` is hero-specific: slots `6/13/23` map to `Thief/Helba/Juno Tower Defense`, with slot `23` also carrying a buff-tail row
+  - slots `11`, `14`, and `15` are shared-slot hybrids rather than single skills
+    - slot `11`: `Natural Healing` + `Recall`
+    - slot `14`: `HP Up` + `Return to Nature`
+    - slot `15`: `Mana Wall` + `Armageddon`
+  - slots `29/30/31` remain `special-command-slot` candidates outside the passive/active row range
 
 ### XlsHeroActiveSkill
 
@@ -283,6 +292,10 @@ Evidence:
   - slots `0..23` are all reachable from the hero-skill master table
   - row `24` is present in `XlsHeroActiveSkill` but currently has no hero-skill slot owner
   - slots `19..23` are especially structured, with timing ladders that line up against `Mana Gain`, three `Dispatch` rows, and `Defend Tower`
+- [`AW1.hero_runtime_families.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json) sharpens the runtime interpretation:
+  - slot `19` is a self-contained `Mana Gain` passive-active-buff family
+  - slots `20/21/22` are a `Dispatch` ladder with progressively different active timing windows and distinct buff-tail rows
+  - slot `23` looks like the buff-bearing `Juno Tower Defense` variant of the broader tower-defense family
 
 ### XlsHeroBuffSkill
 
@@ -299,6 +312,13 @@ Evidence:
 - New slot-link evidence improves that a bit:
   - when `tailLinkCandidate != 255`, the target currently lands on hero-skill slots `11`, `14`, `15`, `19`, `20`, `21`, `22`, and `23`
   - that puts the linked rows close to `Natural Healing`, `HP Up`, `Mana Wall`, `Mana Gain`, the three `Dispatch` rows, and `Defend Tower`
+- The family export makes the clustered groups clearer:
+  - rows `1/2/3` are the current best `Dispatch` buff ladder candidates for slots `20/21/22`
+  - row `5` is the clearest current `Mana Gain` bridge for slot `19`
+  - row `6` is the clearest current `Juno Tower Defense` bridge for slot `23`
+  - rows `29/32/33/34` form the densest shared-slot bundle and currently back slot `11` (`Natural Healing` + `Recall`)
+  - rows `36/37` back slot `14` (`HP Up` + `Return to Nature`)
+  - row `35` backs slot `15` (`Mana Wall` + `Armageddon`)
 
 ### XlsHeroPassiveSkill
 
@@ -391,4 +411,5 @@ Evidence:
 1. Compare `XlsAi` English/Korean rows to isolate localized byte spans from numeric byte spans.
 2. Correlate `XlsAi` row order with story/stage order from script files.
 3. Use the new `tier/variant/region/storyFlag` candidates to search the remaining battle/runtime payloads for the first hard stage-to-map pointer.
-4. Promote `XlsHero_Ai`, `XlsSkill_Ai`, `XlsProjectile`, and `XlsEffect` from byte-block candidates to named gameplay schemas.
+4. Use `AW1.hero_runtime_families.json` to turn slot-linked hero skills into actual runtime archetypes for the remake battle engine.
+5. Promote `XlsHero_Ai`, `XlsSkill_Ai`, `XlsProjectile`, and `XlsEffect` from byte-block candidates to named gameplay schemas.

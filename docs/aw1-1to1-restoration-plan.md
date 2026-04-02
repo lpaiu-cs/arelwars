@@ -136,6 +136,7 @@ References:
     - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
     - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
     - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
+    - [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
   - current strongest runtime-field candidates in `XlsAi` are:
     - `tierCandidate = numericBlock[13]`
     - `variantCandidate = numericBlock[15]`
@@ -155,6 +156,11 @@ References:
     - `XlsHeroSkill.slotOrPowerCandidate` is now a high-confidence direct slot index into `XlsHeroPassiveSkill` for slots `0..23`
     - the same slot index reaches `24/25` rows in `XlsHeroActiveSkill`, leaving only active row `24` orphaned for now
     - `XlsHeroBuffSkill.tailLinkCandidate` also behaves like a slot bridge when non-`255`
+    - `AW1.hero_runtime_families.json` now captures the strongest runtime clusters:
+      - `Dispatch` as a three-slot passive-active-buff ladder on `20/21/22`
+      - `Defend Tower` as a hero-specific tower-defense family on `6/13/23`
+      - shared-slot hybrids on `11`, `14`, and `15`
+      - `29/30/31` as special command slots outside the passive/active row range
 
 ### Phase 4. Build Deterministic Runtime Systems
 
@@ -197,6 +203,13 @@ References:
    - projectile definitions
    - effect definitions
    - hero active/passive/buff skill definitions
+6. Promote slot-linked hero runtime families into engine-facing archetypes:
+   - `Dispatch`
+   - `Tower Defense`
+   - `Natural Healing / Recall`
+   - `HP Up / Return to Nature`
+   - `Mana Wall / Armageddon`
+   - `Mana Gain`
 
 ## First Opcode Findings
 
