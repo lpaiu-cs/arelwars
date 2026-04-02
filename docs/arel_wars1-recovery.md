@@ -101,6 +101,14 @@ python3 tools/arel_wars1/export_runtime_preview.py \
   --timeline-root recovery/arel_wars1/timeline_candidate_strips \
   --web-root remake/arel-wars1/public/recovery
 
+python3 tools/arel_wars1/export_aw1_runtime_blueprint.py \
+  --parsed-dir recovery/arel_wars1/parsed_tables \
+  --binary-report recovery/arel_wars1/binary_asset_report.json \
+  --script-report recovery/arel_wars1/script_event_report.json \
+  --script-root recovery/arel_wars1/decoded/zt1/assets/script_eng \
+  --output recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json \
+  --web-output remake/arel-wars1/public/recovery/analysis/aw1_runtime_blueprint.json
+
 python3 tools/arel_wars1/analyze_script_events.py \
   --catalog recovery/arel_wars1/catalog.json \
   --output recovery/arel_wars1/script_event_report.json
@@ -129,10 +137,11 @@ npm run ios:sync
   Local build is blocked until full Xcode is installed and selected.
   Current failure: `xcode-select: error: tool 'xcodebuild' requires Xcode`
 - Web Runtime
-  `sync:recovery` now exports `preview_manifest.json`, sequence summaries, and timeline strips into `remake/arel-wars1/public/recovery/analysis/`.
+  `sync:recovery` now exports `preview_manifest.json`, sequence summaries, timeline strips, and `aw1_runtime_blueprint.json` into `remake/arel-wars1/public/recovery/analysis/`.
   The Vite runtime reads those files to render:
   - a Phaser-side recovered stage scene driven by a shared playback system instead of a passive strip carousel
-  - a DOM-side storyboard panel that advances structured `ZT1` dialogue and recovered sprite timelines from the same state source
+  - stage blueprints with heuristic map bindings, opcode cue summaries, and hero archetype channel pulses
+  - DOM-side storyboard panels that advance structured `ZT1` dialogue and recovered sprite timelines from the same state source
   - a DOM-side featured timeline gallery fed from the preview manifest
 
 ## Closed Gaps
@@ -141,6 +150,12 @@ npm run ios:sync
 2. Speech prefixes are no longer treated as opaque bytes only. They now parse into structured command sequences such as `set-left-portrait`, `set-right-portrait`, and `set-expression`, with the remaining one-byte opcodes kept as stable `cmd-XX` records.
 3. `179.pzx` is no longer just “unknown packed pixels.” The current working model is `value = shadeBand * 47 + paletteResidue`, with `188..199` acting like a small highlight/special tail on top of the shared `179/180` palette pair.
 4. `PTC` is no longer opaque. AW1 `assets/ptc/*.ptc` files parse as compact 25-26 word parameter blocks with stable angle, Q16 ratio, signed delta, and timing field groups.
+5. The runtime no longer consumes only raw preview strips. It now also consumes an integrated [`AW1.runtime_blueprint.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json) layer that merges:
+   - `script family -> stage blueprint`
+   - heuristic `variant/storyFlag -> map pair` binding
+   - `cmd-XX` opcode cue summaries
+   - hero runtime archetypes such as `Dispatch`, `Tower Defense`, `Natural Healing`, `Recall`, `Mana Wall`, `Armageddon`, and `Mana Gain`
+   - MPL/PTC/179 render cues
 
 ## Current Hard Limits
 

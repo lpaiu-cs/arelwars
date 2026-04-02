@@ -28,6 +28,164 @@ export interface RecoveryDialogueEvent {
   text: string
 }
 
+export interface RecoveryOpcodeCounterEntry {
+  value: string | number
+  count: number
+}
+
+export interface RecoveryOpcodeHeuristic {
+  mnemonic: string
+  label: string
+  category: string
+  confidence: string
+  count: number
+  topArgs: RecoveryOpcodeCounterEntry[]
+  topSequences: RecoveryOpcodeCounterEntry[]
+  notes: string[]
+}
+
+export interface RecoveryArchetypeActiveRow {
+  index: number
+  headerBytes: number[]
+  timingWindowA: number[]
+  timingWindowB: number[]
+  timingWindowACompact: number[]
+  timingWindowBCompact: number[]
+  tailPairBE: number[]
+  tailLink?: {
+    index: number
+    headerBytes: number[]
+    tailPairBE: number[]
+    pairReports: Array<{
+      pair: number[]
+      projectileExactMatches: object[]
+      effectExactMatches: object[]
+      particleExactMatches: object[]
+      projectileIdHints: object[]
+    }>
+  } | null
+}
+
+export interface RecoveryArchetypeBuffRow {
+  index: number
+  familyCandidate: number
+  tierCandidate: number
+  triggerModeCandidate: number
+  skillCodeCandidate: number
+  profileCandidate: number
+}
+
+export interface RecoveryArchetypeSlotPayload {
+  slot: number
+  runtimeType: string
+  passiveRowIndex: number | null
+  activeRowIndex: number | null
+  buffTailRowIndices: number[]
+}
+
+export interface RecoveryHeroRuntimeArchetype {
+  archetypeId: string
+  label: string
+  archetypeKind: string
+  familyType: string
+  confidence: string
+  slots: number[]
+  rowNames: string[]
+  passiveNames: string[]
+  heroSkillRows: Array<{
+    index: number
+    name: string
+    skillCodeCandidate: number
+    aiCodeCandidate: number
+    modeKey: string
+    slotOrPowerCandidate: number
+    description: string
+    tags: string[]
+  }>
+  slotPayloads: RecoveryArchetypeSlotPayload[]
+  passiveRows: Array<Record<string, unknown>>
+  activeRows: RecoveryArchetypeActiveRow[]
+  buffRows: RecoveryArchetypeBuffRow[]
+  skillAiBySkillCode: Array<Record<string, unknown>>
+  skillAiByAiCode: Array<Record<string, unknown>>
+  mechanicHints: string[]
+  evidence: string[]
+}
+
+export interface RecoveryStageRuntimeFields {
+  blobPrefixHex: string
+  stageScalarCandidate: number
+  tierCandidate: number
+  variantCandidate: number
+  regionCandidate: number
+  constantMarkerCandidate: number
+  storyFlagCandidate: number
+}
+
+export interface RecoveryStageMapBinding {
+  templateGroupId: number
+  mapPairIndices: number[]
+  preferredMapIndexHeuristic: number | null
+  confidence: string
+  rationale: string
+}
+
+export interface RecoveryStageRenderIntent {
+  effectIntensity: string
+  bankRule: string
+  packedPixelHint: string
+}
+
+export interface RecoveryStageBlueprint {
+  familyId: string
+  aiIndexCandidate: number | null
+  title: string | null
+  rewardText: string | null
+  hintText: string | null
+  scriptFiles: string[]
+  scriptFileCount: number
+  eventCount: number
+  topSpeakers: Array<[string, number]>
+  runtimeFields: RecoveryStageRuntimeFields | null
+  mapBinding: RecoveryStageMapBinding | null
+  opcodeCues: RecoveryOpcodeHeuristic[]
+  recommendedArchetypeIds: string[]
+  renderIntent: RecoveryStageRenderIntent | null
+}
+
+export interface RecoveryRenderProfile {
+  defaultMplBankRule: {
+    label: string
+    notes: string[]
+  }
+  specialPackedPixelStems: Array<{
+    stem: string
+    sharedMplStem: string
+    heuristic: string
+    confidence: string
+  }>
+  ptcBridgeSummary: {
+    summary: Record<string, unknown>
+    sharedPrimaryGroups: Array<Record<string, unknown>>
+    sampleParticleRows: Array<Record<string, unknown>>
+  }
+  findings: string[]
+}
+
+export interface RecoveryRuntimeBlueprint {
+  summary: {
+    stageBlueprintCount: number
+    archetypeCount: number
+    featuredArchetypeCount: number
+    opcodeHeuristicCount: number
+  }
+  stageBlueprints: RecoveryStageBlueprint[]
+  opcodeHeuristics: RecoveryOpcodeHeuristic[]
+  featuredArchetypes: RecoveryHeroRuntimeArchetype[]
+  renderProfile: RecoveryRenderProfile
+  findings: string[]
+}
+
 export interface RecoveryCatalog {
   generatedAt: string
   apkPath: string
@@ -114,15 +272,42 @@ export interface RecoveryPreviewManifest {
 export interface RecoveryStageStoryboard {
   id: string
   scriptPath: string
+  scriptFamilyId: string
   locale: string | null
   scriptEventCount: number
   scriptEvents: RecoveryDialogueEvent[]
   previewStem: RecoveryPreviewStem
+  stageBlueprint: RecoveryStageBlueprint | null
+}
+
+export interface RecoveryBattleChannelState {
+  archetypeId: string
+  label: string
+  archetypeKind: string
+  confidence: string
+  intensity: number
+  phaseLabel: string
+  cycleMs: number
+  markerCount: number
+  hasBuffLayer: boolean
+  hasExactTailHit: boolean
+}
+
+export interface RecoveryStageRenderState {
+  bankRuleLabel: string
+  bankOverlayActive: boolean
+  packedPixelStemRule: string | null
+  effectPulseCount: number
+  effectIntensity: string
+  ptcEmitterHint: string | null
 }
 
 export interface RecoveryStageSnapshot {
   storyboardIndex: number
   dialogueIndex: number
   frameIndex: number
+  elapsedStoryboardMs: number
   currentStoryboard: RecoveryStageStoryboard
+  channelStates: RecoveryBattleChannelState[]
+  renderState: RecoveryStageRenderState
 }

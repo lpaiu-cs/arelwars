@@ -349,6 +349,36 @@ h2 {
   padding: 10px;
 }
 
+.story-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.story-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(85, 114, 122, 0.2);
+  color: #d7e1df;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.story-pill-accent {
+  background: rgba(214, 165, 92, 0.16);
+  color: #f2d7aa;
+}
+
+.story-runtime-copy {
+  margin: 12px 0 0;
+  color: rgba(231, 223, 204, 0.76);
+  font-size: 0.9rem;
+}
+
 .story-strip img {
   display: block;
   width: auto;

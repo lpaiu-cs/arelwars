@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import type { RecoveryPreviewStem, RecoveryStageSnapshot } from '../recovery-types'
+import type { RecoveryBattleChannelState, RecoveryPreviewStem, RecoveryStageSnapshot } from '../recovery-types'
 import { RecoveryStageSystem } from '../systems/recoveryStageSystem'
 
 const ICON_KEY = 'recovery-icon'
@@ -16,6 +16,10 @@ export class RecoveryBootScene extends Phaser.Scene {
   private spriteDetail: Phaser.GameObjects.Text | null = null
 
   private spriteFooter: Phaser.GameObjects.Text | null = null
+
+  private channelDetail: Phaser.GameObjects.Text | null = null
+
+  private overlayGraphics: Phaser.GameObjects.Graphics | null = null
 
   private currentSnapshotKey = ''
 
@@ -66,7 +70,7 @@ export class RecoveryBootScene extends Phaser.Scene {
         80,
         148,
         this.stageSystem?.isReady()
-          ? 'Recovered sprite timelines and structured dialogue now drive a shared stage state on desktop and Android.'
+          ? 'Recovered sprite timelines, stage blueprints, opcode cues, and hero runtime channels now drive one shared battle-state layer.'
           : 'Confirmed recoveries: PZX tail timelines, sequence candidates, runtime strip previews, and Android packaging.',
         {
           fontFamily: 'Trebuchet MS, sans-serif',
@@ -98,9 +102,9 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     const milestones = [
       '1. PZX first-stream, frame-record, and tail groups recovered',
-      '2. MPL palette banks normalized into runtime render rules',
-      '3. ZT1 scripts elevated from raw strings to caption/speech events',
-      '4. Shared stage state now drives both sprite playback and narrative HUD',
+      '2. MPL palette banks and PTC bridges lifted into runtime render cues',
+      '3. ZT1 scripts elevated from raw strings to stage blueprints and opcode cues',
+      '4. Shared battle-state now drives sprite playback, channel pulses, and narrative HUD',
     ]
 
     milestones.forEach((line, index) => {
@@ -114,7 +118,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     })
 
     this.add
-      .text(84, height - 52, 'Android APK packaging is verified. This is still a reconstruction layer rather than a 1:1 engine clone, and some battle-state semantics remain under recovery.', {
+      .text(84, height - 52, 'Android APK packaging is verified. This runtime now consumes inferred stage bindings, hero archetypes, and render rules, but it is still a reconstruction layer rather than a final 1:1 engine clone.', {
         fontFamily: 'Trebuchet MS, sans-serif',
         fontSize: '15px',
         color: '#7f908e',
@@ -176,6 +180,17 @@ export class RecoveryBootScene extends Phaser.Scene {
       })
       .setAlpha(0.9)
 
+    this.channelDetail = this.add
+      .text(frame.x - 156, frame.y + 204, '', {
+        fontFamily: 'Trebuchet MS, sans-serif',
+        fontSize: '12px',
+        color: '#d9c9ab',
+        wordWrap: { width: 320 },
+      })
+      .setAlpha(0.88)
+
+    this.overlayGraphics = this.add.graphics()
+
     this.applySnapshot(snapshot)
   }
 
@@ -185,19 +200,31 @@ export class RecoveryBootScene extends Phaser.Scene {
   }
 
   private applySnapshot(snapshot: RecoveryStageSnapshot): void {
-    if (!this.previewImage || !this.spriteLabel || !this.spriteDetail || !this.spriteFooter) {
+    if (!this.previewImage || !this.spriteLabel || !this.spriteDetail || !this.spriteFooter || !this.channelDetail || !this.overlayGraphics) {
       return
     }
 
     const previewStem = snapshot.currentStoryboard.previewStem
     this.previewImage.setTexture(this.resolvePreviewTexture(previewStem, snapshot.frameIndex))
     this.fitImageToBox(this.previewImage, 320, 188)
+    this.previewImage.setTint(snapshot.renderState.bankOverlayActive ? 0xffe3a1 : 0xffffff)
+    this.previewImage.setAlpha(snapshot.renderState.packedPixelStemRule ? 0.96 : 1)
 
-    this.spriteLabel.setText(`Stem ${previewStem.stem} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)
-    this.spriteDetail.setText(`${this.formatKind(previewStem.timelineKind)} / ${snapshot.currentStoryboard.scriptPath.replace('assets/', '')}`)
-    this.spriteFooter.setText(
-      `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)}`,
+    const stageTitle = snapshot.currentStoryboard.stageBlueprint?.title ?? `Stem ${previewStem.stem}`
+    const mapBinding = snapshot.currentStoryboard.stageBlueprint?.mapBinding
+    const mapLine = mapBinding
+      ? `Map pair ${mapBinding.mapPairIndices.join('/')} → ${mapBinding.preferredMapIndexHeuristic ?? 'n/a'}`
+      : `Stem ${previewStem.stem}`
+
+    this.spriteLabel.setText(`${stageTitle} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)
+    this.spriteDetail.setText(
+      `${mapLine} · ${this.formatKind(previewStem.timelineKind)} · ${snapshot.currentStoryboard.scriptPath.replace('assets/', '')}`,
     )
+    this.spriteFooter.setText(
+      `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}`,
+    )
+    this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
+    this.drawBattleOverlay(snapshot)
   }
 
   private drawGrid(width: number, height: number): void {
@@ -244,5 +271,59 @@ export class RecoveryBootScene extends Phaser.Scene {
       return 'none'
     }
     return `${entry.loopSummary.startEventIndex}-${entry.loopSummary.endEventIndex} (${entry.loopSummary.reason})`
+  }
+
+  private describeChannels(channelStates: RecoveryBattleChannelState[], snapshot: RecoveryStageSnapshot): string {
+    if (channelStates.length === 0) {
+      return 'No battle channels resolved for this storyboard yet.'
+    }
+
+    const headline = channelStates
+      .slice(0, 3)
+      .map((entry) => `${entry.label} ${entry.phaseLabel}`)
+      .join(' · ')
+    const opcodeCue = snapshot.currentStoryboard.stageBlueprint?.opcodeCues[0]?.label
+    const packed = snapshot.renderState.packedPixelStemRule ? '179 shade' : 'std render'
+    return `${headline} · fx ${snapshot.renderState.effectPulseCount} · ${packed}${opcodeCue ? ` · ${opcodeCue}` : ''}`
+  }
+
+  private drawBattleOverlay(snapshot: RecoveryStageSnapshot): void {
+    if (!this.previewImage || !this.overlayGraphics) {
+      return
+    }
+
+    const graphics = this.overlayGraphics
+    graphics.clear()
+
+    const width = (this.previewImage.displayWidth || 320) + 16
+    const height = (this.previewImage.displayHeight || 188) + 16
+    const x = this.previewImage.x - width / 2
+    const y = this.previewImage.y - height / 2
+
+    const borderColor = snapshot.renderState.bankOverlayActive ? 0xe3c17d : 0x4c676f
+    graphics.lineStyle(2, borderColor, 0.8)
+    graphics.strokeRoundedRect(x, y, width, height, 14)
+
+    const channelStates = snapshot.channelStates.slice(0, 4)
+    channelStates.forEach((channel, index) => {
+      const barWidth = 56
+      const barHeight = 10
+      const barX = x + 18 + index * (barWidth + 10)
+      const barY = y + height + 10
+      const baseAlpha = 0.18 + channel.intensity * 0.42
+      const fillColor = channel.hasExactTailHit ? 0xb7f0ff : channel.hasBuffLayer ? 0xc6a16a : 0x70858b
+      graphics.fillStyle(fillColor, baseAlpha)
+      graphics.fillRoundedRect(barX, barY, barWidth * channel.intensity, barHeight, 5)
+      graphics.lineStyle(1, 0x27363d, 0.8)
+      graphics.strokeRoundedRect(barX, barY, barWidth, barHeight, 5)
+    })
+
+    if (snapshot.renderState.effectPulseCount > 0) {
+      for (let index = 0; index < snapshot.renderState.effectPulseCount; index += 1) {
+        const radius = 18 + index * 14
+        graphics.lineStyle(2, 0xdca863, 0.22)
+        graphics.strokeCircle(this.previewImage.x + 96, this.previewImage.y - 52, radius)
+      }
+    }
   }
 }

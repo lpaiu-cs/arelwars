@@ -138,6 +138,7 @@ References:
     - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
     - [AW1.hero_runtime_families.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json)
     - [AW1.hero_runtime_archetypes.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json)
+    - [AW1.runtime_blueprint.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json)
   - current strongest runtime-field candidates in `XlsAi` are:
     - `tierCandidate = numericBlock[13]`
     - `variantCandidate = numericBlock[15]`
@@ -168,6 +169,7 @@ References:
       - `Natural Healing` / `Recall` -> slot-11 shared channel
       - `Mana Wall` / `Armageddon` -> slot-15 shared channel
       - `Smoke` regular skill and `Smoke (Special)` are now separated instead of being conflated by name
+    - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, map-binding heuristics, archetypes, and render cues into one runtime-facing manifest
 
 ### Phase 4. Build Deterministic Runtime Systems
 
@@ -222,6 +224,10 @@ References:
    - buff trigger ladders
    - hero-variant tower-defense stances
    - special command payload handling for slots `29/30/31`
+8. Keep replacing heuristic stage/bootstrap glue with proven pointers:
+   - `script family -> AI row -> concrete map bin`
+   - `cmd-XX -> engine action`
+   - `PTC/MPL/179 -> final render implementation`
 
 ## First Opcode Findings
 

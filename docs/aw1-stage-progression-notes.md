@@ -6,6 +6,7 @@ Primary output:
 
 - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
 - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+- [AW1.runtime_blueprint.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json)
 
 ## Current Model
 
@@ -141,6 +142,30 @@ Current strongest findings:
 - the most practical current hypothesis is:
   - `XlsMap` non-zero group pairs line up with map-bin pairs `000/001` through `008/009`
   - later map bins `010..015` are either unreferenced alternates, late-game-only maps, or attached through a different table path
+- the current engine-facing bootstrap rule in [`AW1.runtime_blueprint.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json) is:
+  - `variantCandidate 1 -> group 0 -> map pair 000/001`
+  - `variantCandidate 2 -> group 1 -> map pair 002/003`
+  - `variantCandidate 3 -> group 2 -> map pair 004/005`
+  - `variantCandidate 4 -> group 3 -> map pair 006/007`
+  - `variantCandidate 5/6 -> group 4 -> map pair 008/009`
+  - `storyFlagCandidate` then chooses the preferred map inside the pair
+- This is still heuristic, not a proven hard pointer, but it is now concrete enough to drive a runtime stage blueprint instead of living only as a note.
+
+## Runtime Blueprint Layer
+
+[`AW1.runtime_blueprint.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json) is now the current integration boundary between reverse-engineering outputs and the Phaser runtime.
+
+It adds three things on top of the raw reports:
+
+1. `stageBlueprints`
+   - one per script family / AI row candidate
+   - includes stage title, reward text, hint text, runtime field tuple, heuristic map binding, opcode cues, and recommended hero archetypes
+2. `opcodeHeuristics`
+   - promotes common `cmd-XX` clusters such as `cmd-02`, `cmd-05`, `cmd-06`, `cmd-08`, `cmd-0a`, `cmd-0b`, `cmd-43` into stable runtime labels with confidence levels
+3. `renderProfile`
+   - carries the current default MPL bank rule, the special `179` packed-pixel rule, and the `PTC bridge` summary
+
+This does not prove the final engine semantics, but it removes the need for the runtime to read multiple reverse-engineering reports directly.
 
 ## Next Steps
 

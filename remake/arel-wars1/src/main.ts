@@ -1,7 +1,14 @@
 import Phaser from 'phaser'
 import './style.css'
 import { RecoveryBootScene } from './scenes/RecoveryBootScene'
-import type { RecoveryCatalog, RecoveryDialogueEvent, RecoveryPreviewManifest, RecoveryPreviewStem, RecoveryStageSnapshot } from './recovery-types'
+import type {
+  RecoveryCatalog,
+  RecoveryDialogueEvent,
+  RecoveryPreviewManifest,
+  RecoveryPreviewStem,
+  RecoveryRuntimeBlueprint,
+  RecoveryStageSnapshot,
+} from './recovery-types'
 import { RecoveryStageSystem } from './systems/recoveryStageSystem'
 
 const app = document.querySelector<HTMLDivElement>('#app')
@@ -96,24 +103,26 @@ async function bootstrap(): Promise<void> {
     return
   }
 
-  const [catalogResult, previewResult] = await Promise.allSettled([
+  const [catalogResult, previewResult, blueprintResult] = await Promise.allSettled([
     fetchJson<RecoveryCatalog>('/recovery/catalog.json'),
     fetchJson<RecoveryPreviewManifest>('/recovery/analysis/preview_manifest.json'),
+    fetchJson<RecoveryRuntimeBlueprint>('/recovery/analysis/aw1_runtime_blueprint.json'),
   ])
 
   const previewManifest = previewResult.status === 'fulfilled' ? previewResult.value : null
+  const runtimeBlueprint = blueprintResult.status === 'fulfilled' ? blueprintResult.value : null
   let stageSystem: RecoveryStageSystem | null = null
 
   if (catalogResult.status === 'fulfilled') {
     const catalog = await hydrateCatalogScripts(catalogResult.value)
     if (previewManifest) {
-      stageSystem = new RecoveryStageSystem(catalog, previewManifest)
+      stageSystem = new RecoveryStageSystem(catalog, previewManifest, runtimeBlueprint)
     }
     game = createGame(stageSystem)
     stage.textContent = previewManifest
-      ? `Recovered stage online (${previewManifest.activeStemCount} stems / Android APK verified)`
+      ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints)`
       : 'ZT1 decoded, Android APK verified'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''} Android packaging has been verified on a modern emulator.`
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics.` : ''} Android packaging has been verified on a modern emulator.`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
@@ -121,8 +130,9 @@ async function bootstrap(): Promise<void> {
       statCard('Script Events', String(catalog.inventory.scriptEventTotal ?? 0)),
       statCard('Web-safe', String(catalog.inventory.webSafeAssetCount)),
       statCard('Timeline Stems', String(previewManifest?.activeStemCount ?? 0)),
-      statCard('Timeline Kinds', String(Object.keys(previewManifest?.timelineKindCounts ?? {}).length)),
-      statCard('Asset Roots', String(Object.keys(catalog.inventory.assetDirectories).length)),
+      statCard('Archetypes', String(runtimeBlueprint?.summary.archetypeCount ?? 0)),
+      statCard('Stage Plans', String(runtimeBlueprint?.summary.stageBlueprintCount ?? 0)),
+      statCard('Opcode Hints', String(runtimeBlueprint?.summary.opcodeHeuristicCount ?? 0)),
     ].join('')
 
     scripts.innerHTML = catalog.featuredScripts
@@ -305,12 +315,19 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const activeEvent = snapshot.currentStoryboard.scriptEvents[snapshot.dialogueIndex]
   const previewStem = snapshot.currentStoryboard.previewStem
   const speakerLine = activeEvent.speaker ? `${activeEvent.speaker} · tag ${activeEvent.speakerTag ?? 'n/a'}` : 'Narration'
+  const stage = snapshot.currentStoryboard.stageBlueprint
+  const opcodePills = stage?.opcodeCues.slice(0, 4).map((cue) => cue.label) ?? []
+  const archetypePills = stage?.recommendedArchetypeIds.slice(0, 4) ?? []
+  const channelPills = snapshot.channelStates.slice(0, 4).map((channel) => `${channel.label} ${channel.phaseLabel}`)
+  const mapLine = stage?.mapBinding
+    ? `Map ${stage.mapBinding.mapPairIndices.join('/')} → ${stage.mapBinding.preferredMapIndexHeuristic ?? 'n/a'}`
+    : 'Map unresolved'
   return `
     <article class="story-card">
       <header class="story-card-header">
         <div>
-          <strong>${escapeHtml(snapshot.currentStoryboard.scriptPath)}</strong>
-          <p>${escapeHtml(formatKind(previewStem.timelineKind))} / stem ${previewStem.stem}</p>
+          <strong>${escapeHtml(stage?.title ?? snapshot.currentStoryboard.scriptPath)}</strong>
+          <p>${escapeHtml(mapLine)} / ${escapeHtml(formatKind(previewStem.timelineKind))} / stem ${previewStem.stem}</p>
         </div>
         <span class="pill">${escapeHtml(snapshot.currentStoryboard.locale ?? 'n/a')}</span>
       </header>
@@ -318,11 +335,17 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         <span>Storyboard ${snapshot.storyboardIndex + 1}</span>
         <span>Dialogue ${snapshot.dialogueIndex + 1}/${snapshot.currentStoryboard.scriptEvents.length}</span>
         <span>Frame ${snapshot.frameIndex + 1}/${Math.max(previewStem.eventFrames.length, 1)}</span>
+        <span>Elapsed ${Math.round(snapshot.elapsedStoryboardMs / 100) / 10}s</span>
       </div>
       <div class="story-dialogue">
         <p class="story-speaker">${escapeHtml(speakerLine)}</p>
         <p class="story-text">${escapeHtml(activeEvent.text)}</p>
       </div>
+      <div class="story-tags">
+        ${opcodePills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
+        ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
+      </div>
+      <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}</p>
       <div class="story-strip">
         <img src="${previewStem.timelineStrip.pngPath}" alt="Timeline strip for stem ${previewStem.stem}" loading="lazy" />
       </div>
