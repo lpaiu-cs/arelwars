@@ -1049,6 +1049,82 @@ def _looks_like_script_body(text: str) -> bool:
     return all(char in ".!?…" for char in stripped.replace(" ", ""))
 
 
+def _is_ascii_printable_byte(value: int) -> bool:
+    return 0x20 <= value <= 0x7E
+
+
+def _ascii_runs(prefix_bytes: bytes) -> list[tuple[int, int]]:
+    runs: list[tuple[int, int]] = []
+    start: int | None = None
+    for index, value in enumerate(prefix_bytes):
+        if _is_ascii_printable_byte(value):
+            if start is None:
+                start = index
+            continue
+        if start is not None and index - start >= 4:
+            runs.append((start, index))
+        start = None
+    if start is not None and len(prefix_bytes) - start >= 4:
+        runs.append((start, len(prefix_bytes)))
+    return runs
+
+
+def _sanitize_script_prefix(prefix_bytes: bytes) -> bytes:
+    if not prefix_bytes:
+        return prefix_bytes
+
+    best_prefix = b""
+    best_score = float("-inf")
+    candidate_roots = {prefix_bytes}
+    for run_start, run_end in _ascii_runs(prefix_bytes):
+        candidate_roots.add(prefix_bytes[:run_start] + prefix_bytes[run_end:])
+
+    for root in candidate_roots:
+        for start in range(0, len(root) + 1):
+            candidate = root[start:]
+            if not candidate:
+                score = 0.25
+            else:
+                parsed = parse_script_prefix(candidate)
+                score = 0.0
+                known_command_count = 0
+                high_ascii_command_count = 0
+                for command in parsed.commands:
+                    if command.mnemonic in {"set-left-portrait", "set-right-portrait", "set-expression"}:
+                        score += 5.0
+                        known_command_count += 1
+                    elif command.opcode <= 0x1F:
+                        score += 2.0
+                    elif command.opcode <= 0x43:
+                        score += 1.0
+                    else:
+                        score -= 0.75
+
+                    if command.args:
+                        if all(arg <= 0x40 for arg in command.args):
+                            score += 0.5
+                        if all(_is_ascii_printable_byte(arg) for arg in command.args):
+                            score -= 0.75
+                            if command.opcode >= 0x20:
+                                high_ascii_command_count += 1
+
+                printable_ratio = sum(1 for byte in candidate if _is_ascii_printable_byte(byte)) / len(candidate)
+                if printable_ratio >= 0.7:
+                    score -= printable_ratio * 3.5
+                if known_command_count == 0 and high_ascii_command_count >= max(2, len(parsed.commands) // 2):
+                    score -= 6.0
+                if parsed.trailing_hex:
+                    score -= len(parsed.trailing_hex) / 2
+                score -= start * 0.02
+                score -= max(len(prefix_bytes) - len(root), 0) * 0.03
+
+            if score > best_score:
+                best_score = score
+                best_prefix = candidate
+
+    return best_prefix
+
+
 def _parse_script_events_with_encoding(data: bytes, encoding: str) -> list[ScriptEvent]:
     events: list[ScriptEvent] = []
     offset = 0
@@ -1114,7 +1190,7 @@ def _parse_script_events_with_encoding(data: bytes, encoding: str) -> list[Scrip
             matched_event = ScriptEvent(
                 offset=offset,
                 kind="speech",
-                prefix_hex=data[offset:payload_offset].hex(),
+                prefix_hex=_sanitize_script_prefix(data[offset:payload_offset]).hex(),
                 speaker=speaker,
                 speaker_tag=speaker_tag,
                 text=text,

@@ -92,6 +92,9 @@ def compact_opcode(entry: dict[str, Any]) -> dict[str, Any]:
         "action": str(entry.get("action", "unknown-runtime-action")),
         "category": str(entry.get("category", "unknown")),
         "confidence": str(entry.get("confidence", "low")),
+        "commandId": str(entry.get("commandId", entry.get("label", entry["mnemonic"]))),
+        "commandType": str(entry.get("commandType", "scene-transition")),
+        "target": str(entry.get("target", "scene-transition")),
         "count": int(entry.get("count", 0)),
         "topArgs": signal_profile.get("topArgs", [])[:6],
         "topSequences": signal_profile.get("topSequences", [])[:4],
@@ -101,10 +104,13 @@ def compact_opcode(entry: dict[str, Any]) -> dict[str, Any]:
                 "variant": hint.get("variant"),
                 "label": hint.get("label"),
                 "action": hint.get("action"),
+                "commandId": hint.get("commandId"),
+                "commandType": hint.get("commandType"),
+                "target": hint.get("target"),
                 "confidence": hint.get("confidence"),
                 "count": hint.get("count"),
             }
-            for hint in variant_hints[:4]
+            for hint in variant_hints
         ],
     }
 
@@ -144,6 +150,9 @@ def summarize_family_opcodes(
                 "action": str(action.get("action", "unknown-runtime-action")),
                 "category": str(action.get("category", "unknown")),
                 "confidence": str(action.get("confidence", "low")),
+                "commandId": str(action.get("commandId", action.get("label", mnemonic))),
+                "commandType": str(action.get("commandType", "scene-transition")),
+                "target": str(action.get("target", "scene-transition")),
                 "count": count,
                 "familyCount": count,
                 "topArgs": signal_profile.get("topArgs", [])[:4],
@@ -154,6 +163,9 @@ def summarize_family_opcodes(
                         "variant": hint.get("variant"),
                         "label": hint.get("label"),
                         "action": hint.get("action"),
+                        "commandId": hint.get("commandId"),
+                        "commandType": hint.get("commandType"),
+                        "target": hint.get("target"),
                         "confidence": hint.get("confidence"),
                     }
                     for hint in list(action.get("variantHints", []))[:2]
@@ -325,11 +337,7 @@ def main() -> None:
         script_root,
     )
 
-    heuristics = [
-        compact_opcode(opcode_actions_by_mnemonic[mnemonic])
-        for mnemonic in RUNTIME_FEATURED_MNEMONICS
-        if mnemonic in opcode_actions_by_mnemonic
-    ]
+    heuristics = [compact_opcode(item) for item in opcode_actions if isinstance(item, dict)]
 
     featured_archetypes = [
         archetypes_by_id[archetype_id]

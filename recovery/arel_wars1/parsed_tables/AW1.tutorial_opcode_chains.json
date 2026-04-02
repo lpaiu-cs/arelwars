@@ -4,7 +4,7 @@
     "matchedChainCount": 15,
     "scriptHitCount": 6,
     "familyHitCount": 6,
-    "totalHitCount": 45
+    "totalHitCount": 44
   },
   "chains": [
     {
@@ -58,8 +58,8 @@
           "speaker": "Arang",
           "speakerTag": 7,
           "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or we lose.",
-          "prefixHex": "0206000d004002060101060300",
-          "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait"
+          "prefixHex": "06000d004002060101060300",
+          "sequence": "cmd-06 > cmd-0d > cmd-40 > cmd-06 > set-right-portrait"
         },
         {
           "scriptStem": "0804",
@@ -68,8 +68,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or we lose.",
-          "prefixHex": "0201000d004002010101010400",
-          "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+          "prefixHex": "01000d004002010101010400",
+          "sequence": "set-right-portrait > cmd-00 > cmd-02 > set-right-portrait > set-expression"
         }
       ]
     },
@@ -134,8 +134,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "!cff0005Drop its HP down to 0!cffffff, then we win!",
-          "prefixHex": "0201000d014001010102010100",
-          "sequence": "cmd-02 > cmd-00 > set-right-portrait > set-right-portrait > set-right-portrait"
+          "prefixHex": "01000d014001010102010100",
+          "sequence": "set-right-portrait > set-right-portrait > set-right-portrait > set-right-portrait"
         }
       ]
     },
@@ -198,8 +198,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "!cff0005Touch the right arrows to dispatch your units to either path.!cffffff",
-          "prefixHex": "0201060d024002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-02 > cmd-02 > cmd-05"
+          "prefixHex": "01060d024002010500",
+          "sequence": "set-right-portrait > cmd-02 > cmd-02 > cmd-05"
         }
       ]
     },
@@ -263,8 +263,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "!cff0005Touch a unit card on the left side!cffffff to produce the unit.",
-          "prefixHex": "0201000d034002010100",
-          "sequence": "cmd-02 > cmd-00 > set-left-portrait > set-right-portrait"
+          "prefixHex": "01000d034002010100",
+          "sequence": "set-right-portrait > set-left-portrait > set-right-portrait"
         }
       ]
     },
@@ -327,8 +327,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "Your mana drops each time you produce, but regenerates with time.",
-          "prefixHex": "0201000d044002010100",
-          "sequence": "cmd-02 > cmd-00 > set-expression > cmd-02"
+          "prefixHex": "01000d044002010100",
+          "sequence": "set-right-portrait > set-expression > cmd-02"
         }
       ]
     },
@@ -347,19 +347,17 @@
       ],
       "matchedScriptStems": [
         "0004",
-        "0404",
-        "0804"
+        "0404"
       ],
       "matchedFamilyIds": [
         "000",
-        "040",
-        "080"
+        "040"
       ],
       "requiredTextTokens": [
         "touch",
         "fight"
       ],
-      "hitCount": 3,
+      "hitCount": 2,
       "notes": [
         "The parser still misreads the selector byte as cmd-05(0x40), but the raw chain is stable."
       ],
@@ -371,8 +369,8 @@
           "speaker": "Cecil",
           "speakerTag": 1,
           "text": "Touch it to leave the tower and fight.",
-          "prefixHex": "0205000d054002050100",
-          "sequence": "cmd-02 > cmd-00 > cmd-05 > cmd-02"
+          "prefixHex": "05000d054002050100",
+          "sequence": "cmd-05 > cmd-0d > cmd-40 > cmd-05"
         },
         {
           "scriptStem": "0404",
@@ -381,18 +379,8 @@
           "speaker": "Arang",
           "speakerTag": 7,
           "text": "Touch it when you want to go out and fight.",
-          "prefixHex": "0206000d054002060100",
-          "sequence": "cmd-02 > cmd-00 > cmd-05 > cmd-02"
-        },
-        {
-          "scriptStem": "0804",
-          "path": "assets/script_eng/0804.zt1",
-          "eventIndex": 17,
-          "speaker": "Lantere",
-          "speakerTag": 13,
-          "text": "Touch it when you want to go out and fight.",
-          "prefixHex": "0201000d054002010100",
-          "sequence": "cmd-02 > cmd-00 > cmd-05 > cmd-02"
+          "prefixHex": "06000d054002060100",
+          "sequence": "cmd-06 > cmd-0d > cmd-40 > cmd-06"
         }
       ]
     },
@@ -455,8 +443,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "While out on the field, touch your face again whenever you have to return to your tower.",
-          "prefixHex": "0201000d064002010101010000",
-          "sequence": "cmd-02 > cmd-00 > cmd-06 > cmd-02 > set-right-portrait > cmd-00"
+          "prefixHex": "01000d064002010101010000",
+          "sequence": "set-right-portrait > cmd-06 > cmd-02 > set-right-portrait > cmd-00"
         }
       ]
     },
@@ -519,8 +507,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "!cffa900Touch the icons in the Tower!cffffff to make Juno stronger.",
-          "prefixHex": "0201060d074002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+          "prefixHex": "01060d074002010500",
+          "sequence": "set-right-portrait > cmd-07 > cmd-02 > cmd-05"
         }
       ]
     },
@@ -583,8 +571,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
-          "prefixHex": "0201060d084002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+          "prefixHex": "01060d084002010500",
+          "sequence": "set-right-portrait > cmd-08 > cmd-02 > cmd-05"
         }
       ]
     },
@@ -647,8 +635,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
-          "prefixHex": "0201060d094002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+          "prefixHex": "01060d094002010500",
+          "sequence": "set-right-portrait > cmd-09 > cmd-02 > cmd-05"
         }
       ]
     },
@@ -711,8 +699,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "Let's check your skills.",
-          "prefixHex": "0201060d0a4002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-0a > cmd-02 > cmd-05"
+          "prefixHex": "01060d0a4002010500",
+          "sequence": "set-right-portrait > cmd-0a > cmd-02 > cmd-05"
         }
       ]
     },
@@ -775,8 +763,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
-          "prefixHex": "0201060d0b4002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+          "prefixHex": "01060d0b4002010500",
+          "sequence": "set-right-portrait > cmd-0b > cmd-02 > cmd-05"
         }
       ]
     },
@@ -839,8 +827,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "Like skills, you can only use items that have been equipped prior to battle.",
-          "prefixHex": "0201060d0c4002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-0c > cmd-02 > cmd-05"
+          "prefixHex": "01060d0c4002010500",
+          "sequence": "set-right-portrait > cmd-0c > cmd-02 > cmd-05"
         }
       ]
     },
@@ -903,8 +891,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "You can use the System menu to resume battling, or to configure your settings.",
-          "prefixHex": "0201060d0d4002010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+          "prefixHex": "01060d0d4002010500",
+          "sequence": "set-right-portrait > cmd-0d > cmd-02 > cmd-05"
         }
       ]
     },
@@ -967,8 +955,8 @@
           "speaker": "Lantere",
           "speakerTag": 13,
           "text": "Quests come with special rewards, try to complete them.",
-          "prefixHex": "0201060d0e4001010102010500",
-          "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+          "prefixHex": "01060d0e4001010102010500",
+          "sequence": "set-right-portrait > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
         }
       ]
     }
@@ -1319,7 +1307,6 @@
         "battle-hud-goal-hp",
         "battle-hud-guard-hp",
         "battle-hud-hero-return",
-        "battle-hud-hero-sortie",
         "battle-hud-mana-bar",
         "battle-hud-unit-card"
       ],
@@ -1359,15 +1346,6 @@
           "confidence": "medium",
           "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
-        },
-        {
-          "chainId": "battle-hud-hero-sortie",
-          "label": "hero-sortie-button-highlight",
-          "action": "focus-hero-sortie-button",
-          "category": "ui-focus",
-          "confidence": "medium",
-          "groupId": "battle-hud",
-          "prefixNeedle": "000d0540"
         },
         {
           "chainId": "battle-hud-mana-bar",
@@ -1830,7 +1808,6 @@
         "battle-hud-goal-hp",
         "battle-hud-guard-hp",
         "battle-hud-hero-return",
-        "battle-hud-hero-sortie",
         "battle-hud-mana-bar",
         "battle-hud-unit-card"
       ],
@@ -1870,15 +1847,6 @@
           "confidence": "medium",
           "groupId": "battle-hud",
           "prefixNeedle": "000d0640"
-        },
-        {
-          "chainId": "battle-hud-hero-sortie",
-          "label": "hero-sortie-button-highlight",
-          "action": "focus-hero-sortie-button",
-          "category": "ui-focus",
-          "confidence": "medium",
-          "groupId": "battle-hud",
-          "prefixNeedle": "000d0540"
         },
         {
           "chainId": "battle-hud-mana-bar",
@@ -1997,7 +1965,6 @@
     "battle-hud-dispatch-arrows is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0240`.",
     "battle-hud-unit-card is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0340`.",
     "battle-hud-mana-bar is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0440`.",
-    "battle-hud-hero-sortie is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0540`.",
     "battle-hud-hero-return is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0640`.",
     "tower-menu-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0740`.",
     "mana-upgrade-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0840`.",

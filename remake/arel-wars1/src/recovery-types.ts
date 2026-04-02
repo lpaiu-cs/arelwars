@@ -50,6 +50,9 @@ export interface RecoveryOpcodeHeuristic {
   action: string
   category: string
   confidence: string
+  commandId: string
+  commandType: string
+  target: string
   count: number
   topArgs: RecoveryOpcodeCounterEntry[]
   topSequences: RecoveryOpcodeCounterEntry[]
@@ -58,6 +61,9 @@ export interface RecoveryOpcodeHeuristic {
     variant: string
     label: string
     action: string
+    commandId: string
+    commandType: string
+    target: string
     confidence: string
     count?: number
   }>
@@ -178,6 +184,10 @@ export interface RecoveryResolvedOpcodeCue {
   action: string
   category: string
   confidence: string
+  commandId: string
+  commandType: string
+  target: string
+  args: number[]
   source: 'variant' | 'mnemonic'
   variant?: string
 }
@@ -815,6 +825,7 @@ export interface RecoveryStageSnapshot {
   campaignState: RecoveryCampaignState
   activeDialogueEvent: RecoveryDialogueEvent | null
   activeTutorialCue: RecoveryTutorialChainCue | null
+  activeSceneCommands: RecoveryResolvedOpcodeCue[]
   activeOpcodeCue: RecoveryResolvedOpcodeCue | null
   channelStates: RecoveryBattleChannelState[]
   renderState: RecoveryStageRenderState

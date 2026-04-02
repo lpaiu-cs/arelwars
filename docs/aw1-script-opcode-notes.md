@@ -32,6 +32,13 @@ It keeps two layers separate:
 
 This keeps the runtime-facing labels stable without pretending the binary grammar is fully proven.
 
+Current phase-6 status:
+
+- `AW1.opcode_action_map.json` now covers all `64` currently observed non-dialogue `cmd-XX` families with `unresolvedOpcodeCount = 0`.
+- The export now carries stable `commandId`, `commandType`, and `target` fields per mnemonic and per variant.
+- Low-frequency families no longer fall back to `unknown-runtime-action`; they are explicitly named as scene-layout, scene-bridge, presentation, or scene-transition presets.
+- The prefix sanitizer in [formats.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/formats.py) now strips ASCII spill without dropping valid tutorial raw chains such as `000d0040` and `060d0740`.
+
 `AW1.tutorial_opcode_chains.json` adds a third layer for cases where the current parser still under-reads selector bytes.
 That proof layer uses exact raw-prefix needles mirrored across tutorial families.
 The Phaser recovery runtime now consumes those needles per dialogue event, so the active HUD/tutorial target shown on screen is no longer only a family-level guess.
@@ -43,6 +50,7 @@ The lane simulation is now seeded from per-stage runtime fields, map-branch hint
 Those featured archetypes now also inject concrete lane rules: Dispatch boosts allied commit size, Tower Defense reduces incoming pressure, Recall swings frontline recovery, Armageddon creates burst unit loss, and mana-linked families refund part of skill pressure.
 Keyboard actions in the recovery scene now pass through that summary layer, which lets the preview accept or reject panel, quest, dispatch, production, and hero toggles according to the current tutorial state.
 Dialogue changes now also emit one-shot scripted battle beats from the same cue layer, so tutorial focus lines can automatically queue units, push a lane, deploy or recall the hero, trigger skill or item bursts, and advance tower upgrades without overwriting the manual input log.
+The runtime now resolves every active prefix into a full `activeSceneCommands[]` list and interprets scene-layout, focus, presentation, emphasis, and transition commands directly instead of pattern-matching one `opcodeCue.action` string.
 
 ### Tutorial / UI Guidance Cluster
 

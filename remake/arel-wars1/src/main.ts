@@ -339,8 +339,15 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const activeTutorial = snapshot.activeTutorialCue
     ? `${snapshot.activeTutorialCue.label} / ${snapshot.activeTutorialCue.action}`
     : null
+  const activeSceneCommands = snapshot.activeSceneCommands.length > 0
+    ? snapshot.activeSceneCommands
+        .filter((command) => command.commandType !== 'portrait' && command.commandType !== 'expression')
+        .slice(0, 3)
+        .map((command) => `${command.commandId} (${command.commandType})`)
+        .join(' · ')
+    : null
   const activeOpcode = snapshot.activeOpcodeCue
-    ? `${snapshot.activeOpcodeCue.label} / ${snapshot.activeOpcodeCue.action}`
+    ? `${snapshot.activeOpcodeCue.label} / ${snapshot.activeOpcodeCue.action}${activeSceneCommands ? ` / ${activeSceneCommands}` : ''}`
     : stage?.opcodeCues[0]
       ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}`
       : null

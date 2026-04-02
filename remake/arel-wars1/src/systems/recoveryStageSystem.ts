@@ -119,6 +119,24 @@ function includesAny(value: string, needles: string[]): boolean {
   return needles.some((needle) => haystack.includes(needle))
 }
 
+interface ResolvedSceneCommandSignals {
+  hasFocus: boolean
+  hasPresentation: boolean
+  hasEmphasis: boolean
+  hasSceneLayout: boolean
+  hasSceneTransition: boolean
+  hasBattleHudFocus: boolean
+  hasTowerFocus: boolean
+  hasManaFocus: boolean
+  hasPopulationFocus: boolean
+  hasSkillFocus: boolean
+  hasItemFocus: boolean
+  hasSystemFocus: boolean
+  hasQuestFocus: boolean
+  hasGuidedFocus: boolean
+  hasPortraitAssignment: boolean
+}
+
 function buildStoryboards(
   catalog: RecoveryCatalog,
   previewManifest: RecoveryPreviewManifest,
@@ -606,7 +624,8 @@ export class RecoveryStageSystem {
     }
     const activeDialogueEvent = this.currentDialogueEvent(currentStoryboard)
     const activeTutorialCue = this.resolveTutorialCue(currentStoryboard, activeDialogueEvent)
-    const activeOpcodeCue = this.resolveOpcodeCue(activeDialogueEvent)
+    const activeSceneCommands = this.resolveSceneCommands(activeDialogueEvent)
+    const activeOpcodeCue = this.resolvePrimarySceneCommand(activeSceneCommands)
     const channelStates = this.buildChannelStates(currentStoryboard)
     const hudState = this.buildHudState(currentStoryboard, activeTutorialCue, activeOpcodeCue, channelStates)
     const battlePreviewState = this.buildBattlePreviewState()
@@ -619,6 +638,7 @@ export class RecoveryStageSystem {
       campaignState: this.buildCampaignState(currentStoryboard),
       activeDialogueEvent,
       activeTutorialCue,
+      activeSceneCommands,
       activeOpcodeCue,
       channelStates,
       renderState: this.buildRenderState(currentStoryboard, channelStates),
@@ -950,61 +970,208 @@ export class RecoveryStageSystem {
     return matches[0] ?? null
   }
 
-  private resolveOpcodeCue(event: RecoveryDialogueEvent | null): RecoveryResolvedOpcodeCue | null {
+  private resolveSceneCommands(event: RecoveryDialogueEvent | null): RecoveryResolvedOpcodeCue[] {
     const commands = event?.prefixCommands ?? []
     if (commands.length === 0) {
-      return null
+      return []
     }
 
-    const exactVariantCandidates: Array<RecoveryResolvedOpcodeCue & { commandIndex: number }> = []
-    const mnemonicCandidates: Array<RecoveryResolvedOpcodeCue & { commandIndex: number }> = []
+    return commands.map((command) => {
+      if (command.mnemonic === 'set-left-portrait') {
+        return {
+          mnemonic: command.mnemonic,
+          label: 'left-portrait-assign',
+          action: 'assign-left-portrait',
+          category: 'presentation',
+          confidence: 'high',
+          commandId: 'assign-left-portrait',
+          commandType: 'portrait',
+          target: 'left-portrait',
+          args: [...command.args],
+          source: 'mnemonic',
+        } satisfies RecoveryResolvedOpcodeCue
+      }
+      if (command.mnemonic === 'set-right-portrait') {
+        return {
+          mnemonic: command.mnemonic,
+          label: 'right-portrait-assign',
+          action: 'assign-right-portrait',
+          category: 'presentation',
+          confidence: 'high',
+          commandId: 'assign-right-portrait',
+          commandType: 'portrait',
+          target: 'right-portrait',
+          args: [...command.args],
+          source: 'mnemonic',
+        } satisfies RecoveryResolvedOpcodeCue
+      }
+      if (command.mnemonic === 'set-expression') {
+        return {
+          mnemonic: command.mnemonic,
+          label: 'portrait-expression-set',
+          action: 'set-portrait-expression',
+          category: 'presentation',
+          confidence: 'high',
+          commandId: 'set-portrait-expression',
+          commandType: 'expression',
+          target: 'portrait-expression',
+          args: [...command.args],
+          source: 'mnemonic',
+        } satisfies RecoveryResolvedOpcodeCue
+      }
 
-    commands.forEach((command, commandIndex) => {
       const heuristic = this.opcodeHeuristicsByMnemonic.get(command.mnemonic)
       if (!heuristic) {
-        return
+        return {
+          mnemonic: command.mnemonic,
+          label: command.mnemonic,
+          action: `apply-scene-transition-preset-${command.mnemonic.replace('cmd-', '').toLowerCase()}`,
+          category: 'scene-transition',
+          confidence: 'low',
+          commandId: `scene-transition-preset-${command.mnemonic.replace('cmd-', '').toLowerCase()}`,
+          commandType: 'scene-transition',
+          target: 'scene-transition',
+          args: [...command.args],
+          source: 'mnemonic',
+        } satisfies RecoveryResolvedOpcodeCue
       }
       const variantKey = `${command.mnemonic}:${command.args.length > 0 ? command.args.map((value) => value.toString(16).padStart(2, '0')).join(',') : '-'}`
       const variantHint = heuristic.variantHints?.find((hint) => hint.variant === variantKey)
       if (variantHint) {
-        exactVariantCandidates.push({
+        return {
           mnemonic: command.mnemonic,
           label: variantHint.label,
           action: variantHint.action,
           category: heuristic.category,
           confidence: variantHint.confidence,
+          commandId: variantHint.commandId,
+          commandType: variantHint.commandType,
+          target: variantHint.target,
+          args: [...command.args],
           source: 'variant',
           variant: variantKey,
-          commandIndex,
-        })
-        return
+        } satisfies RecoveryResolvedOpcodeCue
       }
-      mnemonicCandidates.push({
+      return {
         mnemonic: command.mnemonic,
         label: heuristic.label,
         action: heuristic.action,
         category: heuristic.category,
         confidence: heuristic.confidence,
+        commandId: heuristic.commandId,
+        commandType: heuristic.commandType,
+        target: heuristic.target,
+        args: [...command.args],
         source: 'mnemonic',
-        commandIndex,
+      } satisfies RecoveryResolvedOpcodeCue
+    })
+  }
+
+  private resolvePrimarySceneCommand(commands: RecoveryResolvedOpcodeCue[]): RecoveryResolvedOpcodeCue | null {
+    const ranked = commands
+      .map((command, commandIndex) => {
+        let priority = 0
+        if (command.source === 'variant' && !GENERIC_OPCODE_VARIANTS.has(command.variant ?? '')) {
+          priority += 12
+        } else if (command.source === 'variant') {
+          priority += 8
+        } else {
+          priority += 4
+        }
+        if (command.commandType === 'ui-focus') {
+          priority += 6
+        } else if (command.commandType === 'emphasis') {
+          priority += 5
+        } else if (command.commandType === 'presentation') {
+          priority += 4
+        } else if (command.commandType === 'scene-layout') {
+          priority += 3
+        } else if (command.commandType === 'scene-transition') {
+          priority += 2
+        }
+        if (command.commandType === 'portrait' || command.commandType === 'expression') {
+          priority -= 20
+        }
+        return { command, commandIndex, priority }
       })
+      .sort((left, right) => right.priority - left.priority || right.commandIndex - left.commandIndex)
+
+    return ranked[0]?.command ?? null
+  }
+
+  private buildSceneCommandSignals(commands: RecoveryResolvedOpcodeCue[]): ResolvedSceneCommandSignals {
+    const signals: ResolvedSceneCommandSignals = {
+      hasFocus: false,
+      hasPresentation: false,
+      hasEmphasis: false,
+      hasSceneLayout: false,
+      hasSceneTransition: false,
+      hasBattleHudFocus: false,
+      hasTowerFocus: false,
+      hasManaFocus: false,
+      hasPopulationFocus: false,
+      hasSkillFocus: false,
+      hasItemFocus: false,
+      hasSystemFocus: false,
+      hasQuestFocus: false,
+      hasGuidedFocus: false,
+      hasPortraitAssignment: false,
+    }
+
+    commands.forEach((command) => {
+      if (command.commandType === 'portrait' || command.commandType === 'expression') {
+        signals.hasPortraitAssignment = true
+        return
+      }
+      if (command.commandType === 'presentation') {
+        signals.hasPresentation = true
+      }
+      if (command.commandType === 'emphasis') {
+        signals.hasEmphasis = true
+      }
+      if (command.commandType === 'scene-layout') {
+        signals.hasSceneLayout = true
+      }
+      if (command.commandType === 'scene-transition') {
+        signals.hasSceneTransition = true
+      }
+      if (command.commandType === 'ui-focus' || command.commandType === 'tutorial-mode') {
+        signals.hasFocus = true
+      }
+
+      if (command.target === 'battle-hud') {
+        signals.hasBattleHudFocus = true
+        signals.hasGuidedFocus = true
+      }
+      if (command.target === 'tower-panel') {
+        signals.hasTowerFocus = true
+      }
+      if (command.target === 'mana-upgrade') {
+        signals.hasTowerFocus = true
+        signals.hasManaFocus = true
+      }
+      if (command.target === 'population-upgrade') {
+        signals.hasTowerFocus = true
+        signals.hasPopulationFocus = true
+      }
+      if (command.target === 'skill-menu' || command.target === 'skill-window') {
+        signals.hasSkillFocus = true
+      }
+      if (command.target === 'item-menu') {
+        signals.hasItemFocus = true
+      }
+      if (command.target === 'system-menu') {
+        signals.hasSystemFocus = true
+      }
+      if (command.target === 'quest-panel') {
+        signals.hasQuestFocus = true
+      }
+      if (command.target === 'guided-target' || command.target === 'guided-focus' || command.target === 'tutorial-anchor' || command.target === 'tutorial-subject') {
+        signals.hasGuidedFocus = true
+      }
     })
 
-    const nonGenericVariants = exactVariantCandidates.filter((entry) => !GENERIC_OPCODE_VARIANTS.has(entry.variant ?? ''))
-    const pickedVariant = (nonGenericVariants.length > 0 ? nonGenericVariants : exactVariantCandidates).sort(
-      (left, right) => right.commandIndex - left.commandIndex,
-    )[0]
-    if (pickedVariant) {
-      const { commandIndex: _commandIndex, ...cue } = pickedVariant
-      return cue
-    }
-
-    const pickedMnemonic = mnemonicCandidates.sort((left, right) => right.commandIndex - left.commandIndex)[0]
-    if (!pickedMnemonic) {
-      return null
-    }
-    const { commandIndex: _commandIndex, ...cue } = pickedMnemonic
-    return cue
+    return signals
   }
 
   private applyDialogueBeat(
@@ -1017,10 +1184,12 @@ export class RecoveryStageSystem {
     }
 
     const tutorialCue = this.resolveTutorialCue(storyboard, event)
-    const opcodeCue = this.resolveOpcodeCue(event)
+    const sceneCommands = this.resolveSceneCommands(event)
+    const opcodeCue = this.resolvePrimarySceneCommand(sceneCommands)
+    const sceneSignals = this.buildSceneCommandSignals(sceneCommands)
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
 
-    if (this.applyLoadoutCuePattern(tutorialCue, opcodeCue, favoredLane)) {
+    if (this.applyLoadoutCuePattern(tutorialCue, sceneCommands, favoredLane)) {
       return
     }
 
@@ -1137,34 +1306,41 @@ export class RecoveryStageSystem {
       return
     }
 
-    if (includesAny(opcodeCue.action, ['tower', 'mana', 'population'])) {
+    if (sceneSignals.hasTowerFocus || sceneSignals.hasManaFocus || sceneSignals.hasPopulationFocus) {
       this.setObjectiveState('tower-management', 'rebalance tower economy', 0.02)
       this.panelOverride = 'tower'
-    } else if (includesAny(opcodeCue.action, ['skill'])) {
+    } else if (sceneSignals.hasSkillFocus) {
       this.setObjectiveState('skill-burst', 'open a skill timing window', 0.02)
       this.panelOverride = 'skill'
-    } else if (includesAny(opcodeCue.action, ['item'])) {
+    } else if (sceneSignals.hasItemFocus) {
       this.setObjectiveState('tower-management', 'stabilize with an item route', 0.02)
       this.panelOverride = 'item'
-    } else if (includesAny(opcodeCue.action, ['system', 'quest'])) {
+    } else if (sceneSignals.hasSystemFocus || sceneSignals.hasQuestFocus) {
       this.setObjectiveState('quest-resolution', 'review auxiliary objectives', 0.02)
       this.panelOverride = 'system'
+    } else if (sceneSignals.hasSceneLayout || sceneSignals.hasSceneTransition) {
+      this.setObjectiveState('opening', 'advance dialogue scene layout', 0.01)
     }
 
-    if (includesAny(opcodeCue.action, ['pose', 'emphasis', 'shock'])) {
+    if (sceneSignals.hasPresentation || sceneSignals.hasEmphasis) {
       this.setObjectiveState('hero-pressure', 'capitalize on the pressure swing', 0.03)
-      this.triggerSceneWave('enemy', `opcode surged ${opcodeCue.action}`, false)
+      this.triggerSceneWave('enemy', `scene command surged ${opcodeCue.commandId}`, false)
       const targetLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
       this.spawnBattleUnit('allied', targetLane, 'push', `opcode:${opcodeCue.mnemonic}`, {
         powerScale: 1.08,
       })
       this.shiftLaneUnits(targetLane, 'allied', 0.02)
-      this.lastScriptedBeatNote = `opcode pulse ${opcodeCue.action}`
+      this.lastScriptedBeatNote = `scene pulse ${opcodeCue.commandId}`
       return
     }
 
-    if (includesAny(opcodeCue.action, ['highlight', 'focus', 'anchor'])) {
-      this.lastScriptedBeatNote = `opcode focus ${opcodeCue.action}`
+    if (sceneSignals.hasFocus) {
+      this.lastScriptedBeatNote = `scene focus ${opcodeCue.commandId}`
+      return
+    }
+
+    if (sceneSignals.hasSceneLayout || sceneSignals.hasSceneTransition) {
+      this.lastScriptedBeatNote = `scene layout ${opcodeCue.commandId}`
     }
   }
 
@@ -2082,7 +2258,7 @@ export class RecoveryStageSystem {
 
   private applyLoadoutCuePattern(
     tutorialCue: RecoveryTutorialChainCue | null,
-    opcodeCue: RecoveryResolvedOpcodeCue | null,
+    sceneCommands: RecoveryResolvedOpcodeCue[],
     favoredLane: 'upper' | 'lower',
   ): boolean {
     const activeLoadout = this.activeDeployLoadout
@@ -2091,7 +2267,7 @@ export class RecoveryStageSystem {
     }
 
     const tutorialChainId = tutorialCue?.chainId ?? ''
-    const opcodeAction = opcodeCue?.action ?? ''
+    const sceneSignals = this.buildSceneCommandSignals(sceneCommands)
     const rosterRole = activeLoadout.heroRosterRole
     const skillPresetKind = activeLoadout.skillPresetKind
     const towerPolicyKind = activeLoadout.towerPolicyKind
@@ -2114,7 +2290,8 @@ export class RecoveryStageSystem {
           tutorialChainId === 'battle-hud-goal-hp'
           || tutorialChainId === 'skill-slot-highlight'
           || stageBias.siegeBias
-          || includesAny(opcodeAction, ['siege', 'shock', 'emphasis'])
+          || sceneSignals.hasEmphasis
+          || sceneSignals.hasPresentation
         )
       ) {
         this.selectedDispatchLane = preferredLane
@@ -2141,7 +2318,8 @@ export class RecoveryStageSystem {
           tutorialChainId === 'battle-hud-dispatch-arrows'
           || tutorialChainId === 'battle-hud-unit-card'
           || stageBias.dispatchBias
-          || includesAny(opcodeAction, ['dispatch', 'focus', 'anchor'])
+          || sceneSignals.hasGuidedFocus
+          || sceneSignals.hasBattleHudFocus
         )
       ) {
         this.selectedDispatchLane = preferredLane
@@ -2169,7 +2347,9 @@ export class RecoveryStageSystem {
           || tutorialChainId === 'quest-panel-highlight'
           || stageBias.sustainBias
           || stageBias.rewardBias
-          || includesAny(opcodeAction, ['guard', 'tower', 'quest', 'population'])
+          || sceneSignals.hasTowerFocus
+          || sceneSignals.hasQuestFocus
+          || sceneSignals.hasPopulationFocus
         )
       ) {
         this.panelOverride = tutorialChainId === 'quest-panel-highlight' ? 'item' : 'tower'
@@ -2194,7 +2374,10 @@ export class RecoveryStageSystem {
           || tutorialChainId === 'skill-slot-highlight'
           || tutorialChainId === 'mana-upgrade-highlight'
           || stageBias.manaBias
-          || includesAny(opcodeAction, ['mana', 'skill', 'shock', 'system'])
+          || sceneSignals.hasManaFocus
+          || sceneSignals.hasSkillFocus
+          || sceneSignals.hasSystemFocus
+          || sceneSignals.hasEmphasis
         )
       ) {
         this.panelOverride = 'skill'
@@ -2220,7 +2403,8 @@ export class RecoveryStageSystem {
         || tutorialChainId === 'battle-hud-goal-hp'
         || stageBias.siegeBias
         || stageBias.heroBias
-        || includesAny(opcodeAction, ['dispatch', 'hero', 'siege'])
+        || sceneSignals.hasBattleHudFocus
+        || sceneSignals.hasEmphasis
       )
     ) {
       this.selectedDispatchLane = preferredLane
@@ -2236,7 +2420,8 @@ export class RecoveryStageSystem {
         tutorialChainId === 'battle-hud-unit-card'
         || tutorialChainId === 'battle-hud-dispatch-arrows'
         || stageBias.dispatchBias
-        || includesAny(opcodeAction, ['dispatch', 'focus', 'anchor'])
+        || sceneSignals.hasGuidedFocus
+        || sceneSignals.hasBattleHudFocus
       )
     ) {
       this.selectedDispatchLane = preferredLane
@@ -2253,7 +2438,10 @@ export class RecoveryStageSystem {
         || tutorialChainId === 'item-menu-highlight'
         || stageBias.sustainBias
         || stageBias.rewardBias
-        || includesAny(opcodeAction, ['tower', 'mana', 'item', 'quest'])
+        || sceneSignals.hasTowerFocus
+        || sceneSignals.hasManaFocus
+        || sceneSignals.hasItemFocus
+        || sceneSignals.hasQuestFocus
       )
     ) {
       this.panelOverride = tutorialChainId === 'item-menu-highlight' ? 'item' : 'tower'
@@ -2277,7 +2465,9 @@ export class RecoveryStageSystem {
         || tutorialChainId === 'battle-hud-goal-hp'
         || stageBias.manaBias
         || stageBias.heroBias
-        || includesAny(opcodeAction, ['skill', 'mana', 'shock'])
+        || sceneSignals.hasSkillFocus
+        || sceneSignals.hasManaFocus
+        || sceneSignals.hasEmphasis
       )
     ) {
       this.panelOverride = 'skill'
@@ -2292,7 +2482,8 @@ export class RecoveryStageSystem {
         tutorialChainId === 'battle-hud-goal-hp'
         || tutorialChainId === 'skill-slot-highlight'
         || stageBias.siegeBias
-        || includesAny(opcodeAction, ['shock', 'siege', 'emphasis', 'pose'])
+        || sceneSignals.hasEmphasis
+        || sceneSignals.hasPresentation
       )
     ) {
       this.panelOverride = 'skill'
@@ -2309,7 +2500,9 @@ export class RecoveryStageSystem {
         || tutorialChainId === 'quest-panel-highlight'
         || stageBias.sustainBias
         || stageBias.rewardBias
-        || includesAny(opcodeAction, ['guard', 'tower', 'quest', 'population'])
+        || sceneSignals.hasTowerFocus
+        || sceneSignals.hasQuestFocus
+        || sceneSignals.hasPopulationFocus
       )
     ) {
       this.panelOverride = 'tower'
@@ -2320,7 +2513,7 @@ export class RecoveryStageSystem {
 
     if (
       (rosterRole === 'vanguard' || rosterRole === 'raider')
-      && (tutorialChainId === 'battle-hud-dispatch-arrows' || includesAny(opcodeAction, ['dispatch', 'hero', 'shock', 'siege']))
+      && (tutorialChainId === 'battle-hud-dispatch-arrows' || sceneSignals.hasBattleHudFocus || sceneSignals.hasEmphasis)
     ) {
       this.selectedDispatchLane = activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
       this.queuedUnitCount = Math.max(this.queuedUnitCount, rosterRole === 'raider' ? 2 : 1)
@@ -2335,7 +2528,10 @@ export class RecoveryStageSystem {
         tutorialChainId === 'mana-upgrade-highlight'
         || tutorialChainId === 'population-upgrade-highlight'
         || tutorialChainId === 'tower-menu-highlight'
-        || includesAny(opcodeAction, ['tower', 'mana', 'population', 'quest'])
+        || sceneSignals.hasTowerFocus
+        || sceneSignals.hasManaFocus
+        || sceneSignals.hasPopulationFocus
+        || sceneSignals.hasQuestFocus
       )
     ) {
       this.panelOverride = 'tower'
@@ -2350,7 +2546,10 @@ export class RecoveryStageSystem {
         tutorialChainId === 'battle-hud-mana-bar'
         || tutorialChainId === 'item-menu-highlight'
         || tutorialChainId === 'quest-panel-highlight'
-        || includesAny(opcodeAction, ['item', 'quest', 'mana', 'system'])
+        || sceneSignals.hasItemFocus
+        || sceneSignals.hasQuestFocus
+        || sceneSignals.hasManaFocus
+        || sceneSignals.hasSystemFocus
       )
     ) {
       if (this.applyScriptedAction('use-item', `${activeLoadout.skillPresetLabel} auto-stabilized the lane`)) {
@@ -2363,7 +2562,9 @@ export class RecoveryStageSystem {
       && (
         tutorialChainId === 'skill-slot-highlight'
         || tutorialChainId === 'battle-hud-goal-hp'
-        || includesAny(opcodeAction, ['skill', 'pose', 'emphasis', 'shock'])
+        || sceneSignals.hasSkillFocus
+        || sceneSignals.hasPresentation
+        || sceneSignals.hasEmphasis
       )
     ) {
       this.panelOverride = 'skill'
@@ -2374,7 +2575,7 @@ export class RecoveryStageSystem {
 
     if (
       towerPolicyKind === 'population-first'
-      && (tutorialChainId === 'battle-hud-unit-card' || includesAny(opcodeAction, ['dispatch', 'focus']))
+      && (tutorialChainId === 'battle-hud-unit-card' || sceneSignals.hasGuidedFocus || sceneSignals.hasBattleHudFocus)
     ) {
       if (this.applyScriptedAction('produce-unit', `${activeLoadout.towerPolicyLabel} auto-queued reinforcements`)) {
         return true

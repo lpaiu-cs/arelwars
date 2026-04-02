@@ -339,7 +339,14 @@ export class RecoveryBootScene extends Phaser.Scene {
       .slice(0, 3)
       .map((entry) => `${entry.label} ${entry.phaseLabel}${entry.loadoutMode ? ` [${entry.loadoutMode}${entry.focusLane ? ` ${entry.focusLane}` : ''}]` : ''}`)
       .join(' · ')
-    const opcodeCue = snapshot.activeOpcodeCue ? `${snapshot.activeOpcodeCue.label}/${snapshot.activeOpcodeCue.action}` : null
+    const sceneCommands = snapshot.activeSceneCommands
+      .filter((command) => command.commandType !== 'portrait' && command.commandType !== 'expression')
+      .slice(0, 3)
+      .map((command) => `${command.commandId}/${command.commandType}`)
+      .join(' · ')
+    const opcodeCue = snapshot.activeOpcodeCue
+      ? `${snapshot.activeOpcodeCue.label}/${snapshot.activeOpcodeCue.action}${sceneCommands ? ` · ${sceneCommands}` : ''}`
+      : sceneCommands || null
     const tutorialCue = snapshot.activeTutorialCue ? `${snapshot.activeTutorialCue.label}/${snapshot.activeTutorialCue.action}` : null
     const packed = snapshot.renderState.packedPixelStemRule ? '179 shade' : 'std render'
     const activeChain = snapshot.battlePreviewState.activeChain.active

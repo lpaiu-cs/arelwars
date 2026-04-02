@@ -71,6 +71,253 @@ def sample_preview(values: list[dict[str, Any]], limit: int = 4) -> list[dict[st
     return preview
 
 
+def first_counter_value(values: list[dict[str, Any]]) -> str | None:
+    if not values:
+        return None
+    value = values[0].get("value")
+    return None if value is None else str(value)
+
+
+def first_arg_slug(args: list[Any]) -> str:
+    if not args:
+        return "00"
+    parts: list[str] = []
+    for value in args:
+        if isinstance(value, int):
+            parts.append(f"{value:02x}")
+            continue
+        text = str(value).strip().lower()
+        if not text:
+            continue
+        parts.append(text)
+    return "-".join(parts) if parts else "00"
+
+
+def slugify_suffix(value: str) -> str:
+    return value.lower().replace(",", "-")
+
+
+def build_scene_fields(
+    *,
+    label: str,
+    action: str,
+    category: str,
+    confidence: str,
+    command_id: str | None = None,
+    command_type: str | None = None,
+    target: str | None = None,
+) -> dict[str, Any]:
+    lowered_action = action.lower()
+
+    if command_type is None:
+        if category == "presentation":
+            command_type = "presentation"
+        elif category == "emphasis":
+            command_type = "emphasis"
+        elif category == "scene-bootstrap":
+            command_type = "scene-layout"
+        elif "tutorial" in lowered_action and "narration" in lowered_action:
+            command_type = "tutorial-mode"
+        elif "focus" in lowered_action or "highlight" in lowered_action or "anchor" in lowered_action or "bind" in lowered_action:
+            command_type = "ui-focus"
+        else:
+            command_type = "scene-transition"
+
+    if target is None:
+        keyword_targets = [
+            ("battle-hud", "battle-hud"),
+            ("battlefield-focus", "battle-hud"),
+            ("tower", "tower-panel"),
+            ("mana-upgrade", "mana-upgrade"),
+            ("population-upgrade", "population-upgrade"),
+            ("skill-window", "skill-window"),
+            ("skill-menu", "skill-menu"),
+            ("item-menu", "item-menu"),
+            ("system-menu", "system-menu"),
+            ("quest-panel", "quest-panel"),
+            ("tutorial-subject", "tutorial-subject"),
+            ("tutorial-anchor", "tutorial-anchor"),
+            ("anchor", "tutorial-anchor"),
+            ("guided-target", "guided-target"),
+            ("guided-focus", "guided-focus"),
+            ("dialogue-pose", "dialogue-pose"),
+            ("impact", "impact-cue"),
+            ("shock", "impact-cue"),
+            ("tutorial-narration", "tutorial-narration"),
+            ("banter-entry", "banter-entry"),
+            ("scene-entry", "scene-entry"),
+            ("scene-layout", "scene-layout"),
+            ("scene-bridge", "scene-bridge"),
+        ]
+        for keyword, resolved_target in keyword_targets:
+            if keyword in lowered_action:
+                target = resolved_target
+                break
+        if target is None:
+            if command_type == "presentation":
+                target = "dialogue-pose"
+            elif command_type == "emphasis":
+                target = "impact-cue"
+            elif command_type == "scene-layout":
+                target = "scene-layout"
+            elif command_type == "tutorial-mode":
+                target = "tutorial-narration"
+            elif command_type == "ui-focus":
+                target = "scene-focus"
+            else:
+                target = "scene-transition"
+
+    if command_id is None:
+        command_id = label.lower().replace(" ", "-")
+
+    return {
+        "label": label,
+        "action": action,
+        "category": category,
+        "confidence": confidence,
+        "commandId": command_id,
+        "commandType": command_type,
+        "target": target,
+    }
+
+
+def auto_opcode_descriptor(
+    mnemonic: str,
+    profile: dict[str, Any],
+    *,
+    variant_key: str | None = None,
+    args: list[Any] | None = None,
+) -> dict[str, Any]:
+    suffix = slugify_suffix(variant_key.split(":", 1)[1] if variant_key else mnemonic.replace("cmd-", ""))
+    previous = first_counter_value(profile.get("previousCommands", []))
+    following = first_counter_value(profile.get("nextCommands", []))
+    args = args or []
+
+    if mnemonic == "cmd-05":
+        return build_scene_fields(
+            label=f"dialogue-pose-{suffix}",
+            action=f"apply-dialogue-pose-variant-{suffix}",
+            category="presentation",
+            confidence="medium",
+            command_id=f"dialogue-pose-{suffix}",
+            command_type="presentation",
+            target="dialogue-pose",
+        )
+    if mnemonic == "cmd-08" and suffix != "40":
+        return build_scene_fields(
+            label=f"dialogue-pose-release-{suffix}",
+            action=f"release-dialogue-pose-variant-{suffix}",
+            category="presentation",
+            confidence="medium",
+            command_id=f"dialogue-pose-release-{suffix}",
+            command_type="presentation",
+            target="dialogue-pose",
+        )
+    if mnemonic == "cmd-00" and suffix != "0d":
+        return build_scene_fields(
+            label=f"battlefield-focus-preset-{suffix}",
+            action=f"select-battlefield-focus-preset-{suffix}",
+            category="ui-focus",
+            confidence="medium",
+            command_id=f"battlefield-focus-preset-{suffix}",
+            command_type="ui-focus",
+            target="battle-hud",
+        )
+    if mnemonic == "cmd-02":
+        return build_scene_fields(
+            label=f"tutorial-subject-preset-{suffix}",
+            action=f"focus-tutorial-subject-preset-{suffix}",
+            category="ui-focus",
+            confidence="medium",
+            command_id=f"tutorial-subject-preset-{suffix}",
+            command_type="ui-focus",
+            target="tutorial-subject",
+        )
+    if mnemonic == "cmd-06" and suffix != "0d":
+        return build_scene_fields(
+            label=f"guided-focus-preset-{suffix}",
+            action=f"enter-guided-focus-preset-{suffix}",
+            category="ui-focus",
+            confidence="medium",
+            command_id=f"guided-focus-preset-{suffix}",
+            command_type="ui-focus",
+            target="guided-focus",
+        )
+    if mnemonic == "cmd-0c" and suffix != "40":
+        return build_scene_fields(
+            label=f"guided-target-preset-{suffix}",
+            action=f"bind-guided-target-preset-{suffix}",
+            category="ui-focus",
+            confidence="medium",
+            command_id=f"guided-target-preset-{suffix}",
+            command_type="ui-focus",
+            target="guided-target",
+        )
+    if mnemonic == "cmd-0a" and suffix not in {"10", "40"}:
+        return build_scene_fields(
+            label=f"emphasis-start-{suffix}",
+            action=f"start-emphasis-preset-{suffix}",
+            category="emphasis",
+            confidence="medium",
+            command_id=f"emphasis-start-{suffix}",
+            command_type="emphasis",
+            target="impact-cue",
+        )
+    if mnemonic == "cmd-0b" and suffix not in {"10", "40"}:
+        return build_scene_fields(
+            label=f"emphasis-end-{suffix}",
+            action=f"release-emphasis-preset-{suffix}",
+            category="emphasis",
+            confidence="medium",
+            command_id=f"emphasis-end-{suffix}",
+            command_type="emphasis",
+            target="impact-cue",
+        )
+
+    if previous == "<start>" and following in {"set-left-portrait", "set-right-portrait", "set-expression", "cmd-05"}:
+        return build_scene_fields(
+            label=f"scene-layout-preset-{suffix}",
+            action=f"load-scene-layout-preset-{suffix}",
+            category="scene-bootstrap",
+            confidence="medium",
+            command_id=f"scene-layout-preset-{suffix}",
+            command_type="scene-layout",
+            target="scene-layout",
+        )
+
+    if previous in {"cmd-06", "cmd-0d", "cmd-20", "cmd-40", "cmd-42"} or following in {"cmd-00", "cmd-02", "cmd-06"}:
+        return build_scene_fields(
+            label=f"scene-bridge-preset-{suffix}",
+            action=f"advance-scene-bridge-preset-{suffix}",
+            category="scene-transition",
+            confidence="low",
+            command_id=f"scene-bridge-preset-{suffix}",
+            command_type="scene-transition",
+            target="scene-bridge",
+        )
+
+    if previous in {"set-left-portrait", "set-right-portrait", "set-expression"} or following in {"cmd-08", "<end>"}:
+        return build_scene_fields(
+            label=f"dialogue-pose-preset-{suffix}",
+            action=f"apply-dialogue-pose-preset-{suffix}",
+            category="presentation",
+            confidence="low",
+            command_id=f"dialogue-pose-preset-{suffix}",
+            command_type="presentation",
+            target="dialogue-pose",
+        )
+
+    return build_scene_fields(
+        label=f"scene-transition-preset-{suffix}",
+        action=f"apply-scene-transition-preset-{suffix}",
+        category="scene-transition",
+        confidence="low",
+        command_id=f"scene-transition-preset-{suffix}",
+        command_type="scene-transition",
+        target="scene-transition",
+    )
+
+
 def signal_sentence(profile: dict[str, Any]) -> str:
     previous = profile.get("previousCommands", [])
     following = profile.get("nextCommands", [])
@@ -100,27 +347,37 @@ def variant_evidence_sentence(variant: dict[str, Any]) -> str:
 
 
 def build_variant_hints(
-    variants: list[dict[str, Any]], mnemonic: str
+    variants: list[dict[str, Any]], mnemonic: str, profile: dict[str, Any]
 ) -> list[dict[str, Any]]:
     by_mnemonic = [item for item in variants if item.get("mnemonic") == mnemonic]
     curated: list[dict[str, Any]] = []
     for item in by_mnemonic:
         variant_key = str(item.get("variant"))
         override = OPCODE_VARIANT_OVERRIDES.get(variant_key)
+        args = list(item.get("args", []))
+        descriptor = (
+            build_scene_fields(
+                label=override["label"],
+                action=override["action"],
+                category=override["category"],
+                confidence=override["confidence"],
+            )
+            if override is not None
+            else auto_opcode_descriptor(mnemonic, profile, variant_key=variant_key, args=args)
+        )
         if override is None:
-            continue
+            notes: list[str] = []
+        else:
+            notes = list(override.get("notes", []))
         curated.append(
             {
                 "variant": variant_key,
-                "args": list(item.get("args", [])),
-                "label": override["label"],
-                "action": override["action"],
-                "category": override["category"],
-                "confidence": override["confidence"],
+                "args": args,
+                **descriptor,
                 "count": int(item.get("count", 0)),
                 "evidenceSummary": [
                     variant_evidence_sentence(item),
-                    *override.get("notes", []),
+                    *notes,
                 ],
                 "topScripts": counter_preview(item.get("topScripts", []), limit=4),
                 "topEnglishTokens": counter_preview(item.get("topEnglishTokens", []), limit=6),
@@ -145,7 +402,17 @@ def main() -> None:
         if not mnemonic:
             continue
         override = OPCODE_ACTION_OVERRIDES.get(mnemonic, {})
-        variant_hints = build_variant_hints(variants, mnemonic)
+        variant_hints = build_variant_hints(variants, mnemonic, profile)
+        descriptor = (
+            build_scene_fields(
+                label=override["label"],
+                action=override["action"],
+                category=override["category"],
+                confidence=override["confidence"],
+            )
+            if override
+            else auto_opcode_descriptor(mnemonic, profile)
+        )
         evidence = [
             signal_sentence(profile),
             *override.get("notes", []),
@@ -153,10 +420,7 @@ def main() -> None:
         opcode_actions.append(
             {
                 "mnemonic": mnemonic,
-                "label": override.get("label", mnemonic),
-                "action": override.get("action", "unknown-runtime-action"),
-                "category": override.get("category", "unknown"),
-                "confidence": override.get("confidence", "low"),
+                **descriptor,
                 "count": int(profile.get("count", 0)),
                 "featuredInRuntime": mnemonic in RUNTIME_FEATURED_MNEMONICS,
                 "evidenceSummary": evidence,
@@ -182,16 +446,18 @@ def main() -> None:
     )
 
     featured_actions = [item for item in opcode_actions if bool(item["featuredInRuntime"])]
+    unresolved_actions = [item for item in opcode_actions if str(item.get("action")) == "unknown-runtime-action"]
     findings = [
-        "Opcode action export now separates mnemonic-wide hints from variant-local clues so runtime labels no longer depend on exporter-local constants.",
-        "The strongest tutorial/UI variants now include cmd-00(0x0d), cmd-06(0x0d), cmd-07/08/09/0a/0b/0c/0d/0e(0x40).",
-        "The strongest presentation/emphasis variants remain cmd-05(0x03), cmd-08(0x00), cmd-0a(0x10), and cmd-0b(0x10).",
+        "Opcode action export now assigns a stable scene-command id/type/target to every remaining non-dialogue opcode family.",
+        "The strongest tutorial/UI variants still include cmd-00(0x0d), cmd-06(0x0d), and cmd-07/08/09/0a/0b/0c/0d/0e(0x40).",
+        "All remaining low-frequency families now fall back to explicit scene-layout, scene-bridge, presentation, or transition preset names instead of unknown-runtime-action.",
     ]
     payload = {
         "summary": {
             "opcodeActionCount": len(opcode_actions),
             "featuredOpcodeCount": len(featured_actions),
             "curatedVariantCount": sum(len(item["variantHints"]) for item in opcode_actions),
+            "unresolvedOpcodeCount": len(unresolved_actions),
         },
         "opcodeActions": opcode_actions,
         "featuredOpcodeActions": featured_actions,

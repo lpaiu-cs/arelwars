@@ -216,6 +216,9 @@ References:
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_bindings.json` now fixes every current script-backed stage as `hard-script-ai-inline-map`, with exact `script family == XlsAi row index` binding and exact `preferredMapIndex = pairBase + pairBranch`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, hard stage bindings, archetypes, and render cues into one runtime-facing manifest
+    - phase-6 opcode export now covers all `64` currently observed non-dialogue `cmd-XX` families with `unresolvedOpcodeCount = 0`, and every exported mnemonic/variant now carries stable `commandId`, `commandType`, and `target` fields in `AW1.opcode_action_map.json`
+    - the prefix sanitizer now strips ASCII spill without dropping stable tutorial raw chains, so `AW1.tutorial_opcode_chains.json` is back to `15/15` matched chains after the opcode export widened to full-family coverage
+    - the runtime scene interpreter now resolves `activeSceneCommands[]` per dialogue event and consumes scene-layout, focus, presentation, emphasis, and transition commands directly instead of only picking one representative opcode string
 
 ### Phase 4. Build Deterministic Runtime Systems
 
