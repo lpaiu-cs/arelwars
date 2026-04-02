@@ -196,7 +196,7 @@ def main() -> None:
 
     if web_root is not None:
         events_web_root = web_root / "analysis" / "zt1_events"
-        for entry in featured_scripts:
+        for entry in zt1_entries:
             events_path = entry.get("eventsPath")
             if not isinstance(events_path, str):
                 continue
@@ -248,7 +248,7 @@ def main() -> None:
 
     write_json(output_root / "catalog.json", full_catalog)
     if web_root is not None:
-        write_json(web_root / "catalog.json", catalog)
+        write_json(web_root / "catalog.json", full_catalog)
 
 
 if __name__ == "__main__":

@@ -287,6 +287,11 @@ References:
    - runtime settings for audio, autosave, auto-advance, resume-on-launch, reduced effects
    - synthesized audio cues and ambient layer switching
    - constructor-time session restore plus before-unload resume persistence
+10. Phase13 baseline is now in place:
+   - the runtime no longer builds storyboards from a 6-stage featured sample
+   - web `catalog.json` now carries full `zt1Entries`, and all required English stage scripts export `webEventsPath`
+   - the campaign flow is assembled from all `111` hard-bound stage blueprints in `AW1.runtime_blueprint.json`
+   - current coverage check is `111` stage blueprints, `312` required script files, `312` available English script event exports, `0` missing stage script files
 
 ## First Opcode Findings
 

@@ -84,18 +84,6 @@ function normalizeScriptEvents(entry: RecoveryScriptEntry): RecoveryDialogueEven
   return entry.eventPreview?.filter((event) => event.text?.trim().length > 0) ?? []
 }
 
-function scriptFamilyId(path: string): string {
-  const match = path.match(/\/(\d{4})\.zt1$/)
-  return match ? match[1].slice(0, 3) : '000'
-}
-
-function chooseScripts(catalog: RecoveryCatalog, limit: number): RecoveryScriptEntry[] {
-  const scripts = catalog.featuredScripts.filter((entry) => (entry.eventPreview?.length ?? 0) > 0)
-  const preferred = scripts.filter((entry) => entry.locale === 'en')
-  const fallback = scripts.filter((entry) => entry.locale !== 'en')
-  return [...preferred, ...fallback].slice(0, limit)
-}
-
 function choosePreviewEntries(previewManifest: RecoveryPreviewManifest, limit: number): RecoveryPreviewStem[] {
   const preferred = [...previewManifest.featuredEntries]
   if (preferred.length >= limit) {
@@ -164,9 +152,11 @@ function buildStoryboards(
   previewManifest: RecoveryPreviewManifest,
   runtimeBlueprint: RecoveryRuntimeBlueprint | null,
 ): RecoveryStageStoryboard[] {
-  const scripts = chooseScripts(catalog, 6)
-  const previews = choosePreviewEntries(previewManifest, Math.max(6, scripts.length))
-  if (scripts.length === 0 || previews.length === 0) {
+  const previews = choosePreviewEntries(
+    previewManifest,
+    Math.max(runtimeBlueprint?.stageBlueprints.length ?? 0, previewManifest.featuredEntries.length, 1),
+  )
+  if (previews.length === 0) {
     return []
   }
 
@@ -175,19 +165,39 @@ function buildStoryboards(
     stageBlueprintsByFamily.set(entry.familyId, entry)
   })
 
-  return scripts.map((script, index) => {
+  const catalogEntries = catalog.zt1Entries ?? catalog.featuredScripts
+  const englishScripts = catalogEntries.filter((entry) => entry.kind === 'script' && entry.locale === 'en')
+  const scriptsByEventJson = new Map<string, RecoveryScriptEntry>()
+  englishScripts.forEach((entry) => {
+    const eventJsonName = entry.path.split('/').pop()?.replace(/\.zt1$/u, '.zt1.events.json')
+    if (eventJsonName) {
+      scriptsByEventJson.set(eventJsonName, entry)
+    }
+  })
+
+  const stageBlueprints = runtimeBlueprint?.stageBlueprints ?? []
+  if (stageBlueprints.length === 0) {
+    return []
+  }
+
+  return stageBlueprints.map((stageBlueprint, index) => {
     const previewStem = previews[index % previews.length]
-    const familyId = scriptFamilyId(script.path)
+    const entries = stageBlueprint.scriptFiles
+      .map((scriptFile) => scriptsByEventJson.get(scriptFile))
+      .filter((entry): entry is RecoveryScriptEntry => Boolean(entry))
+    const scriptEvents = entries.flatMap((entry) => normalizeScriptEvents(entry))
+    const scriptPath = entries.map((entry) => entry.path).join(' + ') || stageBlueprint.scriptFiles.join(' + ')
+    const locale = entries[0]?.locale ?? 'en'
     return {
-      id: `${index}-${script.path}-${previewStem.stem}`,
-      scriptPath: script.path,
-      scriptFamilyId: familyId,
-      locale: script.locale,
-      scriptEventCount: script.eventCount ?? script.eventPreview?.length ?? 0,
-      scriptEvents: normalizeScriptEvents(script),
+      id: `${stageBlueprint.familyId}-${previewStem.stem}`,
+      scriptPath,
+      scriptFamilyId: stageBlueprint.familyId,
+      locale,
+      scriptEventCount: scriptEvents.length,
+      scriptEvents,
       sceneScriptSteps: [],
       previewStem,
-      stageBlueprint: stageBlueprintsByFamily.get(familyId) ?? null,
+      stageBlueprint: stageBlueprintsByFamily.get(stageBlueprint.familyId) ?? stageBlueprint,
     }
   })
 }

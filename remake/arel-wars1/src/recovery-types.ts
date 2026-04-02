@@ -504,6 +504,7 @@ export interface RecoveryCatalog {
     webSafeAssetCount: number
   }
   featuredScripts: RecoveryScriptEntry[]
+  zt1Entries?: RecoveryScriptEntry[]
   blockedFormats: RecoveryBlockedFormat[]
   webSafeAssets: string[]
 }

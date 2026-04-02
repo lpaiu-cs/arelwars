@@ -10,6 +10,7 @@ import type {
   RecoveryPreviewStem,
   RecoveryRenderPack,
   RecoveryRuntimeBlueprint,
+  RecoveryScriptEntry,
   RecoveryStageSnapshot,
 } from './recovery-types'
 import { RecoveryStageSystem } from './systems/recoveryStageSystem'
@@ -123,7 +124,7 @@ async function bootstrap(): Promise<void> {
   let stageSystem: RecoveryStageSystem | null = null
 
   if (catalogResult.status === 'fulfilled') {
-    const catalog = await hydrateCatalogScripts(catalogResult.value)
+    const catalog = await hydrateCatalogScripts(catalogResult.value, runtimeBlueprint)
     if (previewManifest) {
       stageSystem = new RecoveryStageSystem(catalog, previewManifest, runtimeBlueprint, battleModel)
     }
@@ -302,10 +303,36 @@ async function fetchJson<T>(path: string): Promise<T> {
   return (await response.json()) as T
 }
 
-async function hydrateCatalogScripts(catalog: RecoveryCatalog): Promise<RecoveryCatalog> {
-  const featuredScripts = await Promise.all(
-    catalog.featuredScripts.map(async (entry) => {
-      if (!entry.webEventsPath) {
+async function hydrateCatalogScripts(
+  catalog: RecoveryCatalog,
+  runtimeBlueprint: RecoveryRuntimeBlueprint | null,
+): Promise<RecoveryCatalog> {
+  const stageScriptFiles = new Set(
+    runtimeBlueprint?.stageBlueprints.flatMap((entry) => entry.scriptFiles) ?? [],
+  )
+  const shouldHydrate = (entry: RecoveryScriptEntry): boolean => {
+    if (!entry.webEventsPath) {
+      return false
+    }
+    if (catalog.featuredScripts.some((featured) => featured.path === entry.path)) {
+      return true
+    }
+    if (entry.kind !== 'script' || entry.locale !== 'en') {
+      return false
+    }
+    const eventJsonName = entry.path.split('/').pop()?.replace(/\.zt1$/u, '.zt1.events.json')
+    return eventJsonName ? stageScriptFiles.has(eventJsonName) : false
+  }
+
+  const entryCache = new Map<string, Promise<RecoveryScriptEntry>>()
+  const hydrateEntry = (entry: RecoveryScriptEntry): Promise<RecoveryScriptEntry> => {
+    const cacheKey = entry.path
+    const existing = entryCache.get(cacheKey)
+    if (existing) {
+      return existing
+    }
+    const promise = (async () => {
+      if (!shouldHydrate(entry) || !entry.webEventsPath) {
         return entry
       }
       try {
@@ -318,12 +345,20 @@ async function hydrateCatalogScripts(catalog: RecoveryCatalog): Promise<Recovery
       } catch {
         return entry
       }
-    }),
-  )
+    })()
+    entryCache.set(cacheKey, promise)
+    return promise
+  }
+
+  const featuredScripts = await Promise.all(catalog.featuredScripts.map(hydrateEntry))
+  const zt1Entries = catalog.zt1Entries
+    ? await Promise.all(catalog.zt1Entries.map(hydrateEntry))
+    : undefined
 
   return {
     ...catalog,
     featuredScripts,
+    zt1Entries,
   }
 }
 

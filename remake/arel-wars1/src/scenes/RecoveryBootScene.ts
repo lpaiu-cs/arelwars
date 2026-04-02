@@ -103,7 +103,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     super('RecoveryBootScene')
     this.stageSystem = stageSystem
     this.renderPack = renderPack
-    this.featuredEntries = stageSystem?.getPreviewEntries().slice(0, 6) ?? []
+    this.featuredEntries = stageSystem?.getPreviewEntries() ?? []
     renderPack?.stemAssets.forEach((asset) => {
       this.stemAssetsByStem.set(asset.stem, asset)
     })
