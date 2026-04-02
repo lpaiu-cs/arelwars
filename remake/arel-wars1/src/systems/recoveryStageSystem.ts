@@ -15,12 +15,17 @@ import type {
   RecoveryStageRenderState,
   RecoveryStageSnapshot,
   RecoveryStageStoryboard,
+  RecoveryTowerUpgradeLevels,
   RecoveryTutorialChainCue,
 } from '../recovery-types'
 
 const MIN_DIALOGUE_DURATION_MS = 1400
 const MAX_DIALOGUE_DURATION_MS = 4200
 const STORYBOARD_GAP_MS = 900
+const MANA_RECOVERY_PER_BEAT = 0.018
+const UPGRADE_PROGRESS_RECOVERY_PER_BEAT = 0.012
+const SKILL_COOLDOWN_MS = 2600
+const ITEM_COOLDOWN_MS = 3200
 const GENERIC_OPCODE_VARIANTS = new Set([
   'cmd-02:05',
   'cmd-05:03',
@@ -156,7 +161,35 @@ export class RecoveryStageSystem {
 
   private heroReturnCooldownEndsAtMs = 0
 
+  private battlePaused = false
+
+  private pauseStartedAtMs = 0
+
   private questRewardClaimed = false
+
+  private questRewardClaims = 0
+
+  private selectedDispatchLane: RecoveryHudGhostState['selectedDispatchLane'] = null
+
+  private queuedUnitCount = 0
+
+  private previewManaRatio = 0.48
+
+  private previewManaUpgradeProgressRatio = 0.22
+
+  private previewOwnTowerHpRatio = 0.74
+
+  private previewEnemyTowerHpRatio = 0.58
+
+  private skillCooldownEndsAtMs = 0
+
+  private itemCooldownEndsAtMs = 0
+
+  private readonly towerUpgradeLevels: RecoveryTowerUpgradeLevels = {
+    mana: 1,
+    population: 1,
+    attack: 1,
+  }
 
   private lastActionId: RecoveryGameplayActionId | null = null
 
@@ -222,7 +255,7 @@ export class RecoveryStageSystem {
       return false
     }
 
-    this.applyAction(actionId, gameplayState)
+    this.applyAction(actionId, snapshot)
     this.version += 1
     return true
   }
@@ -262,6 +295,21 @@ export class RecoveryStageSystem {
       return false
     }
 
+    if (this.battlePaused) {
+      if (this.pauseStartedAtMs <= 0) {
+        this.pauseStartedAtMs = nowMs
+      }
+      return false
+    }
+
+    if (this.pauseStartedAtMs > 0) {
+      const pausedDurationMs = Math.max(nowMs - this.pauseStartedAtMs, 0)
+      if (pausedDurationMs > 0) {
+        this.shiftTimelineBy(pausedDurationMs)
+      }
+      this.pauseStartedAtMs = 0
+    }
+
     this.lastUpdateNowMs = nowMs
     let changed = false
     if (!Number.isFinite(this.nextDialogueAtMs) || !Number.isFinite(this.nextFrameAtMs)) {
@@ -283,6 +331,7 @@ export class RecoveryStageSystem {
     const channelBeat = Math.floor(Math.max(nowMs - this.storyboardStartedAtMs, 0) / 120)
     if (channelBeat !== this.lastChannelBeat) {
       this.lastChannelBeat = channelBeat
+      this.tickPersistentPreview()
       changed = true
     }
 
@@ -526,10 +575,10 @@ export class RecoveryStageSystem {
       channelStates.length > 0
         ? channelStates.reduce((sum, channel) => sum + channel.intensity, 0) / channelStates.length
         : 0.5
-    let ownTowerHpRatio = clamp(0.72 + oscillate(elapsed, 5800, 0) * 0.12 - channelEnergy * 0.04, 0.1, 1)
-    let enemyTowerHpRatio = clamp(0.54 + oscillate(elapsed, 5300, 900) * 0.18, 0.1, 1)
-    let manaRatio = clamp(0.42 + oscillate(elapsed, 3600, 1400) * 0.5, 0.06, 1)
-    let manaUpgradeProgressRatio = clamp(0.18 + oscillate(elapsed, 4200, 600) * 0.72, 0.04, 1)
+    let ownTowerHpRatio = clamp(this.previewOwnTowerHpRatio + oscillate(elapsed, 5800, 0) * 0.08 - channelEnergy * 0.03, 0.1, 1)
+    let enemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio + oscillate(elapsed, 5300, 900) * 0.1, 0.08, 1)
+    let manaRatio = clamp(this.previewManaRatio + oscillate(elapsed, 3600, 1400) * 0.12, 0.06, 1)
+    let manaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + oscillate(elapsed, 4200, 600) * 0.12, 0.04, 1)
     let activePanel: RecoveryHudGhostState['activePanel'] = this.panelOverride
     let highlightedMenuId: RecoveryHudGhostState['highlightedMenuId'] = null
     let highlightedTowerUpgradeId: RecoveryHudGhostState['highlightedTowerUpgradeId'] = null
@@ -545,6 +594,8 @@ export class RecoveryStageSystem {
     let returnCooldownRatio = heroDeployed ? clamp(oscillate(elapsed, 2600, 1200), 0, 1) : 0
     let dispatchArrowsHighlighted = false
     let leftDispatchCueVisible = false
+    const skillCooldownRatio = this.cooldownRatio(this.skillCooldownEndsAtMs, SKILL_COOLDOWN_MS)
+    const itemCooldownRatio = this.cooldownRatio(this.itemCooldownEndsAtMs, ITEM_COOLDOWN_MS)
 
     switch (activeTutorialCue?.chainId) {
       case 'battle-hud-guard-hp':
@@ -665,6 +716,13 @@ export class RecoveryStageSystem {
       returnCooldownRatio,
       dispatchArrowsHighlighted,
       leftDispatchCueVisible,
+      selectedDispatchLane: this.selectedDispatchLane,
+      queuedUnitCount: this.queuedUnitCount,
+      towerUpgradeLevels: { ...this.towerUpgradeLevels },
+      skillCooldownRatio,
+      itemCooldownRatio,
+      battlePaused: this.battlePaused,
+      questRewardClaims: this.questRewardClaims,
     }
   }
 
@@ -816,17 +874,58 @@ export class RecoveryStageSystem {
         break
     }
 
-    if (heroMode === 'field') {
-      enabledInputs.add('hero-combat-active')
+    if (objectiveMode === 'dispatch-lanes' && hudState.selectedDispatchLane) {
+      primaryHint = `${hudState.selectedDispatchLane} lane armed${hudState.queuedUnitCount > 0 ? ` with ${hudState.queuedUnitCount} queued unit${hudState.queuedUnitCount > 1 ? 's' : ''}` : ''}`
+    } else if (objectiveMode === 'produce-units' && hudState.queuedUnitCount > 0) {
+      primaryHint = `${hudState.queuedUnitCount} queued unit${hudState.queuedUnitCount > 1 ? 's' : ''} ready for dispatch`
+    } else if (objectiveMode === 'cast-skills' && hudState.skillCooldownRatio > 0.02) {
+      primaryHint = 'Skill channel is cooling down'
+    } else if (objectiveMode === 'use-items' && hudState.itemCooldownRatio > 0.02) {
+      primaryHint = 'Item slot is cooling down'
     }
-    if (heroMode === 'return-cooldown') {
+
+    if (this.battlePaused) {
+      mode = activeTutorialCue ? 'guided-preview' : 'free-preview'
+      openPanel = 'system'
+      objectiveMode = 'system-navigation'
+      primaryHint = 'Battle paused; resume or open settings'
+      enabledInputs.clear()
+      enabledInputs.add('resume-battle')
+      enabledInputs.add('open-settings')
+      enabledInputs.add('open-system-menu')
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
       blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
     }
-    if (questState === 'reward-ready') {
-      enabledInputs.add('claim-quest-reward')
-    }
-    if (mode === 'free-preview' && enabledInputs.size === 0) {
-      enabledInputs.add('observe-stage-preview')
+
+    if (!this.battlePaused) {
+      if (heroMode === 'field') {
+        enabledInputs.add('hero-combat-active')
+      }
+      if (heroMode === 'return-cooldown') {
+        blockedInputs.add('deploy-hero')
+      }
+      if (hudState.skillCooldownRatio > 0.02) {
+        blockedInputs.add('cast-skill')
+      } else if (objectiveMode === 'cast-skills' || openPanel === 'skill') {
+        enabledInputs.add('cast-skill')
+      }
+      if (hudState.itemCooldownRatio > 0.02) {
+        blockedInputs.add('use-item')
+      } else if (objectiveMode === 'use-items' || openPanel === 'item') {
+        enabledInputs.add('use-item')
+      }
+      if (questState === 'reward-ready') {
+        enabledInputs.add('claim-quest-reward')
+      }
+      if (mode === 'free-preview' && enabledInputs.size === 0) {
+        enabledInputs.add('observe-stage-preview')
+      }
     }
 
     return {
@@ -835,6 +934,13 @@ export class RecoveryStageSystem {
       heroMode,
       objectiveMode,
       questState,
+      selectedDispatchLane: hudState.selectedDispatchLane,
+      queuedUnitCount: hudState.queuedUnitCount,
+      battlePaused: hudState.battlePaused,
+      towerUpgradeLevels: { ...hudState.towerUpgradeLevels },
+      skillReady: hudState.skillCooldownRatio <= 0.02,
+      itemReady: hudState.itemCooldownRatio <= 0.02,
+      questRewardClaims: hudState.questRewardClaims,
       enabledInputs: Array.from(enabledInputs),
       blockedInputs: Array.from(blockedInputs),
       primaryHint,
@@ -848,13 +954,28 @@ export class RecoveryStageSystem {
     this.panelOverride = null
     this.heroOverrideMode = null
     this.heroReturnCooldownEndsAtMs = 0
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
     this.questRewardClaimed = false
+    this.questRewardClaims = 0
+    this.selectedDispatchLane = null
+    this.queuedUnitCount = 0
+    this.previewManaRatio = 0.48
+    this.previewManaUpgradeProgressRatio = 0.22
+    this.previewOwnTowerHpRatio = 0.74
+    this.previewEnemyTowerHpRatio = 0.58
+    this.skillCooldownEndsAtMs = 0
+    this.itemCooldownEndsAtMs = 0
+    this.towerUpgradeLevels.mana = 1
+    this.towerUpgradeLevels.population = 1
+    this.towerUpgradeLevels.attack = 1
     this.lastActionId = null
     this.lastActionAccepted = false
     this.lastActionNote = null
   }
 
-  private applyAction(actionId: RecoveryGameplayActionId, gameplayState: RecoveryGameplayState): void {
+  private applyAction(actionId: RecoveryGameplayActionId, snapshot: RecoveryStageSnapshot): void {
+    const gameplayState = snapshot.gameplayState
     const nowMs = this.lastUpdateNowMs
     switch (actionId) {
       case 'open-tower-menu':
@@ -872,29 +993,43 @@ export class RecoveryStageSystem {
       case 'open-system-menu':
       case 'open-settings':
         this.panelOverride = 'system'
+        this.setBattlePaused(nowMs, true)
         this.lastActionNote = actionId === 'open-settings' ? 'settings route selected' : 'system panel opened'
         break
       case 'resume-battle':
         this.panelOverride = null
+        this.setBattlePaused(nowMs, false)
         this.lastActionNote = 'panel closed, battle resumed'
         break
       case 'upgrade-tower-stat':
         this.panelOverride = 'tower'
-        this.lastActionNote = 'tower upgrade action queued'
+        this.applyTowerUpgrade(snapshot)
         break
       case 'cast-skill':
         this.panelOverride = 'skill'
+        this.skillCooldownEndsAtMs = nowMs + SKILL_COOLDOWN_MS
+        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.07, 0.08, 1)
+        this.previewManaRatio = clamp(this.previewManaRatio - 0.08, 0.06, 1)
         this.lastActionNote = 'skill cast preview accepted'
         break
       case 'use-item':
         this.panelOverride = 'item'
+        this.itemCooldownEndsAtMs = nowMs + ITEM_COOLDOWN_MS
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.08, 0.1, 1)
         this.lastActionNote = 'item use preview accepted'
         break
       case 'dispatch-up-lane':
+        this.commitLaneDispatch('upper')
+        this.lastActionNote = 'upper lane selected'
+        break
       case 'dispatch-down-lane':
-        this.lastActionNote = actionId === 'dispatch-up-lane' ? 'upper lane selected' : 'lower lane selected'
+        this.commitLaneDispatch('lower')
+        this.lastActionNote = 'lower lane selected'
         break
       case 'produce-unit':
+        this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+        this.previewManaRatio = clamp(this.previewManaRatio - 0.16, 0.06, 1)
+        this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.08, 0.04, 1)
         this.lastActionNote = 'unit production preview accepted'
         break
       case 'deploy-hero':
@@ -902,30 +1037,124 @@ export class RecoveryStageSystem {
         if (gameplayState.heroMode === 'field') {
           this.heroOverrideMode = 'return-cooldown'
           this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
+          this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
           this.lastActionNote = 'hero returned to tower'
         } else {
           this.heroOverrideMode = 'field'
           this.heroReturnCooldownEndsAtMs = 0
+          this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.04, 0.08, 1)
           this.lastActionNote = 'hero deployed to field'
         }
         break
       case 'return-to-tower':
         this.heroOverrideMode = 'return-cooldown'
         this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
         this.lastActionNote = 'hero return cooldown started'
         break
       case 'review-quest-rewards':
         this.panelOverride = 'system'
+        this.setBattlePaused(nowMs, true)
         this.lastActionNote = 'quest reward panel reviewed'
         break
       case 'claim-quest-reward':
         this.panelOverride = 'system'
         this.questRewardClaimed = true
+        this.questRewardClaims += 1
+        this.previewManaRatio = clamp(this.previewManaRatio + 0.18, 0.06, 1)
+        this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.16, 0.04, 1)
         this.lastActionNote = 'quest reward claimed'
         break
       default:
         this.lastActionNote = `${actionId} accepted`
         break
+    }
+  }
+
+  private cooldownRatio(endsAtMs: number, totalMs: number): number {
+    if (totalMs <= 0 || endsAtMs <= 0) {
+      return 0
+    }
+    return clamp((endsAtMs - this.lastUpdateNowMs) / totalMs, 0, 1)
+  }
+
+  private shiftTimelineBy(deltaMs: number): void {
+    this.storyboardStartedAtMs += deltaMs
+    this.nextDialogueAtMs += deltaMs
+    this.nextFrameAtMs += deltaMs
+    if (this.heroReturnCooldownEndsAtMs > 0) {
+      this.heroReturnCooldownEndsAtMs += deltaMs
+    }
+    if (this.skillCooldownEndsAtMs > 0) {
+      this.skillCooldownEndsAtMs += deltaMs
+    }
+    if (this.itemCooldownEndsAtMs > 0) {
+      this.itemCooldownEndsAtMs += deltaMs
+    }
+  }
+
+  private setBattlePaused(nowMs: number, paused: boolean): void {
+    if (paused) {
+      if (!this.battlePaused) {
+        this.battlePaused = true
+        this.pauseStartedAtMs = nowMs
+      }
+      return
+    }
+
+    if (!this.battlePaused) {
+      return
+    }
+
+    const pausedDurationMs = this.pauseStartedAtMs > 0 ? Math.max(nowMs - this.pauseStartedAtMs, 0) : 0
+    if (pausedDurationMs > 0) {
+      this.shiftTimelineBy(pausedDurationMs)
+    }
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
+  }
+
+  private tickPersistentPreview(): void {
+    this.previewManaRatio = clamp(this.previewManaRatio + MANA_RECOVERY_PER_BEAT, 0.06, 1)
+    this.previewManaUpgradeProgressRatio = clamp(
+      this.previewManaUpgradeProgressRatio + UPGRADE_PROGRESS_RECOVERY_PER_BEAT,
+      0.04,
+      1,
+    )
+
+    if (this.heroOverrideMode === 'field') {
+      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.004, 0.08, 1)
+    }
+
+    if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.previewManaRatio > 0.18) {
+      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.006, 0.08, 1)
+    }
+  }
+
+  private applyTowerUpgrade(snapshot: RecoveryStageSnapshot): void {
+    const gameplayState = snapshot.gameplayState
+    const focusedUpgrade = snapshot.hudState.highlightedTowerUpgradeId
+    const upgradeId =
+      focusedUpgrade
+      ?? (gameplayState.primaryHint.includes('population')
+        ? 'population'
+        : gameplayState.primaryHint.includes('mana')
+          ? 'mana'
+          : gameplayState.openPanel === 'tower' && this.towerUpgradeLevels.attack < this.towerUpgradeLevels.mana
+            ? 'attack'
+            : 'mana')
+    this.towerUpgradeLevels[upgradeId] = Math.min(this.towerUpgradeLevels[upgradeId] + 1, 5)
+    this.previewManaRatio = clamp(this.previewManaRatio - 0.22, 0.06, 1)
+    this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio - 0.3, 0.04, 1)
+    this.lastActionNote = `${upgradeId} upgrade advanced to tier ${this.towerUpgradeLevels[upgradeId]}`
+  }
+
+  private commitLaneDispatch(lane: 'upper' | 'lower'): void {
+    this.selectedDispatchLane = lane
+    if (this.queuedUnitCount > 0) {
+      const queueDamage = Math.min(this.queuedUnitCount * 0.04, 0.16)
+      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - queueDamage, 0.08, 1)
+      this.queuedUnitCount = Math.max(this.queuedUnitCount - 1, 0)
     }
   }
 }

@@ -353,6 +353,12 @@ export interface RecoveryStageRenderState {
   ptcEmitterHint: string | null
 }
 
+export interface RecoveryTowerUpgradeLevels {
+  mana: number
+  population: number
+  attack: number
+}
+
 export interface RecoveryHudGhostState {
   ownTowerHpRatio: number
   enemyTowerHpRatio: number
@@ -373,6 +379,13 @@ export interface RecoveryHudGhostState {
   returnCooldownRatio: number
   dispatchArrowsHighlighted: boolean
   leftDispatchCueVisible: boolean
+  selectedDispatchLane: 'upper' | 'lower' | null
+  queuedUnitCount: number
+  towerUpgradeLevels: RecoveryTowerUpgradeLevels
+  skillCooldownRatio: number
+  itemCooldownRatio: number
+  battlePaused: boolean
+  questRewardClaims: number
 }
 
 export type RecoveryGameplayActionId =
@@ -418,6 +431,13 @@ export interface RecoveryGameplayState {
     | 'system-navigation'
     | 'generic-preview'
   questState: 'hidden' | 'available' | 'reward-ready'
+  selectedDispatchLane: 'upper' | 'lower' | null
+  queuedUnitCount: number
+  battlePaused: boolean
+  towerUpgradeLevels: RecoveryTowerUpgradeLevels
+  skillReady: boolean
+  itemReady: boolean
+  questRewardClaims: number
   enabledInputs: RecoveryGameplayActionId[]
   blockedInputs: RecoveryGameplayActionId[]
   primaryHint: string

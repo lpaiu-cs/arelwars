@@ -334,10 +334,13 @@ export class RecoveryBootScene extends Phaser.Scene {
     const state = snapshot.gameplayState
     const panel = state.openPanel ?? 'none'
     const enabled = state.enabledInputs.slice(0, 3).join(', ') || 'observe-stage-preview'
+    const lane = state.selectedDispatchLane ?? 'none'
+    const cooldowns = `skill ${state.skillReady ? 'ready' : 'cooldown'} / item ${state.itemReady ? 'ready' : 'cooldown'}`
+    const upgrades = `up ${state.towerUpgradeLevels.mana}/${state.towerUpgradeLevels.population}/${state.towerUpgradeLevels.attack}`
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode} · panel ${panel} · hero ${state.heroMode} · objective ${state.objectiveMode} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {
@@ -372,6 +375,8 @@ export class RecoveryBootScene extends Phaser.Scene {
         return 'open-item-menu'
       case '4':
         return 'open-system-menu'
+      case '5':
+        return 'open-settings'
       case 'q':
         return 'dispatch-up-lane'
       case 'w':
@@ -489,6 +494,10 @@ export class RecoveryBootScene extends Phaser.Scene {
       graphics.lineStyle(1.2, highlighted ? 0xf0b45e : 0x304148, 0.8)
       graphics.strokeRoundedRect(card.x, card.y, card.width, card.height, 5)
     }
+    for (let index = 0; index < hud.queuedUnitCount; index += 1) {
+      graphics.fillStyle(0xf0b45e, 0.9)
+      graphics.fillCircle(unitCardBase.x + 10 + index * 12, unitCardBase.y - 10, 4)
+    }
 
     const heroPortrait = circle(0.12, 0.84, 0.06)
     graphics.fillStyle(hud.heroDeployed ? 0x69a15b : 0x687882, hud.heroPortraitHighlighted ? 0.92 : 0.72)
@@ -506,10 +515,17 @@ export class RecoveryBootScene extends Phaser.Scene {
       const arrowLane = rect(0.88, 0.28, 0.07, 0.28)
       for (let index = 0; index < 2; index += 1) {
         const arrowY = arrowLane.y + 22 + index * 40
-        graphics.lineStyle(2.2, hud.dispatchArrowsHighlighted ? 0xf0b45e : 0x6a7c80, 0.88)
+        const laneSelected =
+          (hud.selectedDispatchLane === 'upper' && index === 0)
+          || (hud.selectedDispatchLane === 'lower' && index === 1)
+        graphics.lineStyle(2.2, laneSelected || hud.dispatchArrowsHighlighted ? 0xf0b45e : 0x6a7c80, laneSelected ? 1 : 0.88)
         graphics.lineBetween(arrowLane.x + arrowLane.width / 2, arrowY, arrowLane.x + arrowLane.width / 2, arrowY + 20)
         graphics.lineBetween(arrowLane.x + arrowLane.width / 2, arrowY, arrowLane.x + arrowLane.width / 2 - 8, arrowY + 8)
         graphics.lineBetween(arrowLane.x + arrowLane.width / 2, arrowY, arrowLane.x + arrowLane.width / 2 + 8, arrowY + 8)
+        if (laneSelected) {
+          graphics.fillStyle(0xf0b45e, 0.16)
+          graphics.fillRoundedRect(arrowLane.x - 4, arrowY - 8, arrowLane.width + 8, 32, 6)
+        }
       }
       if (hud.leftDispatchCueVisible) {
         const cue = rect(0.04, 0.36, 0.06, 0.16)
@@ -546,6 +562,11 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.fillCircle(slot.x, slot.y, slot.radius)
         graphics.lineStyle(1.2, active ? 0xffefbf : 0x324147, 0.9)
         graphics.strokeCircle(slot.x, slot.y, slot.radius)
+        const level = hud.towerUpgradeLevels[upgradeId]
+        for (let pip = 0; pip < level; pip += 1) {
+          graphics.fillStyle(active ? 0xffefbf : 0x9ca8aa, 0.88)
+          graphics.fillCircle(slot.x - 10 + pip * 6, slot.y + slot.radius + 8, 2)
+        }
       })
     }
 
@@ -568,6 +589,16 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.lineStyle(1.2, highlighted ? 0xf0b45e : 0x304148, 0.85)
         graphics.strokeRoundedRect(slot.x, slot.y, slot.width, slot.height, 5)
       }
+      if (hud.skillCooldownRatio > 0.02) {
+        graphics.fillStyle(0x091014, 0.52)
+        graphics.fillRoundedRect(
+          skillWindow.x + 8,
+          skillWindow.y + 8,
+          (skillWindow.width - 16) * hud.skillCooldownRatio,
+          skillWindow.height - 16,
+          5,
+        )
+      }
     }
 
     if (hud.itemWindowVisible) {
@@ -589,6 +620,16 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.lineStyle(1.2, highlighted ? 0xf0b45e : 0x304148, 0.85)
         graphics.strokeRoundedRect(slot.x, slot.y, slot.width, slot.height, 5)
       }
+      if (hud.itemCooldownRatio > 0.02) {
+        graphics.fillStyle(0x091014, 0.52)
+        graphics.fillRoundedRect(
+          itemWindow.x + 8,
+          itemWindow.y + 8,
+          (itemWindow.width - 16) * hud.itemCooldownRatio,
+          itemWindow.height - 16,
+          5,
+        )
+      }
     }
 
     if (hud.questVisible) {
@@ -601,6 +642,21 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.fillStyle(0xf0b45e, 0.92)
         graphics.fillCircle(questPanel.x + questPanel.width - 12, questPanel.y + 12, 5)
       }
+      for (let index = 0; index < Math.min(hud.questRewardClaims, 3); index += 1) {
+        graphics.fillStyle(0x8bcf7a, 0.88)
+        graphics.fillCircle(questPanel.x + 12 + index * 10, questPanel.y + questPanel.height - 10, 3)
+      }
+    }
+
+    if (hud.battlePaused) {
+      const pauseBox = rect(0.38, 0.36, 0.24, 0.18)
+      graphics.fillStyle(0x081114, 0.78)
+      graphics.fillRoundedRect(pauseBox.x, pauseBox.y, pauseBox.width, pauseBox.height, 10)
+      graphics.lineStyle(1.4, 0xf0b45e, 0.72)
+      graphics.strokeRoundedRect(pauseBox.x, pauseBox.y, pauseBox.width, pauseBox.height, 10)
+      graphics.fillStyle(0xf0b45e, 0.88)
+      graphics.fillRoundedRect(pauseBox.x + pauseBox.width * 0.34, pauseBox.y + 18, 10, pauseBox.height - 36, 4)
+      graphics.fillRoundedRect(pauseBox.x + pauseBox.width * 0.56, pauseBox.y + 18, 10, pauseBox.height - 36, 4)
     }
   }
 

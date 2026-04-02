@@ -37,6 +37,7 @@ That proof layer uses exact raw-prefix needles mirrored across tutorial families
 The Phaser recovery runtime now consumes those needles per dialogue event, so the active HUD/tutorial target shown on screen is no longer only a family-level guess.
 It now also drives a ghost HUD layer, which makes the currently focused tower bar, mana bar, card tray, menu, or quest panel visible in the stage preview itself.
 The runtime also derives a lightweight gameplay-state summary from the same cue, including current panel, hero mode, objective, and enabled inputs.
+That state summary now also owns persistent preview-side consequences for accepted inputs, including dispatch lane selection, queued-unit count, tower-upgrade tiers, skill/item cooldown gates, quest reward claim state, and pause/resume.
 Keyboard actions in the recovery scene now pass through that summary layer, which lets the preview accept or reject panel, quest, dispatch, production, and hero toggles according to the current tutorial state.
 
 ### Tutorial / UI Guidance Cluster

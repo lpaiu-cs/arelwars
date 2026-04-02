@@ -333,7 +333,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}`
       : null
   const gameplayState = snapshot.gameplayState
-  const gameplayLine = `mode ${gameplayState.mode} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · objective ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
+  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · objective ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
   return `
     <article class="story-card">
       <header class="story-card-header">
