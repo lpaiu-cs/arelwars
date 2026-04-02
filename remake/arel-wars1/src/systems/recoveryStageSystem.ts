@@ -1399,6 +1399,76 @@ export class RecoveryStageSystem {
     }
   }
 
+  private deriveCampaignRouteInfluence(
+    storyboard: RecoveryStageStoryboard | null,
+  ): {
+    preferredRouteLabel: string | null
+    matchesPreferred: boolean
+    commitmentFactor: number
+    queueDelta: number
+    manaDelta: number
+    defenseDelta: number
+    pressureDelta: number
+    cadenceDelta: number
+    heroDelta: number
+    preferredLane: 'upper' | 'lower' | null
+    stanceLabel: string
+  } {
+    const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const preferredRouteLabel = this.campaignPreferredRouteLabel
+    const matchesPreferred = preferredRouteLabel !== null && preferredRouteLabel === routeBias.routeLabel
+    const commitmentFactor = clamp(this.campaignRouteCommitment / 5, 0, 1)
+    const mismatchPenalty = preferredRouteLabel !== null && !matchesPreferred ? commitmentFactor * 0.6 : 0
+
+    const queueDelta =
+      (routeBias.flankingRoute ? 2 : routeBias.directRoute ? 1 : 0) * commitmentFactor
+      - (routeBias.sustainRoute ? 1 : 0) * mismatchPenalty
+    const manaDelta =
+      (routeBias.manaRoute ? 0.12 : routeBias.sustainRoute ? 0.05 : 0) * commitmentFactor
+      - (routeBias.directRoute ? 0.03 : 0) * mismatchPenalty
+    const defenseDelta =
+      (routeBias.sustainRoute ? 0.08 : 0) * commitmentFactor
+      - (routeBias.directRoute ? 0.03 : routeBias.flankingRoute ? 0.02 : 0) * mismatchPenalty
+    const pressureDelta =
+      routeBias.pressureShift * (matchesPreferred ? 1 + commitmentFactor * 0.85 : 1 - mismatchPenalty * 0.5)
+    const cadenceDelta =
+      routeBias.cadenceShift === 0
+        ? 0
+        : routeBias.cadenceShift > 0
+          ? Math.round(routeBias.cadenceShift * (matchesPreferred ? 1 + commitmentFactor : 1 - mismatchPenalty * 0.5))
+          : Math.round(routeBias.cadenceShift * (matchesPreferred ? 1 + commitmentFactor : 1 - mismatchPenalty * 0.5))
+    const heroDelta =
+      routeBias.heroShift * (matchesPreferred ? 1 + commitmentFactor * 0.8 : 1 - mismatchPenalty * 0.45)
+    const preferredLane =
+      matchesPreferred
+        ? routeBias.preferredLane
+        : routeBias.preferredLane === null
+          ? null
+          : routeBias.preferredLane === 'upper'
+            ? 'lower'
+            : 'upper'
+    const stanceLabel =
+      matchesPreferred
+        ? `branch-hold:${preferredRouteLabel ?? 'route-unknown'}`
+        : preferredRouteLabel === null
+          ? `branch-open:${routeBias.routeLabel}`
+          : `branch-contest:${preferredRouteLabel}->${routeBias.routeLabel}`
+
+    return {
+      preferredRouteLabel,
+      matchesPreferred,
+      commitmentFactor,
+      queueDelta,
+      manaDelta,
+      defenseDelta,
+      pressureDelta,
+      cadenceDelta,
+      heroDelta,
+      preferredLane,
+      stanceLabel,
+    }
+  }
+
   private scoreLoadoutForRoute(
     storyboard: RecoveryStageStoryboard,
     loadout: RecoveryStageSnapshot['campaignState']['loadouts'][number],
@@ -2264,7 +2334,8 @@ export class RecoveryStageSystem {
   ): RecoveryBattleWaveDirective[] {
     const stage = storyboard.stageBlueprint
     const routeBias = this.deriveStoryboardRouteBias(storyboard)
-    const favoredLane = routeBias.preferredLane ?? profile.favoredLane ?? 'upper'
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
+    const favoredLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
     const stageTier = stage?.runtimeFields?.tierCandidate ?? 10
     const storyBranch = routeBias.routeLabel
@@ -2300,6 +2371,7 @@ export class RecoveryStageSystem {
           + (highIntensity ? 1 : 0)
           + (role === 'siege' ? 1 : 0)
           + (routeBias.directRoute ? 1 : 0)
+          + (routeInfluence.matchesPreferred && role !== 'screen' ? Math.round(routeInfluence.commitmentFactor) : 0)
           - (routeBias.sustainRoute && role === 'screen' ? 0 : 0),
           1,
           5,
@@ -2308,6 +2380,7 @@ export class RecoveryStageSystem {
           0.04
           + stageTier * 0.002
           + routeBias.pressureShift
+          - routeInfluence.pressureDelta * 0.35
           + (role === 'siege' ? 0.12 : role === 'push' ? 0.08 : role === 'hero-bait' ? 0.06 : 0.04),
           0.04,
           0.36,
@@ -2346,6 +2419,7 @@ export class RecoveryStageSystem {
         1
         + (signals.has('dispatch') ? 1 : 0)
         + (routeBias.directRoute ? 1 : 0)
+        + Math.max(0, Math.round(routeInfluence.queueDelta))
         + (role === 'skill-window' ? 1 : 0)
         + (role === 'siege' ? 1 : 0),
         1,
@@ -2355,6 +2429,7 @@ export class RecoveryStageSystem {
         0.03
         + profile.dispatchBoost * 0.3
         + routeBias.pressureShift
+        + routeInfluence.pressureDelta
         + profile.heroImpact * 0.1
         + (role === 'support' ? 0.03 : role === 'tower-rally' ? 0.04 : role === 'skill-window' ? 0.06 : 0.05),
         0.03,
@@ -3533,29 +3608,44 @@ export class RecoveryStageSystem {
     const archetypeCount = stage?.recommendedArchetypeIds.length ?? 0
     const eventCount = Math.max(storyboard.scriptEventCount, storyboard.scriptEvents.length, 1)
     const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
     const title = stage?.title ?? storyboard.scriptFamilyId
     const hintText = stage?.hintText ?? ''
     const effectIntensity = stage?.renderIntent?.effectIntensity ?? 'medium'
 
     const totalWaveCount = clamp(
-      Math.round(eventCount / 24) + Math.max(Math.round(stageTier / 20), 1) + Math.min(archetypeCount, 2),
+      Math.round(eventCount / 24)
+      + Math.max(Math.round(stageTier / 20), 1)
+      + Math.min(archetypeCount, 2)
+      + (routeInfluence.matchesPreferred && routeBias.directRoute ? 1 : 0)
+      + (routeInfluence.matchesPreferred && routeBias.sustainRoute ? 1 : 0),
       3,
-      8,
+      9,
     )
     const objectiveProgressRatio = clamp(
       0.06
       + (routeBias.flankingRoute ? 0.03 : routeBias.directRoute ? 0.02 : 0.01)
+      + Math.max(routeInfluence.pressureDelta, 0) * 0.35
       + (effectIntensity === 'high' ? 0.03 : effectIntensity === 'medium' ? 0.015 : 0),
       0.04,
-      0.18,
+      0.24,
     )
     const enemyWaveCountdownBeats = Math.max(
       1,
-      profile.enemyWaveCadenceBeats - (effectIntensity === 'high' ? 1 : 0) + Math.max(routeBias.cadenceShift, 0),
+      profile.enemyWaveCadenceBeats
+      - (effectIntensity === 'high' ? 1 : 0)
+      + Math.max(routeBias.cadenceShift, 0)
+      - Math.max(routeInfluence.cadenceDelta, 0),
     )
-    const alliedWaveCountdownBeats = Math.max(1, profile.alliedWaveCadenceBeats + Math.min(routeBias.cadenceShift, 0))
+    const alliedWaveCountdownBeats = Math.max(
+      1,
+      profile.alliedWaveCadenceBeats + Math.min(routeBias.cadenceShift, 0) + Math.min(routeInfluence.cadenceDelta, 0),
+    )
     const enemyWavePlan = this.buildWavePlanForProfile(storyboard, 'enemy', profile, totalWaveCount)
     const alliedWavePlan = this.buildWavePlanForProfile(storyboard, 'allied', profile, totalWaveCount)
+    const routeLabel = routeInfluence.matchesPreferred
+      ? `${routeBias.routeLabel} committed`
+      : routeBias.routeLabel
 
     if (routeBias.directRoute || includesAny(title, ['defeat', 'siege', 'seize', 'enemy camp'])) {
       return {
@@ -3566,7 +3656,7 @@ export class RecoveryStageSystem {
         enemyWavePlan,
         alliedWavePlan,
         phase: 'siege',
-        label: `break the enemy defensive line via ${routeBias.routeLabel}`,
+        label: `break the enemy defensive line via ${routeLabel}`,
       }
     }
     if (routeBias.flankingRoute || includesAny(hintText, ['hero', 'eliminate'])) {
@@ -3578,7 +3668,7 @@ export class RecoveryStageSystem {
         enemyWavePlan,
         alliedWavePlan,
         phase: 'hero-pressure',
-        label: `use the hero to disrupt clustered enemies on the ${routeBias.routeLabel} route`,
+        label: `use the hero to disrupt clustered enemies on the ${routeLabel} route`,
       }
     }
     if (routeBias.sustainRoute || includesAny(hintText, ['bonus', 'reward', 'clear the stage'])) {
@@ -3590,7 +3680,7 @@ export class RecoveryStageSystem {
         enemyWavePlan,
         alliedWavePlan,
         phase: 'lane-control',
-        label: `secure lanes before the ${routeBias.routeLabel} bonus window closes`,
+        label: `secure lanes before the ${routeLabel} bonus window closes`,
       }
     }
 
@@ -3602,7 +3692,7 @@ export class RecoveryStageSystem {
       enemyWavePlan,
       alliedWavePlan,
       phase: 'opening',
-      label: `stabilize the opening lane on the ${routeBias.routeLabel} route`,
+      label: `stabilize the opening lane on the ${routeLabel} route`,
     }
   }
 
@@ -3645,6 +3735,7 @@ export class RecoveryStageSystem {
   ): RecoveryStageSnapshot['campaignState']['loadouts'] {
     const profile = this.deriveStageBattleProfile(storyboard)
     const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
     const favoredLane = profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
     const defaultRoster = ['Vincent', 'Helba', 'Juno']
@@ -3657,23 +3748,66 @@ export class RecoveryStageSystem {
         loadoutIndex: 1,
         id: 'balanced-vanguard',
         label: 'Balanced Vanguard',
-        summary: `${favoredLane} lane stability with one queued unit and neutral tower stance on ${routeBias.routeLabel}`,
+        summary: `${favoredLane} lane stability with one queued unit and neutral tower stance on ${routeBias.routeLabel} / ${routeInfluence.stanceLabel}`,
         recommended: archetypes.length === 0,
-        heroRosterLabel: 'Core Squad',
-        heroRosterRole: 'balanced',
-        heroRosterMembers: defaultRoster,
-        skillPresetLabel: 'Balanced Kit',
-        skillPresetKind: 'balanced',
-        towerPolicyLabel: 'Balanced Towers',
-        towerPolicyKind: 'balanced',
+        heroRosterLabel:
+          routeInfluence.matchesPreferred && routeBias.sustainRoute
+            ? 'Committed Hold Squad'
+            : routeInfluence.matchesPreferred && routeBias.directRoute
+              ? 'Committed Strike Squad'
+              : 'Core Squad',
+        heroRosterRole:
+          routeInfluence.matchesPreferred && routeBias.sustainRoute
+            ? 'defender'
+            : routeInfluence.matchesPreferred && routeBias.directRoute
+              ? 'raider'
+              : 'balanced',
+        heroRosterMembers:
+          routeInfluence.matchesPreferred && routeBias.sustainRoute
+            ? ['Helba', 'Caesar', 'Juno']
+            : routeInfluence.matchesPreferred && routeBias.directRoute
+              ? ['Vincent', 'Manos', 'Rogan']
+              : defaultRoster,
+        skillPresetLabel:
+          routeInfluence.matchesPreferred && routeBias.manaRoute
+            ? 'Committed Arcane Kit'
+            : routeInfluence.matchesPreferred && routeBias.flankingRoute
+              ? 'Committed Orders'
+              : 'Balanced Kit',
+        skillPresetKind:
+          routeInfluence.matchesPreferred && routeBias.manaRoute
+            ? 'utility'
+            : routeInfluence.matchesPreferred && routeBias.flankingRoute
+              ? 'orders'
+              : 'balanced',
+        towerPolicyLabel:
+          routeInfluence.matchesPreferred && routeBias.manaRoute
+            ? 'Committed Mana Towers'
+            : routeInfluence.matchesPreferred && routeBias.sustainRoute
+              ? 'Committed Guard Towers'
+              : 'Balanced Towers',
+        towerPolicyKind:
+          routeInfluence.matchesPreferred && routeBias.manaRoute
+            ? 'mana-first'
+            : routeInfluence.matchesPreferred && routeBias.sustainRoute
+              ? 'attack-first'
+              : 'balanced',
         heroStartMode: 'tower',
         heroLane: null,
-        dispatchLane: favoredLane,
+        dispatchLane: routeInfluence.preferredLane ?? favoredLane,
         openingPanel: null,
-        startingQueue: 1,
-        startingManaRatio: clamp(0.38 + profile.manaSurge * 0.2, 0.24, 0.72),
-        startingManaUpgradeProgressRatio: clamp(0.18 + profile.dispatchBoost * 0.08, 0.08, 0.54),
-        towerUpgrades: { mana: 1, population: 1, attack: 1 },
+        startingQueue: clamp(1 + Math.max(0, Math.round(routeInfluence.queueDelta)), 1, 4),
+        startingManaRatio: clamp(0.38 + profile.manaSurge * 0.2 + routeInfluence.manaDelta, 0.24, 0.82),
+        startingManaUpgradeProgressRatio: clamp(
+          0.18 + profile.dispatchBoost * 0.08 + Math.max(routeInfluence.queueDelta, 0) * 0.03,
+          0.08,
+          0.62,
+        ),
+        towerUpgrades: {
+          mana: routeInfluence.matchesPreferred && routeBias.manaRoute ? 2 : 1,
+          population: routeInfluence.matchesPreferred && routeBias.flankingRoute ? 2 : 1,
+          attack: routeInfluence.matchesPreferred && routeBias.sustainRoute ? 2 : 1,
+        },
       },
     ]
 
@@ -3773,6 +3907,22 @@ export class RecoveryStageSystem {
         summaryParts.push(`specialized stage channel on ${routeBias.routeLabel}`)
       }
 
+      if (routeInfluence.matchesPreferred) {
+        startingQueue += Math.max(0, Math.round(routeInfluence.queueDelta))
+        startingManaRatio += routeInfluence.manaDelta
+        startingManaUpgradeProgressRatio += Math.max(routeInfluence.queueDelta, 0) * 0.04
+        if (routeBias.sustainRoute) {
+          towerUpgrades.attack = Math.max(towerUpgrades.attack, 2)
+        }
+        if (routeBias.manaRoute) {
+          towerUpgrades.mana = Math.max(towerUpgrades.mana, 2)
+        }
+        if (routeBias.flankingRoute) {
+          towerUpgrades.population = Math.max(towerUpgrades.population, 2)
+        }
+        summaryParts.push(routeInfluence.stanceLabel)
+      }
+
       loadouts.push({
         loadoutIndex: loadouts.length + 1,
         id: archetype.archetypeId,
@@ -3815,19 +3965,20 @@ export class RecoveryStageSystem {
     loadout: RecoveryStageSnapshot['campaignState']['loadouts'][number],
   ): void {
     const routeBias = this.deriveStoryboardRouteBias(this.storyboards[this.storyboardIndex] ?? null)
+    const routeInfluence = this.deriveCampaignRouteInfluence(this.storyboards[this.storyboardIndex] ?? null)
     this.activeDeployLoadout = loadout
     this.panelOverride = loadout.openingPanel
-    this.selectedDispatchLane = routeBias.preferredLane ?? loadout.dispatchLane
-    this.queuedUnitCount = loadout.startingQueue
-    this.previewManaRatio = clamp(Math.max(this.previewManaRatio, loadout.startingManaRatio), 0.06, 1)
+    this.selectedDispatchLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? loadout.dispatchLane
+    this.queuedUnitCount = clamp(loadout.startingQueue + Math.max(0, Math.round(routeInfluence.queueDelta)), 0, 5)
+    this.previewManaRatio = clamp(Math.max(this.previewManaRatio, loadout.startingManaRatio + routeInfluence.manaDelta), 0.06, 1)
     this.previewManaUpgradeProgressRatio = clamp(
-      Math.max(this.previewManaUpgradeProgressRatio, loadout.startingManaUpgradeProgressRatio),
+      Math.max(this.previewManaUpgradeProgressRatio, loadout.startingManaUpgradeProgressRatio + Math.max(routeInfluence.queueDelta, 0) * 0.03),
       0.04,
       1,
     )
-    this.towerUpgradeLevels.mana = loadout.towerUpgrades.mana
+    this.towerUpgradeLevels.mana = Math.max(loadout.towerUpgrades.mana, routeInfluence.matchesPreferred && routeBias.manaRoute ? 2 : 1)
     this.towerUpgradeLevels.population = loadout.towerUpgrades.population
-    this.towerUpgradeLevels.attack = loadout.towerUpgrades.attack
+    this.towerUpgradeLevels.attack = Math.max(loadout.towerUpgrades.attack, routeInfluence.matchesPreferred && routeBias.sustainRoute ? 2 : 1)
 
     if (loadout.towerPolicyKind === 'mana-first') {
       this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
@@ -3838,13 +3989,13 @@ export class RecoveryStageSystem {
     }
 
     if (loadout.dispatchLane) {
-      const openingLane = routeBias.preferredLane ?? loadout.dispatchLane
+      const openingLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? loadout.dispatchLane
       this.laneBattleState[openingLane].alliedUnits = Math.min(
-        this.laneBattleState[openingLane].alliedUnits + Math.min(loadout.startingQueue + (routeBias.flankingRoute ? 1 : 0), 3),
+        this.laneBattleState[openingLane].alliedUnits + Math.min(loadout.startingQueue + (routeBias.flankingRoute ? 1 : 0) + Math.max(0, Math.round(routeInfluence.queueDelta)), 4),
         8,
       )
       this.laneBattleState[openingLane].alliedPressure = clamp(
-        this.laneBattleState[openingLane].alliedPressure + loadout.startingQueue * 0.04 + routeBias.pressureShift,
+        this.laneBattleState[openingLane].alliedPressure + loadout.startingQueue * 0.04 + routeBias.pressureShift + routeInfluence.pressureDelta,
         0.08,
         1,
       )
@@ -3862,19 +4013,20 @@ export class RecoveryStageSystem {
 
     if (loadout.heroStartMode === 'field') {
       this.heroOverrideMode = 'field'
-      this.heroAssignedLane = routeBias.preferredLane ?? loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
+      this.heroAssignedLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
       this.laneBattleState[this.heroAssignedLane].heroPresent = true
       this.previewEnemyTowerHpRatio = clamp(
         this.previewEnemyTowerHpRatio
         - 0.05
         - this.currentStageBattleProfile.heroImpact * 0.08
         - routeBias.heroShift
+        - routeInfluence.heroDelta
         - (loadout.heroRosterRole === 'raider' ? 0.03 : loadout.heroRosterRole === 'vanguard' ? 0.02 : 0),
         0.08,
         1,
       )
       if (loadout.heroRosterRole === 'support' || loadout.heroRosterRole === 'defender') {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.05, 0.1, 1)
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.05 + routeInfluence.defenseDelta, 0.1, 1)
       }
     } else {
       this.heroOverrideMode = null
@@ -3887,6 +4039,7 @@ export class RecoveryStageSystem {
     const runtimeFields = stage?.runtimeFields
     const mapBinding = stage?.mapBinding
     const routeBias = this.deriveStoryboardRouteBias(storyboard)
+    const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
     const archetypes = (stage?.recommendedArchetypeIds ?? [])
       .map((archetypeId) => this.featuredArchetypesById.get(archetypeId))
       .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
@@ -3931,7 +4084,8 @@ export class RecoveryStageSystem {
     const stageTier = runtimeFields?.tierCandidate ?? 10
     const effectIntensity = stage?.renderIntent?.effectIntensity ?? 'medium'
     const favoredLane =
-      routeBias.preferredLane
+      routeInfluence.preferredLane
+      ?? routeBias.preferredLane
       ?? (mapBinding?.inlinePairBranchIndexCandidate !== null && mapBinding?.inlinePairBranchIndexCandidate !== undefined
         ? (mapBinding.inlinePairBranchIndexCandidate % 2 === 0 ? 'upper' : 'lower')
         : ((runtimeFields?.variantCandidate ?? 1) % 2 === 0 ? 'lower' : 'upper'))
@@ -3941,26 +4095,42 @@ export class RecoveryStageSystem {
       + activeRowCount * 0.004
       + buffRowCount * 0.003
       + routeBias.pressureShift
+      + routeInfluence.pressureDelta
       + (effectIntensity === 'high' ? 0.05 : effectIntensity === 'medium' ? 0.025 : 0),
       0.16,
-      0.64,
+      0.72,
     )
     const enemyPressureScale = clamp(
       0.22
       + stageTier * 0.006
       + (runtimeFields?.regionCandidate ?? 5) * 0.012
       + (routeBias.directRoute ? 0.03 : routeBias.flankingRoute ? -0.01 : 0)
+      - routeInfluence.pressureDelta * 0.3
       + (runtimeFields?.storyFlagCandidate ?? 0) * 0.04,
       0.2,
       0.72,
     )
     const alliedWaveCadenceBeats = Math.max(
       3,
-      Math.min(7, 7 - Math.floor(Math.min(activeRowCount, 12) / 3) - (signalSet.has('dispatch') ? 1 : 0) + Math.max(routeBias.cadenceShift, 0)),
+      Math.min(
+        7,
+        7
+        - Math.floor(Math.min(activeRowCount, 12) / 3)
+        - (signalSet.has('dispatch') ? 1 : 0)
+        + Math.max(routeBias.cadenceShift, 0)
+        + Math.min(routeInfluence.cadenceDelta, 0),
+      ),
     )
-    const enemyWaveCadenceBeats = Math.max(3, Math.min(7, 7 - Math.floor(stageTier / 15) + Math.min(routeBias.cadenceShift, 0)))
-    const heroImpact = clamp(0.1 + exactTailHitCount * 0.028 + buffRowCount * 0.008 + recallSwing * 0.12 + routeBias.heroShift, 0.1, 0.36)
-    const tacticalBias = `${mapBinding?.storyBranch ?? 'branch-unknown'} / ${favoredLane} initiative / ${routeBias.routeLabel}${signalSet.size > 0 ? ` / ${Array.from(signalSet).join('+')}` : ''}`
+    const enemyWaveCadenceBeats = Math.max(
+      3,
+      Math.min(7, 7 - Math.floor(stageTier / 15) + Math.min(routeBias.cadenceShift, 0) - Math.max(routeInfluence.cadenceDelta, 0)),
+    )
+    const heroImpact = clamp(
+      0.1 + exactTailHitCount * 0.028 + buffRowCount * 0.008 + recallSwing * 0.12 + routeBias.heroShift + routeInfluence.heroDelta,
+      0.1,
+      0.42,
+    )
+    const tacticalBias = `${mapBinding?.storyBranch ?? 'branch-unknown'} / ${favoredLane} initiative / ${routeBias.routeLabel} / ${routeInfluence.stanceLabel}${signalSet.size > 0 ? ` / ${Array.from(signalSet).join('+')}` : ''}`
     return {
       label: `${stage?.title ?? storyboard.scriptFamilyId} / tier ${stageTier}`,
       favoredLane,
