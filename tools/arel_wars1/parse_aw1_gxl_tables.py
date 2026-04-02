@@ -249,6 +249,98 @@ def parse_xls_tower(rows: list[bytes]) -> dict[str, Any]:
     }
 
 
+def parse_xls_hero_ai(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "heroIdCandidate": row[0],
+                "profileGroupCandidate": row[1],
+                "priorityGridU8": list(row[2:16]),
+                "timingPatternU8": list(row[16:24]),
+                "fallbackPatternU8": list(row[24:34]),
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsHero_Ai",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_skill_ai(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "skillIdCandidate": row[0],
+                "triggerWindowA": list(row[1:6]),
+                "triggerWindowB": list(row[6:11]),
+                "tailModeBytes": list(row[11:13]),
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsSkill_Ai",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_projectile(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "familyCandidate": row[0],
+                "projectileIdCandidate": row[1],
+                "variantCandidate": row[2],
+                "speedOrRangeCandidate": row[3],
+                "motionCandidate": row[4],
+                "tailBlockU8": list(row[5:13]),
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsProjectile",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
+def parse_xls_effect(rows: list[bytes]) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        records.append(
+            {
+                "index": index,
+                "familyCandidate": row[0],
+                "effectIdCandidate": row[1],
+                "variantCandidate": row[2],
+                "frameOrDurationCandidate": row[3],
+                "loopFlagCandidate": row[4],
+                "blendFlagCandidate": row[5],
+                "extraModeCandidate": row[6],
+                "sentinelCandidate": row[7],
+                "tailByte": row[8],
+                "rawU8": list(row),
+            }
+        )
+    return {
+        "table": "XlsEffect",
+        "rowSize": len(rows[0]) if rows else 0,
+        "rowCount": len(records),
+        "records": records,
+    }
+
+
 def build_summary(
     ai_report: dict[str, Any],
     worldmap_report: dict[str, Any],
@@ -257,6 +349,10 @@ def build_summary(
     hero_report: dict[str, Any],
     unit_report: dict[str, Any],
     tower_report: dict[str, Any],
+    hero_ai_report: dict[str, Any],
+    skill_ai_report: dict[str, Any],
+    projectile_report: dict[str, Any],
+    effect_report: dict[str, Any],
 ) -> dict[str, Any]:
     ai_records = ai_report["records"]
     map_records = map_report["records"]
@@ -309,6 +405,40 @@ def build_summary(
             "rowCount": tower_report["rowCount"],
             "pairs": [record["pair"] for record in tower_report["records"]],
         },
+        "heroAi": {
+            "rowCount": hero_ai_report["rowCount"],
+            "heroIdCandidates": [
+                record["heroIdCandidate"] for record in hero_ai_report["records"]
+            ],
+        },
+        "skillAi": {
+            "rowCount": skill_ai_report["rowCount"],
+            "skillIdCandidates": [
+                record["skillIdCandidate"] for record in skill_ai_report["records"][:16]
+            ],
+        },
+        "projectile": {
+            "rowCount": projectile_report["rowCount"],
+            "familyHistogram": {
+                str(value): sum(
+                    1 for record in projectile_report["records"] if record["familyCandidate"] == value
+                )
+                for value in sorted(
+                    {record["familyCandidate"] for record in projectile_report["records"]}
+                )
+            },
+        },
+        "effect": {
+            "rowCount": effect_report["rowCount"],
+            "familyHistogram": {
+                str(value): sum(
+                    1 for record in effect_report["records"] if record["familyCandidate"] == value
+                )
+                for value in sorted(
+                    {record["familyCandidate"] for record in effect_report["records"]}
+                )
+            },
+        },
     }
 
 
@@ -324,6 +454,10 @@ def main() -> None:
     hero = read_gxl(assets_root / "data_eng" / "XlsHero.zt1.bin")
     unit = read_gxl(assets_root / "data_eng" / "XlsUnit.zt1.bin")
     tower = read_gxl(assets_root / "data_eng" / "XlsTower.zt1.bin")
+    hero_ai = read_gxl(assets_root / "data_eng" / "XlsHero_Ai.zt1.bin")
+    skill_ai = read_gxl(assets_root / "data_eng" / "XlsSkill_Ai.zt1.bin")
+    projectile = read_gxl(assets_root / "data_eng" / "XlsProjectile.zt1.bin")
+    effect = read_gxl(assets_root / "data_eng" / "XlsEffect.zt1.bin")
 
     ai_report = parse_xls_ai_eng(ai["rows"])
     worldmap_report = parse_xls_worldmap(worldmap["rows"])
@@ -332,6 +466,10 @@ def main() -> None:
     hero_report = parse_xls_hero_eng(hero["rows"])
     unit_report = parse_xls_unit_eng(unit["rows"])
     tower_report = parse_xls_tower(tower["rows"])
+    hero_ai_report = parse_xls_hero_ai(hero_ai["rows"])
+    skill_ai_report = parse_xls_skill_ai(skill_ai["rows"])
+    projectile_report = parse_xls_projectile(projectile["rows"])
+    effect_report = parse_xls_effect(effect["rows"])
 
     write_json(output_dir / "XlsAi.eng.parsed.json", ai_report)
     write_json(output_dir / "XlsWorldmap.eng.parsed.json", worldmap_report)
@@ -340,6 +478,10 @@ def main() -> None:
     write_json(output_dir / "XlsHero.eng.parsed.json", hero_report)
     write_json(output_dir / "XlsUnit.eng.parsed.json", unit_report)
     write_json(output_dir / "XlsTower.eng.parsed.json", tower_report)
+    write_json(output_dir / "XlsHero_Ai.eng.parsed.json", hero_ai_report)
+    write_json(output_dir / "XlsSkill_Ai.eng.parsed.json", skill_ai_report)
+    write_json(output_dir / "XlsProjectile.eng.parsed.json", projectile_report)
+    write_json(output_dir / "XlsEffect.eng.parsed.json", effect_report)
     write_json(
         output_dir / "AW1.gxl.summary.json",
         build_summary(
@@ -350,6 +492,10 @@ def main() -> None:
             hero_report,
             unit_report,
             tower_report,
+            hero_ai_report,
+            skill_ai_report,
+            projectile_report,
+            effect_report,
         ),
     )
 

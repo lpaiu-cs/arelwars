@@ -117,6 +117,10 @@ References:
     - `XlsMap.eng`
     - `XlsLevelDesign.eng`
     - `XlsHero.eng`
+    - `XlsHero_Ai.eng`
+    - `XlsSkill_Ai.eng`
+    - `XlsProjectile.eng`
+    - `XlsEffect.eng`
   - current cross-correlation outputs now exist for:
     - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
     - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
@@ -168,6 +172,11 @@ References:
    - `script family / XlsAi row`
    - `tierCandidate / variantCandidate / regionCandidate`
    - concrete `assets/map/*.zt1` payload selection
+5. Continue promoting compact battle tables into runtime-ready schemas:
+   - hero AI
+   - skill AI
+   - projectile definitions
+   - effect definitions
 
 ## First Opcode Findings
 

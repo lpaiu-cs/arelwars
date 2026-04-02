@@ -1,0 +1,895 @@
+{
+  "table": "XlsSkill_Ai",
+  "rowSize": 13,
+  "rowCount": 24,
+  "records": [
+    {
+      "index": 0,
+      "skillIdCandidate": 11,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        50,
+        80
+      ],
+      "triggerWindowB": [
+        206,
+        226,
+        0,
+        30,
+        50
+      ],
+      "tailModeBytes": [
+        253,
+        3
+      ],
+      "rawU8": [
+        11,
+        0,
+        0,
+        0,
+        50,
+        80,
+        206,
+        226,
+        0,
+        30,
+        50,
+        253,
+        3
+      ]
+    },
+    {
+      "index": 1,
+      "skillIdCandidate": 9,
+      "triggerWindowA": [
+        0,
+        10,
+        10,
+        30,
+        50
+      ],
+      "triggerWindowB": [
+        0,
+        10,
+        10,
+        30,
+        50
+      ],
+      "tailModeBytes": [
+        0,
+        3
+      ],
+      "rawU8": [
+        9,
+        0,
+        10,
+        10,
+        30,
+        50,
+        0,
+        10,
+        10,
+        30,
+        50,
+        0,
+        3
+      ]
+    },
+    {
+      "index": 2,
+      "skillIdCandidate": 15,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "tailModeBytes": [
+        254,
+        3
+      ],
+      "rawU8": [
+        15,
+        0,
+        0,
+        0,
+        30,
+        50,
+        0,
+        0,
+        0,
+        30,
+        50,
+        254,
+        3
+      ]
+    },
+    {
+      "index": 3,
+      "skillIdCandidate": 8,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "tailModeBytes": [
+        253,
+        3
+      ],
+      "rawU8": [
+        8,
+        0,
+        0,
+        0,
+        30,
+        50,
+        0,
+        0,
+        0,
+        30,
+        50,
+        253,
+        3
+      ]
+    },
+    {
+      "index": 4,
+      "skillIdCandidate": 12,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "tailModeBytes": [
+        253,
+        3
+      ],
+      "rawU8": [
+        12,
+        0,
+        0,
+        0,
+        30,
+        50,
+        0,
+        0,
+        0,
+        30,
+        50,
+        253,
+        3
+      ]
+    },
+    {
+      "index": 5,
+      "skillIdCandidate": 10,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "tailModeBytes": [
+        253,
+        3
+      ],
+      "rawU8": [
+        10,
+        0,
+        0,
+        0,
+        30,
+        50,
+        0,
+        0,
+        0,
+        30,
+        50,
+        253,
+        3
+      ]
+    },
+    {
+      "index": 6,
+      "skillIdCandidate": 14,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        30,
+        50
+      ],
+      "tailModeBytes": [
+        253,
+        3
+      ],
+      "rawU8": [
+        14,
+        0,
+        0,
+        0,
+        30,
+        50,
+        0,
+        0,
+        0,
+        30,
+        50,
+        253,
+        3
+      ]
+    },
+    {
+      "index": 7,
+      "skillIdCandidate": 13,
+      "triggerWindowA": [
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "triggerWindowB": [
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "tailModeBytes": [
+        3,
+        3
+      ],
+      "rawU8": [
+        13,
+        20,
+        30,
+        40,
+        50,
+        60,
+        20,
+        30,
+        40,
+        50,
+        60,
+        3,
+        3
+      ]
+    },
+    {
+      "index": 8,
+      "skillIdCandidate": 29,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        0,
+        10
+      ],
+      "rawU8": [
+        29,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        10
+      ]
+    },
+    {
+      "index": 9,
+      "skillIdCandidate": 27,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        253,
+        5
+      ],
+      "rawU8": [
+        27,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        253,
+        5
+      ]
+    },
+    {
+      "index": 10,
+      "skillIdCandidate": 25,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        253,
+        5
+      ],
+      "rawU8": [
+        25,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        253,
+        5
+      ]
+    },
+    {
+      "index": 11,
+      "skillIdCandidate": 31,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        253,
+        5
+      ],
+      "rawU8": [
+        31,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        253,
+        5
+      ]
+    },
+    {
+      "index": 12,
+      "skillIdCandidate": 26,
+      "triggerWindowA": [
+        50,
+        30,
+        0,
+        226,
+        206
+      ],
+      "triggerWindowB": [
+        50,
+        30,
+        0,
+        226,
+        206
+      ],
+      "tailModeBytes": [
+        253,
+        5
+      ],
+      "rawU8": [
+        26,
+        50,
+        30,
+        0,
+        226,
+        206,
+        50,
+        30,
+        0,
+        226,
+        206,
+        253,
+        5
+      ]
+    },
+    {
+      "index": 13,
+      "skillIdCandidate": 24,
+      "triggerWindowA": [
+        50,
+        30,
+        0,
+        226,
+        206
+      ],
+      "triggerWindowB": [
+        50,
+        30,
+        0,
+        226,
+        206
+      ],
+      "tailModeBytes": [
+        253,
+        5
+      ],
+      "rawU8": [
+        24,
+        50,
+        30,
+        0,
+        226,
+        206,
+        50,
+        30,
+        0,
+        226,
+        206,
+        253,
+        5
+      ]
+    },
+    {
+      "index": 14,
+      "skillIdCandidate": 30,
+      "triggerWindowA": [
+        50,
+        30,
+        0,
+        226,
+        206
+      ],
+      "triggerWindowB": [
+        50,
+        30,
+        0,
+        226,
+        206
+      ],
+      "tailModeBytes": [
+        5,
+        0
+      ],
+      "rawU8": [
+        30,
+        50,
+        30,
+        0,
+        226,
+        206,
+        50,
+        30,
+        0,
+        226,
+        206,
+        5,
+        0
+      ]
+    },
+    {
+      "index": 15,
+      "skillIdCandidate": 28,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        50,
+        80
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        50,
+        80
+      ],
+      "tailModeBytes": [
+        0,
+        5
+      ],
+      "rawU8": [
+        28,
+        0,
+        0,
+        0,
+        50,
+        80,
+        0,
+        0,
+        0,
+        50,
+        80,
+        0,
+        5
+      ]
+    },
+    {
+      "index": 16,
+      "skillIdCandidate": 44,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        5,
+        5
+      ],
+      "rawU8": [
+        44,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        5
+      ]
+    },
+    {
+      "index": 17,
+      "skillIdCandidate": 45,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        50,
+        80
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        50,
+        80
+      ],
+      "tailModeBytes": [
+        0,
+        3
+      ],
+      "rawU8": [
+        45,
+        0,
+        0,
+        0,
+        50,
+        80,
+        0,
+        0,
+        0,
+        50,
+        80,
+        0,
+        3
+      ]
+    },
+    {
+      "index": 18,
+      "skillIdCandidate": 42,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        0,
+        0
+      ],
+      "rawU8": [
+        42,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "index": 19,
+      "skillIdCandidate": 46,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        5,
+        253
+      ],
+      "rawU8": [
+        46,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        253
+      ]
+    },
+    {
+      "index": 20,
+      "skillIdCandidate": 41,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        5,
+        0
+      ],
+      "rawU8": [
+        41,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0
+      ]
+    },
+    {
+      "index": 21,
+      "skillIdCandidate": 40,
+      "triggerWindowA": [
+        70,
+        50,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        70,
+        50,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        3,
+        0
+      ],
+      "rawU8": [
+        40,
+        70,
+        50,
+        0,
+        0,
+        0,
+        70,
+        50,
+        0,
+        0,
+        0,
+        3,
+        0
+      ]
+    },
+    {
+      "index": 22,
+      "skillIdCandidate": 43,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        3,
+        251
+      ],
+      "rawU8": [
+        43,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        251
+      ]
+    },
+    {
+      "index": 23,
+      "skillIdCandidate": 47,
+      "triggerWindowA": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "triggerWindowB": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tailModeBytes": [
+        253,
+        5
+      ],
+      "rawU8": [
+        47,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        253,
+        5
+      ]
+    }
+  ]
+}

@@ -12,6 +12,11 @@ Primary outputs:
 - [XlsAi.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsAi.eng.json)
 - parsed exports under [parsed_tables](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables)
 - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+- [AW1.runtime_field_reuse_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_field_reuse_scan.json)
+
+`AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
+It did not yet reveal a hard `stage -> map payload` pointer on its own.
+Its main value so far is that it elevates `XlsHero_Ai`, `XlsSkill_Ai`, `XlsProjectile`, and `XlsEffect` as the best next typed-schema targets.
 
 ## Current Header Model
 
@@ -199,6 +204,63 @@ Evidence:
 - Current graph is a simple linear chain:
   - `0 <-> 1 <-> 2 <-> 3 <-> ... <-> 15`
 
+### XlsHero_Ai
+
+- English parsed export now exists under [`XlsHero_Ai.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsHero_Ai.eng.parsed.json).
+- Current practical slot model:
+  - byte `0`: `heroIdCandidate`
+  - byte `1`: `profileGroupCandidate`
+  - bytes `2..15`: compact priority grid
+  - bytes `16..23`: timing pattern
+  - bytes `24..33`: fallback pattern
+- Strongest current reading:
+  - rows are grouped by hero id
+  - hero ids `0..5` line up with the parsed hero roster in `XlsHero.eng.parsed.json`
+  - the repeated `10/20/30/50/100` cadence values look like AI timing or trigger thresholds rather than content ids
+
+### XlsSkill_Ai
+
+- English parsed export now exists under [`XlsSkill_Ai.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsSkill_Ai.eng.parsed.json).
+- Current practical slot model:
+  - byte `0`: `skillIdCandidate`
+  - bytes `1..5`: trigger window A
+  - bytes `6..10`: trigger window B
+  - bytes `11..12`: tail mode bytes
+- Strongest current reading:
+  - this is a compact skill-trigger policy table
+  - repeated `30/50`, `20/30/50/60`, and tail markers `0xfd/0xfe` look like cooldown or threshold presets
+
+### XlsProjectile
+
+- English parsed export now exists under [`XlsProjectile.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsProjectile.eng.parsed.json).
+- Current practical slot model:
+  - byte `0`: `familyCandidate`
+  - byte `1`: `projectileIdCandidate`
+  - byte `2`: `variantCandidate`
+  - byte `3`: `speedOrRangeCandidate`
+  - byte `4`: `motionCandidate`
+  - bytes `5..12`: tail block with sentinel-heavy metadata
+- Strongest current reading:
+  - this table is small, fixed, and highly likely to be the projectile runtime definition table
+  - `0xff`-heavy tail fields suggest optional effect/sound links or unused slots
+
+### XlsEffect
+
+- English parsed export now exists under [`XlsEffect.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsEffect.eng.parsed.json).
+- Current practical slot model:
+  - byte `0`: `familyCandidate`
+  - byte `1`: `effectIdCandidate`
+  - byte `2`: `variantCandidate`
+  - byte `3`: `frameOrDurationCandidate`
+  - byte `4`: `loopFlagCandidate`
+  - byte `5`: `blendFlagCandidate`
+  - byte `6`: `extraModeCandidate`
+  - byte `7`: sentinel, usually `0xff`
+  - byte `8`: tail byte
+- Strongest current reading:
+  - this is a compact effect playback definition table rather than a content string table
+  - early rows look like family-indexed effect variants with one-byte loop/blend flags
+
 ### XlsUnit
 
 - English parsed export now exists under [`XlsUnit.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsUnit.eng.parsed.json).
@@ -230,4 +292,4 @@ Evidence:
 1. Compare `XlsAi` English/Korean rows to isolate localized byte spans from numeric byte spans.
 2. Correlate `XlsAi` row order with story/stage order from script files.
 3. Use the new `tier/variant/region/storyFlag` candidates to search the remaining battle/runtime payloads for the first hard stage-to-map pointer.
-4. Promote the current parsed exports into stronger typed schemas instead of `candidate` / `unknown` fields.
+4. Promote `XlsHero_Ai`, `XlsSkill_Ai`, `XlsProjectile`, and `XlsEffect` from byte-block candidates to named gameplay schemas.
