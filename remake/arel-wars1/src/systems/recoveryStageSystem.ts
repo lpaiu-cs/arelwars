@@ -277,6 +277,8 @@ export class RecoveryStageSystem {
 
   private campaignSelectedNodeIndex = 0
 
+  private campaignSelectedLoadoutIndex = 0
+
   private campaignScenePhase: RecoveryStageSnapshot['campaignState']['scenePhase'] = 'battle'
 
   private campaignWorldmapAutoEnterAtMs = 0
@@ -288,6 +290,8 @@ export class RecoveryStageSystem {
   private campaignLastResolvedStageTitle: string | null = null
 
   private campaignLastOutcome: 'victory' | 'defeat' | null = null
+
+  private activeDeployLoadoutLabel: string | null = null
 
   private lastActionId: RecoveryGameplayActionId | null = null
 
@@ -312,6 +316,11 @@ export class RecoveryStageSystem {
     this.storyboards = buildStoryboards(catalog, previewManifest, runtimeBlueprint)
     if (this.storyboards.length > 0) {
       this.seedBattlePreviewState(this.storyboards[0])
+      const initialLoadout = this.resolveSelectedDeployLoadout(this.storyboards[0])
+      if (initialLoadout) {
+        this.applyDeployLoadout(initialLoadout)
+        this.activeDeployLoadoutLabel = initialLoadout.label
+      }
     }
   }
 
@@ -358,11 +367,44 @@ export class RecoveryStageSystem {
     }
 
     this.campaignSelectedNodeIndex = nextIndex
+    this.campaignSelectedLoadoutIndex = 0
     if (this.campaignScenePhase === 'worldmap') {
       this.campaignWorldmapAutoEnterAtMs = this.lastUpdateNowMs + WORLDMAP_HOLD_MS
     }
     const target = this.storyboards[nextIndex]
     this.lastActionNote = `campaign route selected: ${target?.stageBlueprint?.title ?? target?.scriptPath ?? `node ${nextIndex + 1}`}`
+    this.version += 1
+    return true
+  }
+
+  moveCampaignLoadout(direction: -1 | 1): boolean {
+    if (!this.isReady()) {
+      return false
+    }
+
+    if (this.campaignScenePhase === 'battle' && !this.battlePaused) {
+      this.lastActionNote = 'deploy loadout selection is unavailable during active battle'
+      this.version += 1
+      return false
+    }
+
+    const storyboard = this.storyboards[clamp(this.campaignSelectedNodeIndex, 0, Math.max(this.campaignUnlockedStageCount, 1) - 1)]
+    if (!storyboard) {
+      return false
+    }
+
+    const loadouts = this.buildDeployLoadouts(storyboard)
+    const nextIndex = clamp(this.campaignSelectedLoadoutIndex + direction, 0, loadouts.length - 1)
+    if (nextIndex === this.campaignSelectedLoadoutIndex) {
+      return false
+    }
+
+    this.campaignSelectedLoadoutIndex = nextIndex
+    if (this.campaignScenePhase === 'deploy-briefing') {
+      this.campaignDeployBriefingEndsAtMs = this.lastUpdateNowMs + DEPLOY_BRIEFING_MS
+    }
+    const target = loadouts[nextIndex]
+    this.lastActionNote = `deploy loadout selected: ${target.label}`
     this.version += 1
     return true
   }
@@ -588,6 +630,7 @@ export class RecoveryStageSystem {
     } else {
       this.campaignSelectedNodeIndex = clamp(this.storyboardIndex, 0, unlockedCount - 1)
     }
+    this.campaignSelectedLoadoutIndex = 0
     this.campaignScenePhase = 'worldmap'
     this.campaignWorldmapAutoEnterAtMs = nowMs + WORLDMAP_HOLD_MS
     this.campaignDeployBriefingEndsAtMs = 0
@@ -599,6 +642,8 @@ export class RecoveryStageSystem {
     this.battlePaused = false
     this.pauseStartedAtMs = 0
     this.campaignSelectedNodeIndex = clamp(index, 0, unlockedCount - 1)
+    const loadoutCount = this.buildDeployLoadouts(this.storyboards[this.campaignSelectedNodeIndex] ?? this.storyboards[0]).length
+    this.campaignSelectedLoadoutIndex = clamp(this.campaignSelectedLoadoutIndex, 0, Math.max(loadoutCount - 1, 0))
     this.campaignScenePhase = 'deploy-briefing'
     this.campaignWorldmapAutoEnterAtMs = 0
     this.campaignDeployBriefingEndsAtMs = nowMs + DEPLOY_BRIEFING_MS
@@ -607,6 +652,15 @@ export class RecoveryStageSystem {
 
   private launchCampaignNodeNow(index: number, nowMs: number): void {
     this.activateStoryboard(index, nowMs, Math.round(STORYBOARD_GAP_MS / 5))
+    const storyboard = this.storyboards[index]
+    const loadout = storyboard ? this.resolveSelectedDeployLoadout(storyboard) : null
+    if (loadout) {
+      this.applyDeployLoadout(loadout)
+      this.activeDeployLoadoutLabel = loadout.label
+      this.lastActionNote = `campaign node launched: ${this.storyboardLabel(index)} with ${loadout.label}`
+      return
+    }
+    this.activeDeployLoadoutLabel = null
     this.lastActionNote = `campaign node launched: ${this.storyboardLabel(index)}`
   }
 
@@ -619,6 +673,9 @@ export class RecoveryStageSystem {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     const selectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
     const selectedStoryboard = this.storyboards[selectedNodeIndex] ?? currentStoryboard
+    const loadouts = this.buildDeployLoadouts(selectedStoryboard)
+    const selectedLoadoutIndex = clamp(this.campaignSelectedLoadoutIndex, 0, Math.max(loadouts.length - 1, 0))
+    const selectedLoadout = loadouts[selectedLoadoutIndex] ?? loadouts[0]
     const selectedBriefing = this.buildCampaignBriefing(selectedStoryboard)
     const activeStageTitle = currentStoryboard.stageBlueprint?.title ?? currentStoryboard.scriptPath
     const nextUnlock = this.campaignUnlockedStageCount < this.storyboards.length
@@ -647,6 +704,7 @@ export class RecoveryStageSystem {
     return {
       currentNodeIndex: this.storyboardIndex + 1,
       selectedNodeIndex: selectedNodeIndex + 1,
+      selectedLoadoutIndex: selectedLoadoutIndex + 1,
       unlockedNodeCount: unlockedCount,
       clearedStageCount: this.campaignClearedStoryboardIds.size,
       totalNodeCount: this.storyboards.length,
@@ -664,7 +722,10 @@ export class RecoveryStageSystem {
       selectedRouteLabel: selectedStoryboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
       selectedHintText: selectedStoryboard.stageBlueprint?.hintText ?? null,
       selectedRewardText: selectedStoryboard.stageBlueprint?.rewardText ?? null,
+      selectedLoadoutLabel: selectedLoadout?.label ?? 'Balanced Vanguard',
+      activeLoadoutLabel: this.activeDeployLoadoutLabel,
       briefing: selectedBriefing,
+      loadouts,
       nodes: this.storyboards.map((storyboard, index) => ({
         nodeIndex: index + 1,
         label: storyboard.stageBlueprint?.title ?? storyboard.scriptPath.replace('assets/', ''),
@@ -2251,6 +2312,204 @@ export class RecoveryStageSystem {
     }
   }
 
+  private deriveArchetypeSignals(
+    archetype: RecoveryRuntimeBlueprint['featuredArchetypes'][number],
+  ): Set<string> {
+    const signalSet = new Set<string>()
+    const haystacks = [
+      archetype.label,
+      archetype.archetypeKind,
+      archetype.familyType,
+      ...archetype.mechanicHints,
+    ]
+    const joined = haystacks.join(' ').toLowerCase()
+
+    if (includesAny(joined, ['dispatch', 'redeploy', 'respawn'])) {
+      signalSet.add('dispatch')
+    }
+    if (includesAny(joined, ['tower defense', 'defend tower', 'barrier'])) {
+      signalSet.add('tower-defense')
+    }
+    if (includesAny(joined, ['recall', 'relocation'])) {
+      signalSet.add('recall')
+    }
+    if (includesAny(joined, ['armageddon', 'meteor'])) {
+      signalSet.add('armageddon')
+    }
+    if (includesAny(joined, ['mana', 'resource-conversion', 'mana gain', 'reactive-mana-proc'])) {
+      signalSet.add('mana-surge')
+    }
+    if (includesAny(joined, ['heal', 'healing'])) {
+      signalSet.add('healing')
+    }
+
+    return signalSet
+  }
+
+  private buildDeployLoadouts(
+    storyboard: RecoveryStageStoryboard,
+  ): RecoveryStageSnapshot['campaignState']['loadouts'] {
+    const profile = this.deriveStageBattleProfile(storyboard)
+    const favoredLane = profile.favoredLane ?? 'upper'
+    const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
+    const archetypes = (storyboard.stageBlueprint?.recommendedArchetypeIds ?? [])
+      .map((archetypeId) => this.featuredArchetypesById.get(archetypeId))
+      .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
+
+    const loadouts: RecoveryStageSnapshot['campaignState']['loadouts'] = [
+      {
+        loadoutIndex: 1,
+        id: 'balanced-vanguard',
+        label: 'Balanced Vanguard',
+        summary: `${favoredLane} lane stability with one queued unit and neutral tower stance`,
+        recommended: archetypes.length === 0,
+        heroStartMode: 'tower',
+        heroLane: null,
+        dispatchLane: favoredLane,
+        openingPanel: null,
+        startingQueue: 1,
+        startingManaRatio: clamp(0.38 + profile.manaSurge * 0.2, 0.24, 0.72),
+        startingManaUpgradeProgressRatio: clamp(0.18 + profile.dispatchBoost * 0.08, 0.08, 0.54),
+        towerUpgrades: { mana: 1, population: 1, attack: 1 },
+      },
+    ]
+
+    archetypes.forEach((archetype) => {
+      const signals = this.deriveArchetypeSignals(archetype)
+      const towerUpgrades = { mana: 1, population: 1, attack: 1 }
+      let heroStartMode: 'tower' | 'field' = 'tower'
+      let heroLane: 'upper' | 'lower' | null = null
+      let dispatchLane: 'upper' | 'lower' | null = favoredLane
+      let openingPanel: 'tower' | 'skill' | 'item' | null = null
+      let startingQueue = 1
+      let startingManaRatio = 0.34
+      let startingManaUpgradeProgressRatio = 0.16
+      const summaryParts: string[] = []
+
+      if (signals.has('dispatch')) {
+        startingQueue += 2
+        dispatchLane = favoredLane
+        summaryParts.push(`${favoredLane} lane opening push`)
+      }
+      if (signals.has('tower-defense')) {
+        towerUpgrades.attack = 2
+        towerUpgrades.population = 2
+        openingPanel = 'tower'
+        summaryParts.push('reinforced tower line')
+      }
+      if (signals.has('mana-surge')) {
+        towerUpgrades.mana = 2
+        startingManaRatio += 0.22
+        startingManaUpgradeProgressRatio += 0.16
+        if (!openingPanel) {
+          openingPanel = 'tower'
+        }
+        summaryParts.push('high mana opening')
+      }
+      if (signals.has('armageddon')) {
+        startingManaRatio += 0.18
+        openingPanel = 'skill'
+        summaryParts.push('skill burst primed')
+      }
+      if (signals.has('recall')) {
+        heroStartMode = 'field'
+        heroLane = supportLane
+        dispatchLane = supportLane
+        summaryParts.push(`${supportLane} lane hero anchor`)
+      }
+      if (signals.has('healing')) {
+        towerUpgrades.population = Math.max(towerUpgrades.population, 2)
+        startingManaUpgradeProgressRatio += 0.08
+        summaryParts.push('healing buffer')
+      }
+      if (summaryParts.length === 0) {
+        summaryParts.push('specialized stage channel')
+      }
+
+      loadouts.push({
+        loadoutIndex: loadouts.length + 1,
+        id: archetype.archetypeId,
+        label: archetype.label,
+        summary: summaryParts.join(' / '),
+        recommended: true,
+        heroStartMode,
+        heroLane,
+        dispatchLane,
+        openingPanel,
+        startingQueue: clamp(startingQueue, 0, 4),
+        startingManaRatio: clamp(startingManaRatio, 0.18, 0.92),
+        startingManaUpgradeProgressRatio: clamp(startingManaUpgradeProgressRatio, 0.08, 0.88),
+        towerUpgrades,
+      })
+    })
+
+    return loadouts
+  }
+
+  private resolveSelectedDeployLoadout(
+    storyboard: RecoveryStageStoryboard,
+  ): RecoveryStageSnapshot['campaignState']['loadouts'][number] | null {
+    const loadouts = this.buildDeployLoadouts(storyboard)
+    if (loadouts.length === 0) {
+      return null
+    }
+    const index = clamp(this.campaignSelectedLoadoutIndex, 0, loadouts.length - 1)
+    return loadouts[index] ?? loadouts[0] ?? null
+  }
+
+  private applyDeployLoadout(
+    loadout: RecoveryStageSnapshot['campaignState']['loadouts'][number],
+  ): void {
+    this.panelOverride = loadout.openingPanel
+    this.selectedDispatchLane = loadout.dispatchLane
+    this.queuedUnitCount = loadout.startingQueue
+    this.previewManaRatio = clamp(Math.max(this.previewManaRatio, loadout.startingManaRatio), 0.06, 1)
+    this.previewManaUpgradeProgressRatio = clamp(
+      Math.max(this.previewManaUpgradeProgressRatio, loadout.startingManaUpgradeProgressRatio),
+      0.04,
+      1,
+    )
+    this.towerUpgradeLevels.mana = loadout.towerUpgrades.mana
+    this.towerUpgradeLevels.population = loadout.towerUpgrades.population
+    this.towerUpgradeLevels.attack = loadout.towerUpgrades.attack
+
+    if (loadout.dispatchLane) {
+      this.laneBattleState[loadout.dispatchLane].alliedUnits = Math.min(
+        this.laneBattleState[loadout.dispatchLane].alliedUnits + Math.min(loadout.startingQueue, 2),
+        8,
+      )
+      this.laneBattleState[loadout.dispatchLane].alliedPressure = clamp(
+        this.laneBattleState[loadout.dispatchLane].alliedPressure + loadout.startingQueue * 0.04,
+        0.08,
+        1,
+      )
+    }
+
+    if (loadout.towerUpgrades.attack > 1 || loadout.towerUpgrades.population > 1) {
+      const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06, 0.12, 1)
+      this.laneBattleState[guardLane].enemyPressure = clamp(
+        this.laneBattleState[guardLane].enemyPressure - 0.06,
+        0.08,
+        1,
+      )
+    }
+
+    if (loadout.heroStartMode === 'field') {
+      this.heroOverrideMode = 'field'
+      this.heroAssignedLane = loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
+      this.laneBattleState[this.heroAssignedLane].heroPresent = true
+      this.previewEnemyTowerHpRatio = clamp(
+        this.previewEnemyTowerHpRatio - 0.05 - this.currentStageBattleProfile.heroImpact * 0.08,
+        0.08,
+        1,
+      )
+    } else {
+      this.heroOverrideMode = null
+      this.heroAssignedLane = null
+    }
+  }
+
   private deriveStageBattleProfile(storyboard: RecoveryStageStoryboard): RecoveryStageBattleProfile {
     const stage = storyboard.stageBlueprint
     const runtimeFields = stage?.runtimeFields
@@ -2267,36 +2526,25 @@ export class RecoveryStageSystem {
     let manaSurge = 0.04
 
     archetypes.forEach((archetype) => {
-      const haystacks = [
-        archetype.label,
-        archetype.archetypeKind,
-        archetype.familyType,
-        ...archetype.mechanicHints,
-      ]
-      const joined = haystacks.join(' ').toLowerCase()
+      const archetypeSignals = this.deriveArchetypeSignals(archetype)
+      archetypeSignals.forEach((signal) => signalSet.add(signal))
 
-      if (includesAny(joined, ['dispatch', 'redeploy', 'respawn'])) {
-        signalSet.add('dispatch')
+      if (archetypeSignals.has('dispatch')) {
         dispatchBoost += 0.06
       }
-      if (includesAny(joined, ['tower defense', 'defend tower', 'barrier'])) {
-        signalSet.add('tower-defense')
+      if (archetypeSignals.has('tower-defense')) {
         towerDefenseBias += 0.07
       }
-      if (includesAny(joined, ['recall', 'relocation'])) {
-        signalSet.add('recall')
+      if (archetypeSignals.has('recall')) {
         recallSwing += 0.09
       }
-      if (includesAny(joined, ['armageddon', 'meteor'])) {
-        signalSet.add('armageddon')
+      if (archetypeSignals.has('armageddon')) {
         armageddonBurst += 0.12
       }
-      if (includesAny(joined, ['mana', 'resource-conversion', 'mana gain', 'reactive-mana-proc'])) {
-        signalSet.add('mana-surge')
+      if (archetypeSignals.has('mana-surge')) {
         manaSurge += 0.08
       }
-      if (includesAny(joined, ['heal', 'healing'])) {
-        signalSet.add('healing')
+      if (archetypeSignals.has('healing')) {
         towerDefenseBias += 0.04
       }
     })

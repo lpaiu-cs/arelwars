@@ -543,9 +543,26 @@ export interface RecoveryCampaignBriefing {
   enemyForecast: string[]
 }
 
+export interface RecoveryCampaignLoadout {
+  loadoutIndex: number
+  id: string
+  label: string
+  summary: string
+  recommended: boolean
+  heroStartMode: 'tower' | 'field'
+  heroLane: 'upper' | 'lower' | null
+  dispatchLane: 'upper' | 'lower' | null
+  openingPanel: 'tower' | 'skill' | 'item' | null
+  startingQueue: number
+  startingManaRatio: number
+  startingManaUpgradeProgressRatio: number
+  towerUpgrades: RecoveryTowerUpgradeLevels
+}
+
 export interface RecoveryCampaignState {
   currentNodeIndex: number
   selectedNodeIndex: number
+  selectedLoadoutIndex: number
   unlockedNodeCount: number
   clearedStageCount: number
   totalNodeCount: number
@@ -563,7 +580,10 @@ export interface RecoveryCampaignState {
   selectedRouteLabel: string
   selectedHintText: string | null
   selectedRewardText: string | null
+  selectedLoadoutLabel: string
+  activeLoadoutLabel: string | null
   briefing: RecoveryCampaignBriefing
+  loadouts: RecoveryCampaignLoadout[]
   nodes: RecoveryCampaignNodeState[]
 }
 

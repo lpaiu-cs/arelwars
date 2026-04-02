@@ -192,6 +192,7 @@ References:
     - the recovery runtime now exposes a real campaign node strip with unlocked, cleared, active, selected, and recommended states, and paused/result phases allow ArrowLeft/ArrowRight selection plus Enter-based stage launch
     - the campaign loop is now explicitly split into `battle -> result hold -> worldmap selection -> deploy briefing -> battle`, with auto-transition timers and selected-node brief text exposed to both the Phaser scene and the DOM storyboard
     - deploy briefing now carries node-specific objective phase, favored lane, tactical bias, first-wave allied/enemy forecast, and recommended archetype labels, so route selection has pre-battle intel instead of only a title swap
+    - deploy briefing now also exposes loadout presets, and the chosen preset changes battle start conditions such as queue depth, mana stock, tower upgrade tiers, opening panel, and hero starting lane when the next node launches
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest

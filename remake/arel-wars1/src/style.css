@@ -333,6 +333,54 @@ h2 {
   background: rgba(12, 17, 20, 0.78);
 }
 
+.loadout-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.loadout-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(133, 163, 171, 0.18);
+  background: rgba(12, 17, 20, 0.74);
+  color: rgba(231, 223, 204, 0.8);
+}
+
+.loadout-pill strong {
+  color: #f3ecdf;
+  font-size: 0.76rem;
+}
+
+.loadout-pill em {
+  font-style: normal;
+  font-size: 0.76rem;
+}
+
+.loadout-pill-selected {
+  border-color: rgba(240, 180, 94, 0.46);
+  box-shadow: inset 0 0 0 1px rgba(240, 180, 94, 0.38);
+}
+
+.loadout-pill-active {
+  background: rgba(36, 58, 44, 0.72);
+  border-color: rgba(118, 201, 137, 0.4);
+}
+
+.loadout-pill-recommended::after {
+  content: 'rec';
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: rgba(214, 165, 92, 0.14);
+  color: #f2d7aa;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .story-briefing p {
   margin: 0;
   color: rgba(231, 223, 204, 0.82);
