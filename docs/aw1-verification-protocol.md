@@ -39,6 +39,9 @@ Produce stage-by-stage evidence that the remake matches the original in:
 - regression-stem certification layer:
   - [export_aw1_regression_stem_certification.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_regression_stem_certification.py)
   - [AW1.regression_stem_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.regression_stem_certification.json)
+- full stage-flow certification layer:
+  - [export_aw1_stage_flow_certification.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_stage_flow_certification.py)
+  - [AW1.stage_flow_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_flow_certification.json)
 
 ## Required Exact Checks
 

@@ -164,6 +164,8 @@ For every stage:
 Exit condition:
 
 - all `111` stages pass structural flow checks
+- stage-flow certification report:
+  - [AW1.stage_flow_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_flow_certification.json)
 
 ### Stage 5. Certify Battle Equivalence
 
