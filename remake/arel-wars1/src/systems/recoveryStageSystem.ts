@@ -27,6 +27,7 @@ import type {
   RecoveryPreviewStem,
   RecoveryPersistenceState,
   RecoveryRuntimeBlueprint,
+  RecoveryRuntimeState,
   RecoveryScriptEntry,
   RecoverySceneScriptDirective,
   RecoverySceneScriptStep,
@@ -292,6 +293,9 @@ interface RecoveryEntityVisualRuntime {
 }
 
 interface RecoveryStoredSettings {
+  version: 2
+  schema: 'aw1-settings'
+  savedAtIso: string
   audioEnabled: boolean
   masterVolume: number
   autoAdvanceEnabled: boolean
@@ -300,12 +304,18 @@ interface RecoveryStoredSettings {
   reducedEffects: boolean
 }
 
+type RecoveryStoredSettingsPayload = Partial<RecoveryStoredSettings> & {
+  version?: number
+  schema?: string
+}
+
 interface RecoveryStageSystemOptions {
   skipRestore?: boolean
 }
 
 interface RecoverySerializedSession {
-  version: 1
+  version: 2
+  schema: 'aw1-session'
   savedAtIso: string
   slotLabel: string
   sessionRevision: number
@@ -394,7 +404,16 @@ interface RecoverySerializedSession {
   burstPulseIntensity: number
   particleBoostIntensity: number
   hitFlashIntensity: number
+  viewportMode: RecoveryRuntimeState['viewportMode']
+  performanceTier: RecoveryRuntimeState['performanceTier']
+  runtimeFaultCount: number
+  lastRuntimeFaultLabel: string | null
   settings: RecoveryStoredSettings
+}
+
+type RecoverySerializedSessionPayload = Partial<RecoverySerializedSession> & {
+  version?: number
+  schema?: string
 }
 
 export class RecoveryStageSystem {
@@ -655,6 +674,28 @@ export class RecoveryStageSystem {
     reducedEffects: false,
   }
 
+  private settingsLoadedFromStorage = false
+
+  private viewportMode: RecoveryRuntimeState['viewportMode'] = 'landscape'
+
+  private performanceTier: RecoveryRuntimeState['performanceTier'] = 'standard'
+
+  private assetPreloadPhase: RecoveryRuntimeState['assetPreloadPhase'] = 'boot-essential'
+
+  private deferredAssetLoadedCount = 0
+
+  private deferredAssetTotalCount = 0
+
+  private backgroundPauseActive = false
+
+  private backgroundPauseReason: string | null = null
+
+  private lastResumeReason: string | null = null
+
+  private runtimeFaultCount = 0
+
+  private lastRuntimeFaultLabel: string | null = null
+
   private hasQuickSave = false
 
   private hasResumeSession = false
@@ -705,6 +746,14 @@ export class RecoveryStageSystem {
     this.runtimeBlueprint = runtimeBlueprint
     this.battleModel = battleModel
     this.loadStoredSettings()
+    this.performanceTier = this.detectPerformanceTier()
+    if (this.performanceTier === 'low-spec' && !this.settingsLoadedFromStorage && !this.settingsState.reducedEffects) {
+      this.settingsState.reducedEffects = true
+      this.persistSettings()
+    }
+    if (typeof window !== 'undefined') {
+      this.noteViewport(window.innerWidth, window.innerHeight, 'constructor')
+    }
     runtimeBlueprint?.featuredArchetypes.forEach((entry) => {
       this.featuredArchetypesById.set(entry.archetypeId, entry)
     })
@@ -1257,6 +1306,104 @@ export class RecoveryStageSystem {
     return this.persistSessionToKey(RESUME_STORAGE_KEY, reason)
   }
 
+  noteViewport(width: number, height: number, reason: string = 'viewport-change'): boolean {
+    const nextMode: RecoveryRuntimeState['viewportMode'] = width >= height ? 'landscape' : 'portrait'
+    const nowMs = this.currentLifecycleNow()
+    let changed = nextMode !== this.viewportMode
+    this.viewportMode = nextMode
+    if (nextMode === 'portrait') {
+      if (this.campaignScenePhase === 'battle' && !this.battlePaused && !this.backgroundPauseActive) {
+        this.backgroundPauseActive = true
+        this.backgroundPauseReason = 'orientation-portrait'
+        this.setBattlePaused(nowMs, true)
+        this.persistResumeSessionNow('orientation-portrait')
+        this.lastActionNote = 'portrait orientation detected; battle paused'
+        changed = true
+      }
+    } else if (this.backgroundPauseActive && this.backgroundPauseReason === 'orientation-portrait') {
+      this.backgroundPauseActive = false
+      this.backgroundPauseReason = null
+      this.lastResumeReason = 'orientation-landscape'
+      this.setBattlePaused(nowMs, false)
+      this.lastActionNote = 'landscape restored; battle resumed'
+      changed = true
+    } else if (changed) {
+      this.lastActionNote = `${reason}: ${nextMode}`
+    }
+    if (changed) {
+      this.version += 1
+    }
+    return changed
+  }
+
+  handleVisibilityChange(hidden: boolean, reason: string = 'visibilitychange'): boolean {
+    const nowMs = this.currentLifecycleNow()
+    let changed = false
+    if (hidden) {
+      if (this.campaignScenePhase === 'battle' && !this.battlePaused && !this.backgroundPauseActive) {
+        this.backgroundPauseActive = true
+        this.backgroundPauseReason = reason
+        this.setBattlePaused(nowMs, true)
+        changed = true
+      }
+      if (this.persistResumeSessionNow(reason)) {
+        changed = true
+      }
+      this.lastActionNote = 'backgrounded; resume snapshot saved'
+    } else if (this.backgroundPauseActive && this.backgroundPauseReason !== 'orientation-portrait') {
+      this.backgroundPauseActive = false
+      this.backgroundPauseReason = null
+      this.lastResumeReason = reason
+      this.setBattlePaused(nowMs, false)
+      this.lastActionNote = 'resumed from background'
+      changed = true
+    }
+    if (changed) {
+      this.version += 1
+    }
+    return changed
+  }
+
+  handlePageShow(reason: string = 'pageshow'): boolean {
+    this.lastResumeReason = reason
+    this.version += 1
+    return true
+  }
+
+  reportRuntimeFault(kind: string, detail: string): boolean {
+    this.runtimeFaultCount += 1
+    this.lastRuntimeFaultLabel = `${kind}: ${detail.slice(0, 160)}`
+    if (!this.settingsState.reducedEffects) {
+      this.settingsState.reducedEffects = true
+      this.persistSettings()
+    }
+    this.persistResumeSessionNow(`runtime-fault:${kind}`)
+    this.lastActionNote = `runtime fault captured: ${kind}`
+    this.version += 1
+    return true
+  }
+
+  updateAssetPreloadProgress(
+    phase: RecoveryRuntimeState['assetPreloadPhase'],
+    deferredLoadedCount: number,
+    deferredTotalCount: number,
+  ): boolean {
+    const nextLoaded = Math.max(0, deferredLoadedCount)
+    const nextTotal = Math.max(0, deferredTotalCount)
+    const changed =
+      this.assetPreloadPhase !== phase
+      || this.deferredAssetLoadedCount !== nextLoaded
+      || this.deferredAssetTotalCount !== nextTotal
+    if (!changed) {
+      return false
+    }
+    this.assetPreloadPhase = phase
+    this.deferredAssetLoadedCount = nextLoaded
+    this.deferredAssetTotalCount = nextTotal
+    this.version += 1
+    return true
+  }
+
   private storage(): Storage | null {
     if (typeof window === 'undefined' || !('localStorage' in window)) {
       return null
@@ -1266,6 +1413,89 @@ export class RecoveryStageSystem {
     } catch {
       return null
     }
+  }
+
+  private currentLifecycleNow(): number {
+    if (Number.isFinite(this.lastUpdateNowMs) && this.lastUpdateNowMs > 0) {
+      return this.lastUpdateNowMs
+    }
+    if (typeof performance !== 'undefined' && Number.isFinite(performance.now())) {
+      return performance.now()
+    }
+    return Date.now()
+  }
+
+  private detectPerformanceTier(): RecoveryRuntimeState['performanceTier'] {
+    if (typeof navigator === 'undefined') {
+      return 'standard'
+    }
+    const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8
+    const hardwareConcurrency = navigator.hardwareConcurrency ?? 8
+    const prefersReducedMotion =
+      typeof window !== 'undefined'
+      && typeof window.matchMedia === 'function'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (deviceMemory <= 4 || hardwareConcurrency <= 4 || prefersReducedMotion) {
+      return 'low-spec'
+    }
+    return 'standard'
+  }
+
+  private migrateStoredSettings(payload: RecoveryStoredSettingsPayload | null | undefined): RecoveryStoredSettings | null {
+    if (!payload || typeof payload !== 'object') {
+      return null
+    }
+    return {
+      version: 2,
+      schema: 'aw1-settings',
+      savedAtIso: typeof payload.savedAtIso === 'string' ? payload.savedAtIso : new Date().toISOString(),
+      audioEnabled: payload.audioEnabled ?? this.settingsState.audioEnabled,
+      masterVolume: clamp(typeof payload.masterVolume === 'number' ? payload.masterVolume : this.settingsState.masterVolume, 0, 1),
+      autoAdvanceEnabled: payload.autoAdvanceEnabled ?? this.settingsState.autoAdvanceEnabled,
+      autoSaveEnabled: payload.autoSaveEnabled ?? this.settingsState.autoSaveEnabled,
+      resumeOnLaunch: payload.resumeOnLaunch ?? this.settingsState.resumeOnLaunch,
+      reducedEffects: payload.reducedEffects ?? this.settingsState.reducedEffects,
+    }
+  }
+
+  private migrateSerializedSession(payload: RecoverySerializedSessionPayload | null | undefined): RecoverySerializedSession | null {
+    if (!payload || typeof payload !== 'object') {
+      return null
+    }
+    if (typeof payload.storyboardIndex !== 'number' || typeof payload.dialogueIndex !== 'number' || typeof payload.frameIndex !== 'number') {
+      return null
+    }
+    const settings = this.migrateStoredSettings((payload.settings as RecoveryStoredSettingsPayload | undefined) ?? undefined)
+    if (!settings) {
+      return null
+    }
+    return {
+      ...(payload as RecoverySerializedSessionPayload),
+      version: 2,
+      schema: 'aw1-session',
+      savedAtIso: typeof payload.savedAtIso === 'string' ? payload.savedAtIso : new Date().toISOString(),
+      slotLabel: typeof payload.slotLabel === 'string' ? payload.slotLabel : 'resume-session',
+      sessionRevision: typeof payload.sessionRevision === 'number' ? payload.sessionRevision : 0,
+      storyboardIndex: payload.storyboardIndex,
+      dialogueIndex: payload.dialogueIndex,
+      frameIndex: payload.frameIndex,
+      storyboardElapsedMs: typeof payload.storyboardElapsedMs === 'number' ? payload.storyboardElapsedMs : 0,
+      nextDialogueRemainingMs: payload.nextDialogueRemainingMs ?? null,
+      nextFrameRemainingMs: payload.nextFrameRemainingMs ?? null,
+      heroReturnCooldownRemainingMs: payload.heroReturnCooldownRemainingMs ?? null,
+      skillCooldownRemainingMs: payload.skillCooldownRemainingMs ?? null,
+      itemCooldownRemainingMs: payload.itemCooldownRemainingMs ?? null,
+      worldmapAutoEnterRemainingMs: payload.worldmapAutoEnterRemainingMs ?? null,
+      deployBriefingRemainingMs: payload.deployBriefingRemainingMs ?? null,
+      rewardReviewRemainingMs: payload.rewardReviewRemainingMs ?? null,
+      unlockRevealRemainingMs: payload.unlockRevealRemainingMs ?? null,
+      resultAutoAdvanceRemainingMs: payload.resultAutoAdvanceRemainingMs ?? null,
+      viewportMode: payload.viewportMode === 'portrait' ? 'portrait' : 'landscape',
+      performanceTier: payload.performanceTier === 'low-spec' ? 'low-spec' : 'standard',
+      runtimeFaultCount: typeof payload.runtimeFaultCount === 'number' ? payload.runtimeFaultCount : 0,
+      lastRuntimeFaultLabel: typeof payload.lastRuntimeFaultLabel === 'string' ? payload.lastRuntimeFaultLabel : null,
+      settings,
+    } as RecoverySerializedSession
   }
 
   private loadStoredSettings(): void {
@@ -1280,7 +1510,10 @@ export class RecoveryStageSystem {
       return
     }
     try {
-      const parsed = JSON.parse(raw) as Partial<RecoveryStoredSettings>
+      const parsed = this.migrateStoredSettings(JSON.parse(raw) as RecoveryStoredSettingsPayload)
+      if (!parsed) {
+        return
+      }
       this.settingsState = {
         audioEnabled: parsed.audioEnabled ?? this.settingsState.audioEnabled,
         masterVolume: clamp(typeof parsed.masterVolume === 'number' ? parsed.masterVolume : this.settingsState.masterVolume, 0, 1),
@@ -1289,6 +1522,8 @@ export class RecoveryStageSystem {
         resumeOnLaunch: parsed.resumeOnLaunch ?? this.settingsState.resumeOnLaunch,
         reducedEffects: parsed.reducedEffects ?? this.settingsState.reducedEffects,
       }
+      this.settingsLoadedFromStorage = true
+      storage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(parsed))
     } catch {
       // Ignore invalid settings payloads.
     }
@@ -1300,6 +1535,9 @@ export class RecoveryStageSystem {
       return
     }
     const payload: RecoveryStoredSettings = {
+      version: 2,
+      schema: 'aw1-settings',
+      savedAtIso: new Date().toISOString(),
       audioEnabled: this.settingsState.audioEnabled,
       masterVolume: this.settingsState.masterVolume,
       autoAdvanceEnabled: this.settingsState.autoAdvanceEnabled,
@@ -1342,11 +1580,15 @@ export class RecoveryStageSystem {
       return false
     }
     try {
-      const parsed = JSON.parse(raw) as RecoverySerializedSession
+      const parsed = this.migrateSerializedSession(JSON.parse(raw) as RecoverySerializedSessionPayload)
+      if (!parsed) {
+        return false
+      }
       const restored = this.restoreSerializedSession(parsed, slotLabel)
       if (!restored) {
         return false
       }
+      storage.setItem(storageKey, JSON.stringify(parsed))
       this.resumedFromSession = slotLabel === 'resume-session'
       if (storageKey === QUICKSAVE_STORAGE_KEY) {
         this.hasQuickSave = true
@@ -1362,7 +1604,8 @@ export class RecoveryStageSystem {
 
   private serializeSession(slotLabel: string, savedAtIso: string): RecoverySerializedSession {
     return {
-      version: 1,
+      version: 2,
+      schema: 'aw1-session',
       savedAtIso,
       slotLabel,
       sessionRevision: this.sessionRevision,
@@ -1451,7 +1694,14 @@ export class RecoveryStageSystem {
       burstPulseIntensity: this.burstPulseIntensity,
       particleBoostIntensity: this.particleBoostIntensity,
       hitFlashIntensity: this.hitFlashIntensity,
+      viewportMode: this.viewportMode,
+      performanceTier: this.performanceTier,
+      runtimeFaultCount: this.runtimeFaultCount,
+      lastRuntimeFaultLabel: this.lastRuntimeFaultLabel,
       settings: {
+        version: 2,
+        schema: 'aw1-settings',
+        savedAtIso,
         audioEnabled: this.settingsState.audioEnabled,
         masterVolume: this.settingsState.masterVolume,
         autoAdvanceEnabled: this.settingsState.autoAdvanceEnabled,
@@ -1463,7 +1713,7 @@ export class RecoveryStageSystem {
   }
 
   private restoreSerializedSession(payload: RecoverySerializedSession, slotLabel: string): boolean {
-    if (payload.version !== 1 || !this.storyboards[payload.storyboardIndex]) {
+    if (payload.version !== 2 || !this.storyboards[payload.storyboardIndex]) {
       return false
     }
     const baseNow = this.lastUpdateNowMs
@@ -1566,6 +1816,13 @@ export class RecoveryStageSystem {
     this.burstPulseIntensity = payload.burstPulseIntensity
     this.particleBoostIntensity = payload.particleBoostIntensity
     this.hitFlashIntensity = payload.hitFlashIntensity
+    this.viewportMode = payload.viewportMode ?? this.viewportMode
+    this.performanceTier = payload.performanceTier ?? this.performanceTier
+    this.runtimeFaultCount = payload.runtimeFaultCount ?? this.runtimeFaultCount
+    this.lastRuntimeFaultLabel = payload.lastRuntimeFaultLabel ?? this.lastRuntimeFaultLabel
+    this.backgroundPauseActive = false
+    this.backgroundPauseReason = null
+    this.lastResumeReason = slotLabel
     this.settingsState = {
       audioEnabled: payload.settings.audioEnabled,
       masterVolume: clamp(payload.settings.masterVolume, 0, 1),
@@ -1656,6 +1913,21 @@ export class RecoveryStageSystem {
       lastSavedAtIso: this.lastSavedAtIso,
       lastLoadedAtIso: this.lastLoadedAtIso,
       sessionRevision: this.sessionRevision,
+    }
+  }
+
+  private buildRuntimeState(): RecoveryRuntimeState {
+    return {
+      viewportMode: this.viewportMode,
+      performanceTier: this.performanceTier,
+      assetPreloadPhase: this.assetPreloadPhase,
+      deferredAssetLoadedCount: this.deferredAssetLoadedCount,
+      deferredAssetTotalCount: this.deferredAssetTotalCount,
+      backgroundPauseActive: this.backgroundPauseActive,
+      backgroundPauseReason: this.backgroundPauseReason,
+      lastResumeReason: this.lastResumeReason,
+      faultCount: this.runtimeFaultCount,
+      lastFaultLabel: this.lastRuntimeFaultLabel,
     }
   }
 
@@ -1949,6 +2221,7 @@ export class RecoveryStageSystem {
       ),
       settingsState: this.buildSettingsState(),
       persistenceState: this.buildPersistenceState(),
+      runtimeState: this.buildRuntimeState(),
       audioState: this.buildAudioState(),
       battlePreviewState,
       verificationState: this.buildVerificationState(),

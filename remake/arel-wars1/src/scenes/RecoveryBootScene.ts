@@ -61,6 +61,8 @@ export class RecoveryBootScene extends Phaser.Scene {
 
   private readonly particleSprites = new Map<string, Phaser.GameObjects.Image>()
 
+  private readonly deferredTextureQueue: Array<{ key: string; path: string }> = []
+
   private previewImage: Phaser.GameObjects.Image | null = null
 
   private bankProbeImage: Phaser.GameObjects.Image | null = null
@@ -113,31 +115,60 @@ export class RecoveryBootScene extends Phaser.Scene {
   }
 
   preload(): void {
+    const skipHeavyProbeTextures = this.shouldSkipHeavyProbeTextures()
+    const compactPreviewFrames = this.shouldUseCompactPreviewFrames()
+    this.load.maxParallelDownloads = compactPreviewFrames ? 2 : 4
     this.load.image(ICON_KEY, '/recovery/raw/res/drawable-hdpi/icon_normal.png')
 
     this.renderPack?.stemAssets.forEach((asset) => {
       asset.framePaths.forEach((path) => {
         this.load.image(this.ensureTextureKey(path), path)
       })
-      if (asset.bankProbePath) {
-        this.load.image(this.ensureTextureKey(asset.bankProbePath), asset.bankProbePath)
+      if (asset.bankProbePath && !skipHeavyProbeTextures) {
+        this.queueDeferredTexture(asset.bankProbePath)
       }
     })
     this.renderPack?.packedPixelSpecials.forEach((entry) => {
       if (entry.compositePath) {
         this.load.image(this.ensureTextureKey(entry.compositePath), entry.compositePath)
       }
-      if (entry.probeSheetPath) {
-        this.load.image(this.ensureTextureKey(entry.probeSheetPath), entry.probeSheetPath)
+      if (entry.probeSheetPath && !skipHeavyProbeTextures) {
+        this.queueDeferredTexture(entry.probeSheetPath)
       }
     })
 
     this.featuredEntries.forEach((entry) => {
       this.load.image(this.previewKey(entry.stem), entry.timelineStrip.pngPath)
-      entry.eventFrames.forEach((frame, index) => {
-        this.load.image(this.frameKey(entry.stem, index), frame.framePath)
-      })
+      if (!compactPreviewFrames) {
+        entry.eventFrames.forEach((frame, index) => {
+          this.load.image(this.frameKey(entry.stem, index), frame.framePath)
+        })
+      }
     })
+    this.stageSystem?.updateAssetPreloadProgress('boot-essential', 0, this.deferredTextureQueue.length)
+  }
+
+  private shouldSkipHeavyProbeTextures(): boolean {
+    if (typeof window !== 'undefined') {
+      const nativePlatform = (window as typeof window & {
+        Capacitor?: { isNativePlatform?: () => boolean }
+      }).Capacitor?.isNativePlatform?.()
+      if (nativePlatform) {
+        return true
+      }
+    }
+    if (typeof navigator === 'undefined') {
+      return false
+    }
+    return /Android|wv\)/i.test(navigator.userAgent)
+  }
+
+  private shouldUseCompactPreviewFrames(): boolean {
+    const snapshot = this.stageSystem?.getSnapshot()
+    if (snapshot?.runtimeState.performanceTier === 'low-spec' || snapshot?.settingsState.reducedEffects) {
+      return true
+    }
+    return this.shouldSkipHeavyProbeTextures()
   }
 
   create(): void {
@@ -234,6 +265,9 @@ export class RecoveryBootScene extends Phaser.Scene {
       })
       this.input.on('pointerdown', () => {
         void this.resumeAudioContext()
+      })
+      this.time.delayedCall(40, () => {
+        this.startDeferredPreload()
       })
     }
   }
@@ -374,7 +408,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       `${campaign.phaseSubtitle} · ${mapLine} · heuristic ${this.formatKind(previewStem.timelineKind)}${autoPhaseLine}`,
     )
     this.spriteFooter.setText(
-      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} · ${phaseFooter} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} · ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''} · audio ${snapshot.audioState.enabled ? `${Math.round(snapshot.audioState.masterVolume * 100)}% ${snapshot.audioState.ambientLayer}` : 'muted'} · save ${snapshot.persistenceState.hasQuickSave ? 'q' : '-'} / resume ${snapshot.persistenceState.hasResumeSession ? 'r' : '-'}`,
+      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} · ${phaseFooter} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} · ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''} · preview ${this.shouldUseCompactPreviewFrames() ? 'compact' : 'full'} · runtime ${snapshot.runtimeState.viewportMode}/${snapshot.runtimeState.performanceTier}/${snapshot.runtimeState.assetPreloadPhase} d${snapshot.runtimeState.deferredAssetLoadedCount}/${snapshot.runtimeState.deferredAssetTotalCount}${snapshot.runtimeState.backgroundPauseActive ? `/${snapshot.runtimeState.backgroundPauseReason ?? 'bg'}` : ''}${snapshot.runtimeState.lastFaultLabel ? ` / fault ${snapshot.runtimeState.faultCount}` : ''} · audio ${snapshot.audioState.enabled ? `${Math.round(snapshot.audioState.masterVolume * 100)}% ${snapshot.audioState.ambientLayer}` : 'muted'} · save ${snapshot.persistenceState.hasQuickSave ? 'q' : '-'} / resume ${snapshot.persistenceState.hasResumeSession ? 'r' : '-'}`,
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
     this.interactionDetail.setText(this.describeGameplayState(snapshot))
@@ -405,10 +439,18 @@ export class RecoveryBootScene extends Phaser.Scene {
   }
 
   private resolvePreviewTexture(entry: RecoveryPreviewStem, index: number): string {
+    if (this.shouldUseCompactPreviewFrames()) {
+      const compactTexture = this.pickStemTexture(this.stemAsset(entry.stem), index, false)
+      if (compactTexture && this.textures.exists(compactTexture)) {
+        return compactTexture
+      }
+      return this.previewKey(entry.stem)
+    }
     if (entry.eventFrames.length === 0) {
       return this.previewKey(entry.stem)
     }
-    return this.frameKey(entry.stem, Math.min(index, entry.eventFrames.length - 1))
+    const frameKey = this.frameKey(entry.stem, Math.min(index, entry.eventFrames.length - 1))
+    return this.textures.exists(frameKey) ? frameKey : this.previewKey(entry.stem)
   }
 
   private fitImageToBox(image: Phaser.GameObjects.Image, maxWidth: number, maxHeight: number): void {
@@ -429,6 +471,42 @@ export class RecoveryBootScene extends Phaser.Scene {
     return key
   }
 
+  private queueDeferredTexture(path: string): void {
+    const key = this.ensureTextureKey(path)
+    if (this.textures.exists(key) || this.deferredTextureQueue.some((entry) => entry.key === key)) {
+      return
+    }
+    this.deferredTextureQueue.push({ key, path })
+  }
+
+  private startDeferredPreload(): void {
+    if (this.deferredTextureQueue.length === 0) {
+      this.stageSystem?.updateAssetPreloadProgress('ready', 0, 0)
+      return
+    }
+    const pending = this.deferredTextureQueue.filter((entry) => !this.textures.exists(entry.key))
+    if (pending.length === 0) {
+      this.stageSystem?.updateAssetPreloadProgress('ready', this.deferredTextureQueue.length, this.deferredTextureQueue.length)
+      return
+    }
+    let loaded = 0
+    const total = pending.length
+    this.stageSystem?.updateAssetPreloadProgress('deferred-loading', loaded, total)
+    const handleFileComplete = (): void => {
+      loaded += 1
+      this.stageSystem?.updateAssetPreloadProgress(loaded >= total ? 'ready' : 'deferred-loading', loaded, total)
+    }
+    this.load.on(Phaser.Loader.Events.FILE_COMPLETE, handleFileComplete)
+    this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      this.load.off(Phaser.Loader.Events.FILE_COMPLETE, handleFileComplete)
+      this.stageSystem?.updateAssetPreloadProgress('ready', total, total)
+    })
+    pending.forEach((entry) => {
+      this.load.image(entry.key, entry.path)
+    })
+    this.load.start()
+  }
+
   private createGeneratedTextures(): void {
     const dot = this.make.graphics({ x: 0, y: 0 })
     dot.fillStyle(0xffffff, 1)
@@ -446,6 +524,9 @@ export class RecoveryBootScene extends Phaser.Scene {
   }
 
   private resolveFallbackBankProbeTexture(): string {
+    if (this.shouldSkipHeavyProbeTextures()) {
+      return ICON_KEY
+    }
     const firstPath = this.renderPack?.stemAssets.find((asset) => asset.bankProbePath)?.bankProbePath
     return firstPath ? this.ensureTextureKey(firstPath) : ICON_KEY
   }
@@ -571,7 +652,9 @@ export class RecoveryBootScene extends Phaser.Scene {
     if (intensity <= 0.01) {
       return { x: 0, y: 0 }
     }
-    const amplitude = 3 + intensity * 11
+    const lowSpec = snapshot.runtimeState.performanceTier === 'low-spec' || snapshot.settingsState.reducedEffects
+    const amplitudeScale = lowSpec ? 0.45 : 1
+    const amplitude = (3 + intensity * 11) * amplitudeScale
     const phase = snapshot.elapsedStoryboardMs / 40
     const allowX = snapshot.renderState.cameraShakeAxes !== 'y'
     const allowY = snapshot.renderState.cameraShakeAxes !== 'x'
@@ -622,6 +705,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     if (!this.previewImage) {
       return
     }
+    const lowSpec = snapshot.runtimeState.performanceTier === 'low-spec' || snapshot.settingsState.reducedEffects
 
     const bounds = {
       x: this.previewImage.x - ((this.previewImage.displayWidth || 320) + 16) / 2,
@@ -632,7 +716,10 @@ export class RecoveryBootScene extends Phaser.Scene {
     const { startX, endX, laneY } = this.laneRenderGeometry(bounds)
 
     const activeEntityKeys = new Set<string>()
-    snapshot.battlePreviewState.entities.forEach((entity) => {
+    const entities = lowSpec
+      ? snapshot.battlePreviewState.entities.slice(-28)
+      : snapshot.battlePreviewState.entities
+    entities.forEach((entity) => {
       const spriteKey = `entity-${entity.id}`
       const overlayKey = `entity-overlay-${entity.id}`
       activeEntityKeys.add(spriteKey)
@@ -669,11 +756,14 @@ export class RecoveryBootScene extends Phaser.Scene {
         true,
       )
       const overlayActive =
+        !lowSpec
+        && (
         snapshot.renderState.bankOverlayWeight > 0.04
         || entity.overlayAlpha > 0.03
         || entity.role === 'hero'
         || entity.role === 'support'
         || entity.role === 'skill-window'
+        )
       let overlay = this.entityOverlaySprites.get(overlayKey)
       if (overlayTexture && overlayActive) {
         if (!overlay) {
@@ -707,7 +797,10 @@ export class RecoveryBootScene extends Phaser.Scene {
     }
 
     const activeProjectileKeys = new Set<string>()
-    snapshot.battlePreviewState.projectiles.forEach((projectile) => {
+    const projectiles = lowSpec
+      ? snapshot.battlePreviewState.projectiles.slice(-18)
+      : snapshot.battlePreviewState.projectiles
+    projectiles.forEach((projectile) => {
       const spriteKey = `projectile-${projectile.id}`
       activeProjectileKeys.add(spriteKey)
       const textureKey =
@@ -734,7 +827,10 @@ export class RecoveryBootScene extends Phaser.Scene {
     }
 
     const activeEffectKeys = new Set<string>()
-    snapshot.battlePreviewState.effects.forEach((effect) => {
+    const effects = lowSpec
+      ? snapshot.battlePreviewState.effects.slice(-10)
+      : snapshot.battlePreviewState.effects
+    effects.forEach((effect) => {
       const effectKey = `effect-${effect.id}`
       activeEffectKeys.add(effectKey)
       const textureKey = this.resolveEffectStemTexture(effect, snapshot.frameIndex + effect.id) ?? 'ptc-glow'
@@ -756,8 +852,8 @@ export class RecoveryBootScene extends Phaser.Scene {
       const particleCount = Math.max(
         2,
         Math.min(
-          10,
-          Math.round(((preset?.burstCount ?? 8) + (preset?.sustainCount ?? 0)) / 16 + snapshot.renderState.particleBoostIntensity * 4) + 2,
+          lowSpec ? 4 : 10,
+          Math.round(((preset?.burstCount ?? 8) + (preset?.sustainCount ?? 0)) / 16 + snapshot.renderState.particleBoostIntensity * (lowSpec ? 1.5 : 4)) + 2,
         ),
       )
       for (let index = 0; index < particleCount; index += 1) {
@@ -805,6 +901,10 @@ export class RecoveryBootScene extends Phaser.Scene {
     if (!this.bankProbeImage) {
       return
     }
+    if (this.shouldSkipHeavyProbeTextures() || snapshot.runtimeState.performanceTier === 'low-spec' || snapshot.settingsState.reducedEffects) {
+      this.bankProbeImage.setVisible(false)
+      return
+    }
     const previewAsset = this.stemAsset(snapshot.currentStoryboard.previewStem.stem)
     const heroStem = this.renderPack?.roleAssignments.allied.hero ?? null
     const heroAsset = this.stemAsset(heroStem)
@@ -813,8 +913,13 @@ export class RecoveryBootScene extends Phaser.Scene {
       this.bankProbeImage.setVisible(false)
       return
     }
+    const textureKey = this.ensureTextureKey(probePath)
+    if (!this.textures.exists(textureKey)) {
+      this.bankProbeImage.setVisible(false)
+      return
+    }
     this.bankProbeImage.setVisible(true)
-    this.bankProbeImage.setTexture(this.ensureTextureKey(probePath))
+    this.bankProbeImage.setTexture(textureKey)
     this.fitImageToBox(this.bankProbeImage, 86, 60)
     this.bankProbeImage.setAlpha(0.52 + snapshot.renderState.bankOverlayWeight * 0.4)
     this.bankProbeImage.setTint(snapshot.renderState.bankOverlayActive ? 0xffd78b : 0xffffff)
@@ -885,7 +990,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : snapshot.settingsState.autoAdvanceEnabled ? '' : ' manual-advance'} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · scene ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${activeChain} · audio ${snapshot.audioState.enabled ? `${Math.round(snapshot.audioState.masterVolume * 100)}% ${snapshot.audioState.ambientLayer}` : 'muted'}${snapshot.audioState.cueLabel ? `/${snapshot.audioState.cueLabel}` : ''} · save ${snapshot.persistenceState.hasQuickSave ? 'q' : '-'} resume ${snapshot.persistenceState.hasResumeSession ? 'r' : '-'} rev${snapshot.persistenceState.sessionRevision} · fx ${snapshot.settingsState.reducedEffects ? 'reduced' : 'full'} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : snapshot.settingsState.autoAdvanceEnabled ? '' : ' manual-advance'} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · scene ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${activeChain} · runtime ${snapshot.runtimeState.viewportMode}/${snapshot.runtimeState.performanceTier}/${snapshot.runtimeState.assetPreloadPhase} d${snapshot.runtimeState.deferredAssetLoadedCount}/${snapshot.runtimeState.deferredAssetTotalCount}${snapshot.runtimeState.backgroundPauseActive ? `/${snapshot.runtimeState.backgroundPauseReason ?? 'bg'}` : ''}${snapshot.runtimeState.lastResumeReason ? ` resume ${snapshot.runtimeState.lastResumeReason}` : ''}${snapshot.runtimeState.lastFaultLabel ? ` fault ${snapshot.runtimeState.faultCount}` : ''} · audio ${snapshot.audioState.enabled ? `${Math.round(snapshot.audioState.masterVolume * 100)}% ${snapshot.audioState.ambientLayer}` : 'muted'}${snapshot.audioState.cueLabel ? `/${snapshot.audioState.cueLabel}` : ''} · save ${snapshot.persistenceState.hasQuickSave ? 'q' : '-'} resume ${snapshot.persistenceState.hasResumeSession ? 'r' : '-'} rev${snapshot.persistenceState.sessionRevision} · fx ${snapshot.settingsState.reducedEffects ? 'reduced' : 'full'} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
   }
 
   private syncAudio(snapshot: RecoveryStageSnapshot): void {
@@ -1178,6 +1283,8 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     const borderColor = snapshot.activeTutorialCue
       ? 0xd58b39
+      : snapshot.runtimeState.viewportMode === 'portrait'
+        ? 0xc76666
       : snapshot.renderState.bankOverlayActive
         ? 0xe3c17d
         : 0x4c676f

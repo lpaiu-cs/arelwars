@@ -306,6 +306,10 @@ References:
    - manifest now declares backup/data-extraction rules and disables cleartext traffic
    - release signing prefers env or `android/keystore.properties`, with a local debug-keystore fallback for machine-local verification
    - release APK assembly and installation were revalidated after hardening
+14. Phase17 baseline is now in place:
+   - Android/native runtime now uses a compact preview path that skips oversized timeline event-frame texture preload and falls back to recovered render-pack frames on low-spec devices
+   - touch-dock actions, background resume, sensor-landscape locking, and lifecycle pause/resume were revalidated on an Android 13 arm64 emulator
+   - runtime settings and resume payloads now migrate legacy storage payloads into versioned schemas, with Playwright coverage for settings-only and resume-session migration
 
 ## First Opcode Findings
 

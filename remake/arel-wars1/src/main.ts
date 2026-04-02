@@ -86,10 +86,13 @@ app.innerHTML = `
       <div id="timeline-stats" class="timeline-stats"></div>
       <div id="timeline-gallery" class="timeline-gallery"></div>
     </section>
+
+    <div id="floating-touch-dock" class="floating-touch-dock" aria-live="polite"></div>
   </div>
 `
 
 let game: Phaser.Game | null = null
+let wiredLifecycleSystem: RecoveryStageSystem | null = null
 
 void bootstrap()
 
@@ -202,9 +205,14 @@ function createGame(stageSystem: RecoveryStageSystem | null, renderPack: Recover
 }
 
 function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLElement, panel: HTMLElement): void {
+  const floatingTouchDock = document.querySelector<HTMLElement>('#floating-touch-dock')
+
   if (!system?.isReady()) {
     summary.textContent = 'Need both the catalog and the preview manifest before storyboard playback can start.'
     panel.innerHTML = `<article class="story-card error-card"><p>Storyboard state unavailable.</p></article>`
+    if (floatingTouchDock) {
+      floatingTouchDock.innerHTML = ''
+    }
     return
   }
 
@@ -219,10 +227,28 @@ function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLEleme
     }
     const action = control.dataset.runtimeControl
     if (!action || !invokeRuntimeControl(system, action)) {
-      return
+      const touchAction = target.closest<HTMLElement>('[data-runtime-touch]')?.dataset.runtimeTouch
+      if (!touchAction || !invokeRuntimeTouch(system, touchAction)) {
+        return
+      }
     }
     render()
   })
+
+  if (floatingTouchDock && !floatingTouchDock.dataset.wired) {
+    floatingTouchDock.dataset.wired = 'true'
+    floatingTouchDock.addEventListener('click', (event) => {
+      const target = event.target
+      if (!(target instanceof HTMLElement)) {
+        return
+      }
+      const touchAction = target.closest<HTMLElement>('[data-runtime-touch]')?.dataset.runtimeTouch
+      if (!touchAction || !invokeRuntimeTouch(system, touchAction)) {
+        return
+      }
+      render()
+    })
+  }
 
   window.addEventListener('beforeunload', () => {
     system.persistResumeSessionNow('beforeunload')
@@ -235,7 +261,12 @@ function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLEleme
     }
     summary.textContent = `${system.getStoryboards().length} paired storyboards, ${snapshot.currentStoryboard.previewStem.eventFrames.length} sprite frames on the active stem, ${snapshot.currentStoryboard.scriptEventCount} recovered script beats in the source scene.`
     panel.innerHTML = storyboardMarkup(snapshot)
+    if (floatingTouchDock) {
+      floatingTouchDock.innerHTML = floatingTouchDockMarkup(snapshot)
+    }
   }
+
+  wireRuntimeLifecycle(system, render)
 
   let lastVersion = -1
   const loop = (timestamp: number): void => {
@@ -248,6 +279,41 @@ function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLEleme
 
   render()
   window.requestAnimationFrame(loop)
+}
+
+function floatingTouchDockMarkup(snapshot: RecoveryStageSnapshot): string {
+  const settings = snapshot.settingsState
+  const persistence = snapshot.persistenceState
+  return `
+    <div class="floating-touch-dock-shell">
+      <div class="floating-touch-dock-header">
+        <span>Touch Dock</span>
+        <span>${escapeHtml(`${snapshot.runtimeState.viewportMode} / ${snapshot.runtimeState.assetPreloadPhase} / ${snapshot.campaignState.scenePhase} / q${persistence.hasQuickSave ? ':ready' : ':empty'} / r${persistence.hasResumeSession ? ':ready' : ':empty'} / ${settings.audioEnabled ? 'audio:on' : 'audio:off'}`)}</span>
+      </div>
+      <div class="floating-touch-dock-grid">
+        <button type="button" data-runtime-touch="menu-prev">Menu -</button>
+        <button type="button" data-runtime-touch="menu-next">Menu +</button>
+        <button type="button" data-runtime-touch="campaign-left">Node -</button>
+        <button type="button" data-runtime-touch="campaign-right">Node +</button>
+        <button type="button" data-runtime-touch="loadout-prev">Loadout -</button>
+        <button type="button" data-runtime-touch="loadout-next">Loadout +</button>
+        <button type="button" data-runtime-touch="confirm">Confirm</button>
+        <button type="button" data-runtime-touch="open-tower-menu">Tower</button>
+        <button type="button" data-runtime-touch="open-skill-menu">Skill</button>
+        <button type="button" data-runtime-touch="open-item-menu">Item</button>
+        <button type="button" data-runtime-touch="dispatch-up-lane">Lane U</button>
+        <button type="button" data-runtime-touch="dispatch-down-lane">Lane D</button>
+        <button type="button" data-runtime-touch="produce-unit">Unit</button>
+        <button type="button" data-runtime-touch="toggle-hero-sortie">Hero</button>
+        <button type="button" data-runtime-touch="cast-skill">Cast</button>
+        <button type="button" data-runtime-touch="use-item">Use</button>
+        <button type="button" data-runtime-touch="save">Save</button>
+        <button type="button" data-runtime-touch="load">Load</button>
+        <button type="button" data-runtime-touch="retry">Retry</button>
+        <button type="button" data-runtime-touch="toggle-audio">${settings.audioEnabled ? 'Mute' : 'Unmute'}</button>
+      </div>
+    </div>
+  `
 }
 
 function invokeRuntimeControl(system: RecoveryStageSystem, action: string): boolean {
@@ -279,6 +345,86 @@ function invokeRuntimeControl(system: RecoveryStageSystem, action: string): bool
     default:
       return false
   }
+}
+
+function invokeRuntimeTouch(system: RecoveryStageSystem, action: string): boolean {
+  switch (action) {
+    case 'campaign-left':
+      return system.moveCampaignSelection(-1)
+    case 'campaign-right':
+      return system.moveCampaignSelection(1)
+    case 'loadout-prev':
+      return system.moveCampaignLoadout(-1)
+    case 'loadout-next':
+      return system.moveCampaignLoadout(1)
+    case 'menu-prev':
+      return system.moveCampaignMenu(-1)
+    case 'menu-next':
+      return system.moveCampaignMenu(1)
+    case 'confirm':
+      return system.launchSelectedCampaignNode()
+    case 'open-tower-menu':
+    case 'open-skill-menu':
+    case 'open-item-menu':
+    case 'open-system-menu':
+    case 'open-settings':
+    case 'dispatch-up-lane':
+    case 'dispatch-down-lane':
+    case 'produce-unit':
+    case 'toggle-hero-sortie':
+    case 'return-to-tower':
+    case 'cast-skill':
+    case 'use-item':
+    case 'review-quest-rewards':
+    case 'claim-quest-reward':
+    case 'resume-battle':
+      return system.dispatchAction(action)
+    case 'save':
+      return system.quickSave()
+    case 'load':
+      return system.quickLoad()
+    case 'retry':
+      return system.retryActiveStage()
+    case 'toggle-audio':
+      return system.toggleAudioEnabled()
+    default:
+      return false
+  }
+}
+
+function wireRuntimeLifecycle(system: RecoveryStageSystem, rerender: () => void): void {
+  if (wiredLifecycleSystem === system) {
+    return
+  }
+  wiredLifecycleSystem = system
+  const renderIfChanged = (changed: boolean): void => {
+    if (changed) {
+      rerender()
+    }
+  }
+  window.addEventListener('visibilitychange', () => {
+    renderIfChanged(system.handleVisibilityChange(document.hidden, document.hidden ? 'visibility-hidden' : 'visibility-visible'))
+  })
+  window.addEventListener('pagehide', () => {
+    renderIfChanged(system.handleVisibilityChange(true, 'pagehide'))
+  })
+  window.addEventListener('pageshow', () => {
+    renderIfChanged(system.handlePageShow('pageshow'))
+  })
+  window.addEventListener('resize', () => {
+    renderIfChanged(system.noteViewport(window.innerWidth, window.innerHeight, 'resize'))
+  })
+  window.addEventListener('orientationchange', () => {
+    renderIfChanged(system.noteViewport(window.innerWidth, window.innerHeight, 'orientationchange'))
+  })
+  window.addEventListener('error', (event) => {
+    renderIfChanged(system.reportRuntimeFault('error', event.message || 'unknown runtime error'))
+  })
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event.reason instanceof Error ? event.reason.message : String(event.reason ?? 'unknown rejection')
+    renderIfChanged(system.reportRuntimeFault('unhandledrejection', reason))
+  })
+  renderIfChanged(system.noteViewport(window.innerWidth, window.innerHeight, 'runtime-wire'))
 }
 
 function downloadVerificationExport(system: RecoveryStageSystem): boolean {
@@ -507,6 +653,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const campaign = snapshot.campaignState
   const settings = snapshot.settingsState
   const persistence = snapshot.persistenceState
+  const runtime = snapshot.runtimeState
   const audio = snapshot.audioState
   const verification = snapshot.verificationState
   const briefing = campaign.briefing
@@ -522,7 +669,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const battleLine = snapshot.battlePreviewState.lanes
     .map((lane) => `${lane.laneId} ${lane.alliedUnits}-${lane.enemyUnits} ${lane.momentum} @ ${lane.frontline.toFixed(2)}`)
     .join(' · ')
-  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : settings.autoAdvanceEnabled ? '' : ' manual-advance'} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? ` / ${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? ` / ${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? ` / ${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? ` / ${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? ` / ${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · script ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · profile ${profile.label} · bias ${profile.tacticalBias} · signals ${profile.archetypeSignals.join('/') || 'baseline'} · tempo a${profile.alliedWaveCadenceBeats}/e${profile.enemyWaveCadenceBeats} · heroImpact ${profile.heroImpact.toFixed(2)} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'} · result ${resolution.status}${resolution.status !== 'active' ? ` ${resolution.label}${resolution.autoAdvanceInMs !== null ? ` in ${Math.ceil(resolution.autoAdvanceInMs / 100) / 10}s` : ''}` : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · entities ${entityCount} / projectiles ${projectileCount} / effects ${effectCount}${activeChain.active ? ` · chain ${activeChain.members.join('+')} @ ${activeChain.focusLane ?? 'mixed'} x${activeChain.intensity.toFixed(2)}` : ''} · objectiveMode ${gameplayState.objectiveMode} · audio ${audio.enabled ? `${Math.round(audio.masterVolume * 100)}% ${audio.ambientLayer}` : 'muted'}${audio.cueLabel ? `/${audio.cueLabel}` : ''} · saves q${persistence.hasQuickSave ? 'ready' : 'empty'} r${persistence.hasResumeSession ? 'ready' : 'empty'} rev${persistence.sessionRevision} · ${gameplayState.primaryHint}${gameplayState.scriptedBeatNote ? ` · script ${gameplayState.scriptedBeatNote}` : ''}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
+  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : settings.autoAdvanceEnabled ? '' : ' manual-advance'} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? ` / ${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? ` / ${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? ` / ${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? ` / ${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? ` / ${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · script ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · profile ${profile.label} · bias ${profile.tacticalBias} · signals ${profile.archetypeSignals.join('/') || 'baseline'} · tempo a${profile.alliedWaveCadenceBeats}/e${profile.enemyWaveCadenceBeats} · heroImpact ${profile.heroImpact.toFixed(2)} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'} · result ${resolution.status}${resolution.status !== 'active' ? ` ${resolution.label}${resolution.autoAdvanceInMs !== null ? ` in ${Math.ceil(resolution.autoAdvanceInMs / 100) / 10}s` : ''}` : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · entities ${entityCount} / projectiles ${projectileCount} / effects ${effectCount}${activeChain.active ? ` · chain ${activeChain.members.join('+')} @ ${activeChain.focusLane ?? 'mixed'} x${activeChain.intensity.toFixed(2)}` : ''} · runtime ${runtime.viewportMode}/${runtime.performanceTier}/${runtime.assetPreloadPhase} d${runtime.deferredAssetLoadedCount}/${runtime.deferredAssetTotalCount}${runtime.backgroundPauseActive ? `/${runtime.backgroundPauseReason ?? 'bg'}` : ''}${runtime.lastResumeReason ? ` / resume ${runtime.lastResumeReason}` : ''}${runtime.lastFaultLabel ? ` / fault ${runtime.faultCount}` : ''} · objectiveMode ${gameplayState.objectiveMode} · audio ${audio.enabled ? `${Math.round(audio.masterVolume * 100)}% ${audio.ambientLayer}` : 'muted'}${audio.cueLabel ? `/${audio.cueLabel}` : ''} · saves q${persistence.hasQuickSave ? 'ready' : 'empty'} r${persistence.hasResumeSession ? 'ready' : 'empty'} rev${persistence.sessionRevision} · ${gameplayState.primaryHint}${gameplayState.scriptedBeatNote ? ` · script ${gameplayState.scriptedBeatNote}` : ''}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
   const campaignStrip = campaign.nodes
     .map((node) => {
       const classes = [
@@ -609,7 +756,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
               ? 'Press U to claim the reward if available, or Enter to continue.'
               : campaign.scenePhase === 'unlock-reveal'
                 ? 'Enter moves on to the world map after the unlock reveal.'
-                : 'ArrowLeft/ArrowRight selects an unlocked campaign node while paused or between battles. ArrowUp/ArrowDown cycles deploy loadouts. Enter advances the campaign flow. P save, L load, I retry, M mute, [ ] volume, O auto, J autosave, K resume, ; effects.'
+                : 'ArrowLeft/ArrowRight selects an unlocked campaign node while paused or between battles. ArrowUp/ArrowDown cycles deploy loadouts. Enter advances the campaign flow. The touch deck mirrors campaign, battle, and save controls. P save, L load, I retry, M mute, [ ] volume, O auto, J autosave, K resume, ; effects.'
   return `
     <article class="story-card">
       <header class="story-card-header">
@@ -646,6 +793,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         <p><strong>Session:</strong> quick ${escapeHtml(persistence.hasQuickSave ? 'ready' : 'empty')} / resume ${escapeHtml(persistence.hasResumeSession ? 'ready' : 'empty')}${persistence.resumedFromSession ? ' / resumed' : ''} / active ${escapeHtml(persistence.activeSlotLabel ?? 'live')} / rev ${persistence.sessionRevision}</p>
         <p><strong>Saved:</strong> ${escapeHtml(persistence.lastSavedLabel ?? 'n/a')}${persistence.lastSavedAtIso ? ` / ${escapeHtml(persistence.lastSavedAtIso)}` : ''}</p>
         <p><strong>Loaded:</strong> ${escapeHtml(persistence.lastLoadedLabel ?? 'n/a')}${persistence.lastLoadedAtIso ? ` / ${escapeHtml(persistence.lastLoadedAtIso)}` : ''}</p>
+        <p><strong>Runtime:</strong> ${escapeHtml(`${runtime.viewportMode} / ${runtime.performanceTier} / ${runtime.assetPreloadPhase} / deferred ${runtime.deferredAssetLoadedCount}/${runtime.deferredAssetTotalCount}${runtime.backgroundPauseActive ? ` / paused ${runtime.backgroundPauseReason ?? 'background'}` : ''}${runtime.lastResumeReason ? ` / resumed ${runtime.lastResumeReason}` : ''}${runtime.lastFaultLabel ? ` / fault ${runtime.faultCount}` : ''}`)}</p>
         <p><strong>Audio Bus:</strong> ${escapeHtml(audio.ambientLayer)} / ${escapeHtml(audio.cueCategory)}${audio.cueLabel ? ` / ${escapeHtml(audio.cueLabel)}` : ''} / ${audio.cueSequence}</p>
       </div>
       <div class="story-control-strip">
@@ -661,6 +809,31 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         <button type="button" data-runtime-control="toggle-autosave">${settings.autoSaveEnabled ? 'Pause Autosave' : 'Enable Autosave'}</button>
         <button type="button" data-runtime-control="toggle-resume">${settings.resumeOnLaunch ? 'Disable Resume' : 'Enable Resume'}</button>
         <button type="button" data-runtime-control="toggle-effects">${settings.reducedEffects ? 'Full FX' : 'Reduce FX'}</button>
+      </div>
+      <div class="story-touch-strip">
+        <button type="button" data-runtime-touch="menu-prev">Menu -</button>
+        <button type="button" data-runtime-touch="menu-next">Menu +</button>
+        <button type="button" data-runtime-touch="campaign-left">Node -</button>
+        <button type="button" data-runtime-touch="campaign-right">Node +</button>
+        <button type="button" data-runtime-touch="loadout-prev">Loadout -</button>
+        <button type="button" data-runtime-touch="loadout-next">Loadout +</button>
+        <button type="button" data-runtime-touch="confirm">Confirm</button>
+        <button type="button" data-runtime-touch="open-tower-menu">Tower</button>
+        <button type="button" data-runtime-touch="open-skill-menu">Skill</button>
+        <button type="button" data-runtime-touch="open-item-menu">Item</button>
+        <button type="button" data-runtime-touch="open-system-menu">System</button>
+        <button type="button" data-runtime-touch="dispatch-up-lane">Lane U</button>
+        <button type="button" data-runtime-touch="dispatch-down-lane">Lane D</button>
+        <button type="button" data-runtime-touch="produce-unit">Unit</button>
+        <button type="button" data-runtime-touch="toggle-hero-sortie">Hero</button>
+        <button type="button" data-runtime-touch="cast-skill">Cast</button>
+        <button type="button" data-runtime-touch="use-item">Use</button>
+        <button type="button" data-runtime-touch="claim-quest-reward">Claim</button>
+        <button type="button" data-runtime-touch="resume-battle">Resume</button>
+        <button type="button" data-runtime-touch="save">Save</button>
+        <button type="button" data-runtime-touch="load">Load</button>
+        <button type="button" data-runtime-touch="retry">Retry</button>
+        <button type="button" data-runtime-touch="toggle-audio">${settings.audioEnabled ? 'Mute' : 'Unmute'}</button>
       </div>
       <div class="story-dialogue">
         <p class="story-speaker">${escapeHtml(speakerLine)}</p>

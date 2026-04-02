@@ -731,6 +731,97 @@ h2 {
   transform: translateY(0);
 }
 
+.story-touch-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.story-touch-strip button {
+  appearance: none;
+  border: 1px solid rgba(133, 163, 171, 0.24);
+  background: rgba(18, 26, 31, 0.9);
+  color: #f3ecdf;
+  border-radius: 14px;
+  min-height: 52px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease, border-color 120ms ease;
+}
+
+.story-touch-strip button:hover {
+  background: rgba(35, 48, 56, 0.92);
+  border-color: rgba(214, 165, 92, 0.36);
+  transform: translateY(-1px);
+}
+
+.story-touch-strip button:active {
+  transform: translateY(0);
+}
+
+.floating-touch-dock {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  pointer-events: none;
+}
+
+.floating-touch-dock-shell {
+  margin: 0 auto;
+  width: min(1280px, calc(100vw - 28px));
+  border: 1px solid rgba(214, 165, 92, 0.24);
+  border-radius: 18px;
+  background: rgba(8, 12, 16, 0.94);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+}
+
+.floating-touch-dock-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px 0;
+  color: rgba(231, 223, 204, 0.72);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.floating-touch-dock-grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+
+.floating-touch-dock-grid button {
+  appearance: none;
+  border: 1px solid rgba(133, 163, 171, 0.24);
+  background: rgba(18, 26, 31, 0.96);
+  color: #f3ecdf;
+  border-radius: 12px;
+  min-height: 42px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.floating-touch-dock-grid button:active {
+  transform: translateY(1px);
+}
+
 .error-card {
   border-color: rgba(214, 92, 92, 0.32);
 }
@@ -750,6 +841,7 @@ h2 {
   .shell {
     width: min(100vw - 20px, 1400px);
     padding-top: 16px;
+    padding-bottom: 170px;
   }
 
   .hero-panel {
@@ -775,5 +867,15 @@ h2 {
   .divider {
     margin-left: 18px;
     margin-right: 18px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .shell {
+    padding-bottom: 170px;
+  }
+
+  .floating-touch-dock-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }

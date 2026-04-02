@@ -1121,6 +1121,19 @@ export interface RecoveryPersistenceState {
   sessionRevision: number
 }
 
+export interface RecoveryRuntimeState {
+  viewportMode: 'landscape' | 'portrait'
+  performanceTier: 'standard' | 'low-spec'
+  assetPreloadPhase: 'boot-essential' | 'deferred-loading' | 'ready'
+  deferredAssetLoadedCount: number
+  deferredAssetTotalCount: number
+  backgroundPauseActive: boolean
+  backgroundPauseReason: string | null
+  lastResumeReason: string | null
+  faultCount: number
+  lastFaultLabel: string | null
+}
+
 export interface RecoveryAudioState {
   enabled: boolean
   masterVolume: number
@@ -1237,6 +1250,7 @@ export interface RecoveryStageSnapshot {
   gameplayState: RecoveryGameplayState
   settingsState: RecoverySettingsState
   persistenceState: RecoveryPersistenceState
+  runtimeState: RecoveryRuntimeState
   audioState: RecoveryAudioState
   battlePreviewState: RecoveryBattlePreviewState
   verificationState: RecoveryVerificationState

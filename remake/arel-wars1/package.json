@@ -9,6 +9,7 @@
     "build": "npm run sync:recovery && tsc && vite build",
     "preview": "vite preview",
     "test:phase15-export": "playwright test tests/aw1_phase15_export.spec.js --reporter=line",
+    "test:phase17-persistence": "playwright test tests/aw1_phase17_persistence.spec.js --reporter=line",
     "cap:sync": "npm run build && npx cap sync",
     "android:debug": "npm run build && npx cap sync android && (cd android && ./gradlew assembleDebug)",
     "android:release": "npm run build && npx cap sync android && (cd android && ./gradlew assembleRelease)",
