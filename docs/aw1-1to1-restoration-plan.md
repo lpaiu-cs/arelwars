@@ -189,6 +189,7 @@ References:
     - the recovery battle loop now resolves victory and defeat, exposes a short result hold with auto-advance, and flips successful stages into quest/reward review instead of leaving every storyboard permanently in an active battle state
     - when a storyboard reaches its last recovered dialogue line, playback now holds that line on screen until the battle loop resolves instead of jumping away before the result is known
     - victory now unlocks the next campaign node while defeat retries the current node, so storyboard playback has a minimal worldmap-like progression layer instead of one flat linear rotation
+    - the recovery runtime now exposes a real campaign node strip with unlocked, cleared, active, selected, and recommended states, and paused/result phases allow ArrowLeft/ArrowRight selection plus Enter-based stage launch
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest

@@ -516,17 +516,33 @@ export interface RecoveryBattleResolutionState {
   questRewardReady: boolean
 }
 
+export interface RecoveryCampaignNodeState {
+  nodeIndex: number
+  label: string
+  familyId: string
+  routeLabel: string
+  unlocked: boolean
+  cleared: boolean
+  active: boolean
+  selected: boolean
+  recommended: boolean
+}
+
 export interface RecoveryCampaignState {
   currentNodeIndex: number
+  selectedNodeIndex: number
   unlockedNodeCount: number
   clearedStageCount: number
   totalNodeCount: number
   activeStageTitle: string
   activeFamilyId: string
   routeLabel: string
+  selectionMode: 'follow-active-stage' | 'queued-route-selection' | 'worldmap-selection' | 'result-route-selection'
+  selectionLaunchable: boolean
   nextUnlockLabel: string | null
   lastResolvedStageTitle: string | null
   lastOutcome: 'victory' | 'defeat' | null
+  nodes: RecoveryCampaignNodeState[]
 }
 
 export interface RecoveryBattlePreviewState {

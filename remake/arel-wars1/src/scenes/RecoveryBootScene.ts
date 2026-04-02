@@ -263,7 +263,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       `${mapLine} · ${this.formatKind(previewStem.timelineKind)} · ${snapshot.currentStoryboard.scriptPath.replace('assets/', '')}`,
     )
     this.spriteFooter.setText(
-      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · wave ${snapshot.battlePreviewState.objective.waveIndex}/${snapshot.battlePreviewState.objective.totalWaves} · ${snapshot.battlePreviewState.objective.label} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
+      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''} · ${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · wave ${snapshot.battlePreviewState.objective.waveIndex}/${snapshot.battlePreviewState.objective.totalWaves} · ${snapshot.battlePreviewState.objective.label} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
     this.interactionDetail.setText(this.describeGameplayState(snapshot))
@@ -355,7 +355,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {
@@ -364,6 +364,14 @@ export class RecoveryBootScene extends Phaser.Scene {
     }
     const snapshot = this.stageSystem.getSnapshot()
     if (!snapshot) {
+      return
+    }
+    if (this.handleCampaignKey(key)) {
+      const nextSnapshot = this.stageSystem.getSnapshot()
+      if (nextSnapshot) {
+        this.currentSnapshotKey = ''
+        this.applySnapshot(nextSnapshot)
+      }
       return
     }
     const actionId = this.resolveActionForKey(key, snapshot)
@@ -376,6 +384,24 @@ export class RecoveryBootScene extends Phaser.Scene {
       this.currentSnapshotKey = ''
       this.applySnapshot(nextSnapshot)
     }
+  }
+
+  private handleCampaignKey(key: string): boolean {
+    if (!this.stageSystem) {
+      return false
+    }
+
+    const normalized = key.toLowerCase()
+    if (normalized === 'arrowleft') {
+      return this.stageSystem.moveCampaignSelection(-1)
+    }
+    if (normalized === 'arrowright') {
+      return this.stageSystem.moveCampaignSelection(1)
+    }
+    if (normalized === 'enter') {
+      return this.stageSystem.launchSelectedCampaignNode()
+    }
+    return false
   }
 
   private resolveActionForKey(key: string, snapshot: RecoveryStageSnapshot): RecoveryGameplayActionId | null {
@@ -436,6 +462,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     this.drawLaneBattlePreview(graphics, snapshot, { x, y, width, height })
     this.drawHudGhost(graphics, snapshot, { x, y, width, height })
     this.drawTutorialFocus(graphics, snapshot, { x, y, width, height })
+    this.drawCampaignRoute(graphics, snapshot, { x, y, width, height })
 
     const channelStates = snapshot.channelStates.slice(0, 4)
     channelStates.forEach((channel, index) => {
@@ -458,6 +485,52 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.strokeCircle(this.previewImage.x + 96, this.previewImage.y - 52, radius)
       }
     }
+  }
+
+  private drawCampaignRoute(
+    graphics: Phaser.GameObjects.Graphics,
+    snapshot: RecoveryStageSnapshot,
+    bounds: FocusLayoutBounds,
+  ): void {
+    const nodes = snapshot.campaignState.nodes
+    if (nodes.length === 0) {
+      return
+    }
+
+    const startX = bounds.x + 10
+    const endX = bounds.x + bounds.width - 10
+    const y = bounds.y - 26
+    const step = nodes.length === 1 ? 0 : (endX - startX) / (nodes.length - 1)
+
+    graphics.lineStyle(2, 0x334148, 0.82)
+    graphics.lineBetween(startX, y, endX, y)
+
+    nodes.forEach((node, index) => {
+      const nodeX = startX + step * index
+      const fillColor = node.active
+        ? 0xd6a55c
+        : node.selected
+          ? 0xf0d6a0
+          : node.cleared
+            ? 0x76c989
+            : node.unlocked
+              ? 0x70858b
+              : 0x253138
+      const lineColor = node.recommended ? 0xf0b45e : node.unlocked ? 0x66797e : 0x2b373d
+      const radius = node.active ? 8 : node.selected ? 7 : 6
+
+      graphics.fillStyle(fillColor, node.unlocked ? 0.96 : 0.5)
+      graphics.fillCircle(nodeX, y, radius)
+      graphics.lineStyle(node.selected ? 2.2 : 1.4, lineColor, 0.92)
+      graphics.strokeCircle(nodeX, y, radius + (node.selected ? 4 : 2))
+
+      if (node.selected) {
+        graphics.lineStyle(1.4, 0xf0b45e, 0.76)
+        graphics.lineBetween(nodeX, y + radius + 6, nodeX, y + radius + 18)
+        graphics.fillStyle(0xf0b45e, 0.82)
+        graphics.fillTriangle(nodeX - 5, y + radius + 18, nodeX + 5, y + radius + 18, nodeX, y + radius + 24)
+      }
+    })
   }
 
   private drawHudGhost(

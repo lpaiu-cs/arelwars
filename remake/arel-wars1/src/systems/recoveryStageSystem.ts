@@ -273,6 +273,8 @@ export class RecoveryStageSystem {
 
   private campaignUnlockedStageCount = 1
 
+  private campaignSelectedNodeIndex = 0
+
   private readonly campaignClearedStoryboardIds = new Set<string>()
 
   private campaignLastResolvedStageTitle: string | null = null
@@ -328,6 +330,44 @@ export class RecoveryStageSystem {
 
   getStoryboards(): RecoveryStageStoryboard[] {
     return this.storyboards
+  }
+
+  moveCampaignSelection(direction: -1 | 1): boolean {
+    if (!this.isReady()) {
+      return false
+    }
+
+    const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    const nextIndex = clamp(this.campaignSelectedNodeIndex + direction, 0, unlockedCount - 1)
+    if (nextIndex === this.campaignSelectedNodeIndex) {
+      return false
+    }
+
+    this.campaignSelectedNodeIndex = nextIndex
+    const target = this.storyboards[nextIndex]
+    this.lastActionNote = `campaign route selected: ${target?.stageBlueprint?.title ?? target?.scriptPath ?? `node ${nextIndex + 1}`}`
+    this.version += 1
+    return true
+  }
+
+  launchSelectedCampaignNode(): boolean {
+    if (!this.isReady()) {
+      return false
+    }
+
+    if (!this.battlePaused && !this.battleResolutionOutcome) {
+      this.lastActionNote = 'campaign route launch locked until pause or result'
+      this.version += 1
+      return false
+    }
+
+    const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    const nextIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
+    this.activateStoryboard(nextIndex, this.lastUpdateNowMs, STORYBOARD_GAP_MS)
+    const target = this.storyboards[nextIndex]
+    this.lastActionNote = `campaign node launched: ${target?.stageBlueprint?.title ?? target?.scriptPath ?? `node ${nextIndex + 1}`}`
+    this.version += 1
+    return true
   }
 
   dispatchAction(actionId: RecoveryGameplayActionId): boolean {
@@ -505,31 +545,59 @@ export class RecoveryStageSystem {
   private advanceCampaign(nowMs: number): void {
     if (this.battleResolutionOutcome === 'victory') {
       const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
-      const nextIndex = (this.storyboardIndex + 1) % unlockedCount
+      this.campaignSelectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
+      const nextIndex = this.campaignSelectedNodeIndex
       this.activateStoryboard(nextIndex, nowMs, STORYBOARD_GAP_MS)
       return
     }
+    this.campaignSelectedNodeIndex = this.storyboardIndex
     this.activateStoryboard(this.storyboardIndex, nowMs, STORYBOARD_GAP_MS)
   }
 
-  private buildCampaignState(currentStoryboard: RecoveryStageStoryboard) {
+  private buildCampaignState(currentStoryboard: RecoveryStageStoryboard): RecoveryStageSnapshot['campaignState'] {
+    const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    const selectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
     const activeStageTitle = currentStoryboard.stageBlueprint?.title ?? currentStoryboard.scriptPath
     const nextUnlock = this.campaignUnlockedStageCount < this.storyboards.length
       ? this.storyboards[this.campaignUnlockedStageCount]?.stageBlueprint?.title
         ?? this.storyboards[this.campaignUnlockedStageCount]?.scriptPath
         ?? null
       : null
+    const recommendedNodeIndex = this.battleResolutionOutcome === 'victory'
+      ? Math.min(this.storyboardIndex + 1, unlockedCount - 1)
+      : this.storyboardIndex
+    const selectionMode = this.battleResolutionOutcome
+      ? 'result-route-selection'
+      : this.battlePaused
+        ? 'worldmap-selection'
+        : selectedNodeIndex !== this.storyboardIndex
+          ? 'queued-route-selection'
+          : 'follow-active-stage'
     return {
       currentNodeIndex: this.storyboardIndex + 1,
-      unlockedNodeCount: Math.max(this.campaignUnlockedStageCount, 1),
+      selectedNodeIndex: selectedNodeIndex + 1,
+      unlockedNodeCount: unlockedCount,
       clearedStageCount: this.campaignClearedStoryboardIds.size,
       totalNodeCount: this.storyboards.length,
       activeStageTitle,
       activeFamilyId: currentStoryboard.scriptFamilyId,
       routeLabel: currentStoryboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
+      selectionMode,
+      selectionLaunchable: this.battlePaused || this.battleResolutionOutcome !== null,
       nextUnlockLabel: nextUnlock,
       lastResolvedStageTitle: this.campaignLastResolvedStageTitle,
       lastOutcome: this.campaignLastOutcome,
+      nodes: this.storyboards.map((storyboard, index) => ({
+        nodeIndex: index + 1,
+        label: storyboard.stageBlueprint?.title ?? storyboard.scriptPath.replace('assets/', ''),
+        familyId: storyboard.scriptFamilyId,
+        routeLabel: storyboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
+        unlocked: index < unlockedCount,
+        cleared: this.campaignClearedStoryboardIds.has(storyboard.id),
+        active: index === this.storyboardIndex,
+        selected: index === selectedNodeIndex,
+        recommended: index === recommendedNodeIndex && index < unlockedCount,
+      })),
     }
   }
 
@@ -907,6 +975,15 @@ export class RecoveryStageSystem {
         Math.max(this.campaignUnlockedStageCount, this.campaignClearedStoryboardIds.size + 1),
         this.storyboards.length,
       )
+    }
+    if (outcome === 'victory') {
+      this.campaignSelectedNodeIndex = clamp(
+        Math.min(this.storyboardIndex + 1, Math.max(this.campaignUnlockedStageCount, 1) - 1),
+        0,
+        Math.max(this.campaignUnlockedStageCount, 1) - 1,
+      )
+    } else {
+      this.campaignSelectedNodeIndex = this.storyboardIndex
     }
     if (outcome === 'victory') {
       this.currentObjectivePhase = 'quest-resolution'
