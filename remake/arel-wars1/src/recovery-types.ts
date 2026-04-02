@@ -479,6 +479,24 @@ export interface RecoveryStageBattleProfile {
   manaSurge: number
 }
 
+export interface RecoveryBattleObjectiveState {
+  phase:
+    | 'opening'
+    | 'lane-control'
+    | 'hero-pressure'
+    | 'tower-management'
+    | 'skill-burst'
+    | 'quest-resolution'
+    | 'siege'
+  label: string
+  waveIndex: number
+  totalWaves: number
+  progressRatio: number
+  enemyWaveCountdownBeats: number
+  alliedWaveCountdownBeats: number
+  favoredLane: 'upper' | 'lower' | null
+}
+
 export interface RecoveryBattlePreviewState {
   lanes: RecoveryLaneBattleState[]
   selectedLane: 'upper' | 'lower' | null
@@ -487,6 +505,7 @@ export interface RecoveryBattlePreviewState {
   enemyMomentum: number
   towerThreat: number
   stageProfile: RecoveryStageBattleProfile
+  objective: RecoveryBattleObjectiveState
 }
 
 export interface RecoveryStageSnapshot {

@@ -262,7 +262,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       `${mapLine} · ${this.formatKind(previewStem.timelineKind)} · ${snapshot.currentStoryboard.scriptPath.replace('assets/', '')}`,
     )
     this.spriteFooter.setText(
-      `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
+      `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · wave ${snapshot.battlePreviewState.objective.waveIndex}/${snapshot.battlePreviewState.objective.totalWaves} · ${snapshot.battlePreviewState.objective.label} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
     this.interactionDetail.setText(this.describeGameplayState(snapshot))
@@ -341,12 +341,13 @@ export class RecoveryBootScene extends Phaser.Scene {
     const battle = snapshot.battlePreviewState.lanes
       .map((entry) => `${entry.laneId}:${entry.momentum} ${entry.alliedUnits}-${entry.enemyUnits}`)
       .join(' · ')
+    const objective = snapshot.battlePreviewState.objective
     const signals = profile.archetypeSignals.length > 0 ? profile.archetypeSignals.join('/') : 'baseline'
     const scriptedBeat = state.scriptedBeatNote ? `script ${state.scriptedBeatNote}` : 'script idle'
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {

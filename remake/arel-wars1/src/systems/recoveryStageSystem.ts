@@ -1,4 +1,5 @@
 import type {
+  RecoveryBattleObjectiveState,
   RecoveryBattlePreviewState,
   RecoveryBattleChannelState,
   RecoveryCatalog,
@@ -243,6 +244,20 @@ export class RecoveryStageSystem {
     armageddonBurst: 0.12,
     manaSurge: 0.08,
   }
+
+  private currentObjectivePhase: RecoveryBattleObjectiveState['phase'] = 'opening'
+
+  private currentObjectiveLabel = 'stabilize the opening lane'
+
+  private currentWaveIndex = 1
+
+  private totalWaveCount = 4
+
+  private objectiveProgressRatio = 0.08
+
+  private enemyWaveCountdownBeats = 4
+
+  private alliedWaveCountdownBeats = 5
 
   private lastActionId: RecoveryGameplayActionId | null = null
 
@@ -578,7 +593,16 @@ export class RecoveryStageSystem {
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
 
     switch (tutorialCue?.chainId) {
+      case 'battle-hud-guard-hp':
+        this.setObjectiveState('lane-control', 'hold the tower line', 0.03)
+        this.lastScriptedBeatNote = 'tutorial fixed own-tower objective'
+        return
+      case 'battle-hud-goal-hp':
+        this.setObjectiveState('siege', 'break the enemy tower', 0.05)
+        this.lastScriptedBeatNote = 'tutorial fixed siege objective'
+        return
       case 'battle-hud-dispatch-arrows': {
+        this.setObjectiveState('lane-control', `establish ${favoredLane} lane control`, 0.04)
         this.selectedDispatchLane = favoredLane
         this.queuedUnitCount = Math.max(
           this.queuedUnitCount,
@@ -591,11 +615,13 @@ export class RecoveryStageSystem {
         return
       }
       case 'battle-hud-unit-card':
+        this.setObjectiveState('lane-control', 'build a dispatch reserve', 0.03)
         if (this.applyScriptedAction('produce-unit', 'tutorial queued unit production')) {
           return
         }
         break
       case 'battle-hud-mana-bar':
+        this.setObjectiveState('tower-management', 'restore mana tempo', 0.02)
         this.previewManaRatio = clamp(
           this.previewManaRatio + 0.08 + this.currentStageBattleProfile.manaSurge * 0.14,
           0.06,
@@ -604,21 +630,29 @@ export class RecoveryStageSystem {
         this.lastScriptedBeatNote = 'tutorial restored mana context'
         return
       case 'battle-hud-hero-sortie':
+        this.setObjectiveState('hero-pressure', 'deploy the hero strike lane', 0.05)
         if (this.applyScriptedAction('deploy-hero', `tutorial auto-deployed hero to ${favoredLane}`)) {
           return
         }
         break
       case 'battle-hud-hero-return':
+        this.setObjectiveState('tower-management', 'regroup hero at tower', 0.03)
         if (this.applyScriptedAction('return-to-tower', 'tutorial recalled hero to tower')) {
           return
         }
         break
       case 'tower-menu-highlight':
+        this.setObjectiveState('tower-management', 'open tower management', 0.02)
         this.panelOverride = 'tower'
         this.lastScriptedBeatNote = 'tutorial focused tower panel'
         return
       case 'mana-upgrade-highlight':
       case 'population-upgrade-highlight':
+        this.setObjectiveState(
+          'tower-management',
+          tutorialCue.chainId === 'mana-upgrade-highlight' ? 'advance mana economy' : 'raise population ceiling',
+          0.03,
+        )
         this.panelOverride = 'tower'
         if (
           this.applyScriptedAction(
@@ -632,16 +666,19 @@ export class RecoveryStageSystem {
         }
         break
       case 'skill-menu-highlight':
+        this.setObjectiveState('skill-burst', 'prepare skill burst window', 0.03)
         this.panelOverride = 'skill'
         this.lastScriptedBeatNote = 'tutorial opened skill channel'
         return
       case 'skill-slot-highlight':
+        this.setObjectiveState('skill-burst', 'fire a burst through the skill window', 0.05)
         this.panelOverride = 'skill'
         if (this.applyScriptedAction('cast-skill', 'tutorial fired skill beat')) {
           return
         }
         break
       case 'item-menu-highlight':
+        this.setObjectiveState('tower-management', 'stabilize the line with items', 0.03)
         this.panelOverride = 'item'
         if (this.applyScriptedAction('use-item', 'tutorial fired item beat')) {
           return
@@ -649,10 +686,12 @@ export class RecoveryStageSystem {
         this.lastScriptedBeatNote = 'tutorial opened item channel'
         return
       case 'system-menu-highlight':
+        this.setObjectiveState('tower-management', 'pause and review battle state', 0.01)
         this.panelOverride = 'system'
         this.lastScriptedBeatNote = 'tutorial surfaced system panel'
         return
       case 'quest-panel-highlight':
+        this.setObjectiveState('quest-resolution', 'review quest and bonus objectives', 0.04)
         this.panelOverride = 'system'
         this.lastScriptedBeatNote = 'tutorial surfaced quest rewards'
         return
@@ -665,16 +704,21 @@ export class RecoveryStageSystem {
     }
 
     if (includesAny(opcodeCue.action, ['tower', 'mana', 'population'])) {
+      this.setObjectiveState('tower-management', 'rebalance tower economy', 0.02)
       this.panelOverride = 'tower'
     } else if (includesAny(opcodeCue.action, ['skill'])) {
+      this.setObjectiveState('skill-burst', 'open a skill timing window', 0.02)
       this.panelOverride = 'skill'
     } else if (includesAny(opcodeCue.action, ['item'])) {
+      this.setObjectiveState('tower-management', 'stabilize with an item route', 0.02)
       this.panelOverride = 'item'
     } else if (includesAny(opcodeCue.action, ['system', 'quest'])) {
+      this.setObjectiveState('quest-resolution', 'review auxiliary objectives', 0.02)
       this.panelOverride = 'system'
     }
 
     if (includesAny(opcodeCue.action, ['pose', 'emphasis', 'shock'])) {
+      this.setObjectiveState('hero-pressure', 'capitalize on the pressure swing', 0.03)
       const targetLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
       this.laneBattleState[targetLane].alliedPressure = clamp(
         this.laneBattleState[targetLane].alliedPressure + 0.03,
@@ -687,6 +731,18 @@ export class RecoveryStageSystem {
 
     if (includesAny(opcodeCue.action, ['highlight', 'focus', 'anchor'])) {
       this.lastScriptedBeatNote = `opcode focus ${opcodeCue.action}`
+    }
+  }
+
+  private setObjectiveState(
+    phase: RecoveryBattleObjectiveState['phase'],
+    label: string,
+    progressDelta: number = 0,
+  ): void {
+    this.currentObjectivePhase = phase
+    this.currentObjectiveLabel = label
+    if (progressDelta !== 0) {
+      this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + progressDelta, 0.02, 1)
     }
   }
 
@@ -1159,6 +1215,13 @@ export class RecoveryStageSystem {
     this.skillCooldownEndsAtMs = 0
     this.itemCooldownEndsAtMs = 0
     this.heroAssignedLane = null
+    this.currentObjectivePhase = 'opening'
+    this.currentObjectiveLabel = 'stabilize the opening lane'
+    this.currentWaveIndex = 1
+    this.totalWaveCount = 4
+    this.objectiveProgressRatio = 0.08
+    this.enemyWaveCountdownBeats = 4
+    this.alliedWaveCountdownBeats = 5
     this.towerUpgradeLevels.mana = 1
     this.towerUpgradeLevels.population = 1
     this.towerUpgradeLevels.attack = 1
@@ -1442,6 +1505,7 @@ export class RecoveryStageSystem {
 
   private seedBattlePreviewState(storyboard: RecoveryStageStoryboard): void {
     this.currentStageBattleProfile = this.deriveStageBattleProfile(storyboard)
+    this.seedBattleObjectiveState(storyboard)
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
 
@@ -1507,6 +1571,55 @@ export class RecoveryStageSystem {
       0.22,
       0.92,
     )
+  }
+
+  private seedBattleObjectiveState(storyboard: RecoveryStageStoryboard): void {
+    const stage = storyboard.stageBlueprint
+    const stageTier = stage?.runtimeFields?.tierCandidate ?? 10
+    const archetypeCount = stage?.recommendedArchetypeIds.length ?? 0
+    const eventCount = Math.max(storyboard.scriptEventCount, storyboard.scriptEvents.length, 1)
+    const storyBranch = stage?.mapBinding?.storyBranch ?? 'unknown'
+    const title = stage?.title ?? storyboard.scriptFamilyId
+    const hintText = stage?.hintText ?? ''
+    const effectIntensity = stage?.renderIntent?.effectIntensity ?? 'medium'
+
+    this.totalWaveCount = clamp(
+      Math.round(eventCount / 24) + Math.max(Math.round(stageTier / 20), 1) + Math.min(archetypeCount, 2),
+      3,
+      8,
+    )
+    this.currentWaveIndex = 1
+    this.objectiveProgressRatio = clamp(
+      0.06
+      + (storyBranch === 'secondary' ? 0.03 : 0.01)
+      + (effectIntensity === 'high' ? 0.03 : effectIntensity === 'medium' ? 0.015 : 0),
+      0.04,
+      0.18,
+    )
+    this.enemyWaveCountdownBeats = Math.max(
+      1,
+      this.currentStageBattleProfile.enemyWaveCadenceBeats - (effectIntensity === 'high' ? 1 : 0),
+    )
+    this.alliedWaveCountdownBeats = Math.max(1, this.currentStageBattleProfile.alliedWaveCadenceBeats)
+
+    if (includesAny(title, ['defeat', 'siege', 'seize', 'enemy camp'])) {
+      this.currentObjectivePhase = 'siege'
+      this.currentObjectiveLabel = 'break the enemy defensive line'
+      return
+    }
+    if (includesAny(hintText, ['hero', 'eliminate'])) {
+      this.currentObjectivePhase = 'hero-pressure'
+      this.currentObjectiveLabel = 'use the hero to disrupt clustered enemies'
+      return
+    }
+    if (includesAny(hintText, ['bonus', 'reward', 'clear the stage'])) {
+      this.currentObjectivePhase = 'lane-control'
+      this.currentObjectiveLabel = 'secure lanes before the bonus window closes'
+      return
+    }
+
+    this.currentObjectivePhase = 'opening'
+    this.currentObjectiveLabel = 'stabilize the opening lane'
   }
 
   private deriveStageBattleProfile(storyboard: RecoveryStageStoryboard): RecoveryStageBattleProfile {
@@ -1631,12 +1744,61 @@ export class RecoveryStageSystem {
       enemyMomentum,
       towerThreat: clamp(1 - this.previewOwnTowerHpRatio + enemyMomentum * 0.22, 0, 1),
       stageProfile: { ...this.currentStageBattleProfile, archetypeLabels: [...this.currentStageBattleProfile.archetypeLabels] },
+      objective: {
+        phase: this.currentObjectivePhase,
+        label: this.currentObjectiveLabel,
+        waveIndex: this.currentWaveIndex,
+        totalWaves: this.totalWaveCount,
+        progressRatio: this.objectiveProgressRatio,
+        enemyWaveCountdownBeats: this.enemyWaveCountdownBeats,
+        alliedWaveCountdownBeats: this.alliedWaveCountdownBeats,
+        favoredLane: this.currentStageBattleProfile.favoredLane,
+      },
     }
   }
 
   private tickLaneBattlePreview(): void {
     const beat = Math.max(this.lastChannelBeat, 0)
     const profile = this.currentStageBattleProfile
+    const favoredLane = profile.favoredLane ?? 'upper'
+    const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
+
+    this.enemyWaveCountdownBeats = Math.max(this.enemyWaveCountdownBeats - 1, 0)
+    if (this.enemyWaveCountdownBeats === 0) {
+      const laneId = this.currentWaveIndex % 2 === 0 ? favoredLane : supportLane
+      const reinforcements = Math.min(
+        1 + Math.floor((this.currentWaveIndex - 1) / 2) + (profile.effectIntensity === 'high' ? 1 : 0),
+        3,
+      )
+      this.laneBattleState[laneId].enemyUnits = Math.min(this.laneBattleState[laneId].enemyUnits + reinforcements, 8)
+      this.laneBattleState[laneId].enemyPressure = clamp(
+        this.laneBattleState[laneId].enemyPressure + reinforcements * 0.06,
+        0.08,
+        1,
+      )
+      this.enemyWaveCountdownBeats = Math.max(
+        1,
+        profile.enemyWaveCadenceBeats - Math.min(Math.floor(this.currentWaveIndex / 3), 2),
+      )
+    }
+
+    this.alliedWaveCountdownBeats = Math.max(this.alliedWaveCountdownBeats - 1, 0)
+    if (this.alliedWaveCountdownBeats === 0) {
+      const laneId = this.selectedDispatchLane ?? favoredLane
+      const reinforcements = this.queuedUnitCount > 0 ? Math.min(this.queuedUnitCount, 2) : 1
+      this.laneBattleState[laneId].alliedUnits = Math.min(this.laneBattleState[laneId].alliedUnits + reinforcements, 8)
+      this.laneBattleState[laneId].alliedPressure = clamp(
+        this.laneBattleState[laneId].alliedPressure + reinforcements * (0.04 + profile.dispatchBoost * 0.08),
+        0.08,
+        1,
+      )
+      this.queuedUnitCount = Math.max(this.queuedUnitCount - Math.min(this.queuedUnitCount, reinforcements), 0)
+      this.alliedWaveCountdownBeats = Math.max(
+        1,
+        profile.alliedWaveCadenceBeats - (this.heroAssignedLane === laneId ? 1 : 0),
+      )
+    }
+
     ;(['upper', 'lower'] as const).forEach((laneId, index) => {
       const lane = this.laneBattleState[laneId]
       const phase = oscillate(beat * 120, 3400 + index * 500, index * 700)
@@ -1653,18 +1815,6 @@ export class RecoveryStageSystem {
 
       lane.enemyPressure = clamp(lane.enemyPressure * 0.88 + enemyReinforcement, 0.08, 1)
       lane.alliedPressure = clamp(lane.alliedPressure * 0.86 + alliedReinforcement, 0.08, 1)
-
-      if (beat % profile.enemyWaveCadenceBeats === (index + 1) % profile.enemyWaveCadenceBeats) {
-        lane.enemyUnits = Math.min(lane.enemyUnits + 1, 7)
-      }
-      if (
-        this.selectedDispatchLane === laneId
-        && this.queuedUnitCount > 0
-        && beat % profile.alliedWaveCadenceBeats === index % profile.alliedWaveCadenceBeats
-      ) {
-        lane.alliedUnits = Math.min(lane.alliedUnits + 1, 8)
-        this.queuedUnitCount = Math.max(this.queuedUnitCount - 1, 0)
-      }
 
       const heroBonus = this.heroAssignedLane === laneId ? profile.heroImpact : 0
       const netPush = lane.alliedPressure + lane.alliedUnits * 0.035 + heroBonus - (lane.enemyPressure + lane.enemyUnits * 0.03)
@@ -1696,5 +1846,28 @@ export class RecoveryStageSystem {
               ? 'contested'
               : 'stalled'
     })
+
+    const allyMomentum =
+      (this.laneBattleState.upper.alliedPressure + this.laneBattleState.lower.alliedPressure) / 2
+    const enemyMomentum =
+      (this.laneBattleState.upper.enemyPressure + this.laneBattleState.lower.enemyPressure) / 2
+    const pressureSwing = clamp(
+      (allyMomentum - enemyMomentum) * 0.06 + (1 - this.previewEnemyTowerHpRatio) * 0.02 + (this.heroAssignedLane ? 0.008 : 0),
+      0.002,
+      0.04,
+    )
+    this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + pressureSwing, 0.04, 1)
+    this.currentWaveIndex = clamp(1 + Math.floor(this.objectiveProgressRatio * this.totalWaveCount), 1, this.totalWaveCount)
+
+    if (this.objectiveProgressRatio >= 0.82) {
+      this.currentObjectivePhase = 'siege'
+      this.currentObjectiveLabel = 'collapse the last tower segment'
+    } else if (this.objectiveProgressRatio >= 0.62 && this.currentObjectivePhase !== 'skill-burst') {
+      this.currentObjectivePhase = 'hero-pressure'
+      this.currentObjectiveLabel = 'press the advantaged lane with hero support'
+    } else if (this.objectiveProgressRatio >= 0.34 && this.currentObjectivePhase === 'opening') {
+      this.currentObjectivePhase = 'lane-control'
+      this.currentObjectiveLabel = 'convert wave tempo into lane control'
+    }
   }
 }
