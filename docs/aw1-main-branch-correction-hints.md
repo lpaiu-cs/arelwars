@@ -201,4 +201,4 @@ If it can only be phrased as:
 
 - “this produces a plausible playback sheet”
 
-then it should stay explicitly heuristic, even if visually convincing.
+then it should stay explicitly heuristic, even if visually convincing.a

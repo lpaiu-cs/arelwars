@@ -1,0 +1,217 @@
+{
+  "specVersion": "aw1-equivalence-v1",
+  "auditDate": "2026-04-02",
+  "goal": {
+    "mode": "behavioral-equivalence",
+    "targetAbi": "x86_64",
+    "preserve": [
+      "original-classes.dex-bridge-expectations",
+      "original-assets",
+      "original-save-semantics",
+      "original-scene-and-state-progression"
+    ],
+    "nonGoals": [
+      "playable-compatible-port",
+      "visual-approximation",
+      "remake-runtime"
+    ]
+  },
+  "sourceOfTruth": {
+    "apkPath": "arel_wars1/arel_wars_1.apk",
+    "nativeLibraryPath": "lib/armeabi/libgameDSO.so",
+    "nativeBranchPriority": [
+      "parser-layout",
+      "runtime-consumer",
+      "call-graph"
+    ],
+    "mainBranchMayProvide": [
+      "search-hints",
+      "regression-labels",
+      "oracle-trace-field-shapes"
+    ]
+  },
+  "requiredScenarios": [
+    "boot-to-title",
+    "title-continue",
+    "menu-save",
+    "menu-load",
+    "battle-entry",
+    "battle-30s",
+    "retreat-or-defeat-exit",
+    "result-flow",
+    "unlock-reveal-when-applicable",
+    "orientation-change-during-battle",
+    "home-background-and-resume",
+    "full-relaunch-and-restore"
+  ],
+  "requiredExactChecks": [
+    {
+      "field": "familyId",
+      "required": true
+    },
+    {
+      "field": "aiIndex",
+      "required": true
+    },
+    {
+      "field": "preferredMapIndex",
+      "required": true
+    },
+    {
+      "field": "routeLabel",
+      "required": true
+    },
+    {
+      "field": "dialogueEventsSeenEqualsExpected",
+      "required": true
+    },
+    {
+      "field": "resultType",
+      "required": true
+    },
+    {
+      "field": "unlockTarget",
+      "required": true
+    },
+    {
+      "field": "saveSlotIdentity",
+      "required": true
+    },
+    {
+      "field": "resumeTargetScene",
+      "required": true
+    },
+    {
+      "field": "resumeTargetStageBinding",
+      "required": true
+    }
+  ],
+  "requiredSequenceChecks": [
+    {
+      "field": "scenePhaseSequence",
+      "match": "exact-ordered"
+    },
+    {
+      "field": "objectivePhaseSequence",
+      "match": "exact-ordered"
+    },
+    {
+      "field": "resultUnlockFlow",
+      "match": "exact-ordered"
+    },
+    {
+      "field": "lifecycleRestoreFlow",
+      "match": "exact-ordered"
+    },
+    {
+      "field": "sceneBoundaryAudioCueOrder",
+      "match": "exact-ordered",
+      "cues": [
+        "boot",
+        "title",
+        "menu",
+        "battle",
+        "result"
+      ]
+    }
+  ],
+  "checkpointOutputChecks": {
+    "requiredStableCheckpoints": [
+      "title-idle",
+      "menu-idle",
+      "battle-opening",
+      "battle-mid-run",
+      "result-screen",
+      "resumed-scene"
+    ],
+    "staticCheckpointRule": "prefer-exact-frame-hash-under-controlled-capture",
+    "activeBattleRule": "allow-bounded-drift-when-full-determinism-is-not-yet-attainable",
+    "alwaysExactUiFields": [
+      "stageTitle",
+      "portraitAssignment",
+      "unlockTargetLabel",
+      "visibleResultLabel"
+    ]
+  },
+  "dialogueAnchorChecks": {
+    "requiredAnchors": [
+      "opening",
+      "midpoint",
+      "closing"
+    ],
+    "normalizedTokenOverlapMin": 0.75,
+    "normalizationAllowance": [
+      "whitespace",
+      "markup-stripping"
+    ]
+  },
+  "tolerances": {
+    "dialogueAnchorNormalizedTokenOverlapMin": 0.75,
+    "waveCountDriftMax": 1,
+    "spawnProjectileEffectHeroDeployMetricDriftMaxRatio": 0.35,
+    "sceneBoundaryAudioOnsetDriftMaxMs": 1000
+  },
+  "saveSemantics": {
+    "requiredSemanticFields": [
+      "activeSlotIdentity",
+      "playerOrCommanderIdentity",
+      "stageProgression",
+      "unlockedContent",
+      "activeRouteOrBranch",
+      "runtimeRelevantOptions",
+      "currentOrResumableScene",
+      "resultStateWhenSaved"
+    ],
+    "formatRules": [
+      "no-replacement-save-schema",
+      "no-lossy-export-import-transform",
+      "no-shadow-save-as-primary-source-of-truth"
+    ],
+    "preferredFinalStandard": "byte-identical-save-output",
+    "interimRule": "semantic-equivalence-plus-explicit-volatile-field-exclusions",
+    "implicitExclusionsAllowed": false
+  },
+  "lifecycleRule": {
+    "mustSurvive": [
+      "pause-resume",
+      "home-background",
+      "orientation-change",
+      "full-process-relaunch-after-save"
+    ],
+    "mustRestoreExactly": [
+      "familyId",
+      "aiIndex",
+      "preferredMapIndex",
+      "currentScenePhase",
+      "audioStateClass",
+      "saveSlotIdentity",
+      "visibleSceneCheckpoint"
+    ]
+  },
+  "failureRules": [
+    "wrong-familyId",
+    "wrong-aiIndex",
+    "wrong-preferredMapIndex",
+    "missing-or-reordered-critical-scene-phases",
+    "missing-dialogue-events",
+    "wrong-result-type",
+    "wrong-unlock-target",
+    "save-load-state-drift",
+    "lifecycle-restore-stage-binding-drift",
+    "substitute-assets-or-substitute-save-meaning"
+  ],
+  "evidencePackage": [
+    "apk-identity",
+    "native-library-identity",
+    "trace-metadata",
+    "scenario-id",
+    "checkpoint-screenshots-or-hashes",
+    "dialogue-anchors",
+    "scene-phase-sequence",
+    "objective-phase-sequence",
+    "result-unlock-summary",
+    "save-artifact-or-save-field-dump",
+    "lifecycle-restore-evidence",
+    "comparison-verdict"
+  ]
+}

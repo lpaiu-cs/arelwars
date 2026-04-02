@@ -1,0 +1,373 @@
+{
+  "specVersion": "aw1-native-target-map-v1",
+  "auditDate": "2026-04-02",
+  "sourceInputs": {
+    "originalBridgeAudit": "recovery/arel_wars1/native_tmp/apk_runtime_audit.json",
+    "originalNativeLib": "recovery/arel_wars1/native_tmp/libgameDSO.so",
+    "currentPortNativesJava": "C:/Users/lpaiu/AndroidStudioProjects/arelwars1/app/src/main/java/com/gamevil/nexus2/Natives.java",
+    "mainBranchArtifacts": [
+      "origin/main:recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json",
+      "origin/main:recovery/arel_wars1/parsed_tables/AW1.engine_schema.json",
+      "origin/main:recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json"
+    ]
+  },
+  "originalJniBridge": {
+    "entryCount": 18,
+    "entries": [
+      {
+        "method": "InitializeJNIGlobalRef",
+        "descriptor": "()V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_InitializeJNIGlobalRef",
+        "directExportPresent": true,
+        "bridgeCategory": "lifecycle-init",
+        "callFrequencyHint": "resume-time",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLActivity;->onResume()V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeAsyncTimerCallBack",
+        "descriptor": "(I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeAsyncTimerCallBack",
+        "directExportPresent": true,
+        "bridgeCategory": "async-timer",
+        "callFrequencyHint": "async-callback",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NativesAsyncTask;->onPostExecute(Ljava/lang/Integer;)V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeAsyncTimerCallBackTimeStemp",
+        "descriptor": "(I I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeAsyncTimerCallBackTimeStemp",
+        "directExportPresent": true,
+        "bridgeCategory": "async-timer",
+        "callFrequencyHint": "async-callback",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NativesAsyncTask;->onPostExecute(Ljava/lang/Integer;)V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeDestroyClet",
+        "descriptor": "()V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeDestroyClet",
+        "directExportPresent": true,
+        "bridgeCategory": "lifecycle",
+        "callFrequencyHint": "destroy-time",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLActivity;->onDestroy()V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeGetPlayerName",
+        "descriptor": "(Ljava/lang/String;)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeGetPlayerName",
+        "directExportPresent": false,
+        "bridgeCategory": "identity-profile",
+        "callFrequencyHint": "unresolved",
+        "javaCallers": [],
+        "bridgeStatus": "bridge-unresolved"
+      },
+      {
+        "method": "NativeGetPublicKey",
+        "descriptor": "()Ljava/lang/String;",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeGetPublicKey",
+        "directExportPresent": true,
+        "bridgeCategory": "iap-security",
+        "callFrequencyHint": "sparse",
+        "javaCallers": [
+          "Lcom/gamevil/eruelwars/global/Security;->verifyPurchase(Ljava/lang/String; Ljava/lang/String;)Ljava/util/ArrayList;"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeHandleInAppBiiling",
+        "descriptor": "(Ljava/lang/String; I I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeHandleInAppBiiling",
+        "directExportPresent": true,
+        "bridgeCategory": "iap-callback",
+        "callFrequencyHint": "sparse",
+        "javaCallers": [
+          "Lcom/gamevil/eruelwars/global/SkeletonLauncher$Nexus2PurchaseObserver;->onPurchaseChange(Lcom/gamevil/eruelwars/global/Consts$PurchaseState; Ljava/lang/String; I J Ljava/lang/String;)V",
+          "Lcom/gamevil/eruelwars/global/SkeletonLauncher$Nexus2PurchaseObserver;->onRequestPurchaseCallback(Lcom/gamevil/eruelwars/global/BillingService$RequestPurchase; Lcom/gamevil/eruelwars/global/Consts$ResponseCode;)V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeInitDeviceInfo",
+        "descriptor": "(I I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeInitDeviceInfo",
+        "directExportPresent": true,
+        "bridgeCategory": "device-surface",
+        "callFrequencyHint": "surface-change",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLRenderer;->surfaceChanged(Ljavax/microedition/khronos/opengles/GL10; I I)V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeInitWithBufferSize",
+        "descriptor": "(I I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeInitWithBufferSize",
+        "directExportPresent": true,
+        "bridgeCategory": "gl-init",
+        "callFrequencyHint": "surface-create",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLRenderer;->surfaceCreated(Ljavax/microedition/khronos/opengles/GL10;)V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeIsNexusOne",
+        "descriptor": "(Z)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeIsNexusOne",
+        "directExportPresent": true,
+        "bridgeCategory": "device-quirk",
+        "callFrequencyHint": "init-time",
+        "javaCallers": [
+          "Lcom/gamevil/eruelwars/ui/eruelwarsUIControllerView;->onInitialize()V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeNetTimeOut",
+        "descriptor": "()V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeNetTimeOut",
+        "directExportPresent": true,
+        "bridgeCategory": "network",
+        "callFrequencyHint": "sparse-or-dormant",
+        "javaCallers": [],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativePauseClet",
+        "descriptor": "()V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativePauseClet",
+        "directExportPresent": true,
+        "bridgeCategory": "lifecycle",
+        "callFrequencyHint": "pause-time",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLSurfaceView;->onPause()V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeRender",
+        "descriptor": "()V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeRender",
+        "directExportPresent": true,
+        "bridgeCategory": "frame-loop",
+        "callFrequencyHint": "per-frame",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLRenderer;->drawFrame(Ljavax/microedition/khronos/opengles/GL10;)V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeResize",
+        "descriptor": "(I I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeResize",
+        "directExportPresent": true,
+        "bridgeCategory": "surface-resize",
+        "callFrequencyHint": "surface-change",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLRenderer;->surfaceChanged(Ljavax/microedition/khronos/opengles/GL10; I I)V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeResponseIAP",
+        "descriptor": "(Ljava/lang/String; I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeResponseIAP",
+        "directExportPresent": true,
+        "bridgeCategory": "iap-response",
+        "callFrequencyHint": "sparse-or-dormant",
+        "javaCallers": [],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeResumeClet",
+        "descriptor": "()V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeResumeClet",
+        "directExportPresent": true,
+        "bridgeCategory": "lifecycle",
+        "callFrequencyHint": "resume-time",
+        "javaCallers": [
+          "Lcom/gamevil/nexus2/NexusGLSurfaceView;->onResume()V"
+        ],
+        "bridgeStatus": "direct-export"
+      },
+      {
+        "method": "NativeUnLockItem",
+        "descriptor": "(I I)I",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_NativeUnLockItem",
+        "directExportPresent": false,
+        "bridgeCategory": "unlock-progression",
+        "callFrequencyHint": "unresolved",
+        "javaCallers": [],
+        "bridgeStatus": "bridge-unresolved"
+      },
+      {
+        "method": "handleCletEvent",
+        "descriptor": "(I I I I)V",
+        "expectedJniSymbol": "Java_com_gamevil_nexus2_Natives_handleCletEvent",
+        "directExportPresent": true,
+        "bridgeCategory": "ui-event-bus",
+        "callFrequencyHint": "input-and-ui-driven",
+        "javaCallers": [
+          "Lcom/gamevil/eruelwars/global/SkeletonLauncher$2;->onClick(Landroid/view/View;)V",
+          "Lcom/gamevil/eruelwars/global/SkeletonLauncher;->getTapjoyGPoint()Z",
+          "Lcom/gamevil/eruelwars/ui/UIFullTouch;->onAction(I F F I)V",
+          "Lcom/gamevil/nexus2/Natives$8$1;->onClick(Landroid/content/DialogInterface; I)V",
+          "Lcom/gamevil/nexus2/NexusGLRenderer;->sendHandleCletEvent()V",
+          "Lcom/gamevil/nexus2/NexusTouch$GestureListener;->onFling(Landroid/view/MotionEvent; Landroid/view/MotionEvent; F F)Z",
+          "Lcom/gamevil/nexus2/NexusTouch;->onDoubleTap(I I)Z",
+          "Lcom/gamevil/nexus2/ui/UIEditNumber;->onEditorAction(I)V",
+          "Lcom/gamevil/nexus2/ui/UIEditNumber;->onKeyDown(I Landroid/view/KeyEvent;)Z",
+          "Lcom/gamevil/nexus2/ui/UIEditText;->closeInput()V",
+          "Lcom/gamevil/nexus2/ui/UIEditText;->onEditorAction(I)V",
+          "Lcom/gamevil/nexus2/ui/UIEditText;->onKeyDown(I Landroid/view/KeyEvent;)Z"
+        ],
+        "bridgeStatus": "direct-export"
+      }
+    ]
+  },
+  "currentPortDelta": {
+    "currentPortMethodCount": 23,
+    "originalOracleMethodCount": 18,
+    "extraPortOnlyMethodCount": 5,
+    "extraPortOnlyMethods": [
+      "NativeApplySettings",
+      "NativeRestoreSession",
+      "NativeTouchEvent",
+      "NativeAttachAssetManager",
+      "NativeSetPreviewAsset"
+    ],
+    "rule": "These helpers are excluded from the original oracle bridge surface."
+  },
+  "nativePriorityTargets": {
+    "stageBootstrap": {
+      "priority": 1,
+      "sourceArtifact": "origin/main:recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json",
+      "signals": [
+        "int(familyId) == XlsAi.rowIndex",
+        "XlsAi.numericBlock byte[15] -> pairBaseIndex",
+        "XlsAi.numericBlock byte[18] -> pairBranchIndex",
+        "preferredMapIndex = pairBaseIndex + pairBranchIndex"
+      ],
+      "coverage": {
+        "scriptAiExactCoverage": 111,
+        "inlineMapExactCoverage": 111
+      },
+      "traceFocus": [
+        "stage-loader",
+        "story-bootstrap",
+        "XlsAi-row-materialization",
+        "map-pair-selector",
+        "story-branch-selector"
+      ]
+    },
+    "gxlRuntimeTables": {
+      "priority": 2,
+      "sourceArtifact": "origin/main:recovery/arel_wars1/parsed_tables/AW1.engine_schema.json",
+      "tableTargets": [
+        {
+          "name": "Hero_Ai",
+          "rowCount": 12
+        },
+        {
+          "name": "Skill_Ai",
+          "rowCount": 24
+        },
+        {
+          "name": "Projectile",
+          "rowCount": 35
+        },
+        {
+          "name": "Effect",
+          "rowCount": 37
+        },
+        {
+          "name": "Particle",
+          "rowCount": 12
+        }
+      ],
+      "traceFocus": [
+        "GXL-loader-loops",
+        "battle-runtime-caches",
+        "small-fixed-table-copies",
+        "data_eng/data_kor consumers"
+      ]
+    },
+    "effectProjectilePtcBridge": {
+      "priority": 3,
+      "sourceArtifact": "origin/main:recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json",
+      "signals": {
+        "particlePrimaryDirectPtcCount": 12,
+        "particleSecondaryDirectPtcCount": 10,
+        "sharedPrimaryPtcStem": "048",
+        "heroActiveRowsWithExactTailHits": 5
+      },
+      "exactHitExamples": [
+        {
+          "pair": [
+            4,
+            1
+          ],
+          "projectileRow": 5
+        },
+        {
+          "pair": [
+            3,
+            2
+          ],
+          "effectRow": 26
+        },
+        {
+          "pair": [
+            3,
+            0
+          ],
+          "projectileRow": 4,
+          "effectRow": 24
+        }
+      ],
+      "traceFocus": [
+        "hero-active-skill-consumer",
+        "projectile-spawn-path",
+        "effect-spawn-path",
+        "PTC-bridge-table-consumer"
+      ]
+    },
+    "scriptVmTutorialUiFamily": {
+      "priority": 4,
+      "sourceArtifact": "origin/main:recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json",
+      "signals": [
+        "cmd-00(0x0d)",
+        "cmd-06(0x0d)",
+        "cmd-07..0e(0x40)"
+      ],
+      "traceFocus": [
+        "script-vm-dispatch",
+        "tutorial-target-consumer",
+        "hud-highlight-consumer",
+        "scene-focus-preset-consumer"
+      ]
+    }
+  },
+  "immediateTracingOrder": [
+    "stageBootstrap",
+    "gxlRuntimeTables",
+    "effectProjectilePtcBridge",
+    "scriptVmTutorialUiFamily",
+    "resolve-bridge-unresolved-methods"
+  ],
+  "bridgeUnresolvedMethods": [
+    "NativeGetPlayerName",
+    "NativeUnLockItem"
+  ]
+}

@@ -2,166 +2,317 @@
 
 Audit date: 2026-04-02
 
-This note selects only the `origin/main` outputs that are still useful after the native loader/runtime closure already established on `disassemble`.
+This note re-audits `origin/main` from the `disassemble` point of view.
+It only keeps `main` outputs that can help native tracing, native naming, or later oracle-style equivalence checks.
 
 Reference points:
 
-- `origin/main` audited at `c302e2c`
+- previous `main` audit used on `disassemble`: `c302e2c`
+- current `origin/main` audited here: `2018961`
 - current common base with `disassemble`: `d0383b0`
 
-The rule is simple:
+The rule stays simple:
 
-- keep `main` outputs that help choose samples, name render/effect states, or prioritize native consumer tracing
-- do not import `main` outputs as byte-level truth when `disassemble` already has a native-confirmed structure
+- keep `main` results that narrow a native search space or give a reusable regression/oracle label
+- do not import `main`'s synthesized runtime sheets as byte-level native truth
 
-## Reuse Without Reinterpretation
+## What Became Newly Useful After `c302e2c`
 
-### 1. Regression sample corpus
+The latest `main` adds four classes of outputs that are genuinely useful on `disassemble`:
 
-These `origin/main` artifacts are worth keeping open while tracing native consumers:
+1. exact `script family -> XlsAi row -> map pair/branch` bindings
+2. a more mature fixed-schema view of `GXL` runtime tables
+3. stronger `particle / projectile / effect / hero-skill` cross-links
+4. a full `111`-stage replay/golden verification corpus that can later serve as an ARM-oracle baseline
 
-- `docs/arel_wars1-recovery.md`
-- `recovery/arel_wars1/timeline_candidate_strips/*.json`
-- `recovery/arel_wars1/timeline_candidate_strips/*.png`
-- `recovery/arel_wars1/frame_meta_group_probes/*.png`
+It also keeps older useful assets:
 
-Priority stems:
+- regression stems `082`, `084`, `208`, `209`, `215`, `226`, `230`, `240`
+- `MPL` bank switching
+- `179` packed-pixel handling
+- `PTC` emitter naming
 
-- `082`: frame pool sanity check. Native side already closes as `raw PZF frameCount = 86`, `raw PZA frameIndex range = 0..85`.
-- `084`: mixed anchor/overlay case with one explicit `6700` instant event and a strong loop-window hypothesis.
-- `208`: clean base-frame-delta sample. Good for checking whether a marker block is really a `PZF` exposure or an additional effect envelope.
-- `209`: single-anchor-with-overlays. Good for comparing repeated overlay cadence against native `PZA delay`.
-- `215`: single-anchor-cadence. Best sample for repeated same-frame timing without much pose churn.
-- `226`: mixed anchor/overlay donor stem. Good for testing whether long overlay runs correspond to native effect selectors or just heuristic grouping.
-- `230`: late-frame contiguous loop candidate. Good sample for native loop/hold behavior.
-- `240`: overlay-track-only. Best sample for separating base clip timing from pure secondary effect cadence.
+## Keep As Strong Native Search Hints
 
-What to take from these files:
+### 1. Stage bootstrap and map selection
 
-- which stems are visually rich enough to use as regression targets
-- which event groups are overlay-only versus base-linked
-- where `0x00`, `0x07`, `0x78`, `0xC8`, `0xFF` timing-like marker values cluster
-- which stems deserve side-by-side comparison between heuristic strips and native `PZA/PZF` decode
+Primary files:
 
-What not to take as final truth:
+- `docs/aw1-stage-progression-notes.md`
+- `recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json`
+- `recovery/arel_wars1/parsed_tables/AW1.stage_progression.json`
+- `recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json`
 
-- the claim that the post-frame tail is itself the primary native timeline format
-- donor/prototype-derived durations as recovered runtime fields
-- heuristic loop windows as authoritative native loop metadata
+Useful facts:
 
-### 2. Render semantics that already line up with native consumption
+- `111/111` script-backed stages now carry the same hard binding shape:
+  - `int(script family id) == XlsAi row index`
+  - `XlsAi numericBlock byte[15] -> pairBaseIndex`
+  - `XlsAi numericBlock byte[18] -> pairBranchIndex`
+  - `preferredMapIndex = pairBaseIndex + pairBranchIndex`
+- `AW1.stage_bindings.json` records this as `hard-script-ai-inline-map` for all `111` current script-backed stages.
+- `XlsAi` is no longer just “stage titles plus text”; on `main` it now behaves like a real stage-definition row with a stable prefix and an inline map-pointer pair.
 
-These `origin/main` files are useful and mostly orthogonal to the native parser closure:
+Why this matters on `disassemble`:
 
-- `docs/aw1-phase1-10-audit.md`
-- `tools/arel_wars1/export_aw1_render_semantics.py`
+- it gives a concrete native hunt target for the stage bootstrap path
+- it suggests the original code likely keeps `script family id` and `XlsAi row index` aligned rather than translating through a large remap table
+- it gives two exact candidate byte offsets inside the `XlsAi`-derived runtime payload that are worth tracing in native code
+
+Recommended native follow-up:
+
+- trace the stage loader and story bootstrap path for a direct `familyId -> rowIndex` use
+- search for code that reads or copies the `XlsAi` numeric block and branches on offsets equivalent to byte `15` and byte `18`
+- treat any native field that selects map pair or story branch as a high-priority naming target
+
+### 2. Script opcode consumers
+
+Primary files:
+
+- `docs/aw1-script-opcode-notes.md`
+- `recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json`
+- `recovery/arel_wars1/parsed_tables/AW1.tutorial_opcode_chains.json`
+
+Useful facts:
+
+- `AW1.opcode_action_map.json` now covers all `64` observed non-dialogue opcode families with `unresolvedOpcodeCount = 0`
+- the export distinguishes mnemonic-wide labels from variant-level labels instead of flattening them together
+- the most useful tutorial/UI cluster is still:
+  - `cmd-00(0x0d)`
+  - `cmd-06(0x0d)`
+  - `cmd-07..0e(0x40)`
+- the exact tutorial-chain proof layer now tracks `15` raw-prefix needles
+
+Why this matters on `disassemble`:
+
+- it gives stable names for the script/runtime consumers you will see before the grammar is fully native-confirmed
+- the `0x40` family is a very good target when hunting the native tutorial-focus or HUD-highlight consumer
+- the split between “mnemonic label” and “variant label” is the right caution level for disassembly notes too
+
+Recommended native follow-up:
+
+- prioritize native consumers for the `0x40` tutorial-target family before low-frequency opcodes
+- keep raw-prefix forms such as `060d0740`, `060d0a40`, `000d0440` as regression needles when following script VM dispatch
+- do not rename opcode fields from `main` one-to-one unless the native parser proves the same argument grammar
+
+### 3. GXL-derived runtime schemas
+
+Primary files:
+
+- `docs/aw1-gxl-table-notes.md`
+- `recovery/arel_wars1/parsed_tables/AW1.engine_schema.json`
+- `recovery/arel_wars1/parsed_tables/AW1.hero_runtime_families.json`
+- `recovery/arel_wars1/parsed_tables/AW1.hero_runtime_archetypes.json`
+
+Useful facts:
+
+- `AW1.engine_schema.json` now stabilizes eight table families into one export:
+  - `units = 55`
+  - `heroes = 6`
+  - `heroAiProfiles = 12`
+  - `skillAiProfiles = 24`
+  - `projectiles = 35`
+  - `effects = 37`
+  - `particles = 12`
+  - `balance = 4`
+- `main`'s current best candidates for runtime-relevant fixed tables are:
+  - `XlsHero_Ai`
+  - `XlsSkill_Ai`
+  - `XlsProjectile`
+  - `XlsEffect`
+  - `XlsParticle`
+- `AW1.hero_runtime_families.json` and `AW1.hero_runtime_archetypes.json` do not prove native wire format, but they do cluster the hero-skill tables into concrete runtime channels such as:
+  - `Dispatch`
+  - `Defend Tower / Tower Defense`
+  - `Recall`
+  - `Mana Gain`
+  - `Mana Wall`
+  - `Armageddon`
+
+Why this matters on `disassemble`:
+
+- it narrows which `data_*.zt1` families are most worth tracing in native code first
+- it gives row counts and candidate struct widths that are useful when identifying loader loops, table caches, or memcpy blocks
+- it turns anonymous battle-runtime fields into named search targets
+
+Recommended native follow-up:
+
+- prioritize native loaders that populate projectile/effect/particle and hero-AI/skill-AI tables
+- look for loops whose iteration counts plausibly match `12`, `24`, `35`, or `37`
+- when you hit a battle runtime object with repeated small arrays, test against these table counts before inventing a new schema
+
+### 4. Effect, projectile, and PTC cross-links
+
+Primary files:
+
+- `recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json`
+- `recovery/arel_wars1/parsed_tables/AW1.render_pack.json`
 - `recovery/arel_wars1/parsed_tables/AW1.render_semantics.json`
 
-Safe facts to reuse:
+Useful facts:
 
-- `MPL` selector rule: `flag == 0 -> bank B`, `flag > 0 -> bank A`
-- `179` is a special packed-pixel case, not a general palette rule
-- the `179` rule on `main` matches the useful native-consistent view:
-  - `0` is transparent
-  - normalize with `value - 1`
-  - core palette band width is `47`
-  - `189..199` behaves as a highlight tail
-- `PTC` emitter naming is useful as a consumer-label layer, especially:
+- `XlsParticle` now looks like the strongest current compact `PTC` bridge table:
+  - primary direct `PTC` hit count: `12/12`
+  - nonzero secondary direct `PTC` hit count: `10/10`
+- `PTC 048` is reused across several rows, which looks like a shared emitter template with alternate secondary layers
+- `XlsHeroActiveSkill.tailPairBE` yields exact runtime-table hits in `5/25` rows
+- concrete exact matches already exported on `main` include:
+  - pair `(4, 1)` -> projectile row `5`
+  - pair `(3, 2)` -> effect row `26`
+  - pair `(3, 0)` -> projectile row `4` and effect row `24`
+- `AW1.render_pack.json` adds reusable emitter names for those bridges, such as:
   - `support-pulse`
   - `burst-flare`
   - `impact-spark`
   - `utility-trail`
-  - `smoke-plume`
-  - `guard-ward`
-  - `support-ring`
-  - `support-shimmer`
-  - `support-impact`
-  - `mana-drift`
-  - `armageddon-burst`
 
-How to use them on `disassemble`:
+Why this matters on `disassemble`:
 
-- annotate native draw/effect consumers with stable names instead of anonymous row numbers
-- compare `MPL` bank selection against the already confirmed `flag` split
-- keep `179` isolated as a dedicated render path when tracing packed-pixel consumers
+- it strongly suggests that at least part of hero active-skill tail data is a direct effect/projectile reference block
+- it gives a concrete bridge from `data_*.zt1` tables to `ptc/*.ptc` assets
+- it makes `PTC` consumers and effect launchers easier to label once you find them natively
 
-### 3. Effect/runtime crosswalks
+Recommended native follow-up:
 
-These are useful as naming and prioritization aids, not as parser specs:
+- trace hero-active-skill consumption into projectile/effect spawn paths before spending more time on higher-level heuristics
+- prioritize native code that bridges battle-skill tables to `PTC` or effect-player objects
+- keep `PTC 048`, `046/034`, `047/043`, and `034/022` as named regression anchors
 
-- `recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json`
-- `recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json`
+## Keep As Native-Consistent Labels
 
-Useful pieces:
+These were already useful before, and the latest `main` still reinforces them:
 
-- `AW1.effect_runtime_links.json` summarizes a real `12`-row particle family and already groups shared primaries such as `048`
-- the same file gives a workable secondary-PTC histogram and concrete dual-PTC pairings like `046/034`
-- `AW1.runtime_blueprint.json` is useful for mapping stage/script/render terminology, but it is an engine-facing synthesis, not native wire format
+- `recovery/arel_wars1/parsed_tables/AW1.render_semantics.json`
+- `recovery/arel_wars1/parsed_tables/AW1.render_pack.json`
 
-How to use them on `disassemble`:
+Still safe to reuse:
 
-- prioritize `CGxEffect*`, `PTC`, and battle-effect consumers by named family instead of raw ids alone
-- keep the main-branch names when writing notes, screenshots, and regression labels
-- do not let the runtime blueprint override a direct native call graph or a native field layout
+- `MPL` selector rule:
+  - `flag == 0 -> bank B`
+  - `flag > 0 -> bank A`
+- `179` stays a special packed-pixel path:
+  - `0` transparent
+  - normalize with `value - 1`
+  - `47`-color core band
+  - `189..199` additive highlight tail
+- `PTC` emitter names are useful note labels even when their runtime scheduling stays partly heuristic
 
-## Do Not Import As Truth
+Why this matters on `disassemble`:
 
-These `origin/main` areas are still valuable as prototypes or demos, but they should not be pulled into the native format narrative:
+- these labels help document native consumers without forcing a false parser claim
+- `179` should still be isolated as a one-off render path when tracing packed-pixel draw code
 
-- `recovery/arel_wars1/timeline_candidate_strips/*.json` timing fields such as `playbackDurationMs`, `playbackSource`, `playbackDonorStem`
-- `tools/arel_wars1/render_timeline_candidate_strips.py` donor/prototype timing passes
-- `tools/arel_wars1/pzx_meta.py` timeline taxonomy as if it were a native enum
-- `remake/arel-wars1/*`
-- web preview/runtime packaging outputs
+## Keep As Oracle / Regression Material
+
+Primary files:
+
+- `docs/aw1-verification-protocol.md`
+- `recovery/arel_wars1/parsed_tables/AW1.verification_spec.json`
+- `recovery/arel_wars1/parsed_tables/AW1.candidate_replay_suite.json`
+- `recovery/arel_wars1/parsed_tables/AW1.golden_capture_suite.json`
+
+Useful facts:
+
+- both replay suites currently carry `111/111` completed traces
+- the trace format already includes:
+  - `familyId`
+  - `aiIndex`
+  - `preferredMapIndex`
+  - dialogue anchors
+  - scene command ids
+  - scene phase sequence
+  - objective phase sequence
+  - result/unlock flow
+
+Why this matters on `disassemble`:
+
+- this is not parser truth, but it is excellent equivalence-oracle material
+- once an ARM runner or native call harness exists, these traces can be used to compare real original execution against reconstructed runtime behavior
+- it gives a ready-made list of stage/story/script states worth instrumenting in native code
+
+Recommended future use:
+
+- when tracing JNI or story progression code, reuse the `111`-stage suite as the validation target set
+- use the trace fields as the first machine-readable output schema for any future native/original-run capture tool
+
+## Carry Forward From The Previous Audit
+
+These older `main` assets are still worth keeping open:
+
+- regression stems:
+  - `082`
+  - `084`
+  - `208`
+  - `209`
+  - `215`
+  - `226`
+  - `230`
+  - `240`
+- `docs/arel_wars1-recovery.md`
+- `recovery/arel_wars1/timeline_candidate_strips/*.json`
+- `recovery/arel_wars1/frame_meta_group_probes/*.png`
+
+Use them for:
+
+- choosing sample stems
+- separating base-linked versus overlay-only behavior
+- keeping visual regression targets around while tracing native consumers
+
+Do not use them for:
+
+- promoting heuristic tail cadence into a native field grammar
+- treating donor/prototype timing as recovered binary truth
+
+## Do Not Import As Native Truth
+
+The latest `main` still contains many useful runtime syntheses.
+They are not disassemble-side ground truth.
+
+Do not promote these directly into native format claims:
+
+- `AW1.runtime_blueprint.json`
+- `AW1.battle_model.json`
+- `AW1.hero_runtime_archetypes.json`
+- `AW1.phase15_report.json`
+- `docs/aw1-1to1-restoration-plan.md`
+- Android-port and verification-flow docs from late `main` phases
 
 Reason:
 
-- `disassemble` already closed the embedded path as `PZX root -> typed PZD/PZF/PZA subresources -> native runtime consumers`
-- much of `main`'s older tail/timeline model is a useful visual decomposition of that data, not a replacement for the native structure
+- they are engine-facing, validation-facing, or remake-facing syntheses
+- they often sit one layer above the binary structures `disassemble` is trying to close
+- they are valuable as names and oracle fields, not as parser specs
 
-## Recommended Working Set
+## Immediate Disassemble Actions Enabled By The Latest `main`
 
-If only a small subset should stay open during native work, use this:
+1. Add a native tracing target for the stage bootstrap path that can prove or reject:
+   - `script family id == XlsAi row index`
+   - `numericBlock byte[15]` as map-pair selector
+   - `numericBlock byte[18]` as branch bit
+2. Prioritize native loaders/consumers for:
+   - `XlsHero_Ai`
+   - `XlsSkill_Ai`
+   - `XlsProjectile`
+   - `XlsEffect`
+   - `XlsParticle`
+3. Follow hero active-skill tail consumers into projectile/effect/PTC launch paths using the exported exact-hit pairs.
+4. Keep the `0x40` tutorial/UI prefix family high on the script-VM tracing list.
+5. Reuse the `111`-stage replay/golden suites as the future oracle schema for any ARM-run differential harness.
 
-1. `docs/arel_wars1-recovery.md`
-2. `recovery/arel_wars1/timeline_candidate_strips/084-timeline-strip.json`
-3. `recovery/arel_wars1/timeline_candidate_strips/215-timeline-strip.json`
-4. `recovery/arel_wars1/timeline_candidate_strips/226-timeline-strip.json`
-5. `recovery/arel_wars1/timeline_candidate_strips/230-timeline-strip.json`
-6. `recovery/arel_wars1/timeline_candidate_strips/240-timeline-strip.json`
-7. `recovery/arel_wars1/frame_meta_group_probes/208-group00-base-frame-delta.png`
-8. `recovery/arel_wars1/frame_meta_group_probes/230-group00-base-frame-delta.png`
-9. `recovery/arel_wars1/frame_meta_group_probes/240-group00-overlay-track.png`
-10. `recovery/arel_wars1/parsed_tables/AW1.render_semantics.json`
-11. `recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json`
-
-This set is enough to answer three practical questions:
-
-- which samples should be used to validate a native timing/effect hypothesis
-- which visual behaviors are probably base-linked versus overlay-only
-- which render/effect names should be reused when documenting native consumers
-
-## Disassemble-Side Reading Rule
+## Working Rule
 
 When a `main` artifact says:
 
-- “this event looks plausible”
+- “this exact index, byte offset, row count, or asset bridge recurs across the whole data set”
 
-treat it as a sample-selection hint.
+it is usually worth feeding into `disassemble` as a native search hint.
 
 When it says:
 
-- “this field is the timeline”
+- “this creates a plausible runtime behavior or scene layer”
 
-require a matching native parser or native consumer before accepting it.
-
-For the current embedded APK path, the native baseline remains:
-
-- root offsets are a typed `PZD/PZF/PZA` table
-- `PZA` is the authoritative clip/timing carrier where present
-- `PZF` owns frame composition and subframe effect payloads
-- `PZD` owns the image pool addressed by `subFrameIndex`
+keep it as a regression label or oracle field until a native consumer proves the same thing.
 
 Related note:
 
-- see `docs/aw1-main-branch-correction-hints.md` for the hand-off version intended for `main` workers
+- `docs/aw1-main-branch-correction-hints.md` remains the hand-off note for `main` workers
