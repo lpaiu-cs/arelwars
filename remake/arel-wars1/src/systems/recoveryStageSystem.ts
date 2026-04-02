@@ -1964,6 +1964,102 @@ export class RecoveryStageSystem {
     const hasManos = this.loadoutHasMember(activeLoadout, 'Manos')
     const hasCaesar = this.loadoutHasMember(activeLoadout, 'Caesar')
     const preferredLane = stageBias.preferredLane ?? activeLoadout.dispatchLane ?? activeLoadout.heroLane ?? favoredLane
+    const routeInfluence = this.deriveCampaignRouteInfluence(this.storyboards[this.storyboardIndex] ?? null)
+
+    if (routeInfluence.matchesPreferred && routeInfluence.commitmentFactor >= 0.4) {
+      if (
+        routeInfluence.stanceLabel.includes('branch-hold')
+        && hasVincent
+        && hasManos
+        && (
+          tutorialChainId === 'battle-hud-goal-hp'
+          || tutorialChainId === 'skill-slot-highlight'
+          || stageBias.siegeBias
+          || includesAny(opcodeAction, ['siege', 'shock', 'emphasis'])
+        )
+      ) {
+        this.selectedDispatchLane = preferredLane
+        this.panelOverride = 'skill'
+        this.queuedUnitCount = Math.max(this.queuedUnitCount, 1)
+        if (
+          this.applyScriptedActionChain(
+            ['deploy-hero', 'cast-skill'],
+            `committed strike route chained Vincent and Manos (${routeInfluence.stanceLabel})`,
+          )
+        ) {
+          return true
+        }
+      }
+
+      if (
+        routeInfluence.stanceLabel.includes('branch-hold')
+        && hasRogan
+        && hasVincent
+        && (
+          tutorialChainId === 'battle-hud-dispatch-arrows'
+          || tutorialChainId === 'battle-hud-unit-card'
+          || stageBias.dispatchBias
+          || includesAny(opcodeAction, ['dispatch', 'focus', 'anchor'])
+        )
+      ) {
+        this.selectedDispatchLane = preferredLane
+        this.queuedUnitCount = Math.max(this.queuedUnitCount, 2)
+        if (
+          this.applyScriptedActionChain(
+            ['produce-unit', 'deploy-hero'],
+            `committed flank route chained Rogan and Vincent (${routeInfluence.stanceLabel})`,
+          )
+        ) {
+          return true
+        }
+      }
+
+      if (
+        routeInfluence.stanceLabel.includes('branch-hold')
+        && hasHelba
+        && hasCaesar
+        && (
+          tutorialChainId === 'battle-hud-guard-hp'
+          || tutorialChainId === 'tower-menu-highlight'
+          || tutorialChainId === 'quest-panel-highlight'
+          || stageBias.sustainBias
+          || stageBias.rewardBias
+          || includesAny(opcodeAction, ['guard', 'tower', 'quest', 'population'])
+        )
+      ) {
+        this.panelOverride = tutorialChainId === 'quest-panel-highlight' ? 'item' : 'tower'
+        if (
+          this.applyScriptedActionChain(
+            ['upgrade-tower-stat', 'use-item'],
+            `committed hold route chained Helba and Caesar (${routeInfluence.stanceLabel})`,
+          )
+        ) {
+          return true
+        }
+      }
+
+      if (
+        routeInfluence.stanceLabel.includes('branch-hold')
+        && hasJuno
+        && (
+          tutorialChainId === 'battle-hud-mana-bar'
+          || tutorialChainId === 'skill-slot-highlight'
+          || tutorialChainId === 'mana-upgrade-highlight'
+          || stageBias.manaBias
+          || includesAny(opcodeAction, ['mana', 'skill', 'shock', 'system'])
+        )
+      ) {
+        this.panelOverride = 'skill'
+        if (
+          this.applyScriptedActionChain(
+            ['upgrade-tower-stat', 'cast-skill'],
+            `committed mana route chained Juno channels (${routeInfluence.stanceLabel})`,
+          )
+        ) {
+          return true
+        }
+      }
+    }
 
     if (
       hasVincent
@@ -3514,6 +3610,26 @@ export class RecoveryStageSystem {
     this.applyAction(actionId, snapshot)
     this.lastActionNote = previousActionNote
     this.lastScriptedBeatNote = note
+    return true
+  }
+
+  private applyScriptedActionChain(
+    actionIds: RecoveryGameplayActionId[],
+    note: string,
+  ): boolean {
+    const applied: RecoveryGameplayActionId[] = []
+
+    actionIds.forEach((actionId) => {
+      if (this.applyScriptedAction(actionId, note)) {
+        applied.push(actionId)
+      }
+    })
+
+    if (applied.length === 0) {
+      return false
+    }
+
+    this.lastScriptedBeatNote = `${note} [${applied.join(' -> ')}]`
     return true
   }
 
