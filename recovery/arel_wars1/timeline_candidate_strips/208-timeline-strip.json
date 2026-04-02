@@ -46,6 +46,16 @@
       "anchorRecordTimingValues": [
         120
       ],
+      "baseItemCount": 10,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 10,
+      "tailFlaggedCount": 2,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.2,
       "framePath": "frames/208/00-g00-linked.png"
     },
     {
@@ -75,6 +85,16 @@
       "anchorRecordTimingValues": [
         120
       ],
+      "baseItemCount": 10,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.25,
       "framePath": "frames/208/01-g01-linked.png"
     }
   ]

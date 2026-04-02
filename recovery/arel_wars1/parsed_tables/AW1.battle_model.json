@@ -778,7 +778,10 @@
       "durationBeats": 6,
       "intensity": 0.6,
       "loop": false,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-1",
@@ -789,7 +792,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-2",
@@ -800,7 +806,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-3",
@@ -811,7 +820,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-4",
@@ -822,7 +834,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-5",
@@ -833,7 +848,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-6",
@@ -844,7 +862,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-7",
@@ -855,7 +876,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-8",
@@ -866,7 +890,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-9",
@@ -877,7 +904,10 @@
       "durationBeats": 2,
       "intensity": 0.6,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-10",
@@ -888,7 +918,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-11",
@@ -899,7 +932,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-12",
@@ -910,7 +946,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-13",
@@ -921,7 +960,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-14",
@@ -932,7 +974,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-15",
@@ -943,7 +988,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-16",
@@ -954,7 +1002,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 2
+      "blendFlagCandidate": 2,
+      "blendMode": "additive",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-17",
@@ -965,7 +1016,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-18",
@@ -976,7 +1030,10 @@
       "durationBeats": 2,
       "intensity": 0.68,
       "loop": true,
-      "blendFlagCandidate": 1
+      "blendFlagCandidate": 1,
+      "blendMode": "alpha",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-19",
@@ -987,7 +1044,10 @@
       "durationBeats": 5,
       "intensity": 0.76,
       "loop": false,
-      "blendFlagCandidate": 2
+      "blendFlagCandidate": 2,
+      "blendMode": "additive",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-20",
@@ -998,7 +1058,10 @@
       "durationBeats": 5,
       "intensity": 0.76,
       "loop": false,
-      "blendFlagCandidate": 2
+      "blendFlagCandidate": 2,
+      "blendMode": "additive",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-21",
@@ -1009,7 +1072,10 @@
       "durationBeats": 5,
       "intensity": 0.76,
       "loop": false,
-      "blendFlagCandidate": 2
+      "blendFlagCandidate": 2,
+      "blendMode": "additive",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-22",
@@ -1020,7 +1086,10 @@
       "durationBeats": 5,
       "intensity": 0.76,
       "loop": false,
-      "blendFlagCandidate": 2
+      "blendFlagCandidate": 2,
+      "blendMode": "additive",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-23",
@@ -1031,7 +1100,10 @@
       "durationBeats": 5,
       "intensity": 0.76,
       "loop": false,
-      "blendFlagCandidate": 2
+      "blendFlagCandidate": 2,
+      "blendMode": "additive",
+      "renderFamily": "support",
+      "emitterSemanticId": "ptc-row-00-support-pulse"
     },
     {
       "id": "effect-24",
@@ -1042,7 +1114,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-25",
@@ -1053,7 +1128,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-26",
@@ -1064,7 +1142,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-27",
@@ -1075,7 +1156,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-28",
@@ -1086,7 +1170,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-29",
@@ -1097,7 +1184,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-30",
@@ -1108,7 +1198,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-31",
@@ -1119,7 +1212,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-32",
@@ -1130,7 +1226,10 @@
       "durationBeats": 2,
       "intensity": 0.87,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-33",
@@ -1141,7 +1240,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-34",
@@ -1152,7 +1254,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-35",
@@ -1163,7 +1268,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     },
     {
       "id": "effect-36",
@@ -1174,7 +1282,10 @@
       "durationBeats": 2,
       "intensity": 0.84,
       "loop": true,
-      "blendFlagCandidate": 0
+      "blendFlagCandidate": 0,
+      "blendMode": "opaque",
+      "renderFamily": "burst",
+      "emitterSemanticId": "ptc-row-02-burst-flare"
     }
   ],
   "skillTemplates": [

@@ -306,7 +306,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     this.previewImage.setTexture(this.resolvePreviewTexture(previewStem, snapshot.frameIndex))
     this.fitImageToBox(this.previewImage, 320, 188)
     this.previewImage.setTint(snapshot.renderState.bankOverlayActive ? 0xffe3a1 : 0xffffff)
-    this.previewImage.setAlpha(snapshot.renderState.packedPixelStemRule ? 0.96 : 1)
+    this.previewImage.setAlpha(snapshot.renderState.packedPixelStemRule ? 0.94 + snapshot.renderState.bankOverlayWeight * 0.04 : 1)
     this.syncBankProbe(snapshot)
 
     const stageTitle = snapshot.currentStoryboard.stageBlueprint?.title ?? `Stem ${previewStem.stem}`
@@ -456,41 +456,34 @@ export class RecoveryBootScene extends Phaser.Scene {
     return this.stemAsset(this.renderPack.roleAssignments.projectile[side])
   }
 
-  private effectCategory(effect: RecoveryBattleEffectState): 'support' | 'impact' | 'burst' | 'utility' {
-    const kind = effect.kind.toLowerCase()
-    if (kind.includes('support') || kind.includes('heal')) {
-      return 'support'
+  private phaserBlendMode(label: string | null | undefined): Phaser.BlendModes {
+    const lowered = (label ?? '').toLowerCase()
+    if (lowered.includes('add')) {
+      return Phaser.BlendModes.ADD
     }
-    if (kind.includes('burst') || kind.includes('tower') || kind.includes('siege')) {
-      return 'burst'
-    }
-    if (kind.includes('impact') || kind.includes('hit')) {
-      return 'impact'
-    }
-    return 'utility'
+    return Phaser.BlendModes.NORMAL
   }
 
   private resolveEffectStemTexture(effect: RecoveryBattleEffectState, seed: number): string | null {
     if (!this.renderPack) {
       return null
     }
-    const category = this.effectCategory(effect)
-    if (category === 'burst') {
+    const family = effect.renderFamily
+    if (family === 'burst') {
       const special = this.renderPack.packedPixelSpecials.find((entry) => entry.stem === this.renderPack?.roleAssignments.effect.burst)
       if (special?.compositePath) {
         return this.ensureTextureKey(special.compositePath)
       }
     }
-    const stem = this.renderPack.roleAssignments.effect[category]
-    return this.pickStemTexture(this.stemAsset(stem), seed, category !== 'impact')
+    const stem = this.renderPack.roleAssignments.effect[family]
+    return this.pickStemTexture(this.stemAsset(stem), seed, family !== 'impact')
   }
 
   private resolveEmitterPreset(effect: RecoveryBattleEffectState): RecoveryRenderEmitterPreset | null {
     if (!this.renderPack) {
       return null
     }
-    const category = this.effectCategory(effect)
-    const presetId = this.renderPack.effectEmitterAssignments[category]
+    const presetId = effect.emitterSemanticId ?? this.renderPack.effectEmitterAssignments[effect.renderFamily]
     return presetId ? this.emitterPresetsById.get(presetId) ?? null : null
   }
 
@@ -556,7 +549,7 @@ export class RecoveryBootScene extends Phaser.Scene {
         true,
       )
       const overlayActive =
-        snapshot.renderState.bankOverlayActive
+        snapshot.renderState.bankOverlayWeight > 0.04
         || entity.role === 'hero'
         || entity.role === 'support'
         || entity.role === 'skill-window'
@@ -564,7 +557,6 @@ export class RecoveryBootScene extends Phaser.Scene {
       if (overlayTexture && overlayActive) {
         if (!overlay) {
           overlay = this.add.image(x, y, overlayTexture).setDepth(2.4)
-          overlay.setBlendMode(Phaser.BlendModes.ADD)
           this.entityOverlaySprites.set(overlayKey, overlay)
         }
         overlay.setVisible(true)
@@ -572,8 +564,9 @@ export class RecoveryBootScene extends Phaser.Scene {
         overlay.setPosition(x, y)
         overlay.setScale(scale * 1.05)
         overlay.setFlipX(entity.side === 'enemy')
+        overlay.setBlendMode(this.phaserBlendMode(snapshot.renderState.bankBlendMode))
         overlay.setTint(snapshot.renderState.bankOverlayActive ? 0xffd78b : 0xb6efff)
-        overlay.setAlpha(snapshot.renderState.bankOverlayActive ? 0.34 : 0.22)
+        overlay.setAlpha(0.16 + snapshot.renderState.bankOverlayWeight * 0.38)
       } else if (overlay) {
         overlay.setVisible(false)
       }
@@ -629,36 +622,41 @@ export class RecoveryBootScene extends Phaser.Scene {
       let sprite = this.effectSprites.get(effectKey)
       if (!sprite) {
         sprite = this.add.image(x, y, textureKey).setDepth(3.2)
-        sprite.setBlendMode(Phaser.BlendModes.ADD)
         this.effectSprites.set(effectKey, sprite)
       }
       sprite.setTexture(textureKey)
       sprite.setPosition(x, y)
+      sprite.setBlendMode(this.phaserBlendMode(effect.blendMode))
       sprite.setScale(0.14 + effect.intensity * 0.08)
       sprite.setTint(effect.side === 'allied' ? 0xaee9ff : 0xffc69c)
       sprite.setAlpha(0.24 + Math.min(effect.intensity, 1.4) * 0.22)
 
       const preset = this.resolveEmitterPreset(effect)
-      const particleCount = Math.max(2, Math.min(6, Math.round((preset?.emissionFields[0] ?? 24) / 24) + 2))
+      const particleCount = Math.max(2, Math.min(7, Math.round(((preset?.burstCount ?? 8) + (preset?.sustainCount ?? 0)) / 16) + 2))
       for (let index = 0; index < particleCount; index += 1) {
         const particleKey = `${effectKey}-particle-${index}`
         activeEffectKeys.add(particleKey)
         const particleTexture = index % 3 === 0 ? 'ptc-glow' : index % 2 === 0 ? 'ptc-spark' : 'ptc-dot'
-        const angle = (Math.PI * 2 * index) / particleCount + snapshot.frameIndex * 0.12
-        const radius = 8 + (preset?.ratioFieldsFloat[index % (preset?.ratioFieldsFloat.length || 1)] ?? 0.12) * 64
-        const offsetX = Math.cos(angle) * radius
-        const offsetY = Math.sin(angle) * radius * 0.55
+        const cadence = Math.max(1, preset?.cadenceTicks ?? 4)
+        const angle = (Math.PI * 2 * index) / particleCount + snapshot.frameIndex * (0.05 + cadence * 0.004)
+        const radius = 6 + (preset?.radiusScale ?? 0.2) * 44 + (preset?.spreadUnits ?? 4) * 0.6
+        const driftX = (preset?.driftX ?? 0) / 128
+        const driftY = (preset?.driftY ?? 0) / 128
+        const accelX = (preset?.accelX ?? 0) / 256
+        const accelY = (preset?.accelY ?? 0) / 256
+        const offsetX = Math.cos(angle) * radius + driftX * 12 + accelX * index * 2
+        const offsetY = Math.sin(angle) * radius * (0.4 + (preset?.jitterScale ?? 0.04) * 2) + driftY * 12 + accelY * index * 2
         let particle = this.particleSprites.get(particleKey)
         if (!particle) {
           particle = this.add.image(x, y, particleTexture).setDepth(3.4)
-          particle.setBlendMode(Phaser.BlendModes.ADD)
           this.particleSprites.set(particleKey, particle)
         }
         particle.setTexture(particleTexture)
         particle.setPosition(x + offsetX, y + offsetY)
-        particle.setScale(0.08 + effect.intensity * 0.03 + index * 0.01)
+        particle.setBlendMode(this.phaserBlendMode(preset?.blendMode ?? effect.blendMode))
+        particle.setScale(0.06 + effect.intensity * 0.03 + (preset?.sizeScale ?? 0.04) * 0.4 + index * 0.008)
         particle.setTint(effect.side === 'allied' ? 0xaee9ff : 0xffd3ae)
-        particle.setAlpha(0.16 + effect.intensity * 0.12)
+        particle.setAlpha(0.12 + effect.intensity * 0.08 + (preset?.alphaScale ?? 0.1) * 0.16)
       }
     })
 
@@ -691,7 +689,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     this.bankProbeImage.setVisible(true)
     this.bankProbeImage.setTexture(this.ensureTextureKey(probePath))
     this.fitImageToBox(this.bankProbeImage, 86, 60)
-    this.bankProbeImage.setAlpha(snapshot.renderState.bankOverlayActive ? 0.92 : 0.58)
+    this.bankProbeImage.setAlpha(0.52 + snapshot.renderState.bankOverlayWeight * 0.4)
     this.bankProbeImage.setTint(snapshot.renderState.bankOverlayActive ? 0xffd78b : 0xffffff)
   }
 
@@ -724,7 +722,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       ? `${snapshot.activeOpcodeCue.label}/${snapshot.activeOpcodeCue.action}${sceneCommands ? ` · ${sceneCommands}` : ''}`
       : sceneCommands || null
     const tutorialCue = snapshot.activeTutorialCue ? `${snapshot.activeTutorialCue.label}/${snapshot.activeTutorialCue.action}` : null
-    const packed = snapshot.renderState.packedPixelStemRule ? '179 shade' : 'std render'
+    const packed = snapshot.renderState.packedPixelStemRule ? `179 final ${snapshot.renderState.bankStateId}` : `std ${snapshot.renderState.bankStateId}`
     const activeChain = snapshot.battlePreviewState.activeChain.active
       ? ` · chain ${snapshot.battlePreviewState.activeChain.members.join('+')} ${snapshot.battlePreviewState.activeChain.focusLane ?? 'mixed'} x${snapshot.battlePreviewState.activeChain.intensity.toFixed(2)}`
       : ''

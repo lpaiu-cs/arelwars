@@ -66,6 +66,16 @@
         255,
         120
       ],
+      "baseItemCount": 8,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.263,
       "framePath": "frames/226/00-g00-linked.png"
     },
     {
@@ -102,6 +112,16 @@
         255,
         120
       ],
+      "baseItemCount": 8,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/226/01-g01-overlay.png"
     },
     {
@@ -137,6 +157,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.222,
       "framePath": "frames/226/02-g02-linked.png"
     },
     {
@@ -171,6 +201,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.25,
       "framePath": "frames/226/03-g03-overlay.png"
     },
     {
@@ -206,6 +246,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.222,
       "framePath": "frames/226/04-g04-linked.png"
     },
     {
@@ -237,6 +287,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.25,
       "framePath": "frames/226/05-g05-overlay.png"
     },
     {
@@ -268,6 +328,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.25,
       "framePath": "frames/226/06-g07-overlay.png"
     },
     {
@@ -301,6 +371,16 @@
         255,
         255
       ],
+      "baseItemCount": 9,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.273,
       "framePath": "frames/226/07-g09-overlay.png"
     },
     {
@@ -334,6 +414,16 @@
         255,
         255
       ],
+      "baseItemCount": 9,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.273,
       "framePath": "frames/226/08-g11-overlay.png"
     },
     {
@@ -369,6 +459,16 @@
         255,
         255
       ],
+      "baseItemCount": 9,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.25,
       "framePath": "frames/226/09-g12-linked.png"
     },
     {
@@ -402,6 +502,16 @@
         255,
         255
       ],
+      "baseItemCount": 9,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.273,
       "framePath": "frames/226/10-g13-overlay.png"
     },
     {
@@ -437,6 +547,16 @@
         255,
         120
       ],
+      "baseItemCount": 8,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.263,
       "framePath": "frames/226/11-g14-linked.png"
     },
     {
@@ -470,6 +590,16 @@
         255,
         120
       ],
+      "baseItemCount": 8,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.3,
       "framePath": "frames/226/12-g15-overlay.png"
     },
     {
@@ -503,6 +633,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.222,
       "framePath": "frames/226/13-g16-linked.png"
     },
     {
@@ -534,6 +674,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.222,
       "framePath": "frames/226/14-g17-overlay.png"
     },
     {
@@ -567,6 +717,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.222,
       "framePath": "frames/226/15-g18-linked.png"
     },
     {
@@ -598,6 +758,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.222,
       "framePath": "frames/226/16-g19-overlay.png"
     },
     {
@@ -633,6 +803,16 @@
         255,
         120
       ],
+      "baseItemCount": 8,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.263,
       "framePath": "frames/226/17-g20-linked.png"
     },
     {
@@ -666,6 +846,16 @@
         255,
         120
       ],
+      "baseItemCount": 8,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.3,
       "framePath": "frames/226/18-g21-overlay.png"
     },
     {
@@ -699,6 +889,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 11,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.222,
       "framePath": "frames/226/19-g22-linked.png"
     },
     {
@@ -736,6 +936,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 2,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/226/20-g23-overlay.png"
     },
     {
@@ -773,6 +983,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 2,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/226/21-g25-overlay.png"
     }
   ]

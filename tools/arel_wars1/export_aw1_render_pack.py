@@ -43,8 +43,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export AW1 final render pack for the runtime scene")
     parser.add_argument("--preview-manifest", type=Path, required=True, help="Path to preview_manifest.json")
     parser.add_argument("--runtime-blueprint", type=Path, required=True, help="Path to AW1.runtime_blueprint.json")
+    parser.add_argument("--render-semantics", type=Path, required=True, help="Path to AW1.render_semantics.json")
     parser.add_argument("--bank-probe-root", type=Path, required=True, help="Path to mpl_bank_composite_probes/")
-    parser.add_argument("--special-root", type=Path, required=True, help="Path to special PZX preview root")
     parser.add_argument("--output", type=Path, required=True, help="Output AW1.render_pack.json path")
     parser.add_argument("--web-root", type=Path, required=True, help="Path to public/recovery/analysis")
     return parser.parse_args()
@@ -108,6 +108,7 @@ def main() -> None:
     args = parse_args()
     preview_manifest = read_json(args.preview_manifest.resolve())
     runtime_blueprint = read_json(args.runtime_blueprint.resolve())
+    render_semantics = read_json(args.render_semantics.resolve())
 
     if not isinstance(preview_manifest, dict):
         raise ValueError("preview manifest is not a JSON object")
@@ -175,56 +176,67 @@ def main() -> None:
     render_profile = runtime_blueprint.get("renderProfile", {})
     if not isinstance(render_profile, dict):
         render_profile = {}
-    sample_rows = render_profile.get("ptcBridgeSummary", {}).get("sampleParticleRows", [])
-    if not isinstance(sample_rows, list):
-        sample_rows = []
-
-    support_row = select_emitter_preset(sample_rows, primary_stem="048")
-    burst_row = select_emitter_preset(sample_rows, relation_kind="dual-ptc", primary_stem="046")
-    impact_row = select_emitter_preset(sample_rows, relation_kind="dual-ptc", secondary_stem="043")
-    utility_row = select_emitter_preset(sample_rows, relation_kind="dual-ptc", primary_stem="034")
+    raw_emitters = list(render_semantics.get("ptcEmitterSemantics", {}).get("emitters", []))
     emitter_presets = [
-        preset
-        for preset in [
-            build_emitter_preset("support-048", "Support pulse", support_row),
-            build_emitter_preset("burst-046-034", "Burst flare", burst_row),
-            build_emitter_preset("impact-047-043", "Impact spark", impact_row),
-            build_emitter_preset("utility-034", "Utility trail", utility_row),
-        ]
-        if preset is not None
+        {
+            "id": str(entry.get("id")),
+            "semanticKey": entry.get("semanticKey"),
+            "label": str(entry.get("label", "Emitter")),
+            "family": entry.get("family"),
+            "relationKind": str(entry.get("relationKind", "unknown")),
+            "blendMode": entry.get("blendMode"),
+            "primaryPtcStem": entry.get("primaryStem"),
+            "secondaryPtcStem": entry.get("secondaryStem"),
+            "timingFields": entry.get("rawTimingFields", []),
+            "emissionFields": entry.get("rawEmissionFields", []),
+            "ratioFieldsFloat": entry.get("rawRatioFieldsFloat", []),
+            "signedDeltaFields": entry.get("rawSignedDeltaFields", []),
+            "warmupTicks": entry.get("warmupTicks"),
+            "releaseTicks": entry.get("releaseTicks"),
+            "lifeTicks": entry.get("lifeTicks"),
+            "burstCount": entry.get("burstCount"),
+            "sustainCount": entry.get("sustainCount"),
+            "spreadUnits": entry.get("spreadUnits"),
+            "cadenceTicks": entry.get("cadenceTicks"),
+            "radiusScale": entry.get("radiusScale"),
+            "alphaScale": entry.get("alphaScale"),
+            "sizeScale": entry.get("sizeScale"),
+            "jitterScale": entry.get("jitterScale"),
+            "driftX": entry.get("driftX"),
+            "driftY": entry.get("driftY"),
+            "accelX": entry.get("accelX"),
+            "accelY": entry.get("accelY"),
+        }
+        for entry in raw_emitters
+        if isinstance(entry, dict)
     ]
+    family_representatives = render_semantics.get("ptcEmitterSemantics", {}).get("familyRepresentativeEmitters", {})
 
     packed_specials: list[dict[str, object]] = []
-    for entry in render_profile.get("specialPackedPixelStems", []):
-        if not isinstance(entry, dict):
-            continue
-        stem = str(entry.get("stem", ""))
-        composite_name = f"{stem}-composite-mod47.png"
-        composite_src = args.special_root.resolve() / composite_name
-        probe_sheet_src = args.special_root.resolve().parent / "special_pzx_probes" / f"{stem}-packed-pixel-probes.png"
-        composite_path = None
-        probe_sheet_path = None
-        if composite_src.exists():
-            copy_file(composite_src, special_target_root / composite_name)
-            composite_path = f"/recovery/analysis/render/special/{composite_name}"
-        if probe_sheet_src.exists():
-            copy_file(probe_sheet_src, special_target_root / probe_sheet_src.name)
-            probe_sheet_path = f"/recovery/analysis/render/special/{probe_sheet_src.name}"
+    packed_179 = render_semantics.get("packedPixel179", {})
+    if isinstance(packed_179, dict):
         packed_specials.append(
             {
-                "stem": stem,
-                "heuristic": str(entry.get("heuristic", "")),
-                "confidence": str(entry.get("confidence", "")),
-                "compositePath": composite_path,
-                "probeSheetPath": probe_sheet_path,
+                "stem": str(packed_179.get("stem", "179")),
+                "heuristic": str(packed_179.get("formula", "")),
+                "confidence": "high",
+                "transparentValue": int(packed_179.get("transparentValue", 0)),
+                "valueOffset": int(packed_179.get("valueOffset", 1)),
+                "paletteSize": int(packed_179.get("paletteSize", 47)),
+                "coreBandSize": int(packed_179.get("coreBandSize", 47)),
+                "coreBandCount": int(packed_179.get("coreBandCount", 4)),
+                "highlightRange": list(packed_179.get("highlightRange", [189, 199])),
+                "highlightBlendMode": str(packed_179.get("highlightBlendMode", "additive-tail")),
+                "compositePath": packed_179.get("compositePath"),
+                "probeSheetPath": packed_179.get("probeSheetPath"),
             }
         )
 
     effect_emitter_assignments = {
-        "support": next((preset["id"] for preset in emitter_presets if preset["id"] == "support-048"), None),
-        "impact": next((preset["id"] for preset in emitter_presets if preset["id"] == "impact-047-043"), None),
-        "burst": next((preset["id"] for preset in emitter_presets if preset["id"] == "burst-046-034"), None),
-        "utility": next((preset["id"] for preset in emitter_presets if preset["id"] == "utility-034"), None),
+        "support": family_representatives.get("support"),
+        "impact": family_representatives.get("impact"),
+        "burst": family_representatives.get("burst"),
+        "utility": family_representatives.get("utility"),
     }
 
     pack = {
@@ -240,6 +252,10 @@ def main() -> None:
         "effectEmitterAssignments": effect_emitter_assignments,
         "packedPixelSpecials": packed_specials,
         "emitterPresets": emitter_presets,
+        "semantics": {
+            "mplBankSwitching": render_semantics.get("mplBankSwitching"),
+            "packedPixel179": packed_179,
+        },
     }
 
     write_json(args.output.resolve(), pack)

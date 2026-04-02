@@ -22,6 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--opcode-map", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json")
     parser.add_argument("--stage-bindings", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json")
     parser.add_argument("--tutorial-chains", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.tutorial_opcode_chains.json")
+    parser.add_argument("--render-semantics", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.render_semantics.json")
     parser.add_argument("--output", type=Path, required=True, help="Path to write the local blueprint json")
     parser.add_argument("--web-output", type=Path, help="Optional path under public/ to copy the same json")
     return parser.parse_args()
@@ -242,8 +243,8 @@ def build_stage_blueprints(
                     int(runtime_fields.get("tierCandidate", 0)),
                     int(runtime_fields.get("storyFlagCandidate", 0)),
                 ),
-                "bankRule": "default-bank-b-flagged-bank-a",
-                "packedPixelHint": "Use 179 shade-band rule when paired with stem 179.",
+                "bankRule": "flag-driven-bank-switch",
+                "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail.",
             }
 
         opcode_labels = [str(item.get("label", "")) for item in opcode_cues]
@@ -274,38 +275,48 @@ def build_stage_blueprints(
 
 
 def build_render_profile(
-    binary_report: dict[str, Any], effect_runtime: dict[str, Any]
+    binary_report: dict[str, Any], effect_runtime: dict[str, Any], render_semantics: dict[str, Any]
 ) -> dict[str, Any]:
-    particle_rows = effect_runtime.get("particleRows", [])
-    shared_primary_groups = effect_runtime.get("sharedPrimaryGroups", [])
+    particle_rows = render_semantics.get("ptcEmitterSemantics", {}).get("emitters", [])
+    family_representatives = render_semantics.get("ptcEmitterSemantics", {}).get("familyRepresentativeEmitters", {})
     pzx_findings = [
         finding
         for finding in binary_report.get("findings", [])
-        if isinstance(finding, str) and ("179" in finding or "Palette index 0" in finding or "PTC" in finding)
+        if isinstance(finding, str)
+        and ("179" in finding or "Palette index 0" in finding or "PTC" in finding)
+        and "mod-47" not in finding
+        and "188..199" not in finding
     ]
+    packed_179 = render_semantics.get("packedPixel179", {})
+    mpl_bank = render_semantics.get("mplBankSwitching", {})
     return {
         "defaultMplBankRule": {
-            "label": "default-bank-b-flagged-bank-a",
-            "notes": [
-                "Bank B is the default visible sprite palette for tested stems.",
-                "Flagged frame items are best explained as bank-A overlays.",
-                "Palette index 0 behaves like transparency more reliably than a zero RGB565 word check.",
-            ],
+            "label": str(mpl_bank.get("label", "flag-driven-bank-switch")),
+            "selectorRule": str(mpl_bank.get("selectorRule", "flag == 0 -> bank B, flag > 0 -> bank A")),
+            "notes": list(mpl_bank.get("notes", []))[:4],
         },
         "specialPackedPixelStems": [
             {
-                "stem": "179",
-                "sharedMplStem": "180",
-                "heuristic": "shadeBand*47 + paletteResidue with 188..199 as highlight tail",
-                "confidence": "medium",
+                "stem": str(packed_179.get("stem", "179")),
+                "sharedMplStem": str(packed_179.get("sharedMplStem", "180")),
+                "heuristic": str(packed_179.get("formula", "")),
+                "confidence": "high",
+                "transparentValue": int(packed_179.get("transparentValue", 0)),
+                "valueOffset": int(packed_179.get("valueOffset", 1)),
+                "paletteSize": int(packed_179.get("paletteSize", 47)),
+                "coreBandSize": int(packed_179.get("coreBandSize", 47)),
+                "coreBandCount": int(packed_179.get("coreBandCount", 4)),
+                "highlightRange": list(packed_179.get("highlightRange", [189, 199])),
+                "highlightBlendMode": str(packed_179.get("highlightBlendMode", "additive-tail")),
             }
         ],
         "ptcBridgeSummary": {
             "summary": effect_runtime.get("summary"),
-            "sharedPrimaryGroups": shared_primary_groups[:4],
+            "familyRepresentativeEmitters": family_representatives,
+            "sharedPrimaryGroups": effect_runtime.get("sharedPrimaryGroups", [])[:4],
             "sampleParticleRows": particle_rows[:6],
         },
-        "findings": pzx_findings,
+        "findings": [*pzx_findings, *list(render_semantics.get("findings", []))[:3]],
     }
 
 
@@ -317,6 +328,7 @@ def main() -> None:
     stage_progression = read_json(parsed_dir / "AW1.stage_progression.json")
     archetype_report = read_json(parsed_dir / "AW1.hero_runtime_archetypes.json")
     effect_runtime = read_json(parsed_dir / "AW1.effect_runtime_links.json")
+    render_semantics = read_json(args.render_semantics.resolve())
     binary_report = read_json(args.binary_report.resolve())
     opcode_map = read_json(args.opcode_map.resolve())
     stage_bindings = read_json(args.stage_bindings.resolve())
@@ -367,7 +379,7 @@ def main() -> None:
         "opcodeHeuristics": heuristics,
         "tutorialChains": tutorial_chains.get("chains", []),
         "featuredArchetypes": featured_archetypes,
-        "renderProfile": build_render_profile(binary_report, effect_runtime),
+        "renderProfile": build_render_profile(binary_report, effect_runtime, render_semantics),
         "findings": findings,
     }
     write_json(args.output.resolve(), blueprint)

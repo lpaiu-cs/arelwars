@@ -65,6 +65,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.714,
       "framePath": "frames/215/00-g01-overlay.png"
     },
     {
@@ -103,6 +113,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.833,
       "framePath": "frames/215/01-g02-linked.png"
     },
     {
@@ -142,6 +162,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 2,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.857,
       "framePath": "frames/215/02-g03-overlay.png"
     },
     {
@@ -175,6 +205,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/215/03-g04-linked.png"
     },
     {
@@ -216,6 +256,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.778,
       "framePath": "frames/215/04-g06-linked.png"
     },
     {
@@ -249,6 +299,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.714,
       "framePath": "frames/215/05-g07-linked.png"
     },
     {
@@ -284,6 +344,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.833,
       "framePath": "frames/215/06-g08-linked.png"
     },
     {
@@ -317,6 +387,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.714,
       "framePath": "frames/215/07-g10-overlay.png"
     },
     {
@@ -358,6 +438,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.778,
       "framePath": "frames/215/08-g12-linked.png"
     },
     {
@@ -389,6 +479,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/215/09-g13-linked.png"
     },
     {
@@ -424,6 +524,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.833,
       "framePath": "frames/215/10-g14-linked.png"
     },
     {
@@ -457,6 +567,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.714,
       "framePath": "frames/215/11-g16-linked.png"
     },
     {
@@ -498,6 +618,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.778,
       "framePath": "frames/215/12-g18-linked.png"
     },
     {
@@ -531,6 +661,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.714,
       "framePath": "frames/215/13-g19-overlay.png"
     },
     {
@@ -566,6 +706,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.833,
       "framePath": "frames/215/14-g20-linked.png"
     },
     {
@@ -597,6 +747,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 2,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/215/15-g22-linked.png"
     },
     {
@@ -635,6 +795,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.833,
       "framePath": "frames/215/16-g23-linked.png"
     },
     {
@@ -677,6 +847,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 3,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.875,
       "framePath": "frames/215/17-g24-overlay.png"
     },
     {
@@ -714,6 +894,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.778,
       "framePath": "frames/215/18-g25-linked.png"
     },
     {
@@ -749,6 +939,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.833,
       "framePath": "frames/215/19-g26-overlay.png"
     },
     {
@@ -782,6 +982,16 @@
         255,
         255
       ],
+      "baseItemCount": 5,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.714,
       "framePath": "frames/215/20-g27-overlay.png"
     }
   ]

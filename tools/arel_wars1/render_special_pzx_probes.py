@@ -38,9 +38,10 @@ def build_special_179_mapper(mpl, variant: str):
         palette = bank_a if label == "a" else bank_b
 
         def mapper(value: int) -> tuple[int, int, int, int]:
-            index = value % color_count
-            if index <= 0:
+            if value <= 0:
                 return (0, 0, 0, 0)
+            normalized = value - 1
+            index = normalized % color_count
             return rgb565_rgba(palette[index])
 
         return mapper
@@ -53,20 +54,19 @@ def build_special_179_mapper(mpl, variant: str):
     def shade_mapper(value: int) -> tuple[int, int, int, int]:
         if value == 0:
             return (0, 0, 0, 0)
-        index = value % color_count
-        if index <= 0:
-            return (0, 0, 0, 0)
+        normalized = value - 1
+        index = normalized % color_count
 
-        shade_band = min(value // color_count, 4)
-        palette = bank_b if shade_band in (0, 2, 4) else bank_a
+        shade_band = min(normalized // color_count, 4)
+        palette = bank_b if shade_band in (0, 2) else bank_a
         rgba = rgb565_rgba(palette[index])
 
         if variant == "mod47-shade":
-            factor = [0.74, 0.92, 1.0, 1.14, 1.28][shade_band]
+            factor = [0.74, 0.9, 1.0, 1.14, 1.34][shade_band]
             return adjust_rgba(rgba, factor)
 
         if variant == "mod47-highlight":
-            factor = [0.7, 0.88, 1.0, 1.1, 1.35][shade_band]
+            factor = [0.7, 0.88, 1.0, 1.12, 1.34][shade_band]
             if shade_band == 4:
                 base = adjust_rgba(rgba, factor)
                 return (

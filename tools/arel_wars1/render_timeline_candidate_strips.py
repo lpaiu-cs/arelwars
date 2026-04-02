@@ -60,6 +60,67 @@ class StemRenderCandidate:
     mapper: Any
 
 
+def _count_flagged_items(items: list[Any]) -> tuple[int, int]:
+    total = len(items)
+    flagged = sum(1 for item in items if int(getattr(item, "flag", 0)) > 0)
+    return (total, flagged)
+
+
+def _bank_presence_state(total: int, flagged: int) -> str:
+    if total <= 0:
+        return "none"
+    if flagged <= 0:
+        return "bank-b"
+    if flagged >= total:
+        return "bank-a"
+    return "bank-b+a"
+
+
+def _derive_bank_state(base_items: list[Any], tail_items: list[Any]) -> dict[str, object]:
+    base_total, base_flagged = _count_flagged_items(base_items)
+    tail_total, tail_flagged = _count_flagged_items(tail_items)
+    total_items = base_total + tail_total
+    flagged_total = base_flagged + tail_flagged
+    unflagged_total = total_items - flagged_total
+
+    anchor_state = _bank_presence_state(base_total, base_flagged)
+    tail_state = _bank_presence_state(tail_total, tail_flagged)
+    transition = f"{anchor_state}->{tail_state}"
+    overlay_weight = round(flagged_total / total_items, 3) if total_items > 0 else 0.0
+
+    if flagged_total <= 0:
+        bank_state_id = "bank-b-only"
+        bank_blend_mode = "opaque-b"
+    elif unflagged_total <= 0:
+        bank_state_id = "bank-a-only" if base_total == 0 or tail_total == 0 else "bank-a-full-swap"
+        bank_blend_mode = "replace-a"
+    elif base_total == 0 and tail_flagged > 0:
+        bank_state_id = "bank-b-tail-a-overlay"
+        bank_blend_mode = "a-tail-add"
+    elif tail_flagged > 0 and base_flagged <= 0:
+        bank_state_id = "bank-b-base-a-tail-overlay"
+        bank_blend_mode = "a-tail-add"
+    elif base_flagged > 0 and tail_flagged <= 0:
+        bank_state_id = "bank-b-base-a-anchor-accent"
+        bank_blend_mode = "a-anchor-mix"
+    else:
+        bank_state_id = "bank-b-base-a-anchor-tail"
+        bank_blend_mode = "a-overlay-stack"
+
+    return {
+        "baseItemCount": base_total,
+        "baseFlaggedCount": base_flagged,
+        "tailItemCount": tail_total,
+        "tailFlaggedCount": tail_flagged,
+        "anchorBankState": anchor_state,
+        "tailBankState": tail_state,
+        "bankTransition": transition,
+        "bankStateId": bank_state_id,
+        "bankBlendMode": bank_blend_mode,
+        "bankOverlayWeight": overlay_weight,
+    }
+
+
 def _build_event_entries(
     meta_groups: list[list],
     meta_group_summaries: list[dict[str, object]],
@@ -104,6 +165,8 @@ def _build_event_entries(
                 for value in (decode_pzx_marker_timing_ms(marker_hex) for marker_hex in anchor_record_markers)
                 if value is not None
             ]
+        base_items = list(frame_records[anchor_frame_index].items) if anchor_frame_index is not None else []
+        bank_state = _derive_bank_state(base_items, tail_items)
         sections_preview = group_summary.get("sectionsPreview", [])
         primary_section = sections_preview[0] if sections_preview else {}
         primary_prefix_hex = primary_section.get("extendedPrefixHex") if isinstance(primary_section, dict) else None
@@ -142,6 +205,7 @@ def _build_event_entries(
                     if isinstance(primary_section, dict) and primary_section.get("payloadLen") is not None
                     else None
                 ),
+                **bank_state,
                 "tailItems": tail_items,
             }
         )
@@ -999,6 +1063,16 @@ def render_candidate(candidate: StemRenderCandidate, output_root: Path, scale: i
             "timingExplicitValues": event["timingExplicitValues"],
             "anchorRecordMarkers": event["anchorRecordMarkers"],
             "anchorRecordTimingValues": event["anchorRecordTimingValues"],
+            "baseItemCount": event["baseItemCount"],
+            "baseFlaggedCount": event["baseFlaggedCount"],
+            "tailItemCount": event["tailItemCount"],
+            "tailFlaggedCount": event["tailFlaggedCount"],
+            "anchorBankState": event["anchorBankState"],
+            "tailBankState": event["tailBankState"],
+            "bankTransition": event["bankTransition"],
+            "bankStateId": event["bankStateId"],
+            "bankBlendMode": event["bankBlendMode"],
+            "bankOverlayWeight": event["bankOverlayWeight"],
             "framePath": str(Path("frames") / stem / frame_name),
         }
         if event.get("playbackDonorStem") is not None:

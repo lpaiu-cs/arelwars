@@ -37,6 +37,16 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
+      "baseItemCount": 9,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 9,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.111,
       "framePath": "frames/221/00-g00-linked.png"
     }
   ]

@@ -670,15 +670,16 @@ def main() -> None:
                     for value in row.decoded:
                         if value == 0:
                             continue
-                        band_histogram[min(value // 47, 4)] += 1
-                        residue_histogram[value % 47] += 1
-                        if value >= 188:
+                        normalized = value - 1
+                        band_histogram[min(normalized // 47, 4)] += 1
+                        residue_histogram[normalized % 47] += 1
+                        if value >= 189:
                             special_tail_histogram[value] += 1
             special_179_entry["packedPixelHeuristic"] = {
-                "hypothesis": "value = shadeBand * 47 + paletteResidue, with 188..199 used as highlight/special codes",
+                "hypothesis": "value == 0 is transparent; otherwise normalized = value - 1, normalized // 47 selects one of four core shade bands plus a 189..199 additive highlight tail, and normalized % 47 selects the shared 47-color palette index",
                 "valueRange": [0, int(special_179_entry["firstStream"]["maxDecodedIndex"])],
-                "mod47BandHistogram": dict(sorted(band_histogram.items())),
-                "mod47ResidueTop": [[value, count] for value, count in residue_histogram.most_common(24)],
+                "offset47BandHistogram": dict(sorted(band_histogram.items())),
+                "offset47ResidueTop": [[value, count] for value, count in residue_histogram.most_common(24)],
                 "specialTailHistogram": dict(sorted(special_tail_histogram.items())),
             }
 
@@ -757,7 +758,7 @@ def main() -> None:
             "All 65 MPL files now match the stronger header model 560, 10, 0, (2 * colorCount + 11), 0, (7936 + colorCount), followed by two palette banks.",
             "229.pzx uses only indices 0..38 while its MPL carries 148 colors per bank, so at least one asset family keeps oversized palette banks instead of trimming them to the exact max index.",
             "180.pzx raw row streams top out at palette index 46, which exactly fits the shared 179/180 MPL payload as a 47-color two-bank palette.",
-            "179.pzx does not map directly to the 47-color shared palette, but its non-zero bytes cluster cleanly under a mod-47 residue model with four main shade bands plus a small 188..199 highlight tail.",
+            "179.pzx does not map directly to the 47-color shared palette, but its non-zero bytes cluster cleanly under an offset-normalized 47-value residue model: 1..188 fill four core shade bands and 189..199 act as an additive highlight tail.",
             "Palette index 0 behaves like transparency more consistently than checking for a zero RGB565 word; bank B is the default visible sprite palette for the sampled stems, while flagged frame items are best explained as bank-A overlays.",
             f"Auxiliary frame-record streams are now recognized for {len(frame_record_stems)} stems ({len(frame_record_entries)} streams), with each item encoded as chunkIndex(u16), x(i16), y(i16), flag(u8).",
             f"{len(frame_record_control_stems)} of those stems also carry embedded 5-byte control chunks inside or between frame records; observed markers include 66 05 00 00 00, 66 0A 00 00 00, 66 0C 00 00 00, 67 78 00 00 00, and 67 FF 00 00 00.",

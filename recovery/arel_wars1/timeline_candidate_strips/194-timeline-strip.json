@@ -41,6 +41,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 2,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.5,
       "framePath": "frames/194/00-g00-linked.png"
     },
     {
@@ -70,6 +80,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 2,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.5,
       "framePath": "frames/194/01-g01-linked.png"
     },
     {
@@ -99,6 +119,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 2,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 2,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.5,
       "framePath": "frames/194/02-g02-linked.png"
     },
     {
@@ -130,6 +160,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 2,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-a",
+      "bankTransition": "bank-b+a->bank-a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.667,
       "framePath": "frames/194/03-g03-overlay.png"
     },
     {
@@ -161,6 +201,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 2,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 4,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/194/04-g04-overlay.png"
     }
   ]

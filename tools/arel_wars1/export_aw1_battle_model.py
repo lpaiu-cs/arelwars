@@ -279,6 +279,9 @@ def main() -> None:
           "intensity": metrics["intensity"],
           "loop": bool(int(row.get("loopFlagCandidate", 0))),
           "blendFlagCandidate": int(row.get("blendFlagCandidate", 0)),
+          "blendMode": str(row.get("engineHints", {}).get("blendMode", "opaque")),
+          "renderFamily": str(row.get("engineHints", {}).get("renderFamily", "utility")),
+          "emitterSemanticId": row.get("engineHints", {}).get("emitterSemanticId"),
       })
 
     role_attack_rows = {

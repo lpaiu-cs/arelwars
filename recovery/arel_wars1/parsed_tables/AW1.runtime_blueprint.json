@@ -571,8 +571,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -1120,8 +1120,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -1583,8 +1583,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -2083,8 +2083,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -2578,8 +2578,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -3046,8 +3046,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -3515,8 +3515,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -3900,8 +3900,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -4360,8 +4360,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -4834,8 +4834,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -5173,8 +5173,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -5499,8 +5499,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -5980,8 +5980,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -6456,8 +6456,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -6732,8 +6732,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -7132,8 +7132,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -7602,8 +7602,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -8108,8 +8108,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -8579,8 +8579,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -8934,8 +8934,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -9400,8 +9400,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -9852,8 +9852,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -10327,8 +10327,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -10806,8 +10806,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -11141,8 +11141,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -11602,8 +11602,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -11961,8 +11961,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -12435,8 +12435,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -12833,8 +12833,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -13306,8 +13306,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -13810,8 +13810,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -14168,8 +14168,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -14634,8 +14634,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15089,8 +15089,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15392,8 +15392,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15689,8 +15689,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15953,8 +15953,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -16427,8 +16427,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -17002,8 +17002,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -17573,8 +17573,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -18041,8 +18041,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -18455,8 +18455,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -18917,8 +18917,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -19364,8 +19364,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -19822,8 +19822,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -20144,8 +20144,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -20594,8 +20594,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -21067,8 +21067,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -21504,8 +21504,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -21979,8 +21979,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -22439,8 +22439,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -22916,8 +22916,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -23398,8 +23398,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -23833,8 +23833,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -24271,8 +24271,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -24579,8 +24579,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -25022,8 +25022,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -25486,8 +25486,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -25986,8 +25986,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -26467,8 +26467,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -26937,8 +26937,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -27410,8 +27410,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -27897,8 +27897,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -28351,8 +28351,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -28682,8 +28682,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -28978,8 +28978,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -29463,8 +29463,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -29747,8 +29747,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -30093,8 +30093,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -30594,8 +30594,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -31046,8 +31046,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -31448,8 +31448,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -31920,8 +31920,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -32478,8 +32478,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -33033,8 +33033,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -33457,8 +33457,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -33913,8 +33913,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -34309,8 +34309,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -34773,8 +34773,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -35228,8 +35228,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -35621,8 +35621,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -35966,8 +35966,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -36446,8 +36446,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -36899,8 +36899,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -37222,8 +37222,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -37698,8 +37698,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -38158,8 +38158,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -38636,8 +38636,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -39115,8 +39115,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -39594,8 +39594,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -40087,8 +40087,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -40567,8 +40567,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -41006,8 +41006,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -41515,8 +41515,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -41959,8 +41959,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -42419,8 +42419,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -42889,8 +42889,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -43383,8 +43383,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -43873,8 +43873,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -44350,8 +44350,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -44817,8 +44817,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -44889,8 +44889,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -45348,8 +45348,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -45791,8 +45791,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "low",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -46260,8 +46260,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "medium",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -46730,8 +46730,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -47004,8 +47004,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -47450,8 +47450,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -47843,8 +47843,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -48049,8 +48049,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -48442,8 +48442,8 @@
       ],
       "renderIntent": {
         "effectIntensity": "high",
-        "bankRule": "default-bank-b-flagged-bank-a",
-        "packedPixelHint": "Use 179 shade-band rule when paired with stem 179."
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     }
   ],
@@ -56325,19 +56325,29 @@
   ],
   "renderProfile": {
     "defaultMplBankRule": {
-      "label": "default-bank-b-flagged-bank-a",
+      "label": "flag-driven-bank-switch",
+      "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
       "notes": [
-        "Bank B is the default visible sprite palette for tested stems.",
-        "Flagged frame items are best explained as bank-A overlays.",
-        "Palette index 0 behaves like transparency more reliably than a zero RGB565 word check."
+        "Anchor and tail item flags are now exported per preview frame instead of inferred from overlay-only event labels.",
+        "Runtime bank overlays now read exact flagged-item counts and bank transitions from preview frames."
       ]
     },
     "specialPackedPixelStems": [
       {
         "stem": "179",
         "sharedMplStem": "180",
-        "heuristic": "shadeBand*47 + paletteResidue with 188..199 as highlight tail",
-        "confidence": "medium"
+        "heuristic": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+        "confidence": "high",
+        "transparentValue": 0,
+        "valueOffset": 1,
+        "paletteSize": 47,
+        "coreBandSize": 47,
+        "coreBandCount": 4,
+        "highlightRange": [
+          189,
+          199
+        ],
+        "highlightBlendMode": "additive-tail"
       }
     ],
     "ptcBridgeSummary": {
@@ -56364,6 +56374,12 @@
           "43": 3
         }
       },
+      "familyRepresentativeEmitters": {
+        "support": "ptc-row-00-support-pulse",
+        "burst": "ptc-row-02-burst-flare",
+        "impact": "ptc-row-03-impact-spark",
+        "utility": "ptc-row-04-utility-trail"
+      },
       "sharedPrimaryGroups": [
         {
           "primaryPtcStem": "048",
@@ -56378,368 +56394,310 @@
       ],
       "sampleParticleRows": [
         {
-          "index": 0,
-          "particleIdCandidate": 48,
-          "variantCandidate": 0,
-          "sentinel": 255,
-          "rawU8": [
-            48,
-            0,
-            255
-          ],
+          "id": "ptc-row-00-support-pulse",
+          "semanticKey": "support-pulse",
+          "label": "Support pulse",
+          "family": "support",
           "relationKind": "primary-only",
-          "primaryPtc": {
-            "stem": "048",
-            "signatureHex": "0000680148010000",
-            "fieldCount": 26,
-            "timingFields": [
-              0,
-              0,
-              10
-            ],
-            "emissionFields": [
-              10,
-              5,
-              5,
-              5
-            ],
-            "ratioFieldsFloat": [
-              0.9,
-              0.2,
-              0.08,
-              0.04
-            ],
-            "signedDeltaFields": [
-              0,
-              0,
-              0,
-              0
-            ]
-          },
-          "secondaryPtc": null
-        },
-        {
-          "index": 1,
-          "particleIdCandidate": 48,
-          "variantCandidate": 0,
-          "sentinel": 255,
-          "rawU8": [
-            48,
+          "blendMode": "additive-soft",
+          "particleRowIndex": 0,
+          "primaryStem": "048",
+          "secondaryStem": null,
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 10,
+          "burstCount": 10,
+          "sustainCount": 5,
+          "spreadUnits": 5,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
             0,
-            255
+            0,
+            10
           ],
+          "rawEmissionFields": [
+            10,
+            5,
+            5,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-01-support-pulse",
+          "semanticKey": "support-pulse",
+          "label": "Support pulse",
+          "family": "support",
           "relationKind": "primary-only",
-          "primaryPtc": {
-            "stem": "048",
-            "signatureHex": "0000680148010000",
-            "fieldCount": 26,
-            "timingFields": [
-              0,
-              0,
-              10
-            ],
-            "emissionFields": [
-              10,
-              5,
-              5,
-              5
-            ],
-            "ratioFieldsFloat": [
-              0.9,
-              0.2,
-              0.08,
-              0.04
-            ],
-            "signedDeltaFields": [
-              0,
-              0,
-              0,
-              0
-            ]
-          },
-          "secondaryPtc": null
-        },
-        {
-          "index": 2,
-          "particleIdCandidate": 46,
-          "variantCandidate": 34,
-          "sentinel": 255,
-          "rawU8": [
-            46,
-            34,
-            255
+          "blendMode": "additive-soft",
+          "particleRowIndex": 1,
+          "primaryStem": "048",
+          "secondaryStem": null,
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 10,
+          "burstCount": 10,
+          "sustainCount": 5,
+          "spreadUnits": 5,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            10
           ],
-          "relationKind": "dual-ptc",
-          "primaryPtc": {
-            "stem": "046",
-            "signatureHex": "000068017b140000",
-            "fieldCount": 26,
-            "timingFields": [
-              5,
-              0,
-              1000
-            ],
-            "emissionFields": [
-              150,
-              0,
-              10,
-              0
-            ],
-            "ratioFieldsFloat": [
-              0.9,
-              0.2,
-              0.2,
-              0.2
-            ],
-            "signedDeltaFields": [
-              0,
-              0,
-              0,
-              0
-            ]
-          },
-          "secondaryPtc": {
-            "stem": "034",
-            "signatureHex": "5a003c0012030000",
-            "fieldCount": 25,
-            "timingFields": [
-              0,
-              0,
-              4
-            ],
-            "emissionFields": [
-              1,
-              0,
-              10,
-              5
-            ],
-            "ratioFieldsFloat": [
-              0.7,
-              0.2,
-              0.02,
-              0.01
-            ],
-            "signedDeltaFields": [
-              0,
-              0,
-              -65,
-              -1
-            ]
-          }
-        },
-        {
-          "index": 3,
-          "particleIdCandidate": 47,
-          "variantCandidate": 43,
-          "sentinel": 255,
-          "rawU8": [
-            47,
-            43,
-            255
+          "rawEmissionFields": [
+            10,
+            5,
+            5,
+            5
           ],
-          "relationKind": "dual-ptc",
-          "primaryPtc": {
-            "stem": "047",
-            "signatureHex": "00006801cd0c0000",
-            "fieldCount": 26,
-            "timingFields": [
-              0,
-              0,
-              50
-            ],
-            "emissionFields": [
-              16,
-              0,
-              6,
-              5
-            ],
-            "ratioFieldsFloat": [
-              0.9,
-              0.2,
-              0.2,
-              0.2
-            ],
-            "signedDeltaFields": [
-              0,
-              0,
-              0,
-              0
-            ]
-          },
-          "secondaryPtc": {
-            "stem": "043",
-            "signatureHex": "00001400cd0c0000",
-            "fieldCount": 26,
-            "timingFields": [
-              10,
-              10,
-              40
-            ],
-            "emissionFields": [
-              6,
-              4,
-              10,
-              2
-            ],
-            "ratioFieldsFloat": [
-              0.9,
-              0.2,
-              0.08,
-              0.04
-            ],
-            "signedDeltaFields": [
-              -261,
-              -1,
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "index": 4,
-          "particleIdCandidate": 34,
-          "variantCandidate": 22,
-          "sentinel": 255,
-          "rawU8": [
-            34,
-            22,
-            255
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
           ],
-          "relationKind": "dual-ptc",
-          "primaryPtc": {
-            "stem": "034",
-            "signatureHex": "5a003c0012030000",
-            "fieldCount": 25,
-            "timingFields": [
-              0,
-              0,
-              4
-            ],
-            "emissionFields": [
-              1,
-              0,
-              10,
-              5
-            ],
-            "ratioFieldsFloat": [
-              0.7,
-              0.2,
-              0.02,
-              0.01
-            ],
-            "signedDeltaFields": [
-              0,
-              0,
-              -65,
-              -1
-            ]
-          },
-          "secondaryPtc": {
-            "stem": "022",
-            "signatureHex": "0e0100001f050000",
-            "fieldCount": 25,
-            "timingFields": [
-              96,
-              32,
-              20
-            ],
-            "emissionFields": [
-              1,
-              4,
-              10,
-              2
-            ],
-            "ratioFieldsFloat": [
-              0.9,
-              0.2,
-              0.08,
-              0.04
-            ],
-            "signedDeltaFields": [
-              0,
-              0,
-              -130,
-              -1
-            ]
-          }
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
         },
         {
-          "index": 5,
-          "particleIdCandidate": 2,
-          "variantCandidate": 1,
-          "sentinel": 255,
-          "rawU8": [
-            2,
+          "id": "ptc-row-02-burst-flare",
+          "semanticKey": "burst-flare",
+          "label": "Burst flare",
+          "family": "burst",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-hot",
+          "particleRowIndex": 2,
+          "primaryStem": "046",
+          "secondaryStem": "034",
+          "warmupTicks": 5,
+          "releaseTicks": 0,
+          "lifeTicks": 1000,
+          "burstCount": 150,
+          "sustainCount": 0,
+          "spreadUnits": 10,
+          "cadenceTicks": 0,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.2,
+          "jitterScale": 0.2,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            5,
+            0,
+            1000
+          ],
+          "rawEmissionFields": [
+            150,
+            0,
+            10,
+            0
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.2,
+            0.2
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-03-impact-spark",
+          "semanticKey": "impact-spark",
+          "label": "Impact spark",
+          "family": "impact",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-hot",
+          "particleRowIndex": 3,
+          "primaryStem": "047",
+          "secondaryStem": "043",
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 50,
+          "burstCount": 16,
+          "sustainCount": 0,
+          "spreadUnits": 6,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.2,
+          "jitterScale": 0.2,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            50
+          ],
+          "rawEmissionFields": [
+            16,
+            0,
+            6,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.2,
+            0.2
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-04-utility-trail",
+          "semanticKey": "utility-trail",
+          "label": "Utility trail",
+          "family": "utility",
+          "relationKind": "dual-ptc",
+          "blendMode": "alpha-trail",
+          "particleRowIndex": 4,
+          "primaryStem": "034",
+          "secondaryStem": "022",
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 4,
+          "burstCount": 1,
+          "sustainCount": 0,
+          "spreadUnits": 10,
+          "cadenceTicks": 5,
+          "radiusScale": 0.7,
+          "alphaScale": 0.2,
+          "sizeScale": 0.02,
+          "jitterScale": 0.01,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": -65,
+          "accelY": -1,
+          "rawTimingFields": [
+            0,
+            0,
+            4
+          ],
+          "rawEmissionFields": [
             1,
-            255
+            0,
+            10,
+            5
           ],
+          "rawRatioFieldsFloat": [
+            0.7,
+            0.2,
+            0.02,
+            0.01
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            -65,
+            -1
+          ]
+        },
+        {
+          "id": "ptc-row-05-smoke-plume",
+          "semanticKey": "smoke-plume",
+          "label": "Smoke plume",
+          "family": "utility",
           "relationKind": "dual-ptc",
-          "primaryPtc": {
-            "stem": "002",
-            "signatureHex": "0e011400ae070000",
-            "fieldCount": 25,
-            "timingFields": [
-              1024,
-              1792,
-              32
-            ],
-            "emissionFields": [
-              1,
-              0,
-              28,
-              14
-            ],
-            "ratioFieldsFloat": [
-              0.9,
-              0.2,
-              0.08,
-              0.04
-            ],
-            "signedDeltaFields": [
-              -130,
-              -1,
-              -130,
-              -1
-            ]
-          },
-          "secondaryPtc": {
-            "stem": "001",
-            "signatureHex": "5a000400c5200000",
-            "fieldCount": 25,
-            "timingFields": [
-              1024,
-              2048,
-              64
-            ],
-            "emissionFields": [
-              2,
-              4,
-              8,
-              4
-            ],
-            "ratioFieldsFloat": [
-              0.5,
-              0.2,
-              0.1,
-              0.1
-            ],
-            "signedDeltaFields": [
-              262,
-              0,
-              131,
-              0
-            ]
-          }
+          "blendMode": "alpha-smoke",
+          "particleRowIndex": 5,
+          "primaryStem": "002",
+          "secondaryStem": "001",
+          "warmupTicks": 1024,
+          "releaseTicks": 1792,
+          "lifeTicks": 32,
+          "burstCount": 1,
+          "sustainCount": 0,
+          "spreadUnits": 28,
+          "cadenceTicks": 14,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": -130,
+          "driftY": -1,
+          "accelX": -130,
+          "accelY": -1,
+          "rawTimingFields": [
+            1024,
+            1792,
+            32
+          ],
+          "rawEmissionFields": [
+            1,
+            0,
+            28,
+            14
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            -130,
+            -1,
+            -130,
+            -1
+          ]
         }
       ]
     },
     "findings": [
       "179.pzx stream 1 is a simple 30-record placement table: each 10-byte record selects one chunk and places it at signed x/y coordinates, covering all 30 decoded chunks exactly once.",
       "180.pzx raw row streams top out at palette index 46, which exactly fits the shared 179/180 MPL payload as a 47-color two-bank palette.",
-      "179.pzx does not map directly to the 47-color shared palette, but its non-zero bytes cluster cleanly under a mod-47 residue model with four main shade bands plus a small 188..199 highlight tail.",
       "Palette index 0 behaves like transparency more consistently than checking for a zero RGB565 word; bank B is the default visible sprite palette for the sampled stems, while flagged frame items are best explained as bank-A overlays.",
       "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
-      "PTC files are no longer opaque blobs: across 50 files they parse as compact 25-26 word parameter blocks plus a 0-2 byte trailer, with stable angle, Q16 ratio, signed delta, and timing field groups."
+      "PTC files are no longer opaque blobs: across 50 files they parse as compact 25-26 word parameter blocks plus a 0-2 byte trailer, with stable angle, Q16 ratio, signed delta, and timing field groups.",
+      "179 packed pixels now use an offset-normalized 47-color band model: 0 is transparent, 1..188 span four 47-value bands, and 189..199 form the additive highlight tail.",
+      "MPL bank switching is now exported as exact per-frame flag state derived from anchor and tail item flags instead of overlay-only heuristics.",
+      "PTC emitter semantics are now exported for every linked XlsParticle row with named timing, emission, radius, and delta fields."
     ]
   },
   "findings": [

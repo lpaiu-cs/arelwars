@@ -189,6 +189,16 @@ def main() -> None:
                         "timingExplicitValues": raw_event.get("timingExplicitValues"),
                         "anchorRecordMarkers": raw_event.get("anchorRecordMarkers"),
                         "anchorRecordTimingValues": raw_event.get("anchorRecordTimingValues"),
+                        "baseItemCount": raw_event.get("baseItemCount"),
+                        "baseFlaggedCount": raw_event.get("baseFlaggedCount"),
+                        "tailItemCount": raw_event.get("tailItemCount"),
+                        "tailFlaggedCount": raw_event.get("tailFlaggedCount"),
+                        "anchorBankState": raw_event.get("anchorBankState"),
+                        "tailBankState": raw_event.get("tailBankState"),
+                        "bankTransition": raw_event.get("bankTransition"),
+                        "bankStateId": raw_event.get("bankStateId"),
+                        "bankBlendMode": raw_event.get("bankBlendMode"),
+                        "bankOverlayWeight": raw_event.get("bankOverlayWeight"),
                     }
                     if raw_event.get("playbackDonorStem") is not None:
                         event_frame["playbackDonorStem"] = raw_event.get("playbackDonorStem")

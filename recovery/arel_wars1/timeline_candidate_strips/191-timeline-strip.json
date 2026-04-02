@@ -41,6 +41,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 2,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 1,
+      "tailFlaggedCount": 0,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b",
+      "bankTransition": "bank-b+a->bank-b",
+      "bankStateId": "bank-b-base-a-anchor-accent",
+      "bankBlendMode": "a-anchor-mix",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/191/00-g00-linked.png",
       "playbackDonorStem": "188",
       "playbackDonorScore": 8,

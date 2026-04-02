@@ -218,6 +218,9 @@ interface RecoveryBattleEffectRuntime {
   laneId: RecoveryBattleLaneId
   positionRatio: number
   kind: string
+  renderFamily: RecoveryBattleEffectState['renderFamily']
+  blendMode: string
+  emitterSemanticId: string | null
   ttlBeats: number
   intensity: number
 }
@@ -3278,20 +3281,22 @@ export class RecoveryStageSystem {
     const specialRule = this.runtimeBlueprint?.renderProfile.specialPackedPixelStems.find(
       (entry) => entry.stem === storyboard.previewStem.stem,
     )
-    const ptcHint = this.runtimeBlueprint?.renderProfile.ptcBridgeSummary.sharedPrimaryGroups[0]
+    const familyRepresentatives = this.runtimeBlueprint?.renderProfile.ptcBridgeSummary.familyRepresentativeEmitters ?? {}
+    const bankOverlayWeight = Math.max(0, Number(currentFrame?.bankOverlayWeight ?? 0))
     return {
-      bankRuleLabel: storyboard.stageBlueprint?.renderIntent?.bankRule ?? this.runtimeBlueprint?.renderProfile.defaultMplBankRule.label ?? 'default-bank-b-flagged-bank-a',
-      bankOverlayActive:
-        currentFrame?.relation === 'overlay'
-        || currentFrame?.linkType === 'overlay-track'
-        || currentFrame?.eventType === 'overlay',
+      bankRuleLabel: storyboard.stageBlueprint?.renderIntent?.bankRule ?? this.runtimeBlueprint?.renderProfile.defaultMplBankRule.label ?? 'flag-driven-bank-switch',
+      bankOverlayActive: bankOverlayWeight > 0.01,
+      bankStateId: currentFrame?.bankStateId ?? 'bank-b-only',
+      bankTransition: currentFrame?.bankTransition ?? null,
+      bankBlendMode: currentFrame?.bankBlendMode ?? 'opaque-b',
+      bankOverlayWeight,
+      baseFlaggedCount: Number(currentFrame?.baseFlaggedCount ?? 0),
+      tailFlaggedCount: Number(currentFrame?.tailFlaggedCount ?? 0),
       packedPixelStemRule: specialRule?.heuristic ?? null,
+      packedPixelBlendMode: specialRule?.highlightBlendMode ?? null,
       effectPulseCount: channelStates.filter((entry) => entry.intensity > 0.62 && entry.hasBuffLayer).length,
       effectIntensity: storyboard.stageBlueprint?.renderIntent?.effectIntensity ?? 'medium',
-      ptcEmitterHint:
-        ptcHint && typeof ptcHint === 'object' && 'primaryPtcStem' in ptcHint
-          ? String(ptcHint.primaryPtcStem)
-          : null,
+      ptcEmitterHint: typeof familyRepresentatives.support === 'string' ? familyRepresentatives.support : null,
     }
   }
 
@@ -5321,6 +5326,9 @@ export class RecoveryStageSystem {
       laneId,
       positionRatio,
       kind: template?.label ?? fallbackKind,
+      renderFamily: template?.renderFamily ?? (fallbackKind.includes('support') ? 'support' : fallbackKind.includes('burst') || fallbackKind.includes('tower') ? 'burst' : fallbackKind.includes('impact') || fallbackKind.includes('hit') ? 'impact' : 'utility'),
+      blendMode: template?.blendMode ?? 'additive',
+      emitterSemanticId: template?.emitterSemanticId ?? null,
       ttlBeats: Math.max(2, Math.round((template?.durationBeats ?? 3) * intensityScale)),
       intensity: clamp((template?.intensity ?? 0.8) * intensityScale, 0.25, 2.2),
     })
@@ -5836,6 +5844,9 @@ export class RecoveryStageSystem {
       laneId: effect.laneId,
       positionRatio: effect.positionRatio,
       kind: effect.kind,
+      renderFamily: effect.renderFamily,
+      blendMode: effect.blendMode,
+      emitterSemanticId: effect.emitterSemanticId,
       ttlBeats: effect.ttlBeats,
       intensity: effect.intensity,
     }))

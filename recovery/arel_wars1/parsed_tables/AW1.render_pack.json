@@ -4,7 +4,7 @@
     "stemCount": 21,
     "bankProbeCount": 7,
     "packedSpecialCount": 1,
-    "emitterPresetCount": 4
+    "emitterPresetCount": 12
   },
   "stemAssets": [
     {
@@ -634,25 +634,38 @@
     }
   },
   "effectEmitterAssignments": {
-    "support": "support-048",
-    "impact": "impact-047-043",
-    "burst": "burst-046-034",
-    "utility": "utility-034"
+    "support": "ptc-row-00-support-pulse",
+    "impact": "ptc-row-03-impact-spark",
+    "burst": "ptc-row-02-burst-flare",
+    "utility": "ptc-row-04-utility-trail"
   },
   "packedPixelSpecials": [
     {
       "stem": "179",
-      "heuristic": "shadeBand*47 + paletteResidue with 188..199 as highlight tail",
-      "confidence": "medium",
-      "compositePath": "/recovery/analysis/render/special/179-composite-mod47.png",
-      "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes.png"
+      "heuristic": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+      "confidence": "high",
+      "transparentValue": 0,
+      "valueOffset": 1,
+      "paletteSize": 47,
+      "coreBandSize": 47,
+      "coreBandCount": 4,
+      "highlightRange": [
+        189,
+        199
+      ],
+      "highlightBlendMode": "additive-tail",
+      "compositePath": "/recovery/analysis/render/special/179-composite-final.png",
+      "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes-final.png"
     }
   ],
   "emitterPresets": [
     {
-      "id": "support-048",
+      "id": "ptc-row-00-support-pulse",
+      "semanticKey": "support-pulse",
       "label": "Support pulse",
+      "family": "support",
       "relationKind": "primary-only",
+      "blendMode": "additive-soft",
       "primaryPtcStem": "048",
       "secondaryPtcStem": null,
       "timingFields": [
@@ -677,12 +690,78 @@
         0,
         0,
         0
-      ]
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 0,
+      "lifeTicks": 10,
+      "burstCount": 10,
+      "sustainCount": 5,
+      "spreadUnits": 5,
+      "cadenceTicks": 5,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.08,
+      "jitterScale": 0.04,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 0,
+      "accelY": 0
     },
     {
-      "id": "burst-046-034",
+      "id": "ptc-row-01-support-pulse",
+      "semanticKey": "support-pulse",
+      "label": "Support pulse",
+      "family": "support",
+      "relationKind": "primary-only",
+      "blendMode": "additive-soft",
+      "primaryPtcStem": "048",
+      "secondaryPtcStem": null,
+      "timingFields": [
+        0,
+        0,
+        10
+      ],
+      "emissionFields": [
+        10,
+        5,
+        5,
+        5
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.08,
+        0.04
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 0,
+      "lifeTicks": 10,
+      "burstCount": 10,
+      "sustainCount": 5,
+      "spreadUnits": 5,
+      "cadenceTicks": 5,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.08,
+      "jitterScale": 0.04,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 0,
+      "accelY": 0
+    },
+    {
+      "id": "ptc-row-02-burst-flare",
+      "semanticKey": "burst-flare",
       "label": "Burst flare",
+      "family": "burst",
       "relationKind": "dual-ptc",
+      "blendMode": "additive-hot",
       "primaryPtcStem": "046",
       "secondaryPtcStem": "034",
       "timingFields": [
@@ -707,12 +786,30 @@
         0,
         0,
         0
-      ]
+      ],
+      "warmupTicks": 5,
+      "releaseTicks": 0,
+      "lifeTicks": 1000,
+      "burstCount": 150,
+      "sustainCount": 0,
+      "spreadUnits": 10,
+      "cadenceTicks": 0,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.2,
+      "jitterScale": 0.2,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 0,
+      "accelY": 0
     },
     {
-      "id": "impact-047-043",
+      "id": "ptc-row-03-impact-spark",
+      "semanticKey": "impact-spark",
       "label": "Impact spark",
+      "family": "impact",
       "relationKind": "dual-ptc",
+      "blendMode": "additive-hot",
       "primaryPtcStem": "047",
       "secondaryPtcStem": "043",
       "timingFields": [
@@ -737,12 +834,30 @@
         0,
         0,
         0
-      ]
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 0,
+      "lifeTicks": 50,
+      "burstCount": 16,
+      "sustainCount": 0,
+      "spreadUnits": 6,
+      "cadenceTicks": 5,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.2,
+      "jitterScale": 0.2,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 0,
+      "accelY": 0
     },
     {
-      "id": "utility-034",
+      "id": "ptc-row-04-utility-trail",
+      "semanticKey": "utility-trail",
       "label": "Utility trail",
+      "family": "utility",
       "relationKind": "dual-ptc",
+      "blendMode": "alpha-trail",
       "primaryPtcStem": "034",
       "secondaryPtcStem": "022",
       "timingFields": [
@@ -767,7 +882,577 @@
         0,
         -65,
         -1
-      ]
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 0,
+      "lifeTicks": 4,
+      "burstCount": 1,
+      "sustainCount": 0,
+      "spreadUnits": 10,
+      "cadenceTicks": 5,
+      "radiusScale": 0.7,
+      "alphaScale": 0.2,
+      "sizeScale": 0.02,
+      "jitterScale": 0.01,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": -65,
+      "accelY": -1
+    },
+    {
+      "id": "ptc-row-05-smoke-plume",
+      "semanticKey": "smoke-plume",
+      "label": "Smoke plume",
+      "family": "utility",
+      "relationKind": "dual-ptc",
+      "blendMode": "alpha-smoke",
+      "primaryPtcStem": "002",
+      "secondaryPtcStem": "001",
+      "timingFields": [
+        1024,
+        1792,
+        32
+      ],
+      "emissionFields": [
+        1,
+        0,
+        28,
+        14
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.08,
+        0.04
+      ],
+      "signedDeltaFields": [
+        -130,
+        -1,
+        -130,
+        -1
+      ],
+      "warmupTicks": 1024,
+      "releaseTicks": 1792,
+      "lifeTicks": 32,
+      "burstCount": 1,
+      "sustainCount": 0,
+      "spreadUnits": 28,
+      "cadenceTicks": 14,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.08,
+      "jitterScale": 0.04,
+      "driftX": -130,
+      "driftY": -1,
+      "accelX": -130,
+      "accelY": -1
+    },
+    {
+      "id": "ptc-row-06-guard-ward",
+      "semanticKey": "guard-ward",
+      "label": "Guard ward",
+      "family": "support",
+      "relationKind": "dual-ptc",
+      "blendMode": "additive-ward",
+      "primaryPtcStem": "042",
+      "secondaryPtcStem": "037",
+      "timingFields": [
+        100,
+        100,
+        6
+      ],
+      "emissionFields": [
+        20,
+        0,
+        20,
+        2
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.08,
+        0.04
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        -196,
+        -1
+      ],
+      "warmupTicks": 100,
+      "releaseTicks": 100,
+      "lifeTicks": 6,
+      "burstCount": 20,
+      "sustainCount": 0,
+      "spreadUnits": 20,
+      "cadenceTicks": 2,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.08,
+      "jitterScale": 0.04,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": -196,
+      "accelY": -1
+    },
+    {
+      "id": "ptc-row-07-support-ring",
+      "semanticKey": "support-ring",
+      "label": "Support ring",
+      "family": "support",
+      "relationKind": "dual-ptc",
+      "blendMode": "additive-soft",
+      "primaryPtcStem": "048",
+      "secondaryPtcStem": "039",
+      "timingFields": [
+        0,
+        0,
+        10
+      ],
+      "emissionFields": [
+        10,
+        5,
+        5,
+        5
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.08,
+        0.04
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 0,
+      "lifeTicks": 10,
+      "burstCount": 10,
+      "sustainCount": 5,
+      "spreadUnits": 5,
+      "cadenceTicks": 5,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.08,
+      "jitterScale": 0.04,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 0,
+      "accelY": 0
+    },
+    {
+      "id": "ptc-row-08-support-shimmer",
+      "semanticKey": "support-shimmer",
+      "label": "Support shimmer",
+      "family": "support",
+      "relationKind": "dual-ptc",
+      "blendMode": "additive-soft",
+      "primaryPtcStem": "048",
+      "secondaryPtcStem": "009",
+      "timingFields": [
+        0,
+        0,
+        10
+      ],
+      "emissionFields": [
+        10,
+        5,
+        5,
+        5
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.08,
+        0.04
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 0,
+      "lifeTicks": 10,
+      "burstCount": 10,
+      "sustainCount": 5,
+      "spreadUnits": 5,
+      "cadenceTicks": 5,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.08,
+      "jitterScale": 0.04,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 0,
+      "accelY": 0
+    },
+    {
+      "id": "ptc-row-09-support-impact",
+      "semanticKey": "support-impact",
+      "label": "Support impact",
+      "family": "support",
+      "relationKind": "dual-ptc",
+      "blendMode": "additive-soft",
+      "primaryPtcStem": "048",
+      "secondaryPtcStem": "043",
+      "timingFields": [
+        0,
+        0,
+        10
+      ],
+      "emissionFields": [
+        10,
+        5,
+        5,
+        5
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.08,
+        0.04
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 0,
+      "lifeTicks": 10,
+      "burstCount": 10,
+      "sustainCount": 5,
+      "spreadUnits": 5,
+      "cadenceTicks": 5,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.08,
+      "jitterScale": 0.04,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 0,
+      "accelY": 0
+    },
+    {
+      "id": "ptc-row-10-mana-drift",
+      "semanticKey": "mana-drift",
+      "label": "Mana drift",
+      "family": "utility",
+      "relationKind": "dual-ptc",
+      "blendMode": "additive-mana",
+      "primaryPtcStem": "021",
+      "secondaryPtcStem": "004",
+      "timingFields": [
+        112,
+        32,
+        12
+      ],
+      "emissionFields": [
+        1,
+        0,
+        12,
+        2
+      ],
+      "ratioFieldsFloat": [
+        0.9,
+        0.2,
+        0.1,
+        0.2
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        -130,
+        -1
+      ],
+      "warmupTicks": 112,
+      "releaseTicks": 32,
+      "lifeTicks": 12,
+      "burstCount": 1,
+      "sustainCount": 0,
+      "spreadUnits": 12,
+      "cadenceTicks": 2,
+      "radiusScale": 0.9,
+      "alphaScale": 0.2,
+      "sizeScale": 0.1,
+      "jitterScale": 0.2,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": -130,
+      "accelY": -1
+    },
+    {
+      "id": "ptc-row-11-armageddon-burst",
+      "semanticKey": "armageddon-burst",
+      "label": "Armageddon burst",
+      "family": "burst",
+      "relationKind": "dual-ptc",
+      "blendMode": "additive-hot",
+      "primaryPtcStem": "049",
+      "secondaryPtcStem": "043",
+      "timingFields": [
+        0,
+        10,
+        200
+      ],
+      "emissionFields": [
+        30,
+        4,
+        15,
+        8
+      ],
+      "ratioFieldsFloat": [
+        0.5,
+        0.2,
+        0.3,
+        0.1
+      ],
+      "signedDeltaFields": [
+        0,
+        0,
+        655,
+        0
+      ],
+      "warmupTicks": 0,
+      "releaseTicks": 10,
+      "lifeTicks": 200,
+      "burstCount": 30,
+      "sustainCount": 4,
+      "spreadUnits": 15,
+      "cadenceTicks": 8,
+      "radiusScale": 0.5,
+      "alphaScale": 0.2,
+      "sizeScale": 0.3,
+      "jitterScale": 0.1,
+      "driftX": 0,
+      "driftY": 0,
+      "accelX": 655,
+      "accelY": 0
     }
-  ]
+  ],
+  "semantics": {
+    "mplBankSwitching": {
+      "label": "flag-driven-bank-switch",
+      "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+      "exactStateCount": 224,
+      "stateHistogram": {
+        "bank-a-only": 9,
+        "bank-b-base-a-anchor-accent": 5,
+        "bank-b-base-a-anchor-tail": 112,
+        "bank-b-base-a-tail-overlay": 67,
+        "bank-b-only": 8,
+        "bank-b-tail-a-overlay": 23
+      },
+      "stemStateCounts": {
+        "082": {
+          "bank-b-base-a-tail-overlay": 18
+        },
+        "083": {
+          "bank-a-only": 7,
+          "bank-b-base-a-tail-overlay": 27
+        },
+        "084": {
+          "bank-b-base-a-anchor-tail": 24
+        },
+        "187": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 1
+        },
+        "188": {
+          "bank-b-base-a-anchor-accent": 1
+        },
+        "189": {
+          "bank-b-base-a-anchor-accent": 1,
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "191": {
+          "bank-b-base-a-anchor-accent": 1
+        },
+        "193": {
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "194": {
+          "bank-b-base-a-anchor-tail": 5
+        },
+        "195": {
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "198": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 2
+        },
+        "199": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 2
+        },
+        "200": {
+          "bank-b-tail-a-overlay": 3
+        },
+        "201": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 2
+        },
+        "203": {
+          "bank-b-base-a-anchor-tail": 2
+        },
+        "205": {
+          "bank-b-base-a-tail-overlay": 1
+        },
+        "206": {
+          "bank-b-base-a-anchor-tail": 5
+        },
+        "207": {
+          "bank-b-base-a-tail-overlay": 2
+        },
+        "208": {
+          "bank-b-base-a-anchor-tail": 2
+        },
+        "209": {
+          "bank-b-base-a-tail-overlay": 3
+        },
+        "211": {
+          "bank-b-base-a-anchor-accent": 1,
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "214": {
+          "bank-b-base-a-tail-overlay": 2
+        },
+        "215": {
+          "bank-b-base-a-anchor-tail": 21
+        },
+        "216": {
+          "bank-b-tail-a-overlay": 5
+        },
+        "218": {
+          "bank-b-base-a-anchor-tail": 1,
+          "bank-b-base-a-tail-overlay": 1
+        },
+        "219": {
+          "bank-b-base-a-tail-overlay": 7,
+          "bank-b-only": 1
+        },
+        "221": {
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "222": {
+          "bank-b-only": 1
+        },
+        "223": {
+          "bank-b-tail-a-overlay": 1
+        },
+        "225": {
+          "bank-b-base-a-anchor-tail": 13
+        },
+        "226": {
+          "bank-b-base-a-anchor-tail": 22
+        },
+        "227": {
+          "bank-b-base-a-anchor-accent": 1,
+          "bank-b-base-a-anchor-tail": 4
+        },
+        "228": {
+          "bank-a-only": 1,
+          "bank-b-tail-a-overlay": 3
+        },
+        "230": {
+          "bank-b-base-a-anchor-tail": 8
+        },
+        "231": {
+          "bank-a-only": 1
+        },
+        "233": {
+          "bank-b-tail-a-overlay": 2
+        },
+        "235": {
+          "bank-b-tail-a-overlay": 2
+        },
+        "236": {
+          "bank-b-only": 1
+        },
+        "238": {
+          "bank-b-only": 1
+        },
+        "239": {
+          "bank-b-base-a-tail-overlay": 3
+        },
+        "240": {
+          "bank-b-base-a-tail-overlay": 3
+        }
+      },
+      "notes": [
+        "Anchor and tail item flags are now exported per preview frame instead of inferred from overlay-only event labels.",
+        "Runtime bank overlays now read exact flagged-item counts and bank transitions from preview frames."
+      ]
+    },
+    "packedPixel179": {
+      "stem": "179",
+      "sharedMplStem": "180",
+      "transparentValue": 0,
+      "valueOffset": 1,
+      "paletteSize": 47,
+      "coreBandSize": 47,
+      "coreBandCount": 4,
+      "coreBands": [
+        {
+          "band": 0,
+          "range": [
+            1,
+            47
+          ],
+          "bank": "bank-b",
+          "shadeFactor": 0.74
+        },
+        {
+          "band": 1,
+          "range": [
+            48,
+            94
+          ],
+          "bank": "bank-a",
+          "shadeFactor": 0.9
+        },
+        {
+          "band": 2,
+          "range": [
+            95,
+            141
+          ],
+          "bank": "bank-b",
+          "shadeFactor": 1.0
+        },
+        {
+          "band": 3,
+          "range": [
+            142,
+            188
+          ],
+          "bank": "bank-a",
+          "shadeFactor": 1.14
+        }
+      ],
+      "highlightRange": [
+        189,
+        199
+      ],
+      "highlightBank": "bank-a",
+      "highlightBlendMode": "additive-tail",
+      "formula": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+      "boundaryHistogram": {
+        "47": 31,
+        "94": 75,
+        "141": 9,
+        "188": 122,
+        "189": 22,
+        "199": 3
+      },
+      "compositePath": "/recovery/analysis/render/special/179-composite-final.png",
+      "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes-final.png"
+    }
+  }
 }

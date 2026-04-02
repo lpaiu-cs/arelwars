@@ -70,6 +70,16 @@
         255,
         255
       ],
+      "baseItemCount": 14,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 14,
+      "tailFlaggedCount": 6,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.357,
       "framePath": "frames/225/00-g00-linked.png"
     },
     {
@@ -118,6 +128,16 @@
         255,
         255
       ],
+      "baseItemCount": 14,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 14,
+      "tailFlaggedCount": 6,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.357,
       "framePath": "frames/225/01-g01-linked.png"
     },
     {
@@ -166,6 +186,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 14,
+      "tailFlaggedCount": 6,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.37,
       "framePath": "frames/225/02-g02-linked.png"
     },
     {
@@ -214,6 +244,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 13,
+      "tailFlaggedCount": 6,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.385,
       "framePath": "frames/225/03-g03-linked.png"
     },
     {
@@ -258,6 +298,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 10,
+      "tailFlaggedCount": 4,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.348,
       "framePath": "frames/225/04-g04-linked.png"
     },
     {
@@ -308,6 +358,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 13,
+      "tailFlaggedCount": 6,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.385,
       "framePath": "frames/225/05-g05-linked.png"
     },
     {
@@ -352,6 +412,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 12,
+      "tailFlaggedCount": 4,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.32,
       "framePath": "frames/225/06-g06-linked.png"
     },
     {
@@ -398,6 +468,16 @@
         255,
         255
       ],
+      "baseItemCount": 14,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 6,
+      "tailFlaggedCount": 4,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.4,
       "framePath": "frames/225/07-g07-linked.png"
     },
     {
@@ -444,6 +524,16 @@
         255,
         255
       ],
+      "baseItemCount": 14,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 15,
+      "tailFlaggedCount": 5,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.31,
       "framePath": "frames/225/08-g08-linked.png"
     },
     {
@@ -490,6 +580,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 14,
+      "tailFlaggedCount": 5,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.333,
       "framePath": "frames/225/09-g09-linked.png"
     },
     {
@@ -534,6 +634,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 13,
+      "tailFlaggedCount": 4,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.308,
       "framePath": "frames/225/10-g10-linked.png"
     },
     {
@@ -578,6 +688,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 12,
+      "tailFlaggedCount": 4,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.32,
       "framePath": "frames/225/11-g11-linked.png"
     },
     {
@@ -622,6 +742,16 @@
         255,
         255
       ],
+      "baseItemCount": 13,
+      "baseFlaggedCount": 4,
+      "tailItemCount": 13,
+      "tailFlaggedCount": 4,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.308,
       "framePath": "frames/225/12-g12-linked.png"
     }
   ]

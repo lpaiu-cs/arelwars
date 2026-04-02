@@ -214,6 +214,7 @@ export interface RecoveryStageBlueprint {
 export interface RecoveryRenderProfile {
   defaultMplBankRule: {
     label: string
+    selectorRule?: string
     notes: string[]
   }
   specialPackedPixelStems: Array<{
@@ -221,9 +222,17 @@ export interface RecoveryRenderProfile {
     sharedMplStem: string
     heuristic: string
     confidence: string
+    transparentValue?: number
+    valueOffset?: number
+    paletteSize?: number
+    coreBandSize?: number
+    coreBandCount?: number
+    highlightRange?: number[]
+    highlightBlendMode?: string
   }>
   ptcBridgeSummary: {
     summary: Record<string, unknown>
+    familyRepresentativeEmitters?: Record<string, string>
     sharedPrimaryGroups: Array<Record<string, unknown>>
     sampleParticleRows: Array<Record<string, unknown>>
   }
@@ -242,14 +251,37 @@ export interface RecoveryRenderStemAsset {
 
 export interface RecoveryRenderEmitterPreset {
   id: string
+  semanticKey?: string
   label: string
+  family?: string
   relationKind: string
+  blendMode?: string
   primaryPtcStem: string | null
   secondaryPtcStem: string | null
   timingFields: number[]
   emissionFields: number[]
   ratioFieldsFloat: number[]
   signedDeltaFields: number[]
+  warmupTicks?: number
+  releaseTicks?: number
+  lifeTicks?: number
+  burstCount?: number
+  sustainCount?: number
+  spreadUnits?: number
+  cadenceTicks?: number
+  radiusScale?: number
+  alphaScale?: number
+  sizeScale?: number
+  jitterScale?: number
+  driftX?: number
+  driftY?: number
+  accelX?: number
+  accelY?: number
+}
+
+export interface RecoveryRenderSemantics {
+  mplBankSwitching?: Record<string, unknown>
+  packedPixel179?: Record<string, unknown>
 }
 
 export interface RecoveryRenderPack {
@@ -285,10 +317,18 @@ export interface RecoveryRenderPack {
     stem: string
     heuristic: string
     confidence: string
+    transparentValue?: number
+    valueOffset?: number
+    paletteSize?: number
+    coreBandSize?: number
+    coreBandCount?: number
+    highlightRange?: number[]
+    highlightBlendMode?: string
     compositePath: string | null
     probeSheetPath: string | null
   }>
   emitterPresets: RecoveryRenderEmitterPreset[]
+  semantics?: RecoveryRenderSemantics
 }
 
 export interface RecoveryRuntimeBlueprint {
@@ -367,6 +407,9 @@ export interface RecoveryBattleEffectTemplate {
   intensity: number
   loop: boolean
   blendFlagCandidate: number
+  blendMode: string
+  renderFamily: 'support' | 'impact' | 'burst' | 'utility'
+  emitterSemanticId: string | null
 }
 
 export interface RecoveryBattleSkillTemplate {
@@ -499,6 +542,16 @@ export interface RecoveryPreviewFrame {
   timingExplicitValues: number[] | null
   anchorRecordMarkers: string[] | null
   anchorRecordTimingValues: number[] | null
+  baseItemCount?: number | null
+  baseFlaggedCount?: number | null
+  tailItemCount?: number | null
+  tailFlaggedCount?: number | null
+  anchorBankState?: string | null
+  tailBankState?: string | null
+  bankTransition?: string | null
+  bankStateId?: string | null
+  bankBlendMode?: string | null
+  bankOverlayWeight?: number | null
 }
 
 export interface RecoveryPreviewStem {
@@ -601,7 +654,14 @@ export interface RecoveryBattleChannelState {
 export interface RecoveryStageRenderState {
   bankRuleLabel: string
   bankOverlayActive: boolean
+  bankStateId: string
+  bankTransition: string | null
+  bankBlendMode: string
+  bankOverlayWeight: number
+  baseFlaggedCount: number
+  tailFlaggedCount: number
   packedPixelStemRule: string | null
+  packedPixelBlendMode: string | null
   effectPulseCount: number
   effectIntensity: string
   ptcEmitterHint: string | null
@@ -808,6 +868,9 @@ export interface RecoveryBattleEffectState {
   laneId: 'upper' | 'lower'
   positionRatio: number
   kind: string
+  renderFamily: 'support' | 'impact' | 'burst' | 'utility'
+  blendMode: string
+  emitterSemanticId: string | null
   ttlBeats: number
   intensity: number
 }

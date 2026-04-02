@@ -41,6 +41,16 @@
       ],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
+      "baseItemCount": 6,
+      "baseFlaggedCount": 0,
+      "tailItemCount": 10,
+      "tailFlaggedCount": 2,
+      "anchorBankState": "bank-b",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b->bank-b+a",
+      "bankStateId": "bank-b-base-a-tail-overlay",
+      "bankBlendMode": "a-tail-add",
+      "bankOverlayWeight": 0.125,
       "framePath": "frames/209/00-g00-linked.png"
     },
     {
@@ -70,6 +80,16 @@
       ],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
+      "baseItemCount": 6,
+      "baseFlaggedCount": 0,
+      "tailItemCount": 9,
+      "tailFlaggedCount": 2,
+      "anchorBankState": "bank-b",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b->bank-b+a",
+      "bankStateId": "bank-b-base-a-tail-overlay",
+      "bankBlendMode": "a-tail-add",
+      "bankOverlayWeight": 0.133,
       "framePath": "frames/209/01-g01-linked.png"
     },
     {
@@ -99,6 +119,16 @@
       ],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
+      "baseItemCount": 6,
+      "baseFlaggedCount": 0,
+      "tailItemCount": 10,
+      "tailFlaggedCount": 2,
+      "anchorBankState": "bank-b",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b->bank-b+a",
+      "bankStateId": "bank-b-base-a-tail-overlay",
+      "bankBlendMode": "a-tail-add",
+      "bankOverlayWeight": 0.125,
       "framePath": "frames/209/02-g09-linked.png"
     }
   ]

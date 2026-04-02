@@ -42,6 +42,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 10,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 5,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.133,
       "framePath": "frames/203/00-g00-linked.png",
       "playbackDonorStem": "211",
       "playbackDonorScore": 10,
@@ -79,6 +89,16 @@
       "anchorRecordTimingValues": [
         255
       ],
+      "baseItemCount": 10,
+      "baseFlaggedCount": 1,
+      "tailItemCount": 6,
+      "tailFlaggedCount": 3,
+      "anchorBankState": "bank-b+a",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b+a->bank-b+a",
+      "bankStateId": "bank-b-base-a-anchor-tail",
+      "bankBlendMode": "a-overlay-stack",
+      "bankOverlayWeight": 0.25,
       "framePath": "frames/203/01-g01-linked.png",
       "playbackDonorStem": "211",
       "playbackDonorScore": 14,

@@ -17,6 +17,12 @@ def parse_args() -> argparse.Namespace:
         required=True,
         help="Path to AW1.effect_runtime_links.json for PTC bridge enrichment",
     )
+    parser.add_argument(
+        "--render-semantics",
+        type=Path,
+        required=True,
+        help="Path to AW1.render_semantics.json for exact MPL/PTC/179 semantics",
+    )
     parser.add_argument("--output", type=Path, required=True, help="Path to write AW1.engine_schema.json")
     parser.add_argument("--web-output", type=Path, help="Optional path under public/ to copy the same json")
     return parser.parse_args()
@@ -97,10 +103,26 @@ def effect_metrics(row: dict[str, Any]) -> dict[str, float]:
     }
 
 
+def classify_effect_render_family(row: dict[str, Any]) -> str:
+    family = int(row.get("familyCandidate", 0))
+    blend_flag = int(row.get("blendFlagCandidate", 0))
+    loop_flag = int(row.get("loopFlagCandidate", 0))
+    if family in {1, 2}:
+        return "support"
+    if family in {0, 3}:
+        return "burst"
+    if blend_flag >= 2:
+        return "impact"
+    if loop_flag > 0:
+        return "utility"
+    return "utility"
+
+
 def main() -> None:
     args = parse_args()
     parsed_dir = args.parsed_dir.resolve()
     effect_runtime_links = read_json(args.effect_runtime_links.resolve())
+    render_semantics = read_json(args.render_semantics.resolve())
 
     unit_rows = read_json(parsed_dir / "XlsUnit.eng.parsed.json")["records"]
     hero_rows = read_json(parsed_dir / "XlsHero.eng.parsed.json")["records"]
@@ -112,6 +134,11 @@ def main() -> None:
     balance_rows = read_json(parsed_dir / "XlsBalance.eng.parsed.json")["records"]
 
     particle_runtime_rows = {int(row["index"]): row for row in effect_runtime_links.get("particleRows", [])}
+    emitter_rows = render_semantics.get("ptcEmitterSemantics", {}).get("emitters", [])
+    emitters_by_particle_row = {
+        int(entry["particleRowIndex"]): entry for entry in emitter_rows if isinstance(entry, dict)
+    }
+    family_representatives = render_semantics.get("ptcEmitterSemantics", {}).get("familyRepresentativeEmitters", {})
     hero_ai_by_hero_id: dict[int, list[dict[str, Any]]] = {}
     for row in hero_ai_rows:
         hero_ai_by_hero_id.setdefault(int(row["heroIdCandidate"]), []).append(row)
@@ -217,6 +244,7 @@ def main() -> None:
     effects = []
     for row in effect_rows:
         metrics = effect_metrics(row)
+        render_family = classify_effect_render_family(row)
         effects.append(
             {
                 **row,
@@ -229,6 +257,8 @@ def main() -> None:
                         if int(row.get("blendFlagCandidate", 0)) == 1
                         else "opaque",
                     "looping": bool(int(row.get("loopFlagCandidate", 0))),
+                    "renderFamily": render_family,
+                    "emitterSemanticId": family_representatives.get(render_family),
                 },
             }
         )
@@ -236,6 +266,7 @@ def main() -> None:
     particles = []
     for row in particle_rows:
         runtime = particle_runtime_rows.get(int(row["index"]), {})
+        semantic = emitters_by_particle_row.get(int(row["index"]), {})
         primary_ptc = runtime.get("primaryPtc")
         secondary_ptc = runtime.get("secondaryPtc")
         particles.append(
@@ -251,12 +282,25 @@ def main() -> None:
                     "ptcBridgeConfirmed": bool(primary_ptc),
                 },
                 "engineHints": {
-                    "emitterKind":
-                        "burst"
-                        if primary_ptc and max(primary_ptc.get("emissionFields", [0]), default=0) >= 8
-                        else "steady"
-                        if primary_ptc
-                        else "unknown",
+                    "emitterKind": semantic.get("semanticKey", "unknown"),
+                    "emitterFamily": semantic.get("family", "unknown"),
+                    "emitterBlendMode": semantic.get("blendMode", "alpha-soft"),
+                    "emitterSemanticId": semantic.get("id"),
+                    "warmupTicks": semantic.get("warmupTicks", 0),
+                    "releaseTicks": semantic.get("releaseTicks", 0),
+                    "lifeTicks": semantic.get("lifeTicks", 0),
+                    "burstCount": semantic.get("burstCount", 0),
+                    "sustainCount": semantic.get("sustainCount", 0),
+                    "spreadUnits": semantic.get("spreadUnits", 0),
+                    "cadenceTicks": semantic.get("cadenceTicks", 0),
+                    "radiusScale": semantic.get("radiusScale", 0.0),
+                    "alphaScale": semantic.get("alphaScale", 0.0),
+                    "sizeScale": semantic.get("sizeScale", 0.0),
+                    "jitterScale": semantic.get("jitterScale", 0.0),
+                    "driftX": semantic.get("driftX", 0),
+                    "driftY": semantic.get("driftY", 0),
+                    "accelX": semantic.get("accelX", 0),
+                    "accelY": semantic.get("accelY", 0),
                     "intensity": round(0.7 + int(row.get("variantCandidate", 0)) * 0.08 + (0.15 if primary_ptc else 0), 3),
                 },
             }

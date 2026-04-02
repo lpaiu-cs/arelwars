@@ -40,6 +40,16 @@
       ],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
+      "baseItemCount": 8,
+      "baseFlaggedCount": 0,
+      "tailItemCount": 8,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b->bank-b+a",
+      "bankStateId": "bank-b-base-a-tail-overlay",
+      "bankBlendMode": "a-tail-add",
+      "bankOverlayWeight": 0.062,
       "framePath": "frames/207/00-g01-linked.png"
     },
     {
@@ -65,6 +75,16 @@
       "timingExplicitValues": [],
       "anchorRecordMarkers": [],
       "anchorRecordTimingValues": [],
+      "baseItemCount": 7,
+      "baseFlaggedCount": 0,
+      "tailItemCount": 8,
+      "tailFlaggedCount": 1,
+      "anchorBankState": "bank-b",
+      "tailBankState": "bank-b+a",
+      "bankTransition": "bank-b->bank-b+a",
+      "bankStateId": "bank-b-base-a-tail-overlay",
+      "bankBlendMode": "a-tail-add",
+      "bankOverlayWeight": 0.067,
       "framePath": "frames/207/01-g02-linked.png"
     }
   ]
