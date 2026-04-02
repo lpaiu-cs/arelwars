@@ -1490,11 +1490,7 @@ export class RecoveryStageSystem {
     }
     if (side === 'allied' && (directive.role === 'tower-rally' || directive.role === 'support')) {
       this.supportLaneUnits(directive.laneId, 'allied', 0.16)
-      this.previewOwnTowerHpRatio = clamp(
-        this.previewOwnTowerHpRatio + 0.012 + this.currentStageBattleProfile.towerDefenseBias * 0.05,
-        0.1,
-        1,
-      )
+      this.repairTower('allied', 0.012 + this.currentStageBattleProfile.towerDefenseBias * 0.05)
     }
   }
 
@@ -1515,28 +1511,28 @@ export class RecoveryStageSystem {
         this.selectedDispatchLane = directive.laneId
       }
       if (activeLoadout.skillPresetKind === 'burst' && directive.role === 'skill-window') {
-        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - (source === 'scene' ? 0.028 : 0.018), 0.08, 1)
+        this.damageTower('enemy', source === 'scene' ? 0.028 : 0.018)
         this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 700, this.lastUpdateNowMs)
       }
       if (activeLoadout.skillPresetKind === 'support' && (directive.role === 'support' || directive.role === 'tower-rally')) {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.025, 0.1, 1)
+        this.repairTower('allied', 0.025)
       }
       if (activeLoadout.towerPolicyKind === 'mana-first') {
         this.restoreMana('allied', this.manaCapacityValue * (source === 'scene' ? 0.05 : 0.03))
       } else if (activeLoadout.towerPolicyKind === 'attack-first' && (directive.role === 'push' || directive.role === 'siege')) {
-        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.016, 0.08, 1)
+        this.damageTower('enemy', 0.016)
       } else if (activeLoadout.towerPolicyKind === 'population-first') {
         this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, queueCapacity)
       }
 
       if (activeLoadout.heroRosterRole === 'support' || activeLoadout.heroRosterRole === 'defender') {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.015, 0.1, 1)
+        this.repairTower('allied', 0.015)
       }
       return `${activeLoadout.label} script`
     }
 
     if ((activeLoadout.heroRosterRole === 'defender' || activeLoadout.heroRosterRole === 'support') && directive.role === 'siege') {
-      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.01, 0.1, 1)
+      this.repairTower('allied', 0.01)
     }
     if (activeLoadout.skillPresetKind === 'orders' && directive.role === 'push' && this.selectedDispatchLane) {
       this.spawnBattleUnit('allied', this.selectedDispatchLane, 'push', `${activeLoadout.label} counter-script`, {
@@ -2566,7 +2562,7 @@ export class RecoveryStageSystem {
       if ((directive.role === 'push' || directive.role === 'siege') && routeBias.directRoute) {
         this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + 0.02 + routeInfluence.commitmentFactor * 0.02, 0.04, 1)
       } else if (directive.role === 'tower-rally' && routeBias.sustainRoute) {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.02 + routeInfluence.defenseDelta * 0.25, 0.1, 1)
+        this.repairTower('allied', 0.02 + routeInfluence.defenseDelta * 0.25)
       } else if (directive.role === 'skill-window' && routeBias.manaRoute) {
         this.restoreMana('allied', this.manaCapacityValue * (0.04 + routeInfluence.manaDelta * 0.3))
       }
@@ -3553,7 +3549,7 @@ export class RecoveryStageSystem {
         break
       case 'support':
         this.supportLaneUnits(targetLane, 'allied', 0.2 * skillTemplate.powerScale)
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04 * skillTemplate.powerScale, 0.1, 1)
+        this.repairTower('allied', 0.04 * skillTemplate.powerScale)
         break
       case 'orders':
         this.queuedUnitCount = Math.min(this.queuedUnitCount + 2, this.battleModel?.resourceRules.queueCapacity ?? 6)
@@ -3608,7 +3604,7 @@ export class RecoveryStageSystem {
       case 'heal':
       case 'support':
         this.supportLaneUnits(targetLane, 'allied', 0.22 * itemTemplate.powerScale)
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06 * itemTemplate.powerScale, 0.1, 1)
+        this.repairTower('allied', 0.06 * itemTemplate.powerScale)
         break
       case 'burst':
         this.strikeLaneUnits(targetLane, 'enemy', 0.26 * itemTemplate.powerScale, 2)
@@ -3725,23 +3721,17 @@ export class RecoveryStageSystem {
           this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
           this.clearHeroUnits()
           this.heroAssignedLane = null
-          this.previewOwnTowerHpRatio = clamp(
-            this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.03 : 0),
-            0.1,
-            1,
-          )
+          this.repairTower('allied', 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.03 : 0))
           this.lastActionNote = `hero returned to tower (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
         } else {
           this.heroOverrideMode = 'field'
           this.heroReturnCooldownEndsAtMs = 0
           this.heroAssignedLane = activeLoadout?.heroLane ?? this.selectedDispatchLane ?? 'upper'
           this.ensureHeroUnit(this.heroAssignedLane, activeLoadout?.heroRosterMembers[0] ?? null, 'hero-deploy')
-          this.previewEnemyTowerHpRatio = clamp(
-            this.previewEnemyTowerHpRatio
-            - 0.04
-            - (activeLoadout?.heroRosterRole === 'raider' ? 0.03 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.02 : 0),
-            0.08,
-            1,
+          this.damageTower(
+            'enemy',
+            0.04
+            + (activeLoadout?.heroRosterRole === 'raider' ? 0.03 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.02 : 0),
           )
           if ((activeLoadout?.heroRosterRole === 'defender' || activeLoadout?.heroRosterRole === 'support') && this.heroAssignedLane) {
             this.supportLaneUnits(this.heroAssignedLane, 'allied', 0.2)
@@ -3753,7 +3743,7 @@ export class RecoveryStageSystem {
             this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 240, nowMs)
           }
           if (hasManos) {
-            this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.02, 0.08, 1)
+            this.damageTower('enemy', 0.02)
           }
           if (hasCaesar && this.heroAssignedLane) {
             this.spawnBattleUnit('allied', this.heroAssignedLane, 'screen', 'caesar-escort', {
@@ -3781,11 +3771,7 @@ export class RecoveryStageSystem {
         }
         this.clearHeroUnits()
         this.heroAssignedLane = null
-        this.previewOwnTowerHpRatio = clamp(
-          this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.04 : 0) + (hasHelba ? 0.02 : 0),
-          0.1,
-          1,
-        )
+        this.repairTower('allied', 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.04 : 0) + (hasHelba ? 0.02 : 0))
         if (hasCaesar) {
           const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
           this.supportLaneUnits(guardLane, 'allied', 0.12)
@@ -3879,7 +3865,7 @@ export class RecoveryStageSystem {
           durabilityScale: 1.08,
         })
         this.shiftLaneUnits(targetLane, 'allied', 0.05)
-        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.035, 0.08, 1)
+        this.damageTower('enemy', 0.035)
         this.heroAssignedLane = targetLane
         this.ensureHeroUnit(targetLane, members[0] ?? null, `chain:${members.join('+')}:hero`)
         break
@@ -3894,7 +3880,7 @@ export class RecoveryStageSystem {
         this.strikeLaneUnits(oppositeLane, 'enemy', 0.12, 1)
         break
       case 'hold':
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
+        this.repairTower('allied', 0.04)
         this.strikeLaneUnits(targetLane, 'enemy', 0.14, 2)
         this.supportLaneUnits(targetLane, 'allied', 0.16)
         break
@@ -4095,33 +4081,28 @@ export class RecoveryStageSystem {
     )
 
     if (this.heroOverrideMode === 'field') {
-      this.previewEnemyTowerHpRatio = clamp(
-        this.previewEnemyTowerHpRatio
-        - 0.004
-        - (activeLoadout?.heroRosterRole === 'raider' ? 0.002 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.001 : 0)
-        - (hasVincent ? (stageBias.siegeBias || stageBias.heroBias ? 0.0025 : 0.0015) : 0)
-        - (hasManos ? (stageBias.siegeBias ? 0.0025 : 0.0015) : 0),
-        0.08,
-        1,
+      this.damageTower(
+        'enemy',
+        0.004
+        + (activeLoadout?.heroRosterRole === 'raider' ? 0.002 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.001 : 0)
+        + (hasVincent ? (stageBias.siegeBias || stageBias.heroBias ? 0.0025 : 0.0015) : 0)
+        + (hasManos ? (stageBias.siegeBias ? 0.0025 : 0.0015) : 0),
       )
     }
 
     if (activeLoadout?.heroRosterRole === 'defender' || activeLoadout?.heroRosterRole === 'support') {
-      this.previewOwnTowerHpRatio = clamp(
-        this.previewOwnTowerHpRatio
-        + 0.002
+      this.repairTower(
+        'allied',
+        0.002
         + (hasHelba ? (stageBias.sustainBias || stageBias.rewardBias ? 0.0035 : 0.002) : 0)
         + (hasCaesar ? (stageBias.sustainBias ? 0.0025 : 0.0015) : 0),
-        0.1,
-        1,
       )
     }
 
     if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.alliedManaValue > this.manaCapacityValue * 0.18) {
-      this.previewEnemyTowerHpRatio = clamp(
-        this.previewEnemyTowerHpRatio - 0.006 - (activeLoadout?.skillPresetKind === 'orders' ? 0.002 : 0),
-        0.08,
-        1,
+      this.damageTower(
+        'enemy',
+        0.006 + (activeLoadout?.skillPresetKind === 'orders' ? 0.002 : 0),
       )
       if (hasRogan) {
         this.spawnBattleUnit('allied', this.selectedDispatchLane, 'push', 'rogan-tempo', {
@@ -4181,7 +4162,7 @@ export class RecoveryStageSystem {
         ? Math.min(commitCount, Math.floor(this.remainingPopulation('allied') / Math.max(pushTemplate.populationCost, 1)))
         : commitCount
       const queueDamage = Math.min(allowedCount * 0.04, 0.16)
-      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - queueDamage, 0.08, 1)
+      this.damageTower('enemy', queueDamage)
       for (let index = 0; index < allowedCount; index += 1) {
         this.spawnBattleUnit('allied', lane, 'push', 'dispatch-commit', {
           powerScale: 1 + this.currentStageBattleProfile.dispatchBoost * 1.2,
@@ -4702,7 +4683,7 @@ export class RecoveryStageSystem {
     } else if (loadout.towerPolicyKind === 'population-first') {
       this.applyUpgradeProgressDelta(0.1)
     } else if (loadout.towerPolicyKind === 'attack-first') {
-      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.03, 0.08, 1)
+      this.damageTower('enemy', 0.03)
     }
 
     if (loadout.dispatchLane) {
@@ -4719,7 +4700,7 @@ export class RecoveryStageSystem {
 
     if (loadout.towerUpgrades.attack > 1 || loadout.towerUpgrades.population > 1) {
       const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06, 0.12, 1)
+      this.repairTower('allied', 0.06)
       this.strikeLaneUnits(guardLane, 'enemy', 0.16, 2)
     }
 
@@ -4727,18 +4708,16 @@ export class RecoveryStageSystem {
       this.heroOverrideMode = 'field'
       this.heroAssignedLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
       this.ensureHeroUnit(this.heroAssignedLane, loadout.heroRosterMembers[0] ?? null, `loadout:${loadout.id}:hero`)
-      this.previewEnemyTowerHpRatio = clamp(
-        this.previewEnemyTowerHpRatio
-        - 0.05
-        - this.currentStageBattleProfile.heroImpact * 0.08
-        - routeBias.heroShift
-        - routeInfluence.heroDelta
-        - (loadout.heroRosterRole === 'raider' ? 0.03 : loadout.heroRosterRole === 'vanguard' ? 0.02 : 0),
-        0.08,
-        1,
+      this.damageTower(
+        'enemy',
+        0.05
+        + this.currentStageBattleProfile.heroImpact * 0.08
+        + routeBias.heroShift
+        + routeInfluence.heroDelta
+        + (loadout.heroRosterRole === 'raider' ? 0.03 : loadout.heroRosterRole === 'vanguard' ? 0.02 : 0),
       )
       if (loadout.heroRosterRole === 'support' || loadout.heroRosterRole === 'defender') {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.05 + routeInfluence.defenseDelta, 0.1, 1)
+        this.repairTower('allied', 0.05 + routeInfluence.defenseDelta)
       }
     } else {
       this.heroOverrideMode = null
@@ -5035,14 +5014,19 @@ export class RecoveryStageSystem {
       durabilityScale?: number
       speedScale?: number
       initialPositionRatio?: number
+      ignorePopulationCap?: boolean
     } = {},
-  ): RecoveryBattleUnitRuntime {
+  ): RecoveryBattleUnitRuntime | null {
     const template = this.resolveUnitTemplate(side, role, options.memberLabel ?? null)
     const hero = options.hero ?? role === 'hero'
     const powerScale = options.powerScale ?? 1
     const durabilityScale = options.durabilityScale ?? 1
     const speedScale = options.speedScale ?? 1
     const sideUnits = this.laneEntities[laneId][side]
+    const populationCost = template?.populationCost ?? (hero ? 0 : 1)
+    if (!options.ignorePopulationCap && populationCost > 0 && this.remainingPopulation(side) < populationCost) {
+      return null
+    }
     const maxHp = (template?.maxHp ?? (hero ? 2.8 : 1.25)) * durabilityScale
     const power = (template?.power ?? (hero ? 0.44 : 0.22)) * powerScale
     const speed = (template?.speed ?? 0.028) * speedScale
@@ -5074,7 +5058,7 @@ export class RecoveryStageSystem {
       templateId: template?.id ?? `${side}-${role}`,
       projectileTemplateId: template?.projectileTemplateId ?? null,
       effectTemplateId: template?.effectTemplateId ?? null,
-      populationCost: template?.populationCost ?? (hero ? 0 : 1),
+      populationCost,
       manaCost: template?.manaCost ?? 0,
       attackStyle:
         role === 'siege'
@@ -5086,6 +5070,7 @@ export class RecoveryStageSystem {
               : 'melee',
     }
     sideUnits.push(unit)
+    this.syncResourcePreviewState()
     return unit
   }
 
@@ -5213,6 +5198,14 @@ export class RecoveryStageSystem {
       return
     }
     this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - damage, 0.08, 1)
+  }
+
+  private repairTower(targetSide: RecoveryBattleSide, amount: number): void {
+    if (targetSide === 'allied') {
+      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + amount, 0.1, 1)
+      return
+    }
+    this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio + amount, 0.08, 1)
   }
 
   private unitBias(
@@ -5602,10 +5595,10 @@ export class RecoveryStageSystem {
         this.restoreMana('allied', this.manaCapacityValue * chainState.intensity * 0.01)
       }
       if (chainState.members.includes('Helba') || chainState.members.includes('Caesar')) {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + chainState.intensity * 0.008, 0.1, 1)
+        this.repairTower('allied', chainState.intensity * 0.008)
       }
       if (chainState.members.includes('Vincent') || chainState.members.includes('Manos')) {
-        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - chainState.intensity * 0.008, 0.08, 1)
+        this.damageTower('enemy', chainState.intensity * 0.008)
       }
     }
     this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + pressureSwing, 0.04, 1)
