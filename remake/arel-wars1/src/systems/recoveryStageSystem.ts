@@ -1,4 +1,5 @@
 import type {
+  RecoveryBattleChainState,
   RecoveryBattleObjectiveState,
   RecoveryBattlePreviewState,
   RecoveryBattleWaveDirective,
@@ -4570,6 +4571,7 @@ export class RecoveryStageSystem {
       allyMomentum,
       enemyMomentum,
       towerThreat: clamp(1 - this.previewOwnTowerHpRatio + enemyMomentum * 0.22, 0, 1),
+      activeChain: this.buildActiveChainState(),
       stageProfile: { ...this.currentStageBattleProfile, archetypeLabels: [...this.currentStageBattleProfile.archetypeLabels] },
       objective: {
         phase: this.currentObjectivePhase,
@@ -4603,6 +4605,24 @@ export class RecoveryStageSystem {
     }
   }
 
+  private buildActiveChainState(): RecoveryBattleChainState {
+    const members = Object.entries(this.rosterChainBoosts)
+      .filter(([, value]) => typeof value === 'number' && value > 0)
+      .sort((left, right) => (right[1] ?? 0) - (left[1] ?? 0))
+      .map(([member]) => member)
+    const intensity = members.length > 0
+      ? clamp(Math.max(...members.map((member) => this.rosterChainBoosts[member] ?? 0)), 0, 1)
+      : 0
+
+    return {
+      active: members.length > 0 && intensity > 0,
+      members,
+      focusLane: this.rosterChainFocusLane,
+      intensity,
+      label: members.length > 0 ? this.lastScriptedBeatNote : null,
+    }
+  }
+
   private tickLaneBattlePreview(): void {
     const beat = Math.max(this.lastChannelBeat, 0)
     const profile = this.currentStageBattleProfile
@@ -4610,6 +4630,7 @@ export class RecoveryStageSystem {
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
     const enemyDirective = this.currentLoadoutDirective(this.enemyWavePlan, 'enemy', 'tick')
     const alliedDirective = this.currentLoadoutDirective(this.alliedWavePlan, 'allied', 'tick')
+    const chainState = this.buildActiveChainState()
 
     this.enemyWaveCountdownBeats = Math.max(this.enemyWaveCountdownBeats - 1, 0)
     if (this.enemyWaveCountdownBeats === 0) {
@@ -4666,9 +4687,15 @@ export class RecoveryStageSystem {
         + (this.selectedDispatchLane === laneId ? 0.03 + profile.dispatchBoost * 0.18 : 0)
         + (this.heroAssignedLane === laneId ? profile.heroImpact : 0)
         + (this.towerUpgradeLevels.attack - 1) * 0.008
+        + (chainState.active && chainState.focusLane === laneId ? chainState.intensity * 0.05 : 0)
 
       lane.enemyPressure = clamp(lane.enemyPressure * 0.88 + enemyReinforcement, 0.08, 1)
       lane.alliedPressure = clamp(lane.alliedPressure * 0.86 + alliedReinforcement, 0.08, 1)
+
+      if (chainState.active && chainState.focusLane === laneId) {
+        lane.frontline = clamp(lane.frontline + chainState.intensity * 0.018, 0.04, 0.96)
+        lane.enemyPressure = clamp(lane.enemyPressure - chainState.intensity * 0.018, 0.08, 1)
+      }
 
       const heroBonus = this.heroAssignedLane === laneId ? profile.heroImpact : 0
       const netPush = lane.alliedPressure + lane.alliedUnits * 0.035 + heroBonus - (lane.enemyPressure + lane.enemyUnits * 0.03)
@@ -4710,6 +4737,18 @@ export class RecoveryStageSystem {
       0.002,
       0.04,
     )
+    if (chainState.active) {
+      this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + chainState.intensity * 0.006, 0.04, 1)
+      if (chainState.members.includes('Juno')) {
+        this.previewManaRatio = clamp(this.previewManaRatio + chainState.intensity * 0.01, 0.06, 1)
+      }
+      if (chainState.members.includes('Helba') || chainState.members.includes('Caesar')) {
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + chainState.intensity * 0.008, 0.1, 1)
+      }
+      if (chainState.members.includes('Vincent') || chainState.members.includes('Manos')) {
+        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - chainState.intensity * 0.008, 0.08, 1)
+      }
+    }
     this.objectiveProgressRatio = clamp(this.objectiveProgressRatio + pressureSwing, 0.04, 1)
     this.currentWaveIndex = clamp(1 + Math.floor(this.objectiveProgressRatio * this.totalWaveCount), 1, this.totalWaveCount)
 

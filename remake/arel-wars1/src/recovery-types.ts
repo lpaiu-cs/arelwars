@@ -521,6 +521,14 @@ export interface RecoveryBattleResolutionState {
   questRewardReady: boolean
 }
 
+export interface RecoveryBattleChainState {
+  active: boolean
+  members: string[]
+  focusLane: 'upper' | 'lower' | null
+  intensity: number
+  label: string | null
+}
+
 export interface RecoveryCampaignNodeState {
   nodeIndex: number
   label: string
@@ -616,6 +624,7 @@ export interface RecoveryBattlePreviewState {
   allyMomentum: number
   enemyMomentum: number
   towerThreat: number
+  activeChain: RecoveryBattleChainState
   stageProfile: RecoveryStageBattleProfile
   objective: RecoveryBattleObjectiveState
   resolution: RecoveryBattleResolutionState

@@ -342,7 +342,10 @@ export class RecoveryBootScene extends Phaser.Scene {
     const opcodeCue = snapshot.activeOpcodeCue ? `${snapshot.activeOpcodeCue.label}/${snapshot.activeOpcodeCue.action}` : null
     const tutorialCue = snapshot.activeTutorialCue ? `${snapshot.activeTutorialCue.label}/${snapshot.activeTutorialCue.action}` : null
     const packed = snapshot.renderState.packedPixelStemRule ? '179 shade' : 'std render'
-    return `${headline} · fx ${snapshot.renderState.effectPulseCount} · ${packed}${tutorialCue ? ` · ${tutorialCue}` : ''}${opcodeCue ? ` · ${opcodeCue}` : ''}`
+    const activeChain = snapshot.battlePreviewState.activeChain.active
+      ? ` · chain ${snapshot.battlePreviewState.activeChain.members.join('+')} ${snapshot.battlePreviewState.activeChain.focusLane ?? 'mixed'} x${snapshot.battlePreviewState.activeChain.intensity.toFixed(2)}`
+      : ''
+    return `${headline} · fx ${snapshot.renderState.effectPulseCount} · ${packed}${tutorialCue ? ` · ${tutorialCue}` : ''}${opcodeCue ? ` · ${opcodeCue}` : ''}${activeChain}`
   }
 
   private describeGameplayState(snapshot: RecoveryStageSnapshot): string {
@@ -363,6 +366,9 @@ export class RecoveryBootScene extends Phaser.Scene {
     const directives = `waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'}`
     const signals = profile.archetypeSignals.length > 0 ? profile.archetypeSignals.join('/') : 'baseline'
     const scriptedBeat = state.scriptedBeatNote ? `script ${state.scriptedBeatNote}` : 'script idle'
+    const activeChain = snapshot.battlePreviewState.activeChain.active
+      ? `chain ${snapshot.battlePreviewState.activeChain.members.join('+')} ${snapshot.battlePreviewState.activeChain.focusLane ?? 'mixed'} x${snapshot.battlePreviewState.activeChain.intensity.toFixed(2)}`
+      : 'chain idle'
     const resolutionLine =
       resolution.status === 'active'
         ? 'result active'
@@ -370,7 +376,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · phase ${campaign.scenePhase}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · target ${campaign.selectedStageTitle} / ${campaign.selectedRouteLabel}${campaign.selectedHintText ? ` / ${campaign.selectedHintText}` : ''} · briefing ${campaign.briefing.objectivePhase} ${campaign.briefing.objectiveLabel} / lane ${campaign.briefing.favoredLane ?? 'mixed'} / a ${campaign.briefing.alliedForecast[0] ?? 'idle'} / e ${campaign.briefing.enemyForecast[0] ?? 'idle'} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · phase ${campaign.scenePhase}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · target ${campaign.selectedStageTitle} / ${campaign.selectedRouteLabel}${campaign.selectedHintText ? ` / ${campaign.selectedHintText}` : ''} · briefing ${campaign.briefing.objectivePhase} ${campaign.briefing.objectiveLabel} / lane ${campaign.briefing.favoredLane ?? 'mixed'} / a ${campaign.briefing.alliedForecast[0] ?? 'idle'} / e ${campaign.briefing.enemyForecast[0] ?? 'idle'} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${activeChain} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {
@@ -782,6 +788,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     snapshot.battlePreviewState.lanes.forEach((lane, index) => {
       const y = laneY(index)
       const selected = snapshot.battlePreviewState.selectedLane === lane.laneId
+      const chained = snapshot.battlePreviewState.activeChain.active && snapshot.battlePreviewState.activeChain.focusLane === lane.laneId
       const momentumColor =
         lane.momentum === 'allied-push'
           ? 0x85d46a
@@ -791,15 +798,20 @@ export class RecoveryBootScene extends Phaser.Scene {
               ? 0xf0b45e
               : 0x6c7c82
 
-      graphics.lineStyle(2.4, selected ? 0xf0b45e : 0x314048, 0.74)
+      graphics.lineStyle(2.4, chained ? 0x76d6ff : selected ? 0xf0b45e : 0x314048, chained ? 0.92 : 0.74)
       graphics.lineBetween(laneStartX, y, laneEndX, y)
 
       const contestedWidth = (laneEndX - laneStartX) * lane.contested * 0.35
       const frontlineX = laneStartX + (laneEndX - laneStartX) * lane.frontline
       graphics.lineStyle(6, momentumColor, 0.22)
       graphics.lineBetween(frontlineX - contestedWidth, y, frontlineX + contestedWidth, y)
-      graphics.fillStyle(momentumColor, selected ? 0.95 : 0.78)
-      graphics.fillCircle(frontlineX, y, selected ? 7 : 6)
+      graphics.fillStyle(momentumColor, chained ? 1 : selected ? 0.95 : 0.78)
+      graphics.fillCircle(frontlineX, y, chained ? 8 : selected ? 7 : 6)
+
+      if (chained) {
+        graphics.lineStyle(1.6, 0x76d6ff, 0.7)
+        graphics.strokeCircle(frontlineX, y, 13 + snapshot.battlePreviewState.activeChain.intensity * 10)
+      }
 
       for (let unitIndex = 0; unitIndex < lane.alliedUnits; unitIndex += 1) {
         const progress = Math.min((unitIndex + 1) / (lane.alliedUnits + 1), 0.92)
