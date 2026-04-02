@@ -333,6 +333,89 @@ h2 {
   background: rgba(12, 17, 20, 0.78);
 }
 
+.story-phase-panel {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(220, 194, 135, 0.2);
+  background:
+    linear-gradient(135deg, rgba(44, 32, 19, 0.34), rgba(13, 18, 22, 0.92));
+}
+
+.story-phase-panel h3 {
+  margin: 6px 0 0;
+  color: #f3ecdf;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
+  font-size: 1.2rem;
+}
+
+.story-phase-panel-menu {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.story-phase-panel-reward,
+.story-phase-panel-unlock {
+  background:
+    linear-gradient(135deg, rgba(53, 38, 14, 0.48), rgba(12, 17, 20, 0.92));
+}
+
+.story-phase-eyebrow {
+  margin: 0;
+  color: #d6a55c;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.story-menu-list {
+  display: grid;
+  gap: 10px;
+}
+
+.story-menu-item {
+  padding: 10px 12px;
+  border: 1px solid rgba(133, 163, 171, 0.16);
+  background: rgba(9, 13, 16, 0.68);
+}
+
+.story-menu-item strong {
+  display: block;
+  color: #f3ecdf;
+  font-size: 0.88rem;
+}
+
+.story-menu-item p {
+  margin: 6px 0 0;
+  color: rgba(231, 223, 204, 0.76);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.story-menu-item-selected {
+  border-color: rgba(240, 180, 94, 0.44);
+  box-shadow: inset 0 0 0 1px rgba(240, 180, 94, 0.34);
+  background: rgba(46, 31, 14, 0.56);
+}
+
+.story-reward-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.story-reward-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(240, 180, 94, 0.26);
+  background: rgba(214, 165, 92, 0.12);
+  color: #f2d7aa;
+  font-size: 0.78rem;
+}
+
 .loadout-strip {
   display: flex;
   flex-wrap: wrap;

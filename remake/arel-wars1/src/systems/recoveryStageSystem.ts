@@ -41,6 +41,8 @@ const MIN_DIALOGUE_DURATION_MS = 1400
 const MAX_DIALOGUE_DURATION_MS = 4200
 const STORYBOARD_GAP_MS = 900
 const RESULT_HOLD_MS = 1800
+const REWARD_REVIEW_MS = 2400
+const UNLOCK_REVEAL_MS = 2200
 const WORLDMAP_HOLD_MS = 1600
 const DEPLOY_BRIEFING_MS = 1800
 const UPGRADE_PROGRESS_RECOVERY_PER_BEAT = 0.012
@@ -137,6 +139,17 @@ interface ResolvedSceneCommandSignals {
   hasQuestFocus: boolean
   hasGuidedFocus: boolean
   hasPortraitAssignment: boolean
+}
+
+type RecoveryCampaignMenuAction =
+  | 'continue-campaign'
+  | 'direct-deploy'
+  | 'replay-active-stage'
+
+interface RecoveryCampaignMenuEntry {
+  label: string
+  description: string
+  action: RecoveryCampaignMenuAction
 }
 
 function buildStoryboards(
@@ -389,15 +402,23 @@ export class RecoveryStageSystem {
 
   private campaignUnlockedStageCount = 1
 
+  private campaignLastUnlockedNodeIndex: number | null = null
+
   private campaignSelectedNodeIndex = 0
 
   private campaignSelectedLoadoutIndex = 0
+
+  private campaignMenuIndex = 0
 
   private campaignScenePhase: RecoveryStageSnapshot['campaignState']['scenePhase'] = 'battle'
 
   private campaignWorldmapAutoEnterAtMs = 0
 
   private campaignDeployBriefingEndsAtMs = 0
+
+  private campaignRewardReviewEndsAtMs = 0
+
+  private campaignUnlockRevealEndsAtMs = 0
 
   private readonly campaignClearedStoryboardIds = new Set<string>()
 
@@ -514,6 +535,7 @@ export class RecoveryStageSystem {
       if (initialLoadout) {
         this.applyDeployLoadout(initialLoadout)
       }
+      this.enterTitle(0)
     }
   }
 
@@ -542,8 +564,34 @@ export class RecoveryStageSystem {
     return this.storyboards
   }
 
+  moveCampaignMenu(direction: -1 | 1): boolean {
+    if (!this.isReady() || this.campaignScenePhase !== 'main-menu') {
+      return false
+    }
+
+    const entries = this.campaignMenuEntries()
+    const nextIndex = clamp(this.campaignMenuIndex + direction, 0, Math.max(entries.length - 1, 0))
+    if (nextIndex === this.campaignMenuIndex) {
+      return false
+    }
+
+    this.campaignMenuIndex = nextIndex
+    this.lastActionNote = `menu focus: ${entries[nextIndex]?.label ?? 'campaign'}`
+    this.version += 1
+    return true
+  }
+
   moveCampaignSelection(direction: -1 | 1): boolean {
     if (!this.isReady()) {
+      return false
+    }
+
+    if (
+      this.campaignScenePhase === 'title'
+      || this.campaignScenePhase === 'main-menu'
+      || this.campaignScenePhase === 'reward-review'
+      || this.campaignScenePhase === 'unlock-reveal'
+    ) {
       return false
     }
 
@@ -575,6 +623,15 @@ export class RecoveryStageSystem {
 
   moveCampaignLoadout(direction: -1 | 1): boolean {
     if (!this.isReady()) {
+      return false
+    }
+
+    if (
+      this.campaignScenePhase === 'title'
+      || this.campaignScenePhase === 'main-menu'
+      || this.campaignScenePhase === 'reward-review'
+      || this.campaignScenePhase === 'unlock-reveal'
+    ) {
       return false
     }
 
@@ -610,10 +667,67 @@ export class RecoveryStageSystem {
       return false
     }
 
+    if (this.campaignScenePhase === 'title') {
+      this.enterMainMenu(this.lastUpdateNowMs)
+      this.lastActionNote = 'main menu opened'
+      this.version += 1
+      return true
+    }
+
+    if (this.campaignScenePhase === 'main-menu') {
+      const entries = this.campaignMenuEntries()
+      const selected = entries[clamp(this.campaignMenuIndex, 0, Math.max(entries.length - 1, 0))]
+      const currentStoryboard = this.storyboards[this.storyboardIndex] ?? this.storyboards[0]
+      const recommendation = currentStoryboard ? this.deriveCampaignRecommendation(currentStoryboard) : null
+      if (selected?.action === 'continue-campaign') {
+        this.enterWorldmapSelection(this.lastUpdateNowMs)
+      } else if (selected?.action === 'direct-deploy') {
+        this.enterDeployBriefing(recommendation?.nodeIndex ?? this.campaignSelectedNodeIndex, this.lastUpdateNowMs)
+      } else {
+        this.enterDeployBriefing(this.storyboardIndex, this.lastUpdateNowMs)
+      }
+      this.lastActionNote = selected ? `${selected.label} selected` : 'campaign menu accepted'
+      this.version += 1
+      return true
+    }
+
+    if (this.campaignScenePhase === 'result-hold') {
+      if (this.battleResolutionOutcome === 'victory') {
+        this.enterRewardReview(this.lastUpdateNowMs)
+      } else {
+        this.enterWorldmapSelection(this.lastUpdateNowMs)
+      }
+      this.version += 1
+      return true
+    }
+
+    if (this.campaignScenePhase === 'reward-review') {
+      if (this.currentUnlockRevealLabel() !== null) {
+        this.enterUnlockReveal(this.lastUpdateNowMs)
+      } else {
+        this.enterWorldmapSelection(this.lastUpdateNowMs)
+      }
+      this.version += 1
+      return true
+    }
+
+    if (this.campaignScenePhase === 'unlock-reveal') {
+      this.enterWorldmapSelection(this.lastUpdateNowMs)
+      this.version += 1
+      return true
+    }
+
     if (!this.battlePaused && this.campaignScenePhase === 'battle') {
       this.lastActionNote = 'campaign route launch locked until pause or result'
       this.version += 1
       return false
+    }
+
+    if (this.campaignScenePhase === 'battle' && this.battlePaused) {
+      this.enterWorldmapSelection(this.lastUpdateNowMs)
+      this.lastActionNote = 'paused battle routed to worldmap'
+      this.version += 1
+      return true
     }
 
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
@@ -722,8 +836,30 @@ export class RecoveryStageSystem {
       changed = true
     }
 
-    if (this.campaignScenePhase === 'result-hold') {
+    if (this.campaignScenePhase === 'title' || this.campaignScenePhase === 'main-menu') {
+      // Hold on the title/menu phases while keeping sprite playback alive.
+    } else if (this.campaignScenePhase === 'result-hold') {
       if (this.battleResolutionAutoAdvanceAtMs > 0 && nowMs >= this.battleResolutionAutoAdvanceAtMs) {
+        if (this.battleResolutionOutcome === 'victory') {
+          this.enterRewardReview(nowMs)
+        } else {
+          this.enterWorldmapSelection(nowMs)
+        }
+        this.version += 1
+        return true
+      }
+    } else if (this.campaignScenePhase === 'reward-review') {
+      if (this.campaignRewardReviewEndsAtMs > 0 && nowMs >= this.campaignRewardReviewEndsAtMs) {
+        if (this.currentUnlockRevealLabel() !== null) {
+          this.enterUnlockReveal(nowMs)
+        } else {
+          this.enterWorldmapSelection(nowMs)
+        }
+        this.version += 1
+        return true
+      }
+    } else if (this.campaignScenePhase === 'unlock-reveal') {
+      if (this.campaignUnlockRevealEndsAtMs > 0 && nowMs >= this.campaignUnlockRevealEndsAtMs) {
         this.enterWorldmapSelection(nowMs)
         this.version += 1
         return true
@@ -807,8 +943,11 @@ export class RecoveryStageSystem {
     this.storyboardIndex = index
     this.campaignSelectedNodeIndex = index
     this.campaignScenePhase = 'battle'
+    this.campaignMenuIndex = 0
     this.campaignWorldmapAutoEnterAtMs = 0
     this.campaignDeployBriefingEndsAtMs = 0
+    this.campaignRewardReviewEndsAtMs = 0
+    this.campaignUnlockRevealEndsAtMs = 0
     this.dialogueIndex = 0
     this.frameIndex = 0
     this.storyboardStartedAtMs = nowMs
@@ -825,6 +964,9 @@ export class RecoveryStageSystem {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     this.battlePaused = false
     this.pauseStartedAtMs = 0
+    if (this.battleResolutionOutcome === 'victory' && !this.questRewardClaimed) {
+      this.claimQuestRewardPayout()
+    }
     const currentStoryboard = this.storyboards[this.storyboardIndex] ?? this.storyboards[0]
     const recommendation = currentStoryboard ? this.deriveCampaignRecommendation(currentStoryboard) : null
     if (recommendation) {
@@ -838,8 +980,12 @@ export class RecoveryStageSystem {
       this.campaignSelectedLoadoutIndex = 0
     }
     this.campaignScenePhase = 'worldmap'
+    this.campaignMenuIndex = 0
     this.campaignWorldmapAutoEnterAtMs = nowMs + WORLDMAP_HOLD_MS
     this.campaignDeployBriefingEndsAtMs = 0
+    this.campaignRewardReviewEndsAtMs = 0
+    this.campaignUnlockRevealEndsAtMs = 0
+    this.campaignLastUnlockedNodeIndex = null
     this.lastActionNote = `worldmap opened for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
   }
 
@@ -857,9 +1003,99 @@ export class RecoveryStageSystem {
       Math.max(loadoutCount - 1, 0),
     )
     this.campaignScenePhase = 'deploy-briefing'
+    this.campaignMenuIndex = 0
     this.campaignWorldmapAutoEnterAtMs = 0
     this.campaignDeployBriefingEndsAtMs = nowMs + DEPLOY_BRIEFING_MS
+    this.campaignRewardReviewEndsAtMs = 0
+    this.campaignUnlockRevealEndsAtMs = 0
     this.lastActionNote = `deploy briefing ready for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
+  }
+
+  private enterTitle(nowMs: number): void {
+    this.lastUpdateNowMs = nowMs
+    this.campaignScenePhase = 'title'
+    this.campaignMenuIndex = 0
+    this.campaignWorldmapAutoEnterAtMs = 0
+    this.campaignDeployBriefingEndsAtMs = 0
+    this.campaignRewardReviewEndsAtMs = 0
+    this.campaignUnlockRevealEndsAtMs = 0
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
+    this.lastActionNote = 'title screen ready'
+  }
+
+  private enterMainMenu(nowMs: number): void {
+    this.lastUpdateNowMs = nowMs
+    this.campaignScenePhase = 'main-menu'
+    this.campaignMenuIndex = 0
+    this.campaignWorldmapAutoEnterAtMs = 0
+    this.campaignDeployBriefingEndsAtMs = 0
+    this.campaignRewardReviewEndsAtMs = 0
+    this.campaignUnlockRevealEndsAtMs = 0
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
+    this.lastActionNote = 'campaign menu ready'
+  }
+
+  private enterRewardReview(nowMs: number): void {
+    this.lastUpdateNowMs = nowMs
+    this.campaignScenePhase = 'reward-review'
+    this.campaignWorldmapAutoEnterAtMs = 0
+    this.campaignDeployBriefingEndsAtMs = 0
+    this.campaignRewardReviewEndsAtMs = nowMs + REWARD_REVIEW_MS
+    this.campaignUnlockRevealEndsAtMs = 0
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
+    this.lastActionNote = 'reward review opened'
+  }
+
+  private enterUnlockReveal(nowMs: number): void {
+    this.lastUpdateNowMs = nowMs
+    this.campaignScenePhase = 'unlock-reveal'
+    this.campaignWorldmapAutoEnterAtMs = 0
+    this.campaignDeployBriefingEndsAtMs = 0
+    this.campaignRewardReviewEndsAtMs = 0
+    this.campaignUnlockRevealEndsAtMs = nowMs + UNLOCK_REVEAL_MS
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
+    this.lastActionNote = this.currentUnlockRevealLabel() ?? 'unlock reveal opened'
+  }
+
+  private currentUnlockRevealLabel(): string | null {
+    if (this.battleResolutionOutcome !== 'victory' || this.campaignLastUnlockedNodeIndex === null) {
+      return null
+    }
+    const unlockedStoryboard = this.storyboards[this.campaignLastUnlockedNodeIndex] ?? null
+    if (!unlockedStoryboard) {
+      return null
+    }
+    const label = unlockedStoryboard.stageBlueprint?.title ?? unlockedStoryboard.scriptPath
+    const route = unlockedStoryboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown'
+    return `Node ${this.campaignLastUnlockedNodeIndex + 1} unlocked · ${label} · ${route}`
+  }
+
+  private campaignMenuEntries(): RecoveryCampaignMenuEntry[] {
+    const currentStoryboard = this.storyboards[this.storyboardIndex] ?? this.storyboards[0]
+    const recommendation = currentStoryboard ? this.deriveCampaignRecommendation(currentStoryboard) : null
+    return [
+      {
+        label: 'Continue Campaign',
+        description: recommendation
+          ? `Resume the route from node ${recommendation.nodeIndex + 1} with ${recommendation.loadoutLabel ?? 'the recommended loadout'}.`
+          : 'Resume the recovered campaign route from the current worldmap position.',
+        action: 'continue-campaign',
+      },
+      {
+        label: 'Deploy Next Stage',
+        description: 'Skip to deploy briefing for the recommended node and loadout.',
+        action: 'direct-deploy',
+      },
+      {
+        label: 'Replay Active Stage',
+        description: `Return to ${this.storyboardLabel(this.storyboardIndex)} and redeploy the current stage.`,
+        action: 'replay-active-stage',
+      },
+    ]
   }
 
   private launchCampaignNodeNow(index: number, nowMs: number): void {
@@ -886,6 +1122,12 @@ export class RecoveryStageSystem {
     const routeGoal = this.deriveCampaignRouteGoal(currentStoryboard)
     const selectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
     const selectedStoryboard = this.storyboards[selectedNodeIndex] ?? currentStoryboard
+    const phaseStoryboard =
+      this.campaignScenePhase === 'result-hold'
+      || this.campaignScenePhase === 'reward-review'
+      || this.campaignScenePhase === 'unlock-reveal'
+        ? currentStoryboard
+        : selectedStoryboard
     const loadouts = this.buildDeployLoadouts(selectedStoryboard)
     const selectedLoadoutIndex = clamp(this.campaignSelectedLoadoutIndex, 0, Math.max(loadouts.length - 1, 0))
     const selectedLoadout = loadouts[selectedLoadoutIndex] ?? loadouts[0]
@@ -898,21 +1140,74 @@ export class RecoveryStageSystem {
       ?? nextUnlockStoryboard?.scriptPath
       ?? null
     const recommendedNodeIndex = clamp(recommendation.nodeIndex, 0, unlockedCount - 1)
-    const selectionMode = this.campaignScenePhase === 'result-hold'
-      ? 'result-route-selection'
-      : this.campaignScenePhase === 'worldmap' || this.battlePaused
-        ? 'worldmap-selection'
-      : selectedNodeIndex !== this.storyboardIndex
-          ? 'queued-route-selection'
-          : 'follow-active-stage'
+    const menuEntries = this.campaignMenuEntries()
+    const rewardPreview = [
+      phaseStoryboard.stageBlueprint?.rewardText ?? 'Recovered quest payout ready for review.',
+      selectedLoadout?.label ? `Loadout: ${selectedLoadout.label}` : null,
+      this.battleResolutionReason ? `Resolution: ${this.battleResolutionReason}` : null,
+      this.questRewardClaims > 0 ? `Claims: ${this.questRewardClaims}` : null,
+    ].filter((value): value is string => value !== null)
+    const unlockRevealLabel = this.currentUnlockRevealLabel()
+    const selectionMode =
+      this.campaignScenePhase === 'title'
+        ? 'title-attract'
+        : this.campaignScenePhase === 'main-menu'
+          ? 'main-menu-selection'
+          : this.campaignScenePhase === 'result-hold'
+            ? 'result-route-selection'
+            : this.campaignScenePhase === 'reward-review'
+              ? 'reward-review'
+              : this.campaignScenePhase === 'unlock-reveal'
+                ? 'unlock-reveal'
+                : this.campaignScenePhase === 'worldmap' || this.battlePaused
+                  ? 'worldmap-selection'
+                  : selectedNodeIndex !== this.storyboardIndex
+                    ? 'queued-route-selection'
+                    : 'follow-active-stage'
     const autoAdvanceInMs =
       this.campaignScenePhase === 'result-hold' && this.battleResolutionAutoAdvanceAtMs > 0
         ? Math.max(this.battleResolutionAutoAdvanceAtMs - this.lastUpdateNowMs, 0)
+      : this.campaignScenePhase === 'reward-review' && this.campaignRewardReviewEndsAtMs > 0
+        ? Math.max(this.campaignRewardReviewEndsAtMs - this.lastUpdateNowMs, 0)
+      : this.campaignScenePhase === 'unlock-reveal' && this.campaignUnlockRevealEndsAtMs > 0
+        ? Math.max(this.campaignUnlockRevealEndsAtMs - this.lastUpdateNowMs, 0)
       : this.campaignScenePhase === 'worldmap' && this.campaignWorldmapAutoEnterAtMs > 0
         ? Math.max(this.campaignWorldmapAutoEnterAtMs - this.lastUpdateNowMs, 0)
       : this.campaignScenePhase === 'deploy-briefing' && this.campaignDeployBriefingEndsAtMs > 0
         ? Math.max(this.campaignDeployBriefingEndsAtMs - this.lastUpdateNowMs, 0)
       : null
+    const phaseTitle =
+      this.campaignScenePhase === 'title'
+        ? 'Arel Wars 1'
+        : this.campaignScenePhase === 'main-menu'
+          ? 'Main Menu'
+          : this.campaignScenePhase === 'result-hold'
+            ? this.battleResolutionOutcome === 'victory' ? 'Stage Clear' : 'Stage Failed'
+            : this.campaignScenePhase === 'reward-review'
+              ? 'Reward Review'
+              : this.campaignScenePhase === 'unlock-reveal'
+                ? 'Stage Unlocked'
+                : this.campaignScenePhase === 'worldmap'
+                  ? 'World Map'
+                  : this.campaignScenePhase === 'deploy-briefing'
+                    ? 'Deploy Briefing'
+                    : selectedStoryboard.stageBlueprint?.title ?? activeStageTitle
+    const phaseSubtitle =
+      this.campaignScenePhase === 'title'
+        ? 'Recovered title attract. Press Enter to open the campaign menu.'
+        : this.campaignScenePhase === 'main-menu'
+          ? `${unlockedCount} nodes unlocked, ${this.campaignClearedStoryboardIds.size} cleared. Choose a recovery route.`
+          : this.campaignScenePhase === 'result-hold'
+            ? this.battleResolutionReason ?? 'Battle resolution locked in.'
+            : this.campaignScenePhase === 'reward-review'
+              ? phaseStoryboard.stageBlueprint?.rewardText ?? 'Recovered quest payout and stage completion review.'
+              : this.campaignScenePhase === 'unlock-reveal'
+                ? unlockRevealLabel ?? 'Campaign route updated.'
+                : this.campaignScenePhase === 'worldmap'
+                  ? selectedStoryboard.stageBlueprint?.hintText ?? 'Review unlocked nodes and branch routes.'
+                  : this.campaignScenePhase === 'deploy-briefing'
+                    ? `${selectedLoadout?.heroRosterLabel ?? 'Core Squad'} / ${selectedLoadout?.skillPresetLabel ?? 'Balanced Kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'Balanced Towers'}`
+                    : `${selectedBriefing.objectiveLabel} / ${selectedBriefing.tacticalBias}`
     return {
       currentNodeIndex: this.storyboardIndex + 1,
       selectedNodeIndex: selectedNodeIndex + 1,
@@ -928,6 +1223,21 @@ export class RecoveryStageSystem {
       selectionMode,
       selectionLaunchable: this.battlePaused || this.campaignScenePhase !== 'battle',
       autoAdvanceInMs,
+      phaseTitle,
+      phaseSubtitle,
+      menuItems:
+        this.campaignScenePhase === 'title'
+          ? [{ menuIndex: 1, label: 'Press Enter', description: 'Open the recovered campaign menu.', selected: true }]
+          : this.campaignScenePhase === 'main-menu'
+            ? menuEntries.map((entry, index) => ({
+              menuIndex: index + 1,
+              label: entry.label,
+              description: entry.description,
+              selected: index === this.campaignMenuIndex,
+            }))
+            : [],
+      rewardPreview,
+      unlockRevealLabel,
       nextUnlockLabel: nextUnlock,
       nextUnlockRouteLabel: nextUnlockStoryboard?.stageBlueprint?.mapBinding?.storyBranch ?? null,
       lastResolvedStageTitle: this.campaignLastResolvedStageTitle,
@@ -2936,6 +3246,7 @@ export class RecoveryStageSystem {
       return
     }
     const currentStoryboard = this.storyboards[this.storyboardIndex]
+    const previousUnlockedStageCount = this.campaignUnlockedStageCount
     this.battleResolutionOutcome = outcome
     this.battleResolutionReason = reason
     this.campaignScenePhase = 'result-hold'
@@ -2948,6 +3259,11 @@ export class RecoveryStageSystem {
         Math.max(this.campaignUnlockedStageCount, this.campaignClearedStoryboardIds.size + 1),
         this.storyboards.length,
       )
+      if (this.campaignUnlockedStageCount > previousUnlockedStageCount) {
+        this.campaignLastUnlockedNodeIndex = this.campaignUnlockedStageCount - 1
+      }
+    } else {
+      this.campaignLastUnlockedNodeIndex = null
     }
     this.updateCampaignRouteCommitment(currentStoryboard ?? null, outcome)
     const recommendation = currentStoryboard ? this.deriveCampaignRecommendation(currentStoryboard) : null
@@ -3746,7 +4062,45 @@ export class RecoveryStageSystem {
       }
     }
 
-    if (this.campaignScenePhase === 'worldmap') {
+    if (this.campaignScenePhase === 'title') {
+      mode = 'guided-preview'
+      openPanel = 'system'
+      objectiveMode = 'title-screen'
+      primaryHint = 'Press Enter to open the recovered main menu.'
+      enabledInputs.clear()
+      blockedInputs.clear()
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('return-to-tower')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
+      enabledInputs.add('observe-stage-preview')
+    } else if (this.campaignScenePhase === 'main-menu') {
+      const selectedMenu = this.campaignMenuEntries()[clamp(this.campaignMenuIndex, 0, Math.max(this.campaignMenuEntries().length - 1, 0))]
+      mode = 'guided-preview'
+      openPanel = 'system'
+      objectiveMode = 'main-menu'
+      primaryHint = selectedMenu
+        ? `${selectedMenu.label}. ${selectedMenu.description}`
+        : 'Choose a campaign route from the recovered main menu.'
+      enabledInputs.clear()
+      blockedInputs.clear()
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('return-to-tower')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
+      enabledInputs.add('observe-stage-preview')
+      enabledInputs.add('open-system-menu')
+    } else if (this.campaignScenePhase === 'worldmap') {
       const selectedLoadout = this.resolveSelectedDeployLoadout(this.storyboards[clamp(this.campaignSelectedNodeIndex, 0, Math.max(this.campaignUnlockedStageCount, 1) - 1)] ?? this.storyboards[0])
       mode = 'guided-preview'
       openPanel = 'system'
@@ -3771,6 +4125,48 @@ export class RecoveryStageSystem {
       objectiveMode = 'deploy-briefing'
       primaryHint = `Deploy briefing active. ${selectedLoadout?.heroRosterLabel ?? 'Core Squad'} with ${selectedLoadout?.skillPresetLabel ?? 'Balanced Kit'} and ${selectedLoadout?.towerPolicyLabel ?? 'Balanced Towers'} is queued.`
       enabledInputs.clear()
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('return-to-tower')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
+      enabledInputs.add('observe-stage-preview')
+      enabledInputs.add('open-system-menu')
+    } else if (this.campaignScenePhase === 'reward-review') {
+      mode = 'guided-preview'
+      openPanel = 'system'
+      objectiveMode = 'reward-review'
+      questState = this.questRewardClaimed ? 'available' : 'reward-ready'
+      primaryHint = this.questRewardClaimed
+        ? 'Reward reviewed. Press Enter to continue to the next unlock reveal.'
+        : 'Reward review active. Claim the payout or press Enter to continue.'
+      enabledInputs.clear()
+      blockedInputs.clear()
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('return-to-tower')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
+      enabledInputs.add('open-system-menu')
+      enabledInputs.add('review-quest-rewards')
+      if (!this.questRewardClaimed) {
+        enabledInputs.add('claim-quest-reward')
+      }
+    } else if (this.campaignScenePhase === 'unlock-reveal') {
+      mode = 'guided-preview'
+      openPanel = 'system'
+      objectiveMode = 'unlock-reveal'
+      primaryHint = this.currentUnlockRevealLabel() ?? 'Next campaign node unlocked. Press Enter to open the world map.'
+      enabledInputs.clear()
+      blockedInputs.clear()
       blockedInputs.add('dispatch-up-lane')
       blockedInputs.add('dispatch-down-lane')
       blockedInputs.add('produce-unit')
@@ -4220,10 +4616,7 @@ export class RecoveryStageSystem {
         break
       case 'claim-quest-reward':
         this.panelOverride = 'system'
-        this.questRewardClaimed = true
-        this.questRewardClaims += 1
-        this.restoreMana('allied', this.manaCapacityValue * 0.18)
-        this.applyUpgradeProgressDelta(0.16)
+        this.claimQuestRewardPayout()
         this.lastActionNote = 'quest reward claimed'
         break
       default:
@@ -4232,6 +4625,16 @@ export class RecoveryStageSystem {
     }
 
     this.rebuildLaneBattleState()
+  }
+
+  private claimQuestRewardPayout(): void {
+    if (this.questRewardClaimed) {
+      return
+    }
+    this.questRewardClaimed = true
+    this.questRewardClaims += 1
+    this.restoreMana('allied', this.manaCapacityValue * 0.18)
+    this.applyUpgradeProgressDelta(0.16)
   }
 
   private applyScriptedAction(actionId: RecoveryGameplayActionId, note: string): boolean {

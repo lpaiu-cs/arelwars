@@ -372,7 +372,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const battleLine = snapshot.battlePreviewState.lanes
     .map((lane) => `${lane.laneId} ${lane.alliedUnits}-${lane.enemyUnits} ${lane.momentum} @ ${lane.frontline.toFixed(2)}`)
     .join(' · ')
-  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · phase ${campaign.scenePhase}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? ` / ${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? ` / ${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? ` / ${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? ` / ${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? ` / ${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · target ${campaign.selectedStageTitle} / ${campaign.selectedRouteLabel}${campaign.selectedHintText ? ` / ${campaign.selectedHintText}` : ''}${campaign.selectedRewardText ? ` / reward ${campaign.selectedRewardText}` : ''} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} / lane ${briefing.favoredLane ?? 'mixed'} / ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · script ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · profile ${profile.label} · bias ${profile.tacticalBias} · signals ${profile.archetypeSignals.join('/') || 'baseline'} · tempo a${profile.alliedWaveCadenceBeats}/e${profile.enemyWaveCadenceBeats} · heroImpact ${profile.heroImpact.toFixed(2)} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'} · result ${resolution.status}${resolution.status !== 'active' ? ` ${resolution.label}${resolution.autoAdvanceInMs !== null ? ` in ${Math.ceil(resolution.autoAdvanceInMs / 100) / 10}s` : ''}` : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · entities ${entityCount} / projectiles ${projectileCount} / effects ${effectCount}${activeChain.active ? ` · chain ${activeChain.members.join('+')} @ ${activeChain.focusLane ?? 'mixed'} x${activeChain.intensity.toFixed(2)}` : ''} · objectiveMode ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.scriptedBeatNote ? ` · script ${gameplayState.scriptedBeatNote}` : ''}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
+  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? ` / ${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? ` / ${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? ` / ${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? ` / ${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? ` / ${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · script ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · profile ${profile.label} · bias ${profile.tacticalBias} · signals ${profile.archetypeSignals.join('/') || 'baseline'} · tempo a${profile.alliedWaveCadenceBeats}/e${profile.enemyWaveCadenceBeats} · heroImpact ${profile.heroImpact.toFixed(2)} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'} · result ${resolution.status}${resolution.status !== 'active' ? ` ${resolution.label}${resolution.autoAdvanceInMs !== null ? ` in ${Math.ceil(resolution.autoAdvanceInMs / 100) / 10}s` : ''}` : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · entities ${entityCount} / projectiles ${projectileCount} / effects ${effectCount}${activeChain.active ? ` · chain ${activeChain.members.join('+')} @ ${activeChain.focusLane ?? 'mixed'} x${activeChain.intensity.toFixed(2)}` : ''} · objectiveMode ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.scriptedBeatNote ? ` · script ${gameplayState.scriptedBeatNote}` : ''}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
   const campaignStrip = campaign.nodes
     .map((node) => {
       const classes = [
@@ -402,11 +402,69 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       return `<span class="${classes}" title="${escapeHtml(loadout.summary)}"><strong>${loadout.loadoutIndex}</strong><em>${escapeHtml(loadout.label)}</em></span>`
     })
     .join('')
+  const phasePanel =
+    campaign.scenePhase === 'title' || campaign.scenePhase === 'main-menu'
+      ? `
+        <section class="story-phase-panel story-phase-panel-menu">
+          <div>
+            <p class="story-phase-eyebrow">${escapeHtml(campaign.phaseTitle)}</p>
+            <h3>${escapeHtml(campaign.phaseSubtitle)}</h3>
+          </div>
+          <div class="story-menu-list">
+            ${campaign.menuItems.map((item) => `
+              <article class="story-menu-item ${item.selected ? 'story-menu-item-selected' : ''}">
+                <strong>${item.menuIndex}. ${escapeHtml(item.label)}</strong>
+                <p>${escapeHtml(item.description)}</p>
+              </article>
+            `).join('')}
+          </div>
+        </section>
+      `
+      : campaign.scenePhase === 'reward-review'
+        ? `
+          <section class="story-phase-panel story-phase-panel-reward">
+            <div>
+              <p class="story-phase-eyebrow">${escapeHtml(campaign.phaseTitle)}</p>
+              <h3>${escapeHtml(campaign.phaseSubtitle)}</h3>
+            </div>
+            <div class="story-reward-list">
+              ${campaign.rewardPreview.map((item) => `<span class="story-reward-pill">${escapeHtml(item)}</span>`).join('')}
+            </div>
+          </section>
+        `
+        : campaign.scenePhase === 'unlock-reveal'
+          ? `
+            <section class="story-phase-panel story-phase-panel-unlock">
+              <p class="story-phase-eyebrow">${escapeHtml(campaign.phaseTitle)}</p>
+              <h3>${escapeHtml(campaign.unlockRevealLabel ?? campaign.phaseSubtitle)}</h3>
+              <p class="story-runtime-copy">Press Enter to continue to the world map or wait for the reveal hold to finish.</p>
+            </section>
+          `
+          : `
+            <section class="story-phase-panel">
+              <p class="story-phase-eyebrow">${escapeHtml(campaign.phaseTitle)}</p>
+              <h3>${escapeHtml(campaign.phaseSubtitle)}</h3>
+            </section>
+          `
+  const controlCopy =
+    campaign.scenePhase === 'title'
+      ? 'Enter opens the recovered main menu.'
+      : campaign.scenePhase === 'main-menu'
+        ? 'ArrowUp/ArrowDown changes the menu focus. Enter confirms the selected campaign action.'
+        : campaign.scenePhase === 'worldmap'
+          ? 'ArrowLeft/ArrowRight selects an unlocked node. ArrowUp/ArrowDown cycles loadouts. Enter moves to deploy briefing.'
+          : campaign.scenePhase === 'deploy-briefing'
+            ? 'ArrowUp/ArrowDown cycles deploy loadouts. Enter launches the selected stage immediately.'
+            : campaign.scenePhase === 'reward-review'
+              ? 'Press U to claim the reward if available, or Enter to continue.'
+              : campaign.scenePhase === 'unlock-reveal'
+                ? 'Enter moves on to the world map after the unlock reveal.'
+                : 'ArrowLeft/ArrowRight selects an unlocked campaign node while paused or between battles. ArrowUp/ArrowDown cycles deploy loadouts. Enter advances the campaign flow.'
   return `
     <article class="story-card">
       <header class="story-card-header">
         <div>
-          <strong>${escapeHtml(stage?.title ?? snapshot.currentStoryboard.scriptPath)}</strong>
+          <strong>${escapeHtml(campaign.phaseTitle)}</strong>
           <p>${escapeHtml(mapLine)} / ${escapeHtml(formatKind(previewStem.timelineKind))} / stem ${previewStem.stem}</p>
         </div>
         <span class="pill">${escapeHtml(snapshot.currentStoryboard.locale ?? 'n/a')}</span>
@@ -417,6 +475,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         <span>Frame ${snapshot.frameIndex + 1}/${Math.max(previewStem.eventFrames.length, 1)}</span>
         <span>Elapsed ${Math.round(snapshot.elapsedStoryboardMs / 100) / 10}s</span>
       </div>
+      ${phasePanel}
       <div class="campaign-strip">${campaignStrip}</div>
       <div class="loadout-strip">${loadoutStrip}</div>
       <p class="story-runtime-copy">Target ${escapeHtml(campaign.selectedStageTitle)} / ${escapeHtml(campaign.selectedRouteLabel)}${campaign.selectedHintText ? ` / ${escapeHtml(campaign.selectedHintText)}` : ''}${campaign.selectedRewardText ? ` / reward ${escapeHtml(campaign.selectedRewardText)}` : ''}${campaign.autoAdvanceInMs !== null ? ` / auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''}</p>
@@ -443,7 +502,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
       </div>
       <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${activeOpcode ? ` · ${escapeHtml(activeOpcode)}` : ''} · ${escapeHtml(gameplayLine)}</p>
-      <p class="story-runtime-copy">ArrowLeft/ArrowRight selects an unlocked campaign node. ArrowUp/ArrowDown cycles deploy loadouts. Enter launches the selected node while the battle is paused or after a result hold.</p>
+      <p class="story-runtime-copy">${escapeHtml(controlCopy)}</p>
       <div class="story-strip">
         <img src="${previewStem.timelineStrip.pngPath}" alt="Timeline strip for stem ${previewStem.stem}" loading="lazy" />
       </div>

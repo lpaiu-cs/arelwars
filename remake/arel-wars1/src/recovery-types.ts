@@ -742,6 +742,8 @@ export interface RecoveryGameplayState {
   openPanel: 'tower' | 'skill' | 'item' | 'system' | null
   heroMode: 'tower' | 'field' | 'return-cooldown'
   objectiveMode:
+    | 'title-screen'
+    | 'main-menu'
     | 'defend-own-tower'
     | 'attack-enemy-tower'
     | 'dispatch-lanes'
@@ -750,7 +752,9 @@ export interface RecoveryGameplayState {
     | 'cast-skills'
     | 'use-items'
     | 'review-quests'
+    | 'reward-review'
     | 'system-navigation'
+    | 'unlock-reveal'
     | 'worldmap-selection'
     | 'deploy-briefing'
     | 'generic-preview'
@@ -937,6 +941,13 @@ export interface RecoveryCampaignLoadout {
   towerUpgrades: RecoveryTowerUpgradeLevels
 }
 
+export interface RecoveryCampaignMenuItem {
+  menuIndex: number
+  label: string
+  description: string
+  selected: boolean
+}
+
 export interface RecoveryCampaignState {
   currentNodeIndex: number
   selectedNodeIndex: number
@@ -948,10 +959,15 @@ export interface RecoveryCampaignState {
   activeStageTitle: string
   activeFamilyId: string
   routeLabel: string
-  scenePhase: 'battle' | 'result-hold' | 'worldmap' | 'deploy-briefing'
-  selectionMode: 'follow-active-stage' | 'queued-route-selection' | 'worldmap-selection' | 'result-route-selection'
+  scenePhase: 'title' | 'main-menu' | 'battle' | 'result-hold' | 'reward-review' | 'unlock-reveal' | 'worldmap' | 'deploy-briefing'
+  selectionMode: 'title-attract' | 'main-menu-selection' | 'follow-active-stage' | 'queued-route-selection' | 'worldmap-selection' | 'result-route-selection' | 'reward-review' | 'unlock-reveal'
   selectionLaunchable: boolean
   autoAdvanceInMs: number | null
+  phaseTitle: string
+  phaseSubtitle: string
+  menuItems: RecoveryCampaignMenuItem[]
+  rewardPreview: string[]
+  unlockRevealLabel: string | null
   nextUnlockLabel: string | null
   nextUnlockRouteLabel: string | null
   lastResolvedStageTitle: string | null

@@ -330,7 +330,6 @@ export class RecoveryBootScene extends Phaser.Scene {
     this.previewImage.setAlpha(snapshot.renderState.packedPixelStemRule ? 0.94 + snapshot.renderState.bankOverlayWeight * 0.04 : 1)
     this.syncBankProbe(snapshot)
 
-    const stageTitle = snapshot.currentStoryboard.stageBlueprint?.title ?? `Stem ${previewStem.stem}`
     const mapBinding = snapshot.currentStoryboard.stageBlueprint?.mapBinding
     const mapLine = mapBinding
       ? `Map pair ${mapBinding.mapPairIndices.join('/')} → ${mapBinding.preferredMapIndex ?? 'n/a'} · ${mapBinding.bindingType}${mapBinding.bindingConfirmed ? ' exact' : ''}`
@@ -338,25 +337,27 @@ export class RecoveryBootScene extends Phaser.Scene {
     const campaign = snapshot.campaignState
     const briefing = campaign.briefing
     const selectedLoadout = campaign.loadouts[Math.max(campaign.selectedLoadoutIndex - 1, 0)] ?? null
-    const campaignPhaseLine =
-      campaign.scenePhase === 'battle'
-        ? `battle live on ${campaign.activeStageTitle}`
-        : campaign.scenePhase === 'result-hold'
-          ? `result hold on ${campaign.lastResolvedStageTitle ?? campaign.activeStageTitle}`
-          : campaign.scenePhase === 'worldmap'
-            ? `worldmap route ${campaign.selectedNodeIndex}: ${campaign.selectedStageTitle}`
-            : `deploy briefing ${campaign.selectedNodeIndex}: ${campaign.selectedStageTitle}`
+    const phaseFooter =
+      campaign.scenePhase === 'title'
+        ? 'Press Enter to open the recovered campaign menu.'
+        : campaign.scenePhase === 'main-menu'
+          ? campaign.menuItems.map((item) => `${item.selected ? '>' : ' '} ${item.label}`).join(' · ')
+          : campaign.scenePhase === 'reward-review'
+            ? campaign.rewardPreview.join(' · ')
+            : campaign.scenePhase === 'unlock-reveal'
+              ? (campaign.unlockRevealLabel ?? 'Campaign route updated.')
+              : `target ${campaign.selectedNodeIndex}: ${campaign.selectedStageTitle} · route ${campaign.selectedRouteLabel}`
     const autoPhaseLine =
       campaign.autoAdvanceInMs !== null
         ? ` · auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s`
         : ''
 
-    this.spriteLabel.setText(`${stageTitle} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)
+    this.spriteLabel.setText(`${campaign.phaseTitle} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)
     this.spriteDetail.setText(
-      `${mapLine} · ${this.formatKind(previewStem.timelineKind)} · ${snapshot.currentStoryboard.scriptPath.replace('assets/', '')} · ${campaignPhaseLine}${autoPhaseLine}`,
+      `${campaign.phaseSubtitle} · ${mapLine} · ${this.formatKind(previewStem.timelineKind)}${autoPhaseLine}`,
     )
     this.spriteFooter.setText(
-      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''} · route ${campaign.selectedRouteLabel}${campaign.selectedRewardText ? ` · reward ${campaign.selectedRewardText}` : ''} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} · ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · ${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · wave ${snapshot.battlePreviewState.objective.waveIndex}/${snapshot.battlePreviewState.objective.totalWaves} · ${snapshot.battlePreviewState.objective.label} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
+      `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} · ${phaseFooter} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} · ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
     this.interactionDetail.setText(this.describeGameplayState(snapshot))
@@ -866,7 +867,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · phase ${campaign.scenePhase}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · target ${campaign.selectedStageTitle} / ${campaign.selectedRouteLabel}${campaign.selectedHintText ? ` / ${campaign.selectedHintText}` : ''} · briefing ${campaign.briefing.objectivePhase} ${campaign.briefing.objectiveLabel} / lane ${campaign.briefing.favoredLane ?? 'mixed'} / a ${campaign.briefing.alliedForecast[0] ?? 'idle'} / e ${campaign.briefing.enemyForecast[0] ?? 'idle'} · scene ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${activeChain} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${campaign.phaseTitle}${campaign.autoAdvanceInMs !== null ? ` auto ${Math.ceil(campaign.autoAdvanceInMs / 100) / 10}s` : ''} · ${campaign.phaseSubtitle} · campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel}${campaign.activeLoadoutLabel ? ` active ${campaign.activeLoadoutLabel}` : ''} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} unlocked ${campaign.unlockedNodeCount} cleared ${campaign.clearedStageCount} · ${campaign.selectionMode}${campaign.selectionLaunchable ? ' launch-ready' : ''}${campaign.nextUnlockLabel ? ` next ${campaign.nextUnlockLabel}${campaign.nextUnlockRouteLabel ? `/${campaign.nextUnlockRouteLabel}` : ''}` : ''}${campaign.lastOutcome ? ` · last ${campaign.lastOutcome} ${campaign.lastResolvedStageTitle ?? ''}` : ''} · scene ${activeSceneStep?.label ?? 'idle'}${activeSceneStep ? `/${activeSceneStep.directives.length}d` : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${activeChain} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {
@@ -877,7 +878,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     if (!snapshot) {
       return
     }
-    if (this.handleCampaignKey(key)) {
+    if (this.handleCampaignKey(key, snapshot)) {
       const nextSnapshot = this.stageSystem.getSnapshot()
       if (nextSnapshot) {
         this.currentSnapshotKey = ''
@@ -897,12 +898,24 @@ export class RecoveryBootScene extends Phaser.Scene {
     }
   }
 
-  private handleCampaignKey(key: string): boolean {
+  private handleCampaignKey(key: string, snapshot: RecoveryStageSnapshot): boolean {
     if (!this.stageSystem) {
       return false
     }
 
     const normalized = key.toLowerCase()
+    if (snapshot.campaignState.scenePhase === 'main-menu') {
+      if (normalized === 'arrowup') {
+        return this.stageSystem.moveCampaignMenu(-1)
+      }
+      if (normalized === 'arrowdown') {
+        return this.stageSystem.moveCampaignMenu(1)
+      }
+      if (normalized === 'enter') {
+        return this.stageSystem.launchSelectedCampaignNode()
+      }
+      return false
+    }
     if (normalized === 'arrowleft') {
       return this.stageSystem.moveCampaignSelection(-1)
     }
@@ -984,6 +997,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     this.drawHudGhost(graphics, snapshot, { x, y, width, height })
     this.drawTutorialFocus(graphics, snapshot, { x, y, width, height })
     this.drawCampaignRoute(graphics, snapshot, { x, y, width, height })
+    this.drawCampaignPhaseCard(graphics, snapshot, { x, y, width, height })
 
     const channelStates = snapshot.channelStates.slice(0, 4)
     channelStates.forEach((channel, index) => {
@@ -1064,6 +1078,69 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.fillTriangle(nodeX - 5, y + radius + 18, nodeX + 5, y + radius + 18, nodeX, y + radius + 24)
       }
     })
+  }
+
+  private drawCampaignPhaseCard(
+    graphics: Phaser.GameObjects.Graphics,
+    snapshot: RecoveryStageSnapshot,
+    bounds: FocusLayoutBounds,
+  ): void {
+    const campaign = snapshot.campaignState
+    if (campaign.scenePhase === 'battle') {
+      return
+    }
+
+    const cardWidth = campaign.scenePhase === 'unlock-reveal' ? bounds.width * 0.58 : bounds.width * 0.46
+    const cardHeight =
+      campaign.scenePhase === 'main-menu'
+        ? 126
+        : campaign.scenePhase === 'title'
+          ? 86
+          : 92
+    const cardX = campaign.scenePhase === 'unlock-reveal'
+      ? bounds.x + bounds.width * 0.21
+      : bounds.x + 16
+    const cardY = campaign.scenePhase === 'unlock-reveal'
+      ? bounds.y + bounds.height * 0.3
+      : bounds.y + 18
+
+    graphics.fillStyle(0x081015, 0.86)
+    graphics.fillRoundedRect(cardX, cardY, cardWidth, cardHeight, 12)
+    graphics.lineStyle(1.8, 0xf0b45e, 0.42)
+    graphics.strokeRoundedRect(cardX, cardY, cardWidth, cardHeight, 12)
+
+    if (campaign.scenePhase === 'main-menu') {
+      campaign.menuItems.forEach((item, index) => {
+        const rowY = cardY + 18 + index * 30
+        graphics.fillStyle(item.selected ? 0x5b3d16 : 0x162028, item.selected ? 0.82 : 0.62)
+        graphics.fillRoundedRect(cardX + 12, rowY, cardWidth - 24, 22, 8)
+        graphics.lineStyle(1.2, item.selected ? 0xf0b45e : 0x42545b, 0.78)
+        graphics.strokeRoundedRect(cardX + 12, rowY, cardWidth - 24, 22, 8)
+      })
+      return
+    }
+
+    if (campaign.scenePhase === 'reward-review') {
+      campaign.rewardPreview.slice(0, 3).forEach((_, index) => {
+        const rowY = cardY + 18 + index * 22
+        graphics.fillStyle(0x735625, 0.38 + index * 0.08)
+        graphics.fillRoundedRect(cardX + 12, rowY, cardWidth - 24 - index * 12, 12, 6)
+      })
+      return
+    }
+
+    if (campaign.scenePhase === 'unlock-reveal') {
+      graphics.fillStyle(0xf0b45e, 0.12)
+      graphics.fillRoundedRect(cardX + 16, cardY + 20, cardWidth - 32, 32, 10)
+      graphics.lineStyle(1.6, 0xf0d6a0, 0.74)
+      graphics.strokeRoundedRect(cardX + 16, cardY + 20, cardWidth - 32, 32, 10)
+      return
+    }
+
+    graphics.fillStyle(0xf0b45e, 0.12)
+    graphics.fillRoundedRect(cardX + 12, cardY + 18, cardWidth - 24, 20, 8)
+    graphics.fillStyle(0xb8cad1, 0.18)
+    graphics.fillRoundedRect(cardX + 12, cardY + 46, cardWidth - 38, 12, 6)
   }
 
   private drawHudGhost(
