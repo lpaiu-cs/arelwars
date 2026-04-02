@@ -495,6 +495,17 @@ export interface RecoveryBattleObjectiveState {
   enemyWaveCountdownBeats: number
   alliedWaveCountdownBeats: number
   favoredLane: 'upper' | 'lower' | null
+  enemyDirective: RecoveryBattleWaveDirective | null
+  alliedDirective: RecoveryBattleWaveDirective | null
+}
+
+export interface RecoveryBattleWaveDirective {
+  waveNumber: number
+  laneId: 'upper' | 'lower'
+  role: 'screen' | 'push' | 'siege' | 'support' | 'hero-bait' | 'tower-rally' | 'skill-window'
+  unitBurst: number
+  pressureBias: number
+  label: string
 }
 
 export interface RecoveryBattlePreviewState {

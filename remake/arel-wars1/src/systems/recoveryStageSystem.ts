@@ -1,6 +1,7 @@
 import type {
   RecoveryBattleObjectiveState,
   RecoveryBattlePreviewState,
+  RecoveryBattleWaveDirective,
   RecoveryBattleChannelState,
   RecoveryCatalog,
   RecoveryDialogueEvent,
@@ -258,6 +259,10 @@ export class RecoveryStageSystem {
   private enemyWaveCountdownBeats = 4
 
   private alliedWaveCountdownBeats = 5
+
+  private enemyWavePlan: RecoveryBattleWaveDirective[] = []
+
+  private alliedWavePlan: RecoveryBattleWaveDirective[] = []
 
   private lastActionId: RecoveryGameplayActionId | null = null
 
@@ -746,6 +751,117 @@ export class RecoveryStageSystem {
     }
   }
 
+  private currentWaveDirective(plan: RecoveryBattleWaveDirective[]): RecoveryBattleWaveDirective | null {
+    if (plan.length === 0) {
+      return null
+    }
+    return plan[Math.min(Math.max(this.currentWaveIndex - 1, 0), plan.length - 1)] ?? null
+  }
+
+  private buildWavePlan(
+    storyboard: RecoveryStageStoryboard,
+    side: 'enemy' | 'allied',
+  ): RecoveryBattleWaveDirective[] {
+    const stage = storyboard.stageBlueprint
+    const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+    const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
+    const stageTier = stage?.runtimeFields?.tierCandidate ?? 10
+    const storyBranch = stage?.mapBinding?.storyBranch ?? 'primary'
+    const title = (stage?.title ?? '').toLowerCase()
+    const hintText = (stage?.hintText ?? '').toLowerCase()
+    const signals = new Set(this.currentStageBattleProfile.archetypeSignals)
+    const highIntensity = (stage?.renderIntent?.effectIntensity ?? 'medium') === 'high'
+
+    return Array.from({ length: this.totalWaveCount }, (_, index) => {
+      const waveNumber = index + 1
+      if (side === 'enemy') {
+        const role: RecoveryBattleWaveDirective['role'] =
+          waveNumber === this.totalWaveCount || includesAny(title, ['seize', 'siege', 'enemy camp', 'defeat'])
+            ? 'siege'
+            : includesAny(hintText, ['hero', 'eliminate']) && waveNumber % 3 === 0
+              ? 'hero-bait'
+              : storyBranch === 'secondary' && waveNumber === 1
+                ? 'screen'
+                : waveNumber % 2 === 0
+                  ? 'push'
+                  : 'screen'
+        const laneId =
+          role === 'siege'
+            ? favoredLane
+            : role === 'hero-bait'
+              ? supportLane
+              : storyBranch === 'secondary'
+                ? (waveNumber % 2 === 0 ? favoredLane : supportLane)
+                : (waveNumber % 2 === 0 ? supportLane : favoredLane)
+        const unitBurst = clamp(
+          1 + Math.floor(stageTier / 20) + (highIntensity ? 1 : 0) + (role === 'siege' ? 1 : 0),
+          1,
+          4,
+        )
+        const pressureBias = clamp(
+          0.04
+          + stageTier * 0.002
+          + (role === 'siege' ? 0.12 : role === 'push' ? 0.08 : role === 'hero-bait' ? 0.06 : 0.04),
+          0.04,
+          0.32,
+        )
+        return {
+          waveNumber,
+          laneId,
+          role,
+          unitBurst,
+          pressureBias,
+          label: `enemy ${role} ${laneId}`,
+        }
+      }
+
+      const role: RecoveryBattleWaveDirective['role'] =
+        signals.has('armageddon') && waveNumber >= Math.max(this.totalWaveCount - 1, 2)
+          ? 'skill-window'
+          : signals.has('dispatch') && waveNumber <= Math.ceil(this.totalWaveCount / 2)
+            ? 'push'
+            : signals.has('tower-defense') && waveNumber === 1
+              ? 'support'
+              : signals.has('recall') && waveNumber % 3 === 0
+                ? 'tower-rally'
+                : waveNumber === this.totalWaveCount
+                  ? 'siege'
+                  : 'push'
+      const laneId =
+        role === 'support' || role === 'tower-rally'
+          ? supportLane
+          : role === 'skill-window'
+            ? favoredLane
+            : waveNumber % 2 === 0 && signals.has('dispatch')
+              ? supportLane
+              : favoredLane
+      const unitBurst = clamp(
+        1
+        + (signals.has('dispatch') ? 1 : 0)
+        + (role === 'skill-window' ? 1 : 0)
+        + (role === 'siege' ? 1 : 0),
+        1,
+        4,
+      )
+      const pressureBias = clamp(
+        0.03
+        + this.currentStageBattleProfile.dispatchBoost * 0.3
+        + this.currentStageBattleProfile.heroImpact * 0.1
+        + (role === 'support' ? 0.03 : role === 'tower-rally' ? 0.04 : role === 'skill-window' ? 0.06 : 0.05),
+        0.03,
+        0.28,
+      )
+      return {
+        waveNumber,
+        laneId,
+        role,
+        unitBurst,
+        pressureBias,
+        label: `ally ${role} ${laneId}`,
+      }
+    })
+  }
+
   private buildChannelStates(storyboard: RecoveryStageStoryboard): RecoveryBattleChannelState[] {
     const archetypeIds = storyboard.stageBlueprint?.recommendedArchetypeIds ?? []
     const elapsed = Math.max(this.lastUpdateNowMs - this.storyboardStartedAtMs, 0)
@@ -1222,6 +1338,8 @@ export class RecoveryStageSystem {
     this.objectiveProgressRatio = 0.08
     this.enemyWaveCountdownBeats = 4
     this.alliedWaveCountdownBeats = 5
+    this.enemyWavePlan = []
+    this.alliedWavePlan = []
     this.towerUpgradeLevels.mana = 1
     this.towerUpgradeLevels.population = 1
     this.towerUpgradeLevels.attack = 1
@@ -1601,6 +1719,8 @@ export class RecoveryStageSystem {
       this.currentStageBattleProfile.enemyWaveCadenceBeats - (effectIntensity === 'high' ? 1 : 0),
     )
     this.alliedWaveCountdownBeats = Math.max(1, this.currentStageBattleProfile.alliedWaveCadenceBeats)
+    this.enemyWavePlan = this.buildWavePlan(storyboard, 'enemy')
+    this.alliedWavePlan = this.buildWavePlan(storyboard, 'allied')
 
     if (includesAny(title, ['defeat', 'siege', 'seize', 'enemy camp'])) {
       this.currentObjectivePhase = 'siege'
@@ -1753,6 +1873,8 @@ export class RecoveryStageSystem {
         enemyWaveCountdownBeats: this.enemyWaveCountdownBeats,
         alliedWaveCountdownBeats: this.alliedWaveCountdownBeats,
         favoredLane: this.currentStageBattleProfile.favoredLane,
+        enemyDirective: this.currentWaveDirective(this.enemyWavePlan),
+        alliedDirective: this.currentWaveDirective(this.alliedWavePlan),
       },
     }
   }
@@ -1762,40 +1884,50 @@ export class RecoveryStageSystem {
     const profile = this.currentStageBattleProfile
     const favoredLane = profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
+    const enemyDirective = this.currentWaveDirective(this.enemyWavePlan)
+    const alliedDirective = this.currentWaveDirective(this.alliedWavePlan)
 
     this.enemyWaveCountdownBeats = Math.max(this.enemyWaveCountdownBeats - 1, 0)
     if (this.enemyWaveCountdownBeats === 0) {
-      const laneId = this.currentWaveIndex % 2 === 0 ? favoredLane : supportLane
-      const reinforcements = Math.min(
+      const laneId = enemyDirective?.laneId ?? (this.currentWaveIndex % 2 === 0 ? favoredLane : supportLane)
+      const reinforcements = enemyDirective?.unitBurst ?? Math.min(
         1 + Math.floor((this.currentWaveIndex - 1) / 2) + (profile.effectIntensity === 'high' ? 1 : 0),
         3,
       )
       this.laneBattleState[laneId].enemyUnits = Math.min(this.laneBattleState[laneId].enemyUnits + reinforcements, 8)
       this.laneBattleState[laneId].enemyPressure = clamp(
-        this.laneBattleState[laneId].enemyPressure + reinforcements * 0.06,
+        this.laneBattleState[laneId].enemyPressure + reinforcements * 0.06 + (enemyDirective?.pressureBias ?? 0),
         0.08,
         1,
       )
       this.enemyWaveCountdownBeats = Math.max(
         1,
-        profile.enemyWaveCadenceBeats - Math.min(Math.floor(this.currentWaveIndex / 3), 2),
+        profile.enemyWaveCadenceBeats
+        - Math.min(Math.floor(this.currentWaveIndex / 3), 2)
+        - (enemyDirective?.role === 'siege' ? 1 : 0),
       )
     }
 
     this.alliedWaveCountdownBeats = Math.max(this.alliedWaveCountdownBeats - 1, 0)
     if (this.alliedWaveCountdownBeats === 0) {
-      const laneId = this.selectedDispatchLane ?? favoredLane
-      const reinforcements = this.queuedUnitCount > 0 ? Math.min(this.queuedUnitCount, 2) : 1
+      const laneId = this.selectedDispatchLane ?? alliedDirective?.laneId ?? favoredLane
+      const reinforcements = this.queuedUnitCount > 0
+        ? Math.min(this.queuedUnitCount, alliedDirective?.unitBurst ?? 2)
+        : (alliedDirective?.unitBurst ?? 1)
       this.laneBattleState[laneId].alliedUnits = Math.min(this.laneBattleState[laneId].alliedUnits + reinforcements, 8)
       this.laneBattleState[laneId].alliedPressure = clamp(
-        this.laneBattleState[laneId].alliedPressure + reinforcements * (0.04 + profile.dispatchBoost * 0.08),
+        this.laneBattleState[laneId].alliedPressure
+        + reinforcements * (0.04 + profile.dispatchBoost * 0.08)
+        + (alliedDirective?.pressureBias ?? 0),
         0.08,
         1,
       )
       this.queuedUnitCount = Math.max(this.queuedUnitCount - Math.min(this.queuedUnitCount, reinforcements), 0)
       this.alliedWaveCountdownBeats = Math.max(
         1,
-        profile.alliedWaveCadenceBeats - (this.heroAssignedLane === laneId ? 1 : 0),
+        profile.alliedWaveCadenceBeats
+        - (this.heroAssignedLane === laneId ? 1 : 0)
+        - (alliedDirective?.role === 'push' ? 1 : 0),
       )
     }
 
