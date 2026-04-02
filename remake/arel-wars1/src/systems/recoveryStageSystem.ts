@@ -13,6 +13,7 @@ import type {
   RecoveryPreviewStem,
   RecoveryRuntimeBlueprint,
   RecoveryScriptEntry,
+  RecoveryStageBattleProfile,
   RecoveryStageBlueprint,
   RecoveryStageRenderState,
   RecoveryStageSnapshot,
@@ -218,6 +219,20 @@ export class RecoveryStageSystem {
     attack: 1,
   }
 
+  private currentStageBattleProfile: RecoveryStageBattleProfile = {
+    label: 'Recovery lane sandbox',
+    favoredLane: 'upper',
+    tacticalBias: 'neutral-opening',
+    stageTier: 10,
+    alliedPressureScale: 0.24,
+    enemyPressureScale: 0.3,
+    alliedWaveCadenceBeats: 5,
+    enemyWaveCadenceBeats: 4,
+    heroImpact: 0.14,
+    effectIntensity: 'medium',
+    archetypeLabels: [],
+  }
+
   private lastActionId: RecoveryGameplayActionId | null = null
 
   private lastActionAccepted = false
@@ -237,6 +252,9 @@ export class RecoveryStageSystem {
       this.opcodeHeuristicsByMnemonic.set(entry.mnemonic, entry)
     })
     this.storyboards = buildStoryboards(catalog, previewManifest, runtimeBlueprint)
+    if (this.storyboards.length > 0) {
+      this.seedBattlePreviewState(this.storyboards[0])
+    }
   }
 
   isReady(): boolean {
@@ -377,6 +395,7 @@ export class RecoveryStageSystem {
     this.storyboardStartedAtMs = nowMs
     this.lastChannelBeat = -1
     this.resetInteractionState()
+    this.seedBattlePreviewState(storyboard)
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration()
     this.scheduleNextFrame(storyboard.previewStem, nowMs)
   }
@@ -426,6 +445,7 @@ export class RecoveryStageSystem {
     this.storyboardStartedAtMs = nowMs
     this.lastChannelBeat = -1
     this.resetInteractionState()
+    this.seedBattlePreviewState(this.storyboards[this.storyboardIndex])
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration() + STORYBOARD_GAP_MS
     this.scheduleNextFrame(this.storyboards[this.storyboardIndex].previewStem, nowMs)
   }
@@ -996,22 +1016,6 @@ export class RecoveryStageSystem {
     this.skillCooldownEndsAtMs = 0
     this.itemCooldownEndsAtMs = 0
     this.heroAssignedLane = null
-    this.laneBattleState.upper.alliedUnits = 1
-    this.laneBattleState.upper.enemyUnits = 2
-    this.laneBattleState.upper.alliedPressure = 0.28
-    this.laneBattleState.upper.enemyPressure = 0.42
-    this.laneBattleState.upper.frontline = 0.42
-    this.laneBattleState.upper.contested = 0.36
-    this.laneBattleState.upper.momentum = 'enemy-push'
-    this.laneBattleState.upper.heroPresent = false
-    this.laneBattleState.lower.alliedUnits = 2
-    this.laneBattleState.lower.enemyUnits = 1
-    this.laneBattleState.lower.alliedPressure = 0.34
-    this.laneBattleState.lower.enemyPressure = 0.26
-    this.laneBattleState.lower.frontline = 0.56
-    this.laneBattleState.lower.contested = 0.28
-    this.laneBattleState.lower.momentum = 'allied-push'
-    this.laneBattleState.lower.heroPresent = false
     this.towerUpgradeLevels.mana = 1
     this.towerUpgradeLevels.population = 1
     this.towerUpgradeLevels.attack = 1
@@ -1066,11 +1070,9 @@ export class RecoveryStageSystem {
         break
       case 'dispatch-up-lane':
         this.commitLaneDispatch('upper')
-        this.lastActionNote = 'upper lane selected'
         break
       case 'dispatch-down-lane':
         this.commitLaneDispatch('lower')
-        this.lastActionNote = 'lower lane selected'
         break
       case 'produce-unit':
         this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
@@ -1221,6 +1223,133 @@ export class RecoveryStageSystem {
       )
       this.queuedUnitCount = Math.max(this.queuedUnitCount - commitCount, 0)
       this.lastActionNote = `${lane} lane selected with ${commitCount} unit push`
+      return
+    }
+    this.lastActionNote = `${lane} lane primed`
+  }
+
+  private seedBattlePreviewState(storyboard: RecoveryStageStoryboard): void {
+    this.currentStageBattleProfile = this.deriveStageBattleProfile(storyboard)
+    const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+    const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
+
+    this.selectedDispatchLane = favoredLane
+    this.heroAssignedLane = null
+    this.queuedUnitCount = 0
+
+    const favoredAllies = clamp(Math.round(1 + this.currentStageBattleProfile.alliedPressureScale * 8), 1, 4)
+    const favoredEnemies = clamp(Math.round(1 + this.currentStageBattleProfile.enemyPressureScale * 8), 1, 5)
+    const supportAllies = clamp(Math.round(1 + this.currentStageBattleProfile.alliedPressureScale * 5), 1, 3)
+    const supportEnemies = clamp(Math.round(1 + this.currentStageBattleProfile.enemyPressureScale * 5), 1, 4)
+    const favoredFrontline = clamp(
+      0.48
+      + (this.currentStageBattleProfile.alliedPressureScale - this.currentStageBattleProfile.enemyPressureScale) * 0.25
+      + (favoredLane === 'upper' ? -0.04 : 0.04),
+      0.18,
+      0.82,
+    )
+    const supportFrontline = clamp(1 - favoredFrontline + 0.08, 0.18, 0.82)
+
+    this.laneBattleState[favoredLane] = {
+      alliedUnits: favoredAllies,
+      enemyUnits: favoredEnemies,
+      alliedPressure: clamp(this.currentStageBattleProfile.alliedPressureScale + 0.08, 0.08, 1),
+      enemyPressure: clamp(this.currentStageBattleProfile.enemyPressureScale + 0.04, 0.08, 1),
+      frontline: favoredFrontline,
+      contested: 0.3,
+      momentum:
+        this.currentStageBattleProfile.alliedPressureScale >= this.currentStageBattleProfile.enemyPressureScale
+          ? 'allied-push'
+          : 'enemy-push',
+      heroPresent: false,
+    }
+
+    this.laneBattleState[supportLane] = {
+      alliedUnits: supportAllies,
+      enemyUnits: supportEnemies,
+      alliedPressure: clamp(this.currentStageBattleProfile.alliedPressureScale - 0.05, 0.08, 1),
+      enemyPressure: clamp(this.currentStageBattleProfile.enemyPressureScale - 0.02, 0.08, 1),
+      frontline: supportFrontline,
+      contested: 0.38,
+      momentum: 'contested',
+      heroPresent: false,
+    }
+
+    this.previewManaRatio = clamp(
+      0.32 + this.currentStageBattleProfile.alliedPressureScale * 0.55 - this.currentStageBattleProfile.enemyPressureScale * 0.14,
+      0.2,
+      0.9,
+    )
+    this.previewManaUpgradeProgressRatio = clamp(
+      0.16 + this.currentStageBattleProfile.alliedPressureScale * 0.34,
+      0.08,
+      0.92,
+    )
+    this.previewOwnTowerHpRatio = clamp(
+      0.78 - this.currentStageBattleProfile.enemyPressureScale * 0.22,
+      0.28,
+      0.95,
+    )
+    this.previewEnemyTowerHpRatio = clamp(
+      0.74 - this.currentStageBattleProfile.alliedPressureScale * 0.2,
+      0.22,
+      0.92,
+    )
+  }
+
+  private deriveStageBattleProfile(storyboard: RecoveryStageStoryboard): RecoveryStageBattleProfile {
+    const stage = storyboard.stageBlueprint
+    const runtimeFields = stage?.runtimeFields
+    const mapBinding = stage?.mapBinding
+    const archetypes = (stage?.recommendedArchetypeIds ?? [])
+      .map((archetypeId) => this.featuredArchetypesById.get(archetypeId))
+      .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
+
+    const activeRowCount = archetypes.reduce((sum, entry) => sum + entry.activeRows.length, 0)
+    const buffRowCount = archetypes.reduce((sum, entry) => sum + entry.buffRows.length, 0)
+    const exactTailHitCount = archetypes.reduce(
+      (sum, entry) => sum + (entry.evidence.some((item) => item.includes('exact projectile or effect hits')) ? 1 : 0),
+      0,
+    )
+    const stageTier = runtimeFields?.tierCandidate ?? 10
+    const effectIntensity = stage?.renderIntent?.effectIntensity ?? 'medium'
+    const favoredLane =
+      mapBinding?.inlinePairBranchIndexCandidate !== null && mapBinding?.inlinePairBranchIndexCandidate !== undefined
+        ? (mapBinding.inlinePairBranchIndexCandidate % 2 === 0 ? 'upper' : 'lower')
+        : ((runtimeFields?.variantCandidate ?? 1) % 2 === 0 ? 'lower' : 'upper')
+    const alliedPressureScale = clamp(
+      0.18
+      + archetypes.length * 0.03
+      + activeRowCount * 0.004
+      + buffRowCount * 0.003
+      + (effectIntensity === 'high' ? 0.05 : effectIntensity === 'medium' ? 0.025 : 0),
+      0.16,
+      0.64,
+    )
+    const enemyPressureScale = clamp(
+      0.22
+      + stageTier * 0.006
+      + (runtimeFields?.regionCandidate ?? 5) * 0.012
+      + (runtimeFields?.storyFlagCandidate ?? 0) * 0.04,
+      0.2,
+      0.72,
+    )
+    const alliedWaveCadenceBeats = Math.max(3, Math.min(7, 7 - Math.floor(Math.min(activeRowCount, 12) / 3)))
+    const enemyWaveCadenceBeats = Math.max(3, Math.min(7, 7 - Math.floor(stageTier / 15)))
+    const heroImpact = clamp(0.1 + exactTailHitCount * 0.028 + buffRowCount * 0.008, 0.1, 0.32)
+    const tacticalBias = `${mapBinding?.storyBranch ?? 'branch-unknown'} / ${favoredLane} initiative`
+    return {
+      label: `${stage?.title ?? storyboard.scriptFamilyId} / tier ${stageTier}`,
+      favoredLane,
+      tacticalBias,
+      stageTier,
+      alliedPressureScale,
+      enemyPressureScale,
+      alliedWaveCadenceBeats,
+      enemyWaveCadenceBeats,
+      heroImpact,
+      effectIntensity,
+      archetypeLabels: archetypes.slice(0, 3).map((entry) => entry.label),
     }
   }
 
@@ -1238,33 +1367,42 @@ export class RecoveryStageSystem {
       allyMomentum,
       enemyMomentum,
       towerThreat: clamp(1 - this.previewOwnTowerHpRatio + enemyMomentum * 0.22, 0, 1),
+      stageProfile: { ...this.currentStageBattleProfile, archetypeLabels: [...this.currentStageBattleProfile.archetypeLabels] },
     }
   }
 
   private tickLaneBattlePreview(): void {
     const beat = Math.max(this.lastChannelBeat, 0)
+    const profile = this.currentStageBattleProfile
     ;(['upper', 'lower'] as const).forEach((laneId, index) => {
       const lane = this.laneBattleState[laneId]
       const phase = oscillate(beat * 120, 3400 + index * 500, index * 700)
-      const enemyReinforcement = 0.012 + phase * 0.028
+      const enemyReinforcement =
+        profile.enemyPressureScale * 0.08
+        + phase * profile.enemyPressureScale * 0.12
+        + (profile.favoredLane === laneId ? 0.014 : 0)
       const alliedReinforcement =
-        0.01
+        profile.alliedPressureScale * 0.08
         + (this.selectedDispatchLane === laneId ? 0.05 : 0)
-        + (this.heroAssignedLane === laneId ? 0.045 : 0)
+        + (this.heroAssignedLane === laneId ? profile.heroImpact : 0)
         + (this.towerUpgradeLevels.attack - 1) * 0.008
 
       lane.enemyPressure = clamp(lane.enemyPressure * 0.88 + enemyReinforcement, 0.08, 1)
       lane.alliedPressure = clamp(lane.alliedPressure * 0.86 + alliedReinforcement, 0.08, 1)
 
-      if (beat % 6 === (index + 2) % 3) {
+      if (beat % profile.enemyWaveCadenceBeats === (index + 1) % profile.enemyWaveCadenceBeats) {
         lane.enemyUnits = Math.min(lane.enemyUnits + 1, 7)
       }
-      if (this.selectedDispatchLane === laneId && this.queuedUnitCount > 0 && beat % 4 === index) {
+      if (
+        this.selectedDispatchLane === laneId
+        && this.queuedUnitCount > 0
+        && beat % profile.alliedWaveCadenceBeats === index % profile.alliedWaveCadenceBeats
+      ) {
         lane.alliedUnits = Math.min(lane.alliedUnits + 1, 8)
         this.queuedUnitCount = Math.max(this.queuedUnitCount - 1, 0)
       }
 
-      const heroBonus = this.heroAssignedLane === laneId ? 0.12 : 0
+      const heroBonus = this.heroAssignedLane === laneId ? profile.heroImpact : 0
       const netPush = lane.alliedPressure + lane.alliedUnits * 0.035 + heroBonus - (lane.enemyPressure + lane.enemyUnits * 0.03)
       lane.frontline = clamp(lane.frontline + netPush * 0.11, 0.04, 0.96)
       lane.contested = clamp(1 - Math.abs(netPush) * 2.8, 0.08, 1)

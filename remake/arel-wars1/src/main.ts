@@ -333,10 +333,11 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}`
       : null
   const gameplayState = snapshot.gameplayState
+  const profile = snapshot.battlePreviewState.stageProfile
   const battleLine = snapshot.battlePreviewState.lanes
     .map((lane) => `${lane.laneId} ${lane.alliedUnits}-${lane.enemyUnits} ${lane.momentum} @ ${lane.frontline.toFixed(2)}`)
     .join(' · ')
-  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · objective ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
+  const gameplayLine = `mode ${gameplayState.mode}${gameplayState.battlePaused ? ' paused' : ''} · profile ${profile.label} · bias ${profile.tacticalBias} · tempo a${profile.alliedWaveCadenceBeats}/e${profile.enemyWaveCadenceBeats} · heroImpact ${profile.heroImpact.toFixed(2)} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · lane ${gameplayState.selectedDispatchLane ?? 'none'} · queue ${gameplayState.queuedUnitCount} · upgrades ${gameplayState.towerUpgradeLevels.mana}/${gameplayState.towerUpgradeLevels.population}/${gameplayState.towerUpgradeLevels.attack} · skill ${gameplayState.skillReady ? 'ready' : 'cooldown'} · item ${gameplayState.itemReady ? 'ready' : 'cooldown'} · battle ${battleLine} · objective ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}${gameplayState.lastActionId ? ` · ${gameplayState.lastActionId} ${gameplayState.lastActionAccepted ? 'ok' : 'blocked'}` : ''}`
   return `
     <article class="story-card">
       <header class="story-card-header">

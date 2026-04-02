@@ -332,6 +332,7 @@ export class RecoveryBootScene extends Phaser.Scene {
 
   private describeGameplayState(snapshot: RecoveryStageSnapshot): string {
     const state = snapshot.gameplayState
+    const profile = snapshot.battlePreviewState.stageProfile
     const panel = state.openPanel ?? 'none'
     const enabled = state.enabledInputs.slice(0, 3).join(', ') || 'observe-stage-preview'
     const lane = state.selectedDispatchLane ?? 'none'
@@ -343,7 +344,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${profile.label} · ${profile.tacticalBias} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {

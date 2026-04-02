@@ -458,6 +458,20 @@ export interface RecoveryLaneBattleState {
   heroPresent: boolean
 }
 
+export interface RecoveryStageBattleProfile {
+  label: string
+  favoredLane: 'upper' | 'lower' | null
+  tacticalBias: string
+  stageTier: number
+  alliedPressureScale: number
+  enemyPressureScale: number
+  alliedWaveCadenceBeats: number
+  enemyWaveCadenceBeats: number
+  heroImpact: number
+  effectIntensity: string
+  archetypeLabels: string[]
+}
+
 export interface RecoveryBattlePreviewState {
   lanes: RecoveryLaneBattleState[]
   selectedLane: 'upper' | 'lower' | null
@@ -465,6 +479,7 @@ export interface RecoveryBattlePreviewState {
   allyMomentum: number
   enemyMomentum: number
   towerThreat: number
+  stageProfile: RecoveryStageBattleProfile
 }
 
 export interface RecoveryStageSnapshot {
