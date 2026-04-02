@@ -48,7 +48,7 @@ References:
 ### 2. Battle Data
 
 - Stage, unit, spawn, AI, and rules data still need canonical schemas.
-- The remake runtime does not yet run a deterministic battle simulation.
+- The remake runtime now runs a deterministic entity-step lane simulation, but it is still a partial combat core rather than a full 1:1 battle engine.
 
 ### 3. Rendering And Effects
 
@@ -204,6 +204,8 @@ References:
     - committed branch flows can now emit roster-specific scripted action chains such as deploy+burst, queue+sortie, or fortify+item on the same cue, so repeated tutorial/opcode beats no longer always collapse to one generic helper action
     - roster action chains now leave transient member boosts that directly nudge lane entities, tower/mana state, and channel intensity for a few beats, so scripted chains read as visible combat swings instead of only hidden state updates
     - active chain summaries are now exposed to the battle snapshot and UI, with focused-lane highlighting and chain member/intensity readouts, so temporary route/roster surges are directly visible in both DOM and Phaser overlays
+    - battle state is now derived from deterministic unit and projectile collections instead of direct aggregate pressure writes, so dispatches, waves, hero deploys, skills, items, and scripted chains all enter the same `spawn -> move -> attack -> hit -> die -> derive lane state` loop
+    - the Phaser lane preview now renders those runtime entities and projectiles directly, which means the on-screen combat line is finally reading from the same deterministic core that resolves tower damage, frontline shifts, and wave pressure
     - route/branch selection is now elevated into a shared route-bias layer, so briefing text, tactical bias, favored lane, wave plan cadence, deploy summaries, and member-specific behavior all react to `primary` vs `secondary` route semantics instead of treating branch labels as cosmetic
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`

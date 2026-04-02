@@ -529,6 +529,28 @@ export interface RecoveryBattleChainState {
   label: string | null
 }
 
+export interface RecoveryBattleEntityState {
+  id: number
+  side: 'allied' | 'enemy'
+  laneId: 'upper' | 'lower'
+  role: RecoveryBattleWaveDirective['role'] | 'hero'
+  positionRatio: number
+  hpRatio: number
+  power: number
+  hero: boolean
+  source: string
+  memberLabel: string | null
+}
+
+export interface RecoveryBattleProjectileState {
+  id: number
+  side: 'allied' | 'enemy'
+  laneId: 'upper' | 'lower'
+  positionRatio: number
+  strength: number
+  source: string
+}
+
 export interface RecoveryCampaignNodeState {
   nodeIndex: number
   label: string
@@ -619,6 +641,8 @@ export interface RecoveryCampaignState {
 
 export interface RecoveryBattlePreviewState {
   lanes: RecoveryLaneBattleState[]
+  entities: RecoveryBattleEntityState[]
+  projectiles: RecoveryBattleProjectileState[]
   selectedLane: 'upper' | 'lower' | null
   queuedReserve: number
   allyMomentum: number

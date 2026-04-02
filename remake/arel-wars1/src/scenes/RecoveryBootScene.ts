@@ -789,6 +789,12 @@ export class RecoveryBootScene extends Phaser.Scene {
       const y = laneY(index)
       const selected = snapshot.battlePreviewState.selectedLane === lane.laneId
       const chained = snapshot.battlePreviewState.activeChain.active && snapshot.battlePreviewState.activeChain.focusLane === lane.laneId
+      const laneEntities = snapshot.battlePreviewState.entities
+        .filter((entity) => entity.laneId === lane.laneId)
+        .sort((left, right) => left.positionRatio - right.positionRatio)
+      const alliedEntities = laneEntities.filter((entity) => entity.side === 'allied')
+      const enemyEntities = laneEntities.filter((entity) => entity.side === 'enemy')
+      const laneProjectiles = snapshot.battlePreviewState.projectiles.filter((projectile) => projectile.laneId === lane.laneId)
       const momentumColor =
         lane.momentum === 'allied-push'
           ? 0x85d46a
@@ -813,24 +819,41 @@ export class RecoveryBootScene extends Phaser.Scene {
         graphics.strokeCircle(frontlineX, y, 13 + snapshot.battlePreviewState.activeChain.intensity * 10)
       }
 
-      for (let unitIndex = 0; unitIndex < lane.alliedUnits; unitIndex += 1) {
-        const progress = Math.min((unitIndex + 1) / (lane.alliedUnits + 1), 0.92)
-        const unitX = laneStartX + (frontlineX - laneStartX - 18) * progress
-        graphics.fillStyle(0x7eb6ff, 0.88)
-        graphics.fillCircle(unitX, y - 10, 4)
-      }
+      alliedEntities.forEach((entity) => {
+        const unitX = laneStartX + (laneEndX - laneStartX) * entity.positionRatio
+        const radius = entity.hero ? 6 : entity.role === 'siege' || entity.role === 'skill-window' ? 4.5 : 4
+        const color =
+          entity.role === 'support' || entity.role === 'tower-rally'
+            ? 0x8de6d4
+            : entity.hero
+              ? 0xffefbf
+              : 0x7eb6ff
+        graphics.fillStyle(color, 0.9)
+        graphics.fillCircle(unitX, y - 10, radius)
+        if (entity.hero) {
+          graphics.lineStyle(1.2, 0xffefbf, 0.74)
+          graphics.strokeCircle(unitX, y - 10, radius + 3)
+        }
+      })
 
-      for (let unitIndex = 0; unitIndex < lane.enemyUnits; unitIndex += 1) {
-        const progress = Math.min((unitIndex + 1) / (lane.enemyUnits + 1), 0.92)
-        const unitX = frontlineX + 18 + (laneEndX - frontlineX - 18) * progress
-        graphics.fillStyle(0xff8a75, 0.88)
-        graphics.fillCircle(unitX, y + 10, 4)
-      }
+      enemyEntities.forEach((entity) => {
+        const unitX = laneStartX + (laneEndX - laneStartX) * entity.positionRatio
+        const radius = entity.hero ? 6 : entity.role === 'siege' || entity.role === 'skill-window' ? 4.5 : 4
+        const color =
+          entity.role === 'support' || entity.role === 'tower-rally'
+            ? 0xffc17a
+            : entity.hero
+              ? 0xffe4c2
+              : 0xff8a75
+        graphics.fillStyle(color, 0.9)
+        graphics.fillCircle(unitX, y + 10, radius)
+      })
 
-      if (lane.heroPresent) {
-        graphics.fillStyle(0xffefbf, 0.92)
-        graphics.fillTriangle(frontlineX - 6, y - 20, frontlineX + 6, y - 20, frontlineX, y - 32)
-      }
+      laneProjectiles.forEach((projectile) => {
+        const projectileX = laneStartX + (laneEndX - laneStartX) * projectile.positionRatio
+        graphics.fillStyle(projectile.side === 'allied' ? 0xaee7ff : 0xffd0b6, 0.88)
+        graphics.fillRect(projectileX - 3, y - 2, 6, 4)
+      })
     })
   }
 

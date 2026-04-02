@@ -1,6 +1,8 @@
 import type {
   RecoveryBattleChainState,
+  RecoveryBattleEntityState,
   RecoveryBattleObjectiveState,
+  RecoveryBattleProjectileState,
   RecoveryBattlePreviewState,
   RecoveryBattleWaveDirective,
   RecoveryBattleChannelState,
@@ -140,6 +142,39 @@ function buildStoryboards(
       stageBlueprint: stageBlueprintsByFamily.get(familyId) ?? null,
     }
   })
+}
+
+type RecoveryBattleSide = 'allied' | 'enemy'
+type RecoveryBattleLaneId = RecoveryLaneBattleState['laneId']
+type RecoveryBattleUnitRole = RecoveryBattleWaveDirective['role'] | 'hero'
+
+interface RecoveryBattleUnitRuntime {
+  id: number
+  side: RecoveryBattleSide
+  laneId: RecoveryBattleLaneId
+  role: RecoveryBattleUnitRole
+  hero: boolean
+  memberLabel: string | null
+  source: string
+  hp: number
+  maxHp: number
+  power: number
+  speed: number
+  range: number
+  cooldownBeats: number
+  attackPeriodBeats: number
+  positionRatio: number
+}
+
+interface RecoveryBattleProjectileRuntime {
+  id: number
+  side: RecoveryBattleSide
+  laneId: RecoveryBattleLaneId
+  source: string
+  positionRatio: number
+  velocity: number
+  strength: number
+  ttlBeats: number
 }
 
 export class RecoveryStageSystem {
@@ -309,6 +344,19 @@ export class RecoveryStageSystem {
   private readonly rosterChainBoosts: Partial<Record<string, number>> = {}
 
   private rosterChainFocusLane: 'upper' | 'lower' | null = null
+
+  private battleStepCount = 0
+
+  private nextBattleEntityId = 1
+
+  private nextBattleProjectileId = 1
+
+  private readonly laneEntities: Record<RecoveryBattleLaneId, Record<RecoveryBattleSide, RecoveryBattleUnitRuntime[]>> = {
+    upper: { allied: [], enemy: [] },
+    lower: { allied: [], enemy: [] },
+  }
+
+  private readonly battleProjectiles: RecoveryBattleProjectileRuntime[] = []
 
   constructor(
     catalog: RecoveryCatalog,
@@ -1029,11 +1077,10 @@ export class RecoveryStageSystem {
       this.setObjectiveState('hero-pressure', 'capitalize on the pressure swing', 0.03)
       this.triggerSceneWave('enemy', `opcode surged ${opcodeCue.action}`, false)
       const targetLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-      this.laneBattleState[targetLane].alliedPressure = clamp(
-        this.laneBattleState[targetLane].alliedPressure + 0.03,
-        0.08,
-        1,
-      )
+      this.spawnBattleUnit('allied', targetLane, 'push', `opcode:${opcodeCue.mnemonic}`, {
+        powerScale: 1.08,
+      })
+      this.shiftLaneUnits(targetLane, 'allied', 0.02)
       this.lastScriptedBeatNote = `opcode pulse ${opcodeCue.action}`
       return
     }
@@ -1363,26 +1410,16 @@ export class RecoveryStageSystem {
       return
     }
 
-    const lane = this.laneBattleState[directive.laneId]
-    if (side === 'enemy') {
-      lane.enemyUnits = Math.min(lane.enemyUnits + directive.unitBurst, 8)
-      lane.enemyPressure = clamp(lane.enemyPressure + directive.unitBurst * 0.06 + directive.pressureBias, 0.08, 1)
-      if (directive.role === 'siege') {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio - 0.018, 0.1, 1)
-      }
+    this.spawnUnitsFromDirective(side, directive, `${side}-wave-${directive.waveNumber}`)
+    if (side === 'enemy' && directive.role === 'siege') {
+      this.damageTower('allied', 0.018)
       return
     }
-
-    lane.alliedUnits = Math.min(lane.alliedUnits + directive.unitBurst, 8)
-    lane.alliedPressure = clamp(
-      lane.alliedPressure + directive.unitBurst * (0.04 + this.currentStageBattleProfile.dispatchBoost * 0.08) + directive.pressureBias,
-      0.08,
-      1,
-    )
-    if (directive.role === 'push' || directive.role === 'siege' || directive.role === 'skill-window') {
+    if (side === 'allied' && (directive.role === 'push' || directive.role === 'siege' || directive.role === 'skill-window')) {
       this.selectedDispatchLane = directive.laneId
     }
-    if (directive.role === 'tower-rally' || directive.role === 'support') {
+    if (side === 'allied' && (directive.role === 'tower-rally' || directive.role === 'support')) {
+      this.supportLaneUnits(directive.laneId, 'allied', 0.16)
       this.previewOwnTowerHpRatio = clamp(
         this.previewOwnTowerHpRatio + 0.012 + this.currentStageBattleProfile.towerDefenseBias * 0.05,
         0.1,
@@ -1431,11 +1468,9 @@ export class RecoveryStageSystem {
       this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.01, 0.1, 1)
     }
     if (activeLoadout.skillPresetKind === 'orders' && directive.role === 'push' && this.selectedDispatchLane) {
-      this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
-        this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.03,
-        0.08,
-        1,
-      )
+      this.spawnBattleUnit('allied', this.selectedDispatchLane, 'push', `${activeLoadout.label} counter-script`, {
+        powerScale: 1.06,
+      })
     }
     return `${activeLoadout.label} counter-script`
   }
@@ -3419,12 +3454,7 @@ export class RecoveryStageSystem {
         )
         if (this.currentStageBattleProfile.armageddonBurst > 0.12) {
           ;(['upper', 'lower'] as const).forEach((laneId) => {
-            this.laneBattleState[laneId].enemyUnits = Math.max(this.laneBattleState[laneId].enemyUnits - 1, 0)
-            this.laneBattleState[laneId].enemyPressure = clamp(
-              this.laneBattleState[laneId].enemyPressure - this.currentStageBattleProfile.armageddonBurst * 0.14,
-              0.08,
-              1,
-            )
+            this.strikeLaneUnits(laneId, 'enemy', 0.28 + this.currentStageBattleProfile.armageddonBurst * 0.4, 2)
           })
         }
           if (hasJuno) {
@@ -3434,7 +3464,7 @@ export class RecoveryStageSystem {
           if (hasManos) {
             this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.022, 0.08, 1)
             ;(['upper', 'lower'] as const).forEach((laneId) => {
-              this.laneBattleState[laneId].enemyPressure = clamp(this.laneBattleState[laneId].enemyPressure - 0.03, 0.08, 1)
+              this.strikeLaneUnits(laneId, 'enemy', 0.16, 1)
             })
           }
           if (hasHelba) {
@@ -3443,11 +3473,9 @@ export class RecoveryStageSystem {
           if (skillPresetKind === 'support') {
             this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06, 0.1, 1)
           } else if (skillPresetKind === 'orders' && this.selectedDispatchLane) {
-            this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
-              this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.08,
-              0.08,
-              1,
-            )
+            this.spawnBattleUnit('allied', this.selectedDispatchLane, 'skill-window', 'orders-skill-window', {
+              powerScale: 1 + this.currentStageBattleProfile.dispatchBoost * 0.8,
+            })
           }
           this.lastActionNote = `skill cast preview accepted (${this.currentStageBattleProfile.archetypeSignals.join('/') || 'generic'} / ${activeLoadout?.skillPresetLabel ?? 'balanced'})`
         }
@@ -3467,23 +3495,15 @@ export class RecoveryStageSystem {
         )
         if (this.currentStageBattleProfile.towerDefenseBias > 0.1) {
           const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-          this.laneBattleState[guardLane].enemyPressure = clamp(
-            this.laneBattleState[guardLane].enemyPressure - this.currentStageBattleProfile.towerDefenseBias * 0.16,
-            0.08,
-            1,
-          )
-          this.laneBattleState[guardLane].frontline = clamp(
-            this.laneBattleState[guardLane].frontline + this.currentStageBattleProfile.towerDefenseBias * 0.08,
-            0.04,
-            0.96,
-          )
+          this.strikeLaneUnits(guardLane, 'enemy', 0.16 + this.currentStageBattleProfile.towerDefenseBias * 0.18, 2)
+          this.shiftLaneUnits(guardLane, 'allied', this.currentStageBattleProfile.towerDefenseBias * 0.04)
         }
           if (hasHelba) {
             this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.03, 0.1, 1)
           }
           if (hasCaesar) {
             const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-            this.laneBattleState[guardLane].enemyPressure = clamp(this.laneBattleState[guardLane].enemyPressure - 0.035, 0.08, 1)
+            this.strikeLaneUnits(guardLane, 'enemy', 0.18, 1)
           }
           if (hasRogan) {
             this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
@@ -3516,11 +3536,10 @@ export class RecoveryStageSystem {
           this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
         }
         if (hasVincent && this.selectedDispatchLane) {
-          this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
-            this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.03,
-            0.08,
-            1,
-          )
+          this.spawnBattleUnit('allied', this.selectedDispatchLane, 'screen', 'vincent-production', {
+            powerScale: 1.08,
+            initialPositionRatio: 0.1,
+          })
         }
         this.lastActionNote = `unit production preview accepted${activeLoadout ? ` (${activeLoadout.heroRosterLabel})` : ''}`
         }
@@ -3536,9 +3555,7 @@ export class RecoveryStageSystem {
         if (gameplayState.heroMode === 'field') {
           this.heroOverrideMode = 'return-cooldown'
           this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
-          if (this.heroAssignedLane) {
-            this.laneBattleState[this.heroAssignedLane].heroPresent = false
-          }
+          this.clearHeroUnits()
           this.heroAssignedLane = null
           this.previewOwnTowerHpRatio = clamp(
             this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.03 : 0),
@@ -3550,7 +3567,7 @@ export class RecoveryStageSystem {
           this.heroOverrideMode = 'field'
           this.heroReturnCooldownEndsAtMs = 0
           this.heroAssignedLane = activeLoadout?.heroLane ?? this.selectedDispatchLane ?? 'upper'
-          this.laneBattleState[this.heroAssignedLane].heroPresent = true
+          this.ensureHeroUnit(this.heroAssignedLane, activeLoadout?.heroRosterMembers[0] ?? null, 'hero-deploy')
           this.previewEnemyTowerHpRatio = clamp(
             this.previewEnemyTowerHpRatio
             - 0.04
@@ -3559,14 +3576,10 @@ export class RecoveryStageSystem {
             1,
           )
           if ((activeLoadout?.heroRosterRole === 'defender' || activeLoadout?.heroRosterRole === 'support') && this.heroAssignedLane) {
-            this.laneBattleState[this.heroAssignedLane].alliedPressure = clamp(
-              this.laneBattleState[this.heroAssignedLane].alliedPressure + 0.06,
-              0.08,
-              1,
-            )
+            this.supportLaneUnits(this.heroAssignedLane, 'allied', 0.2)
           }
           if (hasVincent && this.heroAssignedLane) {
-            this.laneBattleState[this.heroAssignedLane].frontline = clamp(this.laneBattleState[this.heroAssignedLane].frontline + 0.04, 0.04, 0.96)
+            this.shiftLaneUnits(this.heroAssignedLane, 'allied', 0.04)
           }
           if (hasJuno) {
             this.skillCooldownEndsAtMs = Math.max(this.skillCooldownEndsAtMs - 240, nowMs)
@@ -3575,7 +3588,9 @@ export class RecoveryStageSystem {
             this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.02, 0.08, 1)
           }
           if (hasCaesar && this.heroAssignedLane) {
-            this.laneBattleState[this.heroAssignedLane].alliedUnits = Math.min(this.laneBattleState[this.heroAssignedLane].alliedUnits + 1, 8)
+            this.spawnBattleUnit('allied', this.heroAssignedLane, 'screen', 'caesar-escort', {
+              powerScale: 1.06,
+            })
           }
           this.lastActionNote = `hero deployed to ${this.heroAssignedLane} lane (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
         }
@@ -3590,18 +3605,13 @@ export class RecoveryStageSystem {
         this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
         if (this.heroAssignedLane) {
           if (this.currentStageBattleProfile.recallSwing > 0.1) {
-            this.laneBattleState[this.heroAssignedLane].alliedUnits = Math.min(
-              this.laneBattleState[this.heroAssignedLane].alliedUnits + 1,
-              8,
-            )
-            this.laneBattleState[this.heroAssignedLane].frontline = clamp(
-              this.laneBattleState[this.heroAssignedLane].frontline - this.currentStageBattleProfile.recallSwing * 0.18,
-              0.04,
-              0.96,
-            )
+            this.spawnBattleUnit('allied', this.heroAssignedLane, 'support', 'recall-swing', {
+              powerScale: 1 + this.currentStageBattleProfile.recallSwing,
+            })
+            this.shiftLaneUnits(this.heroAssignedLane, 'allied', -this.currentStageBattleProfile.recallSwing * 0.09)
           }
-          this.laneBattleState[this.heroAssignedLane].heroPresent = false
         }
+        this.clearHeroUnits()
         this.heroAssignedLane = null
         this.previewOwnTowerHpRatio = clamp(
           this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.04 : 0) + (hasHelba ? 0.02 : 0),
@@ -3610,7 +3620,7 @@ export class RecoveryStageSystem {
         )
         if (hasCaesar) {
           const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
-          this.laneBattleState[guardLane].alliedPressure = clamp(this.laneBattleState[guardLane].alliedPressure + 0.04, 0.08, 1)
+          this.supportLaneUnits(guardLane, 'allied', 0.12)
         }
         this.lastActionNote = `hero return cooldown started (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
         }
@@ -3632,6 +3642,8 @@ export class RecoveryStageSystem {
         this.lastActionNote = `${actionId} accepted`
         break
     }
+
+    this.rebuildLaneBattleState()
   }
 
   private applyScriptedAction(actionId: RecoveryGameplayActionId, note: string): boolean {
@@ -3694,31 +3706,40 @@ export class RecoveryStageSystem {
     const oppositeLane = targetLane === 'upper' ? 'lower' : 'upper'
     switch (emphasis) {
       case 'assault':
-        this.laneBattleState[targetLane].alliedUnits = Math.min(this.laneBattleState[targetLane].alliedUnits + 1, 8)
-        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.06, 0.08, 1)
-        this.laneBattleState[targetLane].frontline = clamp(this.laneBattleState[targetLane].frontline + 0.05, 0.04, 0.96)
+        this.spawnBattleUnit('allied', targetLane, 'push', `chain:${members.join('+')}:assault`, {
+          powerScale: 1.18,
+          durabilityScale: 1.08,
+        })
+        this.shiftLaneUnits(targetLane, 'allied', 0.05)
         this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.035, 0.08, 1)
         this.heroAssignedLane = targetLane
-        this.laneBattleState[targetLane].heroPresent = true
+        this.ensureHeroUnit(targetLane, members[0] ?? null, `chain:${members.join('+')}:hero`)
         break
       case 'flank':
         this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 5)
-        this.laneBattleState[targetLane].alliedUnits = Math.min(this.laneBattleState[targetLane].alliedUnits + 2, 8)
-        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.05, 0.08, 1)
-        this.laneBattleState[oppositeLane].enemyPressure = clamp(this.laneBattleState[oppositeLane].enemyPressure - 0.02, 0.08, 1)
+        this.spawnBattleUnit('allied', targetLane, 'push', `chain:${members.join('+')}:flank`, {
+          powerScale: 1.12,
+        })
+        this.spawnBattleUnit('allied', targetLane, 'screen', `chain:${members.join('+')}:flank-screen`, {
+          powerScale: 1.04,
+        })
+        this.strikeLaneUnits(oppositeLane, 'enemy', 0.12, 1)
         break
       case 'hold':
         this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
-        this.laneBattleState[targetLane].enemyPressure = clamp(this.laneBattleState[targetLane].enemyPressure - 0.05, 0.08, 1)
-        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.03, 0.08, 1)
+        this.strikeLaneUnits(targetLane, 'enemy', 0.14, 2)
+        this.supportLaneUnits(targetLane, 'allied', 0.16)
         break
       case 'mana':
         this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
         this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.06, 0.04, 1)
-        this.laneBattleState[targetLane].alliedPressure = clamp(this.laneBattleState[targetLane].alliedPressure + 0.025, 0.08, 1)
+        this.spawnBattleUnit('allied', targetLane, 'skill-window', `chain:${members.join('+')}:mana`, {
+          powerScale: 1.1,
+        })
         break
     }
 
+    this.rebuildLaneBattleState()
     this.lastScriptedBeatNote = `${note} [${members.join('+')} ${emphasis}]`
     return true
   }
@@ -3843,14 +3864,12 @@ export class RecoveryStageSystem {
         1,
       )
       if (hasRogan) {
-        this.laneBattleState[this.selectedDispatchLane].alliedUnits = Math.min(this.laneBattleState[this.selectedDispatchLane].alliedUnits + 1, 8)
+        this.spawnBattleUnit('allied', this.selectedDispatchLane, 'push', 'rogan-tempo', {
+          powerScale: 1.04,
+        })
       }
       if (hasVincent && stageBias.dispatchBias) {
-        this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
-          this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.02,
-          0.08,
-          1,
-        )
+        this.shiftLaneUnits(this.selectedDispatchLane, 'allied', 0.018)
       }
     }
 
@@ -3895,13 +3914,15 @@ export class RecoveryStageSystem {
         this.currentStageBattleProfile.dispatchBoost >= 0.16 ? 3 : 2,
       )
       this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - queueDamage, 0.08, 1)
-      this.laneBattleState[lane].alliedUnits = Math.min(this.laneBattleState[lane].alliedUnits + commitCount, 8)
-      this.laneBattleState[lane].alliedPressure = clamp(
-        this.laneBattleState[lane].alliedPressure + commitCount * (0.08 + this.currentStageBattleProfile.dispatchBoost),
-        0.08,
-        1,
-      )
+      for (let index = 0; index < commitCount; index += 1) {
+        this.spawnBattleUnit('allied', lane, 'push', 'dispatch-commit', {
+          powerScale: 1 + this.currentStageBattleProfile.dispatchBoost * 1.2,
+          speedScale: 1.08,
+          initialPositionRatio: 0.12 + index * 0.026,
+        })
+      }
       this.queuedUnitCount = Math.max(this.queuedUnitCount - commitCount, 0)
+      this.rebuildLaneBattleState()
       this.lastActionNote = `${lane} lane selected with ${commitCount} unit push`
       return
     }
@@ -3915,6 +3936,7 @@ export class RecoveryStageSystem {
     this.rosterChainFocusLane = null
     this.currentStageBattleProfile = this.deriveStageBattleProfile(storyboard)
     this.seedBattleObjectiveState(storyboard)
+    this.clearBattleEntities()
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
 
@@ -3935,30 +3957,31 @@ export class RecoveryStageSystem {
     )
     const supportFrontline = clamp(1 - favoredFrontline + 0.08, 0.18, 0.82)
 
-    this.laneBattleState[favoredLane] = {
-      alliedUnits: favoredAllies,
-      enemyUnits: favoredEnemies,
-      alliedPressure: clamp(this.currentStageBattleProfile.alliedPressureScale + 0.08, 0.08, 1),
-      enemyPressure: clamp(this.currentStageBattleProfile.enemyPressureScale + 0.04, 0.08, 1),
-      frontline: favoredFrontline,
-      contested: 0.3,
-      momentum:
-        this.currentStageBattleProfile.alliedPressureScale >= this.currentStageBattleProfile.enemyPressureScale
-          ? 'allied-push'
-          : 'enemy-push',
-      heroPresent: false,
+    for (let index = 0; index < favoredAllies; index += 1) {
+      this.spawnBattleUnit('allied', favoredLane, 'push', 'seed-favored-allied', {
+        powerScale: 1 + this.currentStageBattleProfile.alliedPressureScale * 0.8,
+        initialPositionRatio: clamp(favoredFrontline - 0.18 - index * 0.035, 0.08, 0.54),
+      })
     }
-
-    this.laneBattleState[supportLane] = {
-      alliedUnits: supportAllies,
-      enemyUnits: supportEnemies,
-      alliedPressure: clamp(this.currentStageBattleProfile.alliedPressureScale - 0.05, 0.08, 1),
-      enemyPressure: clamp(this.currentStageBattleProfile.enemyPressureScale - 0.02, 0.08, 1),
-      frontline: supportFrontline,
-      contested: 0.38,
-      momentum: 'contested',
-      heroPresent: false,
+    for (let index = 0; index < favoredEnemies; index += 1) {
+      this.spawnBattleUnit('enemy', favoredLane, 'push', 'seed-favored-enemy', {
+        powerScale: 1 + this.currentStageBattleProfile.enemyPressureScale * 0.8,
+        initialPositionRatio: clamp(favoredFrontline + 0.18 + index * 0.035, 0.46, 0.92),
+      })
     }
+    for (let index = 0; index < supportAllies; index += 1) {
+      this.spawnBattleUnit('allied', supportLane, index === 0 ? 'support' : 'screen', 'seed-support-allied', {
+        powerScale: 1 + this.currentStageBattleProfile.alliedPressureScale * 0.55,
+        initialPositionRatio: clamp(supportFrontline - 0.16 - index * 0.034, 0.08, 0.54),
+      })
+    }
+    for (let index = 0; index < supportEnemies; index += 1) {
+      this.spawnBattleUnit('enemy', supportLane, index === 0 ? 'siege' : 'screen', 'seed-support-enemy', {
+        powerScale: 1 + this.currentStageBattleProfile.enemyPressureScale * 0.55,
+        initialPositionRatio: clamp(supportFrontline + 0.16 + index * 0.034, 0.46, 0.92),
+      })
+    }
+    this.rebuildLaneBattleState()
 
     this.previewManaRatio = clamp(
       0.32 + this.currentStageBattleProfile.alliedPressureScale * 0.55 - this.currentStageBattleProfile.enemyPressureScale * 0.14,
@@ -4395,31 +4418,26 @@ export class RecoveryStageSystem {
 
     if (loadout.dispatchLane) {
       const openingLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? loadout.dispatchLane
-      this.laneBattleState[openingLane].alliedUnits = Math.min(
-        this.laneBattleState[openingLane].alliedUnits + Math.min(loadout.startingQueue + (routeBias.flankingRoute ? 1 : 0) + Math.max(0, Math.round(routeInfluence.queueDelta)), 4),
-        8,
-      )
-      this.laneBattleState[openingLane].alliedPressure = clamp(
-        this.laneBattleState[openingLane].alliedPressure + loadout.startingQueue * 0.04 + routeBias.pressureShift + routeInfluence.pressureDelta,
-        0.08,
-        1,
-      )
+      const openingCount = Math.min(loadout.startingQueue + (routeBias.flankingRoute ? 1 : 0) + Math.max(0, Math.round(routeInfluence.queueDelta)), 4)
+      for (let index = 0; index < openingCount; index += 1) {
+        this.spawnBattleUnit('allied', openingLane, 'push', `loadout:${loadout.id}:opening`, {
+          powerScale: 1 + routeBias.pressureShift + routeInfluence.pressureDelta + loadout.startingQueue * 0.08,
+          speedScale: 1.06,
+          initialPositionRatio: 0.1 + index * 0.024,
+        })
+      }
     }
 
     if (loadout.towerUpgrades.attack > 1 || loadout.towerUpgrades.population > 1) {
       const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
       this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06, 0.12, 1)
-      this.laneBattleState[guardLane].enemyPressure = clamp(
-        this.laneBattleState[guardLane].enemyPressure - 0.06,
-        0.08,
-        1,
-      )
+      this.strikeLaneUnits(guardLane, 'enemy', 0.16, 2)
     }
 
     if (loadout.heroStartMode === 'field') {
       this.heroOverrideMode = 'field'
       this.heroAssignedLane = routeInfluence.preferredLane ?? routeBias.preferredLane ?? loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
-      this.laneBattleState[this.heroAssignedLane].heroPresent = true
+      this.ensureHeroUnit(this.heroAssignedLane, loadout.heroRosterMembers[0] ?? null, `loadout:${loadout.id}:hero`)
       this.previewEnemyTowerHpRatio = clamp(
         this.previewEnemyTowerHpRatio
         - 0.05
@@ -4436,7 +4454,10 @@ export class RecoveryStageSystem {
     } else {
       this.heroOverrideMode = null
       this.heroAssignedLane = null
+      this.clearHeroUnits()
     }
+
+    this.rebuildLaneBattleState()
   }
 
   private deriveStageBattleProfile(storyboard: RecoveryStageStoryboard): RecoveryStageBattleProfile {
@@ -4557,6 +4578,398 @@ export class RecoveryStageSystem {
     }
   }
 
+  private clearBattleEntities(): void {
+    ;(['upper', 'lower'] as const).forEach((laneId) => {
+      this.laneEntities[laneId].allied.length = 0
+      this.laneEntities[laneId].enemy.length = 0
+    })
+    this.battleProjectiles.length = 0
+  }
+
+  private spawnBattleUnit(
+    side: RecoveryBattleSide,
+    laneId: RecoveryBattleLaneId,
+    role: RecoveryBattleUnitRole,
+    source: string,
+    options: {
+      hero?: boolean
+      memberLabel?: string | null
+      powerScale?: number
+      durabilityScale?: number
+      speedScale?: number
+      initialPositionRatio?: number
+    } = {},
+  ): RecoveryBattleUnitRuntime {
+    const hero = options.hero ?? role === 'hero'
+    const powerScale = options.powerScale ?? 1
+    const durabilityScale = options.durabilityScale ?? 1
+    const speedScale = options.speedScale ?? 1
+    const sideUnits = this.laneEntities[laneId][side]
+    const rangedRole = role === 'support' || role === 'skill-window' || role === 'hero'
+    const siegeRole = role === 'siege' || role === 'tower-rally'
+    const supportRole = role === 'support' || role === 'tower-rally'
+    const maxHp =
+      (hero ? 2.8 : siegeRole ? 1.85 : supportRole ? 1.45 : role === 'screen' ? 1.6 : 1.25)
+      * durabilityScale
+    const power =
+      (hero ? 0.44 : role === 'skill-window' ? 0.34 : siegeRole ? 0.32 : supportRole ? 0.24 : 0.22)
+      * powerScale
+    const speed =
+      (hero ? 0.032 : siegeRole ? 0.018 : supportRole ? 0.022 : 0.028)
+      * speedScale
+    const range = hero ? 0.14 : rangedRole ? 0.11 : 0.045
+    const attackPeriodBeats = hero ? 2 : role === 'support' ? 3 : role === 'skill-window' ? 2 : 2
+    const spacing = 0.028
+    const initialPositionRatio =
+      options.initialPositionRatio
+      ?? (side === 'allied'
+        ? 0.08 + Math.min(sideUnits.length, 5) * spacing
+        : 0.92 - Math.min(sideUnits.length, 5) * spacing)
+
+    const unit: RecoveryBattleUnitRuntime = {
+      id: this.nextBattleEntityId++,
+      side,
+      laneId,
+      role,
+      hero,
+      memberLabel: options.memberLabel ?? null,
+      source,
+      hp: maxHp,
+      maxHp,
+      power,
+      speed,
+      range,
+      cooldownBeats: 0,
+      attackPeriodBeats,
+      positionRatio: clamp(initialPositionRatio, 0.04, 0.96),
+    }
+    sideUnits.push(unit)
+    return unit
+  }
+
+  private spawnUnitsFromDirective(
+    side: RecoveryBattleSide,
+    directive: RecoveryBattleWaveDirective | null,
+    source: string,
+    extraPowerScale = 0,
+  ): void {
+    if (!directive) {
+      return
+    }
+
+    for (let index = 0; index < directive.unitBurst; index += 1) {
+      this.spawnBattleUnit(side, directive.laneId, directive.role, source, {
+        powerScale: 1 + directive.pressureBias * 1.6 + extraPowerScale,
+        durabilityScale: 1 + directive.pressureBias * 0.55,
+        speedScale: 1 + (directive.role === 'push' ? 0.12 : directive.role === 'support' ? -0.05 : 0),
+      })
+    }
+  }
+
+  private clearHeroUnits(): void {
+    ;(['upper', 'lower'] as const).forEach((laneId) => {
+      this.laneEntities[laneId].allied = this.laneEntities[laneId].allied.filter((unit) => !unit.hero)
+      this.laneEntities[laneId].enemy = this.laneEntities[laneId].enemy.filter((unit) => !unit.hero)
+    })
+  }
+
+  private ensureHeroUnit(laneId: RecoveryBattleLaneId, memberLabel: string | null, source: string): void {
+    this.clearHeroUnits()
+    this.spawnBattleUnit('allied', laneId, 'hero', source, {
+      hero: true,
+      memberLabel,
+      powerScale: 1 + this.currentStageBattleProfile.heroImpact * 1.2,
+      durabilityScale: 1 + this.currentStageBattleProfile.recallSwing * 0.8,
+      initialPositionRatio: 0.22,
+    })
+  }
+
+  private createProjectile(attacker: RecoveryBattleUnitRuntime, strength: number): void {
+    this.battleProjectiles.push({
+      id: this.nextBattleProjectileId++,
+      side: attacker.side,
+      laneId: attacker.laneId,
+      source: attacker.source,
+      positionRatio: attacker.positionRatio,
+      velocity: attacker.side === 'allied' ? 0.12 : -0.12,
+      strength,
+      ttlBeats: 6,
+    })
+  }
+
+  private strikeLaneUnits(
+    laneId: RecoveryBattleLaneId,
+    targetSide: RecoveryBattleSide,
+    damage: number,
+    maxTargets = 2,
+  ): void {
+    const targets = [...this.laneEntities[laneId][targetSide]]
+      .filter((unit) => unit.hp > 0)
+      .sort((left, right) =>
+        targetSide === 'allied' ? right.positionRatio - left.positionRatio : left.positionRatio - right.positionRatio,
+      )
+      .slice(0, maxTargets)
+
+    if (targets.length === 0) {
+      this.damageTower(targetSide, damage * 0.24)
+      return
+    }
+
+    targets.forEach((unit) => {
+      unit.hp = Math.max(unit.hp - damage, 0)
+    })
+  }
+
+  private supportLaneUnits(
+    laneId: RecoveryBattleLaneId,
+    side: RecoveryBattleSide,
+    heal: number,
+  ): void {
+    const units = this.laneEntities[laneId][side]
+      .filter((unit) => unit.hp > 0)
+      .sort((left, right) => left.hp / left.maxHp - right.hp / right.maxHp)
+      .slice(0, 3)
+
+    if (units.length === 0) {
+      this.spawnBattleUnit(side, laneId, 'support', `support:${side}`, {
+        powerScale: 1,
+        durabilityScale: 1,
+      })
+      return
+    }
+
+    units.forEach((unit) => {
+      unit.hp = Math.min(unit.maxHp, unit.hp + heal)
+    })
+  }
+
+  private shiftLaneUnits(
+    laneId: RecoveryBattleLaneId,
+    side: RecoveryBattleSide,
+    delta: number,
+  ): void {
+    this.laneEntities[laneId][side].forEach((unit) => {
+      unit.positionRatio = clamp(unit.positionRatio + delta, 0.04, 0.96)
+    })
+  }
+
+  private damageTower(targetSide: RecoveryBattleSide, damage: number): void {
+    if (targetSide === 'allied') {
+      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio - damage, 0.08, 1)
+      return
+    }
+    this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - damage, 0.08, 1)
+  }
+
+  private unitBias(
+    unit: RecoveryBattleUnitRuntime,
+    chainState: RecoveryBattleChainState,
+  ): {
+    speed: number
+    power: number
+    defense: number
+    attackRate: number
+  } {
+    const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+    const selectedLane = this.selectedDispatchLane
+    const chained = chainState.active && chainState.focusLane === unit.laneId
+    let speed = 1
+    let power = 1
+    let defense = 1
+    let attackRate = 1
+
+    if (unit.side === 'allied') {
+      power += this.currentStageBattleProfile.dispatchBoost * (selectedLane === unit.laneId ? 0.6 : 0.2)
+      power += this.currentStageBattleProfile.heroImpact * (this.heroAssignedLane === unit.laneId ? 0.45 : 0)
+      defense += this.currentStageBattleProfile.towerDefenseBias * (favoredLane === unit.laneId ? 0.5 : 0.2)
+      speed += selectedLane === unit.laneId ? 0.18 : 0
+      if (unit.hero) {
+        power += this.currentStageBattleProfile.heroImpact * 0.7
+        speed += 0.08
+      }
+      if (chained) {
+        power += chainState.intensity * 0.5
+        speed += chainState.intensity * 0.18
+        attackRate += chainState.intensity * 0.24
+      }
+    } else {
+      power += this.currentStageBattleProfile.enemyPressureScale * 0.4
+      speed += this.currentStageBattleProfile.enemyPressureScale * 0.18
+      defense += this.currentStageBattleProfile.enemyPressureScale * 0.12
+      if (favoredLane === unit.laneId) {
+        power += 0.05
+      }
+      if (chained) {
+        defense = Math.max(defense - chainState.intensity * 0.16, 0.68)
+      }
+    }
+
+    return { speed, power, defense, attackRate }
+  }
+
+  private tickUnitGroup(
+    laneId: RecoveryBattleLaneId,
+    side: RecoveryBattleSide,
+    chainState: RecoveryBattleChainState,
+  ): void {
+    const units = this.laneEntities[laneId][side]
+    const opposingSide: RecoveryBattleSide = side === 'allied' ? 'enemy' : 'allied'
+    const opposingUnits = this.laneEntities[laneId][opposingSide]
+
+    units.sort((left, right) => side === 'allied' ? left.positionRatio - right.positionRatio : right.positionRatio - left.positionRatio)
+
+    units.forEach((unit) => {
+      if (unit.hp <= 0) {
+        return
+      }
+
+      unit.cooldownBeats = Math.max(unit.cooldownBeats - 1, 0)
+      const bias = this.unitBias(unit, chainState)
+      const nearest = [...opposingUnits]
+        .filter((target) => target.hp > 0)
+        .sort((left, right) => Math.abs(left.positionRatio - unit.positionRatio) - Math.abs(right.positionRatio - unit.positionRatio))[0]
+
+      if (nearest && Math.abs(nearest.positionRatio - unit.positionRatio) <= unit.range) {
+        if (unit.cooldownBeats <= 0) {
+          const damage = unit.power * bias.power
+          const ranged = unit.role === 'support' || unit.role === 'skill-window' || unit.hero
+          if (ranged) {
+            this.createProjectile(unit, damage)
+          } else {
+            nearest.hp = Math.max(nearest.hp - damage / Math.max(this.unitBias(nearest, chainState).defense, 0.7), 0)
+          }
+          unit.cooldownBeats = Math.max(1, Math.round(unit.attackPeriodBeats / Math.max(bias.attackRate, 0.6)))
+        }
+        return
+      }
+
+      const direction = side === 'allied' ? 1 : -1
+      const towerDistance = side === 'allied' ? 1 - unit.positionRatio : unit.positionRatio
+      if (towerDistance <= unit.range + 0.03 && unit.cooldownBeats <= 0) {
+        this.damageTower(opposingSide, unit.power * bias.power * (unit.role === 'siege' || unit.role === 'hero' ? 0.08 : 0.05))
+        unit.cooldownBeats = Math.max(1, Math.round(unit.attackPeriodBeats / Math.max(bias.attackRate, 0.6)))
+        return
+      }
+
+      unit.positionRatio = clamp(unit.positionRatio + direction * unit.speed * bias.speed, 0.04, 0.96)
+    })
+  }
+
+  private tickBattleProjectiles(chainState: RecoveryBattleChainState): void {
+    for (let index = this.battleProjectiles.length - 1; index >= 0; index -= 1) {
+      const projectile = this.battleProjectiles[index]
+      projectile.positionRatio = clamp(projectile.positionRatio + projectile.velocity, 0.02, 0.98)
+      projectile.ttlBeats -= 1
+      const targetSide: RecoveryBattleSide = projectile.side === 'allied' ? 'enemy' : 'allied'
+      const targets = this.laneEntities[projectile.laneId][targetSide]
+        .filter((unit) => unit.hp > 0)
+        .sort((left, right) => Math.abs(left.positionRatio - projectile.positionRatio) - Math.abs(right.positionRatio - projectile.positionRatio))
+      const target = targets[0]
+      if (target && Math.abs(target.positionRatio - projectile.positionRatio) <= 0.04) {
+        target.hp = Math.max(target.hp - projectile.strength / Math.max(this.unitBias(target, chainState).defense, 0.7), 0)
+        this.battleProjectiles.splice(index, 1)
+        continue
+      }
+
+      if (projectile.positionRatio <= 0.04 || projectile.positionRatio >= 0.96 || projectile.ttlBeats <= 0) {
+        if (projectile.ttlBeats > 0) {
+          this.damageTower(targetSide, projectile.strength * 0.04)
+        }
+        this.battleProjectiles.splice(index, 1)
+      }
+    }
+  }
+
+  private rebuildLaneBattleState(): void {
+    ;(['upper', 'lower'] as const).forEach((laneId) => {
+      const alliedUnits = this.laneEntities[laneId].allied.filter((unit) => unit.hp > 0)
+      const enemyUnits = this.laneEntities[laneId].enemy.filter((unit) => unit.hp > 0)
+      this.laneEntities[laneId].allied = alliedUnits
+      this.laneEntities[laneId].enemy = enemyUnits
+
+      const alliedFront = alliedUnits.length > 0 ? Math.max(...alliedUnits.map((unit) => unit.positionRatio)) : 0.08
+      const enemyFront = enemyUnits.length > 0 ? Math.min(...enemyUnits.map((unit) => unit.positionRatio)) : 0.92
+      const alliedPressure = clamp(
+        alliedUnits.reduce((sum, unit) => sum + unit.power * (unit.hp / unit.maxHp) * (unit.hero ? 1.4 : 1), 0) / 2.8,
+        alliedUnits.length > 0 ? 0.04 : 0.02,
+        1,
+      )
+      const enemyPressure = clamp(
+        enemyUnits.reduce((sum, unit) => sum + unit.power * (unit.hp / unit.maxHp) * (unit.hero ? 1.35 : 1), 0) / 2.8,
+        enemyUnits.length > 0 ? 0.04 : 0.02,
+        1,
+      )
+      const frontline = clamp((alliedFront + enemyFront) / 2, 0.04, 0.96)
+      const contested = clamp(
+        1 - Math.abs((alliedPressure + alliedFront * 0.28) - (enemyPressure + (1 - enemyFront) * 0.28)) * 1.5,
+        0.08,
+        1,
+      )
+      const momentumDelta = alliedPressure + alliedFront * 0.18 - (enemyPressure + (1 - enemyFront) * 0.18)
+      this.laneBattleState[laneId] = {
+        alliedUnits: alliedUnits.length,
+        enemyUnits: enemyUnits.length,
+        alliedPressure,
+        enemyPressure,
+        frontline,
+        contested,
+        momentum:
+          momentumDelta > 0.08
+            ? 'allied-push'
+            : momentumDelta < -0.08
+              ? 'enemy-push'
+              : contested > 0.58
+                ? 'contested'
+                : 'stalled',
+        heroPresent: alliedUnits.some((unit) => unit.hero),
+      }
+    })
+  }
+
+  private tickBattleEntities(chainState: RecoveryBattleChainState): void {
+    this.battleStepCount += 1
+    const sideOrder: RecoveryBattleSide[] = this.battleStepCount % 2 === 0 ? ['allied', 'enemy'] : ['enemy', 'allied']
+    ;(['upper', 'lower'] as const).forEach((laneId) => {
+      sideOrder.forEach((side) => {
+        this.tickUnitGroup(laneId, side, chainState)
+      })
+    })
+    this.tickBattleProjectiles(chainState)
+    this.rebuildLaneBattleState()
+  }
+
+  private buildBattleEntitySnapshot(): RecoveryBattleEntityState[] {
+    return (['upper', 'lower'] as const).flatMap((laneId) =>
+      (['allied', 'enemy'] as const).flatMap((side) =>
+        this.laneEntities[laneId][side]
+          .filter((unit) => unit.hp > 0)
+          .map((unit) => ({
+            id: unit.id,
+            side,
+            laneId,
+            role: unit.role,
+            positionRatio: unit.positionRatio,
+            hpRatio: clamp(unit.hp / unit.maxHp, 0, 1),
+            power: unit.power,
+            hero: unit.hero,
+            source: unit.source,
+            memberLabel: unit.memberLabel,
+          })),
+      ),
+    )
+  }
+
+  private buildBattleProjectileSnapshot(): RecoveryBattleProjectileState[] {
+    return this.battleProjectiles.map((projectile) => ({
+      id: projectile.id,
+      side: projectile.side,
+      laneId: projectile.laneId,
+      positionRatio: projectile.positionRatio,
+      strength: projectile.strength,
+      source: projectile.source,
+    }))
+  }
+
   private buildBattlePreviewState(): RecoveryBattlePreviewState {
     const lanes: RecoveryLaneBattleState[] = (['upper', 'lower'] as const).map((laneId) => ({
       laneId,
@@ -4566,6 +4979,8 @@ export class RecoveryStageSystem {
     const enemyMomentum = lanes.reduce((sum, lane) => sum + lane.enemyPressure, 0) / lanes.length
     return {
       lanes,
+      entities: this.buildBattleEntitySnapshot(),
+      projectiles: this.buildBattleProjectileSnapshot(),
       selectedLane: this.selectedDispatchLane,
       queuedReserve: this.queuedUnitCount,
       allyMomentum,
@@ -4674,59 +5089,20 @@ export class RecoveryStageSystem {
       this.resetWaveCountdown('allied', resolvedDirective)
     }
 
-    ;(['upper', 'lower'] as const).forEach((laneId, index) => {
-      const lane = this.laneBattleState[laneId]
-      const phase = oscillate(beat * 120, 3400 + index * 500, index * 700)
-      const enemyReinforcement =
-        profile.enemyPressureScale * 0.08
-        + phase * profile.enemyPressureScale * 0.12
-        + (profile.favoredLane === laneId ? 0.014 : 0)
-        - (profile.towerDefenseBias * (profile.favoredLane === laneId ? 0.035 : 0.015))
-      const alliedReinforcement =
-        profile.alliedPressureScale * 0.08
-        + (this.selectedDispatchLane === laneId ? 0.03 + profile.dispatchBoost * 0.18 : 0)
-        + (this.heroAssignedLane === laneId ? profile.heroImpact : 0)
-        + (this.towerUpgradeLevels.attack - 1) * 0.008
-        + (chainState.active && chainState.focusLane === laneId ? chainState.intensity * 0.05 : 0)
+    if (profile.recallSwing > 0.12 && this.heroAssignedLane && beat % 9 === 0) {
+      this.supportLaneUnits(this.heroAssignedLane, 'allied', 0.12)
+      this.shiftLaneUnits(this.heroAssignedLane, 'allied', 0.02)
+    }
+    if (profile.towerDefenseBias > 0.12 && beat % 8 === 0) {
+      this.supportLaneUnits(profile.favoredLane ?? favoredLane, 'allied', 0.1)
+    }
+    if (profile.effectIntensity === 'high' && beat % 7 === 0) {
+      this.spawnBattleUnit('enemy', supportLane, 'siege', 'high-intensity-cycle', {
+        powerScale: 1 + profile.enemyPressureScale * 0.4,
+      })
+    }
 
-      lane.enemyPressure = clamp(lane.enemyPressure * 0.88 + enemyReinforcement, 0.08, 1)
-      lane.alliedPressure = clamp(lane.alliedPressure * 0.86 + alliedReinforcement, 0.08, 1)
-
-      if (chainState.active && chainState.focusLane === laneId) {
-        lane.frontline = clamp(lane.frontline + chainState.intensity * 0.018, 0.04, 0.96)
-        lane.enemyPressure = clamp(lane.enemyPressure - chainState.intensity * 0.018, 0.08, 1)
-      }
-
-      const heroBonus = this.heroAssignedLane === laneId ? profile.heroImpact : 0
-      const netPush = lane.alliedPressure + lane.alliedUnits * 0.035 + heroBonus - (lane.enemyPressure + lane.enemyUnits * 0.03)
-      lane.frontline = clamp(lane.frontline + netPush * 0.11, 0.04, 0.96)
-      if (profile.recallSwing > 0.12 && this.heroAssignedLane === laneId && beat % 9 === 0) {
-        lane.frontline = clamp(lane.frontline + profile.recallSwing * 0.04, 0.04, 0.96)
-      }
-      lane.contested = clamp(1 - Math.abs(netPush) * 2.8, 0.08, 1)
-
-      if (lane.frontline > 0.72) {
-        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.004 - lane.alliedUnits * 0.0008, 0.08, 1)
-      } else if (lane.frontline < 0.28) {
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio - 0.003 - lane.enemyUnits * 0.0007, 0.1, 1)
-      }
-
-      if (lane.frontline > 0.6 && lane.enemyUnits > 0 && beat % 3 === 0) {
-        lane.enemyUnits = Math.max(lane.enemyUnits - 1, 0)
-      } else if (lane.frontline < 0.4 && lane.alliedUnits > 0 && beat % 4 === 0) {
-        lane.alliedUnits = Math.max(lane.alliedUnits - 1, 0)
-      }
-
-      lane.heroPresent = this.heroAssignedLane === laneId
-      lane.momentum =
-        netPush > 0.08
-          ? 'allied-push'
-          : netPush < -0.08
-            ? 'enemy-push'
-            : lane.contested > 0.62
-              ? 'contested'
-              : 'stalled'
-    })
+    this.tickBattleEntities(chainState)
 
     const allyMomentum =
       (this.laneBattleState.upper.alliedPressure + this.laneBattleState.lower.alliedPressure) / 2
