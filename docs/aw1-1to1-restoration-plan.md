@@ -20,8 +20,9 @@ It does not mean rebuilding the original binary. The original source is gone. Th
 
 - APK extraction, cataloging, and modern runtime packaging are already in place.
 - `ZT1` dialogue extraction is operational, including structured speech prefix commands.
-- `PZX` first-stream decoding, frame/tail metadata splitting, timing inference, and `MPL` bank heuristics are operational enough for preview playback.
-- `179.pzx` now has a usable packed-pixel preview heuristic.
+- `PZX` root typing is now anchored to native-confirmed `PZD/PZF/PZA` offsets, and preview exports carry that typed subresource graph per stem.
+- `PZX` first-stream decoding, `PZF` frame-pool parsing, `PZA` clip parsing, and heuristic tail-group analysis are operational enough for preview playback.
+- `179.pzx` now has a stronger special-case structural mapping, but it is still treated as stem-specific rather than a generic palette rule.
 - `PTC` is structurally parsed as stable parameter blocks.
 - battle rendering now drives sprite-state overlays, hit flash, burst pulses, particle boosts, and camera shake from deterministic combat events rather than static preview pulses.
 - Capacitor Android builds and runs the current recovery runtime.
@@ -30,6 +31,7 @@ References:
 
 - [arel_wars1-recovery.md](/Users/lpaiu/vs/others/arelwars/docs/arel_wars1-recovery.md)
 - [arel_wars_shared-reverse-engineering-notes.md](/Users/lpaiu/vs/others/arelwars/docs/arel_wars_shared-reverse-engineering-notes.md)
+- [aw1-native-branch-alignment.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-native-branch-alignment.md)
 - [aw1-script-opcode-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-script-opcode-notes.md)
 - [aw1-gxl-table-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-gxl-table-notes.md)
 - [aw1-stage-progression-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-stage-progression-notes.md)
@@ -54,9 +56,9 @@ References:
 
 ### 3. Rendering And Effects
 
-- `179.pzx` still uses a heuristic shade model, even though that model now feeds the live renderer.
+- `179.pzx` now uses a stronger special-case structural mapping, but it still needs original-reference validation before it can be treated as fully native-confirmed.
 - `PTC` semantics are now consumed by the runtime renderer, but emitter behavior is still reconstructed rather than confirmed from original engine code.
-- `PZX` tail metadata and `MPL` bank switching now drive runtime sprite states, overlays, and flashes, but they still need original-reference validation.
+- `PZX` tail-group candidates and grouped overlay cadence now drive runtime sprite states, overlays, and flashes, but they remain runtime-consistent heuristics unless tied to a matching native consumer.
 
 ### 4. Full Game Flow
 

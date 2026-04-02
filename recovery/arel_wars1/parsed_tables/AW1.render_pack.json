@@ -643,7 +643,7 @@
     {
       "stem": "179",
       "heuristic": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
-      "confidence": "high",
+      "certaintyLevel": "asset-structural",
       "transparentValue": 0,
       "valueOffset": 1,
       "paletteSize": 47,
@@ -1238,6 +1238,7 @@
   ],
   "semantics": {
     "mplBankSwitching": {
+      "certaintyLevel": "native-confirmed",
       "label": "flag-driven-bank-switch",
       "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
       "exactStateCount": 224,
@@ -1391,6 +1392,7 @@
       ]
     },
     "packedPixel179": {
+      "certaintyLevel": "asset-structural",
       "stem": "179",
       "sharedMplStem": "180",
       "transparentValue": 0,
@@ -1443,6 +1445,10 @@
       "highlightBank": "bank-a",
       "highlightBlendMode": "additive-tail",
       "formula": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+      "notes": [
+        "This packed-pixel rule is treated as a special 179-only mapping.",
+        "It is stronger than a generic preview heuristic, but it should not be generalized onto normal PZX/MPL stems."
+      ],
       "boundaryHistogram": {
         "47": 31,
         "94": 75,
@@ -1453,6 +1459,12 @@
       },
       "compositePath": "/recovery/analysis/render/special/179-composite-final.png",
       "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes-final.png"
+    },
+    "certaintyLegend": {
+      "native-confirmed": "Matches a native field or native consumer already confirmed on the disassembly branch.",
+      "asset-structural": "Closes cleanly against the embedded asset structure but is not yet tied to a native consumer in the current main-branch runtime.",
+      "runtime-consistent heuristic": "Visually and structurally useful in the runtime, but not yet proven as a native field grammar.",
+      "donor/prototype inferred": "Filled from nearby stems or structural prototypes rather than from a direct local native field."
     }
   }
 }

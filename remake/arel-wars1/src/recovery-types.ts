@@ -533,6 +533,7 @@ export interface RecoveryPreviewFrame {
   durationHintMs: number | null
   playbackDurationMs: number | null
   playbackSource: string | null
+  playbackConfidenceLevel?: string | null
   playbackDonorStem?: string | null
   playbackDonorScore?: number | null
   playbackDonorGroupIndex?: number | null
@@ -554,14 +555,54 @@ export interface RecoveryPreviewFrame {
   bankOverlayWeight?: number | null
 }
 
+export interface RecoveryPreviewResourceNode {
+  certaintyLevel: string
+  offset: number
+  tag?: number
+  typeId?: number
+  imageCount?: number
+  frameCount?: number
+  clipCount?: number
+  decodedSize?: number
+  compressedSize?: number
+  reserved?: number
+  poolRule?: string
+  timingRule?: string
+  clipSummaries?: Array<{
+    clipIndex: number
+    frameCount: number
+    frameIndexRange: [number, number] | null
+    uniqueDelayTicks: number[]
+    dominantDelayTick: number | null
+  }>
+}
+
+export interface RecoveryPreviewResourceGraph {
+  certaintyLevel: string
+  graphRule: string
+  pzd: RecoveryPreviewResourceNode | null
+  pzf: RecoveryPreviewResourceNode | null
+  pza: RecoveryPreviewResourceNode | null
+}
+
+export interface RecoveryPreviewTimingModel {
+  baseClipTimingSource: string
+  baseClipTimingConfidence: string
+  overlayCadenceSource: string
+  overlayCadenceConfidence: string
+}
+
 export interface RecoveryPreviewStem {
   stem: string
   sequenceKind: string
   timelineKind: string
+  timelineKindConfidence?: string | null
   anchorFrameSequence: number[]
   linkedGroupCount: number
   overlayGroupCount: number
   bestContiguousRun: RecoveryTimelineRun | null
+  timingModel?: RecoveryPreviewTimingModel | null
+  pzxResourceGraph?: RecoveryPreviewResourceGraph | null
   timelineStrip: {
     pngPath: string
     jsonPath: string
@@ -580,6 +621,7 @@ export interface RecoveryPreviewManifest {
   activeStemCount: number
   sequenceKindCounts: Record<string, number>
   timelineKindCounts: Record<string, number>
+  certaintyLegend?: Record<string, string>
   featuredStems: string[]
   featuredEntries: RecoveryPreviewStem[]
   stems: RecoveryPreviewStem[]

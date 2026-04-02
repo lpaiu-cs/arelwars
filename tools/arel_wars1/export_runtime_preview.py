@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 import shutil
 
+from formats import read_pzx_root_resource_graph
+
 
 FEATURED_TIMELINE_ORDER = [
     "rising-anchor-with-overlays",
@@ -17,6 +19,29 @@ FEATURED_TIMELINE_ORDER = [
     "overlay-track-only",
     "linked-only-scatter",
 ]
+
+HEURISTIC_TIMING_SOURCES = {
+    "tail-marker",
+    "anchor-record",
+    "zero-marker",
+    "forward-fill",
+    "back-fill",
+    "overlay-prototype",
+    "linked-prototype",
+    "linked-family-prototype",
+    "strong-structure-prototype",
+    "opaque-cue",
+    "neighbor-group-cue",
+    "terminal-hold",
+}
+DONOR_TIMING_SOURCES = {
+    "donor-stem",
+    "event-donor",
+    "event-consensus",
+    "stem-default",
+    "global-record-default",
+    "unresolved",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -40,6 +65,85 @@ def write_json(path: Path, payload: object) -> None:
 def copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
+
+
+def classify_timing_source(source: object) -> str:
+    label = str(source or "")
+    if label in HEURISTIC_TIMING_SOURCES:
+        return "runtime-consistent heuristic"
+    if label in DONOR_TIMING_SOURCES:
+        return "donor/prototype inferred"
+    return "runtime-consistent heuristic"
+
+
+def summarize_pzx_resource_graph(pzx_path: Path) -> dict[str, object] | None:
+    if not pzx_path.exists():
+        return None
+    graph = read_pzx_root_resource_graph(pzx_path.read_bytes())
+    if graph is None:
+        return None
+
+    payload: dict[str, object] = {
+        "certaintyLevel": "native-confirmed",
+        "graphRule": "PZX root offsets map to typed embedded subresources: field4 -> PZD, field8 -> PZF, field12 -> PZA",
+        "pzd": None,
+        "pzf": None,
+        "pza": None,
+    }
+
+    if graph.pzd is not None:
+        payload["pzd"] = {
+            "certaintyLevel": "native-confirmed",
+            "offset": graph.pzd.offset,
+            "typeId": graph.pzd.type_id,
+            "imageCount": graph.pzd.image_count,
+            "reserved": graph.pzd.reserved,
+            "poolRule": (
+                "type 8 -> subFrameIndex matches first-stream chunk index"
+                if graph.pzd.type_id == 8
+                else "type 7 -> subFrameIndex matches row-stream/image index"
+            ),
+        }
+
+    if graph.pzf is not None:
+        payload["pzf"] = {
+            "certaintyLevel": "asset-structural",
+            "offset": graph.pzf.offset,
+            "tag": graph.pzf.tag,
+            "frameCount": graph.pzf.item_count,
+            "decodedSize": graph.pzf.decoded_size,
+            "compressedSize": graph.pzf.compressed_size,
+            "reserved": graph.pzf.reserved,
+        }
+
+    if graph.pza is not None:
+        clip_summaries: list[dict[str, object]] = []
+        for clip in graph.pza.clips:
+            delay_values = [frame.delay for frame in clip.frames]
+            unique_delays = sorted({int(value) for value in delay_values})
+            frame_indices = [frame.frame_index for frame in clip.frames]
+            clip_summaries.append(
+                {
+                    "clipIndex": clip.clip_index,
+                    "frameCount": clip.frame_count,
+                    "frameIndexRange": [min(frame_indices), max(frame_indices)] if frame_indices else None,
+                    "uniqueDelayTicks": unique_delays,
+                    "dominantDelayTick": max(set(delay_values), key=delay_values.count) if delay_values else None,
+                }
+            )
+        payload["pza"] = {
+            "certaintyLevel": "native-confirmed",
+            "offset": graph.pza.resource.offset,
+            "tag": graph.pza.resource.tag,
+            "clipCount": graph.pza.resource.item_count,
+            "decodedSize": graph.pza.resource.decoded_size,
+            "compressedSize": graph.pza.resource.compressed_size,
+            "reserved": graph.pza.resource.reserved,
+            "timingRule": "PZA clip delay bytes are the authoritative native playback timing source for the base clip.",
+            "clipSummaries": clip_summaries,
+        }
+
+    return payload
 
 
 def pick_featured_stems(entries: list[dict[str, object]]) -> list[str]:
@@ -71,6 +175,7 @@ def main() -> None:
     sequence_root = args.sequence_root.resolve()
     timeline_root = args.timeline_root.resolve()
     web_root = args.web_root.resolve()
+    assets_root = report_path.parent / "apk_unzip"
 
     report = read_json(report_path)
     if not isinstance(report, dict):
@@ -111,6 +216,7 @@ def main() -> None:
             active_entries.append(
                 {
                     "stem": stem,
+                    "sourcePath": path,
                     "sequenceKind": sequence_kind,
                     "timelineKind": str(sequence_summary.get("timelineKind", "unknown")),
                     "anchorFrameSequence": sequence_summary.get("anchorFrameSequence", []),
@@ -146,6 +252,8 @@ def main() -> None:
         timeline_kind = str(entry["timelineKind"])
         sequence_counts.update([sequence_kind])
         timeline_counts.update([timeline_kind])
+        source_path = assets_root / str(entry["sourcePath"])
+        resource_graph = summarize_pzx_resource_graph(source_path)
 
         timeline_png_name = f"{stem}-timeline-strip.png"
         timeline_json_name = f"{stem}-timeline-strip.json"
@@ -184,6 +292,7 @@ def main() -> None:
                         "durationHintMs": raw_event.get("durationHintMs"),
                         "playbackDurationMs": raw_event.get("playbackDurationMs"),
                         "playbackSource": raw_event.get("playbackSource"),
+                        "playbackConfidenceLevel": classify_timing_source(raw_event.get("playbackSource")),
                         "timingMarkers": raw_event.get("timingMarkers"),
                         "timingValues": raw_event.get("timingValues"),
                         "timingExplicitValues": raw_event.get("timingExplicitValues"),
@@ -223,10 +332,26 @@ def main() -> None:
                 "stem": stem,
                 "sequenceKind": sequence_kind,
                 "timelineKind": timeline_kind,
+                "timelineKindConfidence": "runtime-consistent heuristic",
                 "anchorFrameSequence": entry["anchorFrameSequence"],
                 "linkedGroupCount": int(entry["linkedGroupCount"]),
                 "overlayGroupCount": int(entry["overlayGroupCount"]),
                 "bestContiguousRun": entry["bestContiguousRun"],
+                "timingModel": {
+                    "baseClipTimingSource": (
+                        "native-confirmed PZA delay ticks"
+                        if isinstance(resource_graph, dict) and isinstance(resource_graph.get("pza"), dict)
+                        else "not available"
+                    ),
+                    "baseClipTimingConfidence": (
+                        "native-confirmed"
+                        if isinstance(resource_graph, dict) and isinstance(resource_graph.get("pza"), dict)
+                        else "not available"
+                    ),
+                    "overlayCadenceSource": "post-frame tail-group candidates and frame-record markers",
+                    "overlayCadenceConfidence": "runtime-consistent heuristic",
+                },
+                "pzxResourceGraph": resource_graph,
                 "timelineStrip": {
                     "pngPath": f"/recovery/analysis/timeline_candidate_strips/{timeline_png_name}",
                     "jsonPath": f"/recovery/analysis/timeline_candidate_strips/{timeline_json_name}",
@@ -251,6 +376,12 @@ def main() -> None:
         "activeStemCount": len(exported_entries),
         "sequenceKindCounts": dict(sorted(sequence_counts.items())),
         "timelineKindCounts": dict(sorted(timeline_counts.items())),
+        "certaintyLegend": {
+            "native-confirmed": "Matches a native field or native consumer already confirmed on the disassembly branch.",
+            "asset-structural": "Closes cleanly against the embedded asset structure but is not yet tied to a native consumer in the current main-branch runtime.",
+            "runtime-consistent heuristic": "Visually and structurally useful in the runtime, but not yet proven as a native field grammar.",
+            "donor/prototype inferred": "Filled from nearby stems or structural prototypes rather than from a direct local native field.",
+        },
         "featuredStems": featured_stems,
         "featuredEntries": featured_entries,
         "stems": exported_entries,

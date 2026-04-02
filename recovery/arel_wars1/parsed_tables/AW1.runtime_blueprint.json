@@ -572,7 +572,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -1121,7 +1121,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -1584,7 +1584,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -2084,7 +2084,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -2579,7 +2579,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -3047,7 +3047,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -3516,7 +3516,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -3901,7 +3901,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -4361,7 +4361,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -4835,7 +4835,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -5174,7 +5174,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -5500,7 +5500,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -5981,7 +5981,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -6457,7 +6457,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -6733,7 +6733,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -7133,7 +7133,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -7603,7 +7603,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -8109,7 +8109,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -8580,7 +8580,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -8935,7 +8935,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -9401,7 +9401,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -9853,7 +9853,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -10328,7 +10328,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -10807,7 +10807,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -11142,7 +11142,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -11603,7 +11603,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -11962,7 +11962,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -12436,7 +12436,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -12834,7 +12834,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -13307,7 +13307,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -13811,7 +13811,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -14169,7 +14169,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -14635,7 +14635,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15090,7 +15090,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15393,7 +15393,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15690,7 +15690,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -15954,7 +15954,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -16428,7 +16428,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -17003,7 +17003,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -17574,7 +17574,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -18042,7 +18042,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -18456,7 +18456,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -18918,7 +18918,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -19365,7 +19365,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -19823,7 +19823,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -20145,7 +20145,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -20595,7 +20595,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -21068,7 +21068,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -21505,7 +21505,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -21980,7 +21980,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -22440,7 +22440,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -22917,7 +22917,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -23399,7 +23399,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -23834,7 +23834,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -24272,7 +24272,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -24580,7 +24580,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -25023,7 +25023,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -25487,7 +25487,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -25987,7 +25987,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -26468,7 +26468,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -26938,7 +26938,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -27411,7 +27411,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -27898,7 +27898,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -28352,7 +28352,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -28683,7 +28683,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -28979,7 +28979,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -29464,7 +29464,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -29748,7 +29748,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -30094,7 +30094,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -30595,7 +30595,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -31047,7 +31047,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -31449,7 +31449,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -31921,7 +31921,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -32479,7 +32479,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -33034,7 +33034,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -33458,7 +33458,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -33914,7 +33914,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -34310,7 +34310,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -34774,7 +34774,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -35229,7 +35229,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -35622,7 +35622,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -35967,7 +35967,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -36447,7 +36447,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -36900,7 +36900,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -37223,7 +37223,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -37699,7 +37699,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -38159,7 +38159,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -38637,7 +38637,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -39116,7 +39116,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -39595,7 +39595,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -40088,7 +40088,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -40568,7 +40568,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -41007,7 +41007,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -41516,7 +41516,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -41960,7 +41960,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -42420,7 +42420,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -42890,7 +42890,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -43384,7 +43384,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -43874,7 +43874,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -44351,7 +44351,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -44818,7 +44818,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -44890,7 +44890,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -45349,7 +45349,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -45792,7 +45792,7 @@
       "renderIntent": {
         "effectIntensity": "low",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -46261,7 +46261,7 @@
       "renderIntent": {
         "effectIntensity": "medium",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -46731,7 +46731,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -47005,7 +47005,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -47451,7 +47451,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -47844,7 +47844,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -48050,7 +48050,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     },
     {
@@ -48443,7 +48443,7 @@
       "renderIntent": {
         "effectIntensity": "high",
         "bankRule": "flag-driven-bank-switch",
-        "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail."
       }
     }
   ],
@@ -56326,6 +56326,7 @@
   "renderProfile": {
     "defaultMplBankRule": {
       "label": "flag-driven-bank-switch",
+      "certaintyLevel": "native-confirmed",
       "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
       "notes": [
         "Anchor and tail item flags are now exported per preview frame instead of inferred from overlay-only event labels.",
@@ -56337,7 +56338,7 @@
         "stem": "179",
         "sharedMplStem": "180",
         "heuristic": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
-        "confidence": "high",
+        "certaintyLevel": "asset-structural",
         "transparentValue": 0,
         "valueOffset": 1,
         "paletteSize": 47,
@@ -56347,10 +56348,15 @@
           189,
           199
         ],
-        "highlightBlendMode": "additive-tail"
+        "highlightBlendMode": "additive-tail",
+        "notes": [
+          "This packed-pixel rule is treated as a special 179-only mapping.",
+          "It is stronger than a generic preview heuristic, but it should not be generalized onto normal PZX/MPL stems."
+        ]
       }
     ],
     "ptcBridgeSummary": {
+      "certaintyLevel": "runtime-consistent heuristic",
       "summary": {
         "particleRowCount": 12,
         "primaryDirectPtcCount": 12,
@@ -56695,9 +56701,9 @@
       "Palette index 0 behaves like transparency more consistently than checking for a zero RGB565 word; bank B is the default visible sprite palette for the sampled stems, while flagged frame items are best explained as bank-A overlays.",
       "MPL duplicates exist across stems: 145/146 share one file, and 179/180 share another, indicating some assets reuse the same palette or metadata blob.",
       "PTC files are no longer opaque blobs: across 50 files they parse as compact 25-26 word parameter blocks plus a 0-2 byte trailer, with stable angle, Q16 ratio, signed delta, and timing field groups.",
-      "179 packed pixels now use an offset-normalized 47-color band model: 0 is transparent, 1..188 span four 47-value bands, and 189..199 form the additive highlight tail.",
-      "MPL bank switching is now exported as exact per-frame flag state derived from anchor and tail item flags instead of overlay-only heuristics.",
-      "PTC emitter semantics are now exported for every linked XlsParticle row with named timing, emission, radius, and delta fields."
+      "179 packed pixels are exported as a special-case structural mapping: 0 is transparent, 1..188 span four 47-value bands, and 189..199 form the additive highlight tail.",
+      "MPL bank switching is exported from exact per-frame item flags instead of overlay-only labels.",
+      "PTC emitter semantics remain runtime-consistent reconstructions even though they now feed the live renderer."
     ]
   },
   "findings": [

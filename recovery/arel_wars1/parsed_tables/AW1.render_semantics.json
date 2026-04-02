@@ -5,6 +5,7 @@
     "packedPixelSpecialCount": 1
   },
   "mplBankSwitching": {
+    "certaintyLevel": "native-confirmed",
     "label": "flag-driven-bank-switch",
     "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
     "exactStateCount": 224,
@@ -158,6 +159,7 @@
     ]
   },
   "packedPixel179": {
+    "certaintyLevel": "asset-structural",
     "stem": "179",
     "sharedMplStem": "180",
     "transparentValue": 0,
@@ -210,6 +212,10 @@
     "highlightBank": "bank-a",
     "highlightBlendMode": "additive-tail",
     "formula": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+    "notes": [
+      "This packed-pixel rule is treated as a special 179-only mapping.",
+      "It is stronger than a generic preview heuristic, but it should not be generalized onto normal PZX/MPL stems."
+    ],
     "boundaryHistogram": {
       "47": 31,
       "94": 75,
@@ -222,6 +228,7 @@
     "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes-final.png"
   },
   "ptcEmitterSemantics": {
+    "certaintyLevel": "runtime-consistent heuristic",
     "familyRepresentativeEmitters": {
       "support": "ptc-row-00-support-pulse",
       "burst": "ptc-row-02-burst-flare",
@@ -820,8 +827,8 @@
     ]
   },
   "findings": [
-    "179 packed pixels now use an offset-normalized 47-color band model: 0 is transparent, 1..188 span four 47-value bands, and 189..199 form the additive highlight tail.",
-    "MPL bank switching is now exported as exact per-frame flag state derived from anchor and tail item flags instead of overlay-only heuristics.",
-    "PTC emitter semantics are now exported for every linked XlsParticle row with named timing, emission, radius, and delta fields."
+    "179 packed pixels are exported as a special-case structural mapping: 0 is transparent, 1..188 span four 47-value bands, and 189..199 form the additive highlight tail.",
+    "MPL bank switching is exported from exact per-frame item flags instead of overlay-only labels.",
+    "PTC emitter semantics remain runtime-consistent reconstructions even though they now feed the live renderer."
   ]
 }

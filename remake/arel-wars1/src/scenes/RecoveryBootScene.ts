@@ -158,8 +158,8 @@ export class RecoveryBootScene extends Phaser.Scene {
         80,
         148,
         this.stageSystem?.isReady()
-          ? 'Recovered sprite timelines, stage blueprints, opcode cues, and hero runtime channels now drive one shared battle-state layer.'
-          : 'Confirmed recoveries: PZX tail timelines, sequence candidates, runtime strip previews, and Android packaging.',
+          ? 'Recovered stage blueprints, opcode cues, deterministic battle state, and typed PZX subresources now drive one shared runtime layer.'
+          : 'Structural recoveries: typed PZX roots, PZA/PZF clip tables, heuristic tail-group candidates, and Android packaging.',
         {
           fontFamily: 'Trebuchet MS, sans-serif',
           fontSize: '16px',
@@ -189,10 +189,10 @@ export class RecoveryBootScene extends Phaser.Scene {
     }
 
     const milestones = [
-      '1. PZX first-stream, frame-record, and tail groups recovered',
-      '2. MPL palette banks and PTC bridges lifted into runtime render cues',
-      '3. ZT1 scripts elevated from raw strings to stage blueprints and opcode cues',
-      '4. Shared battle-state now drives sprite playback, channel pulses, and narrative HUD',
+      '1. PZX roots are typed as PZD / PZF / PZA with native-confirmed offsets',
+      '2. PZA base clips and PZF frame pools back the runtime while tail groups stay heuristic',
+      '3. MPL bank flags and PTC bridges are lifted into runtime render cues',
+      '4. ZT1 scripts, deterministic battle state, and HUD phases now share one interpreter',
     ]
 
     milestones.forEach((line, index) => {
@@ -354,7 +354,7 @@ export class RecoveryBootScene extends Phaser.Scene {
 
     this.spriteLabel.setText(`${campaign.phaseTitle} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)
     this.spriteDetail.setText(
-      `${campaign.phaseSubtitle} · ${mapLine} · ${this.formatKind(previewStem.timelineKind)}${autoPhaseLine}`,
+      `${campaign.phaseSubtitle} · ${mapLine} · heuristic ${this.formatKind(previewStem.timelineKind)}${autoPhaseLine}`,
     )
     this.spriteFooter.setText(
       `campaign node ${campaign.currentNodeIndex}/${campaign.totalNodeCount} selected ${campaign.selectedNodeIndex} loadout ${campaign.selectedLoadoutIndex}/${campaign.loadouts.length} ${campaign.selectedLoadoutLabel} · pref ${campaign.preferredRouteLabel ?? 'route-unknown'} x${campaign.routeCommitment} · recommend ${campaign.recommendedNodeIndex}/${campaign.recommendedRouteLabel ?? 'route-unknown'}${campaign.recommendedLoadoutLabel ? `/${campaign.recommendedLoadoutLabel}` : ''}${campaign.recommendedReason ? `/${campaign.recommendedReason}` : ''}${campaign.routeGoalNodeIndex !== null ? ` · goal ${campaign.routeGoalNodeIndex}/${campaign.routeGoalRouteLabel ?? 'route-unknown'}${campaign.routeGoalLabel ? `/${campaign.routeGoalLabel}` : ''}${campaign.routeGoalReason ? `/${campaign.routeGoalReason}` : ''}` : ''} · ${selectedLoadout?.heroRosterLabel ?? 'core squad'} / ${selectedLoadout?.skillPresetLabel ?? 'balanced kit'} / ${selectedLoadout?.towerPolicyLabel ?? 'balanced towers'} · ${phaseFooter} · briefing ${briefing.objectivePhase} ${briefing.objectiveLabel} · ally ${briefing.alliedForecast[0] ?? 'idle'} / enemy ${briefing.enemyForecast[0] ?? 'idle'} · loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,

@@ -67,8 +67,13 @@ This document captures the parts of the recovery work that are likely to stay us
 ## Arel Wars 1 PZX/MPL Rules That Are Probably Version-Specific
 
 - `arel_wars_1.apk` `PZX`:
+  - root offsets are now aligned to a typed native subresource graph:
+    - `field4 -> PZD`
+    - `field8 -> PZF`
+    - `field12 -> PZA`
   - first zlib stream decodes as chunk-offset table + chunk payloads for `205/205` `variant=8` files
-  - later streams split into fixed placement tables or frame/tail metadata
+  - embedded `PZA` clip tables carry the strongest current base-clip timing source
+  - later streams split into fixed placement tables or heuristic post-frame metadata groups
 - `arel_wars_1.apk` `MPL`:
   - 6-word header followed by 2 palette banks
   - current best runtime rule: `default bank B, flagged item -> bank A`
@@ -95,7 +100,7 @@ This document captures the parts of the recovery work that are likely to stay us
   - `XlsWorldmap` is already strong enough to read as a linear `16`-node adjacency graph
   - `XlsAi.eng` now has a practical slot model with separate title, numeric, reward, hint, and tail regions
 
-- `179.pzx` in Arel Wars 1 now has a usable `shadeBand * 47 + paletteResidue` preview heuristic, but the original blend equation is still unproven.
+- `179.pzx` in Arel Wars 1 now has a stronger stem-specific structural mapping, but it should still be treated as a special packed-pixel case rather than a general palette rule.
 - `PTC` is structurally parsed but semantically heuristic.
 - `ZT1` parsing is strong on dialogue flow and prefix-command structure, but some non-dialogue/map-state opcode names are still provisional.
 - AW2 `PZF` uses a big-endian plain-header offset table before its zlib metadata stream; that header rule is likely reusable across more than one AW2 body-part asset family.

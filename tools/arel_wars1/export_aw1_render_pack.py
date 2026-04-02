@@ -219,7 +219,7 @@ def main() -> None:
             {
                 "stem": str(packed_179.get("stem", "179")),
                 "heuristic": str(packed_179.get("formula", "")),
-                "confidence": "high",
+                "certaintyLevel": str(packed_179.get("certaintyLevel", "asset-structural")),
                 "transparentValue": int(packed_179.get("transparentValue", 0)),
                 "valueOffset": int(packed_179.get("valueOffset", 1)),
                 "paletteSize": int(packed_179.get("paletteSize", 47)),
@@ -255,6 +255,7 @@ def main() -> None:
         "semantics": {
             "mplBankSwitching": render_semantics.get("mplBankSwitching"),
             "packedPixel179": packed_179,
+            "certaintyLegend": preview_manifest.get("certaintyLegend"),
         },
     }
 

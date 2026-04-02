@@ -259,6 +259,59 @@ class PtcFile:
     trailer_bytes: bytes
 
 
+@dataclass(frozen=True)
+class PzxPzdRoot:
+    offset: int
+    type_id: int
+    image_count: int
+    reserved: int
+
+
+@dataclass(frozen=True)
+class PzxIndexedResource:
+    offset: int
+    tag: int
+    item_count: int
+    reserved: int
+    item_offsets: tuple[int, ...]
+    compressed_size: int
+    decoded: bytes
+
+    @property
+    def decoded_size(self) -> int:
+        return len(self.decoded)
+
+
+@dataclass(frozen=True)
+class PzaFrame:
+    frame_index: int
+    delay: int
+    x: int
+    y: int
+    control: int
+
+
+@dataclass(frozen=True)
+class PzaClip:
+    clip_index: int
+    frame_count: int
+    frames: tuple[PzaFrame, ...]
+    end_offset: int
+
+
+@dataclass(frozen=True)
+class PzxPzaResource:
+    resource: PzxIndexedResource
+    clips: tuple[PzaClip, ...]
+
+
+@dataclass(frozen=True)
+class PzxRootResourceGraph:
+    pzd: PzxPzdRoot | None
+    pzf: PzxIndexedResource | None
+    pza: PzxPzaResource | None
+
+
 def read_zt1(data: bytes) -> Zt1File:
     if len(data) < 8:
         raise ValueError("ZT1 payload is too short")
@@ -325,6 +378,114 @@ def read_ptc(data: bytes) -> PtcFile | None:
         fields_u16=fields_u16,
         fields_i16=tuple(u16_to_i16(value) for value in fields_u16),
         trailer_bytes=data[even_size:],
+    )
+
+
+def _read_be_u32_table(data: bytes, offset: int, count: int) -> tuple[int, ...] | None:
+    table_end = offset + count * 4
+    if offset < 0 or table_end > len(data):
+        return None
+    return tuple(struct.unpack(">I", data[offset + index * 4 : offset + (index + 1) * 4])[0] for index in range(count))
+
+
+def read_pzx_pzd_root(data: bytes, offset: int) -> PzxPzdRoot | None:
+    if offset < 0 or offset + 4 > len(data):
+        return None
+    return PzxPzdRoot(
+        offset=offset,
+        type_id=int(data[offset]),
+        image_count=int(data[offset + 1]),
+        reserved=struct.unpack(">H", data[offset + 2 : offset + 4])[0],
+    )
+
+
+def read_pzx_indexed_resource(data: bytes, offset: int) -> PzxIndexedResource | None:
+    if offset < 0 or offset + 8 > len(data):
+        return None
+
+    tag = int(data[offset])
+    item_count = int(data[offset + 1])
+    reserved = struct.unpack(">H", data[offset + 2 : offset + 4])[0]
+    table_offset = offset + 4
+    item_offsets = _read_be_u32_table(data, table_offset, item_count)
+    if item_offsets is None:
+        return None
+
+    compressed_size_offset = table_offset + item_count * 4
+    if compressed_size_offset + 4 > len(data):
+        return None
+    compressed_size = struct.unpack(">I", data[compressed_size_offset : compressed_size_offset + 4])[0]
+    compressed_offset = compressed_size_offset + 4
+    compressed_end = compressed_offset + compressed_size
+    if compressed_end > len(data):
+        return None
+
+    compressed = data[compressed_offset:compressed_end]
+    if not compressed.startswith(b"\x78"):
+        return None
+
+    try:
+        decoded = zlib.decompress(compressed)
+    except zlib.error:
+        return None
+
+    return PzxIndexedResource(
+        offset=offset,
+        tag=tag,
+        item_count=item_count,
+        reserved=reserved,
+        item_offsets=item_offsets,
+        compressed_size=compressed_size,
+        decoded=decoded,
+    )
+
+
+def read_pzx_pza_resource(data: bytes, offset: int) -> PzxPzaResource | None:
+    resource = read_pzx_indexed_resource(data, offset)
+    if resource is None:
+        return None
+
+    clips: list[PzaClip] = []
+    start = 0
+    for clip_index, end_offset in enumerate(resource.item_offsets):
+        if end_offset < start or end_offset > len(resource.decoded):
+            return None
+        clip = resource.decoded[start:end_offset]
+        start = end_offset
+        if not clip:
+            clips.append(PzaClip(clip_index=clip_index, frame_count=0, frames=(), end_offset=end_offset))
+            continue
+
+        frame_count = int(clip[0])
+        expected_size = 1 + frame_count * 8
+        if len(clip) < expected_size:
+            return None
+
+        frames: list[PzaFrame] = []
+        cursor = 1
+        for _ in range(frame_count):
+            frame_index = struct.unpack("<H", clip[cursor : cursor + 2])[0]
+            delay = int(clip[cursor + 2])
+            x = struct.unpack("<h", clip[cursor + 3 : cursor + 5])[0]
+            y = struct.unpack("<h", clip[cursor + 5 : cursor + 7])[0]
+            control = int(clip[cursor + 7])
+            frames.append(PzaFrame(frame_index=frame_index, delay=delay, x=x, y=y, control=control))
+            cursor += 8
+
+        clips.append(PzaClip(clip_index=clip_index, frame_count=frame_count, frames=tuple(frames), end_offset=end_offset))
+
+    return PzxPzaResource(resource=resource, clips=tuple(clips))
+
+
+def read_pzx_root_resource_graph(data: bytes) -> PzxRootResourceGraph | None:
+    if len(data) < 16 or data[:3] != b"PZX":
+        return None
+
+    pzd_offset, pzf_offset, pza_offset = struct.unpack("<III", data[4:16])
+    return PzxRootResourceGraph(
+        pzd=read_pzx_pzd_root(data, pzd_offset),
+        pzf=read_pzx_indexed_resource(data, pzf_offset),
+        pza=read_pzx_pza_resource(data, pza_offset),
     )
 
 

@@ -9,6 +9,11 @@ It exists to separate:
 
 Audit date: 2026-04-02
 
+Post-audit correction note:
+
+- later native-disassembly hand-off notes did not force a phase rollback, but they did require stronger certainty labeling around `PZX/PZA/PZF` structure, grouped tail cadence, and the `179` special case
+- see [aw1-native-branch-alignment.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-native-branch-alignment.md)
+
 ## Scope
 
 The audited phases are the user-defined sequence:

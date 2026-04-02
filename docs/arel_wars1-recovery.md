@@ -21,6 +21,23 @@
 - `remake/arel-wars1/`
   Phaser/Vite remake workspace.
 
+## Certainty Scale
+
+- `native-confirmed`
+- `asset-structural`
+- `runtime-consistent heuristic`
+- `donor/prototype inferred`
+
+Current correction from the native-disassembly branch:
+
+- `PZX` root offsets should be treated as a typed subresource graph:
+  - `field4 -> PZD`
+  - `field8 -> PZF`
+  - `field12 -> PZA`
+- `PZA` carries authoritative base-clip timing when present.
+- `PZF` owns frame composition.
+- tail sections remain useful, but should be described as heuristic post-frame groupings until a matching native consumer is identified.
+
 ## Known Formats
 
 - `.zt1`
@@ -32,12 +49,12 @@
   - row-oriented RLE bodies where each row expands to exactly `width` bytes via `skip(u16)`, `literal(0x80nn + nn bytes)`, and `repeat(0xC0nn + one value byte)` commands
   - `FE FF` row separators and an optional trailing `FF FF` sentinel after the last row
   - `variant=7` assets such as `180.pzx` appear to reuse the same row grammar directly in each zlib stream, without the outer chunk table/header layer
-  - later zlib streams now split into at least two metadata families:
+  - later zlib streams now split into at least two secondary metadata families:
     - a simple fixed `10-byte` placement table used by `022`-`027`, `078`, and `179`
     - frame-record streams used by stems such as `198`, `208`, and `240`, where each record starts with `itemCount`, `frameType`, `x`, `y`, `width`, `height`, then a list of chunk placements
   - some frame-record assets interleave `5-byte` control chunks (`66 0c 00 00 00`, `67 ff 00 00 00`, and relatives) both inside and after records, so later streams still carry a second layer of animation metadata beyond pure chunk placement
-  - the frame-record tails can now be split into marker-delimited secondary blocks using `67 ff 00 00 00`, `67 78 00 00 00`, `66 05 00 00 00`, `66 0a 00 00 00`, and `66 0c 00 00 00`
-  - many of those secondary blocks decode exactly as `7-byte` flagged tuples: `chunkIndex(u16), x(i16), y(i16), flag(u8)`
+  - the post-frame sections can now be split into marker-delimited grouped blocks using `67 ff 00 00 00`, `67 78 00 00 00`, `66 05 00 00 00`, `66 0a 00 00 00`, and `66 0c 00 00 00`
+  - many of those grouped blocks decode exactly as `7-byte` flagged tuples: `chunkIndex(u16), x(i16), y(i16), flag(u8)`
 - `.mpl`
   Partially decoded by pattern. For all 65 paired stems, the current best model is:
   - the file layout is a 6-word header followed by two palette banks

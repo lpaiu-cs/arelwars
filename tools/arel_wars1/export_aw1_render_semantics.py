@@ -264,6 +264,7 @@ def render_179_images(assets_root: Path, web_render_root: Path | None) -> dict[s
                     boundary_histogram[key] += 1
 
     return {
+        "certaintyLevel": "asset-structural",
         "stem": "179",
         "sharedMplStem": "180",
         "transparentValue": 0,
@@ -281,6 +282,10 @@ def render_179_images(assets_root: Path, web_render_root: Path | None) -> dict[s
         "highlightBank": "bank-a",
         "highlightBlendMode": "additive-tail",
         "formula": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+        "notes": [
+            "This packed-pixel rule is treated as a special 179-only mapping.",
+            "It is stronger than a generic preview heuristic, but it should not be generalized onto normal PZX/MPL stems.",
+        ],
         "boundaryHistogram": boundary_histogram,
         "compositePath": composite_path,
         "probeSheetPath": probe_sheet_path,
@@ -306,6 +311,7 @@ def summarize_bank_semantics(timeline_root: Path) -> dict[str, object]:
             exact_states += 1
 
     return {
+        "certaintyLevel": "native-confirmed",
         "label": "flag-driven-bank-switch",
         "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
         "exactStateCount": exact_states,
@@ -385,6 +391,7 @@ def build_ptc_emitters(effect_runtime_links: dict[str, object]) -> dict[str, obj
             family_representatives[family] = emitter_id
 
     return {
+        "certaintyLevel": "runtime-consistent heuristic",
         "familyRepresentativeEmitters": family_representatives,
         "emitters": emitters,
     }
@@ -411,9 +418,9 @@ def main() -> None:
         "packedPixel179": packed_179,
         "ptcEmitterSemantics": ptc_emitters,
         "findings": [
-            "179 packed pixels now use an offset-normalized 47-color band model: 0 is transparent, 1..188 span four 47-value bands, and 189..199 form the additive highlight tail.",
-            "MPL bank switching is now exported as exact per-frame flag state derived from anchor and tail item flags instead of overlay-only heuristics.",
-            "PTC emitter semantics are now exported for every linked XlsParticle row with named timing, emission, radius, and delta fields.",
+            "179 packed pixels are exported as a special-case structural mapping: 0 is transparent, 1..188 span four 47-value bands, and 189..199 form the additive highlight tail.",
+            "MPL bank switching is exported from exact per-frame item flags instead of overlay-only labels.",
+            "PTC emitter semantics remain runtime-consistent reconstructions even though they now feed the live renderer.",
         ],
     }
 

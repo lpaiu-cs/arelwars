@@ -236,7 +236,7 @@ function renderTimelinePreview(
     return
   }
 
-  summary.textContent = `${previewManifest.activeStemCount} active stems, ${Object.keys(previewManifest.timelineKindCounts).length} timeline classes, featured runtime strips ready.`
+  summary.textContent = `${previewManifest.activeStemCount} active stems, ${Object.keys(previewManifest.timelineKindCounts).length} heuristic timeline classes, featured runtime strips ready with native PZA/PZF/PZD structural notes.`
   stats.innerHTML = [
     timelineStatCard('Active Stems', String(previewManifest.activeStemCount)),
     timelineStatCard('Timeline Kinds', String(Object.keys(previewManifest.timelineKindCounts).length)),
@@ -304,12 +304,15 @@ function timelineCard(entry: RecoveryPreviewStem): string {
       <header class="timeline-card-header">
         <div>
           <strong>Stem ${entry.stem}</strong>
-          <p>${escapeHtml(formatKind(entry.timelineKind))}</p>
+          <p>Heuristic class: ${escapeHtml(formatKind(entry.timelineKind))}</p>
         </div>
         <span class="pill">${escapeHtml(formatKind(entry.sequenceKind))}</span>
       </header>
       <p class="timeline-card-copy">
-        Anchors ${escapeHtml(describeAnchors(entry))}. Linked ${entry.linkedGroupCount}, overlays ${entry.overlayGroupCount}, cadence ${escapeHtml(describeTiming(entry))}, ${escapeHtml(describeLoop(entry))}.
+        Anchors ${escapeHtml(describeAnchors(entry))}. Linked ${entry.linkedGroupCount}, overlays ${entry.overlayGroupCount}, overlay cadence ${escapeHtml(describeTiming(entry))}, ${escapeHtml(describeLoop(entry))}.
+      </p>
+      <p class="timeline-card-copy">
+        ${escapeHtml(describeNativeTiming(entry))}
       </p>
       <div class="timeline-strip-frame">
         <img src="${entry.timelineStrip.pngPath}" alt="Timeline strip for stem ${entry.stem}" loading="lazy" />
@@ -326,6 +329,25 @@ function describeScriptPreview(entry: RecoveryCatalog['featuredScripts'][number]
       .join(' / ')
   }
   return entry.stringsPreview.slice(0, 2).join(' / ') || 'Recoverable text not found'
+}
+
+function describeNativeTiming(entry: RecoveryPreviewStem): string {
+  const pza = entry.pzxResourceGraph?.pza
+  const pzf = entry.pzxResourceGraph?.pzf
+  const pzd = entry.pzxResourceGraph?.pzd
+  const parts: string[] = []
+  if (pzd) {
+    parts.push(`PZD type ${pzd.typeId} image pool ${pzd.imageCount}`)
+  }
+  if (pzf) {
+    parts.push(`PZF frame pool ${pzf.frameCount}`)
+  }
+  if (pza) {
+    parts.push(`PZA clips ${pza.clipCount} with native delay ticks`)
+  } else {
+    parts.push('No embedded PZA timing exposed on this stem')
+  }
+  return parts.join(' / ')
 }
 
 function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
@@ -465,7 +487,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       <header class="story-card-header">
         <div>
           <strong>${escapeHtml(campaign.phaseTitle)}</strong>
-          <p>${escapeHtml(mapLine)} / ${escapeHtml(formatKind(previewStem.timelineKind))} / stem ${previewStem.stem}</p>
+          <p>${escapeHtml(mapLine)} / heuristic ${escapeHtml(formatKind(previewStem.timelineKind))} / stem ${previewStem.stem}</p>
         </div>
         <span class="pill">${escapeHtml(snapshot.currentStoryboard.locale ?? 'n/a')}</span>
       </header>

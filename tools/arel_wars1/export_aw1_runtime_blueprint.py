@@ -244,7 +244,7 @@ def build_stage_blueprints(
                     int(runtime_fields.get("storyFlagCandidate", 0)),
                 ),
                 "bankRule": "flag-driven-bank-switch",
-                "packedPixelHint": "Use 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail.",
+                "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail.",
             }
 
         opcode_labels = [str(item.get("label", "")) for item in opcode_cues]
@@ -292,6 +292,7 @@ def build_render_profile(
     return {
         "defaultMplBankRule": {
             "label": str(mpl_bank.get("label", "flag-driven-bank-switch")),
+            "certaintyLevel": str(mpl_bank.get("certaintyLevel", "native-confirmed")),
             "selectorRule": str(mpl_bank.get("selectorRule", "flag == 0 -> bank B, flag > 0 -> bank A")),
             "notes": list(mpl_bank.get("notes", []))[:4],
         },
@@ -300,7 +301,7 @@ def build_render_profile(
                 "stem": str(packed_179.get("stem", "179")),
                 "sharedMplStem": str(packed_179.get("sharedMplStem", "180")),
                 "heuristic": str(packed_179.get("formula", "")),
-                "confidence": "high",
+                "certaintyLevel": str(packed_179.get("certaintyLevel", "asset-structural")),
                 "transparentValue": int(packed_179.get("transparentValue", 0)),
                 "valueOffset": int(packed_179.get("valueOffset", 1)),
                 "paletteSize": int(packed_179.get("paletteSize", 47)),
@@ -308,9 +309,11 @@ def build_render_profile(
                 "coreBandCount": int(packed_179.get("coreBandCount", 4)),
                 "highlightRange": list(packed_179.get("highlightRange", [189, 199])),
                 "highlightBlendMode": str(packed_179.get("highlightBlendMode", "additive-tail")),
+                "notes": list(packed_179.get("notes", []))[:3],
             }
         ],
         "ptcBridgeSummary": {
+            "certaintyLevel": str(render_semantics.get("ptcEmitterSemantics", {}).get("certaintyLevel", "runtime-consistent heuristic")),
             "summary": effect_runtime.get("summary"),
             "familyRepresentativeEmitters": family_representatives,
             "sharedPrimaryGroups": effect_runtime.get("sharedPrimaryGroups", [])[:4],
