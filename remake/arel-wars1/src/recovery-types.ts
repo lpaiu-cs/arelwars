@@ -353,6 +353,28 @@ export interface RecoveryStageRenderState {
   ptcEmitterHint: string | null
 }
 
+export interface RecoveryHudGhostState {
+  ownTowerHpRatio: number
+  enemyTowerHpRatio: number
+  manaRatio: number
+  manaUpgradeProgressRatio: number
+  activePanel: 'tower' | 'skill' | 'item' | 'system' | null
+  highlightedMenuId: 'tower' | 'skill' | 'item' | 'system' | null
+  highlightedTowerUpgradeId: 'mana' | 'population' | 'attack' | null
+  highlightedUnitCardIndex: number | null
+  questVisible: boolean
+  questRewardReady: boolean
+  skillWindowVisible: boolean
+  itemWindowVisible: boolean
+  skillSlotHighlighted: boolean
+  itemSlotHighlighted: boolean
+  heroDeployed: boolean
+  heroPortraitHighlighted: boolean
+  returnCooldownRatio: number
+  dispatchArrowsHighlighted: boolean
+  leftDispatchCueVisible: boolean
+}
+
 export interface RecoveryStageSnapshot {
   storyboardIndex: number
   dialogueIndex: number
@@ -364,4 +386,5 @@ export interface RecoveryStageSnapshot {
   activeOpcodeCue: RecoveryResolvedOpcodeCue | null
   channelStates: RecoveryBattleChannelState[]
   renderState: RecoveryStageRenderState
+  hudState: RecoveryHudGhostState
 }

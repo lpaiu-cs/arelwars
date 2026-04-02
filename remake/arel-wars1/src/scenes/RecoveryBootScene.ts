@@ -327,6 +327,7 @@ export class RecoveryBootScene extends Phaser.Scene {
         : 0x4c676f
     graphics.lineStyle(2, borderColor, 0.8)
     graphics.strokeRoundedRect(x, y, width, height, 14)
+    this.drawHudGhost(graphics, snapshot, { x, y, width, height })
     this.drawTutorialFocus(graphics, snapshot, { x, y, width, height })
 
     const channelStates = snapshot.channelStates.slice(0, 4)
@@ -348,6 +349,171 @@ export class RecoveryBootScene extends Phaser.Scene {
         const radius = 18 + index * 14
         graphics.lineStyle(2, 0xdca863, 0.22)
         graphics.strokeCircle(this.previewImage.x + 96, this.previewImage.y - 52, radius)
+      }
+    }
+  }
+
+  private drawHudGhost(
+    graphics: Phaser.GameObjects.Graphics,
+    snapshot: RecoveryStageSnapshot,
+    bounds: FocusLayoutBounds,
+  ): void {
+    const hud = snapshot.hudState
+    const rect = (x: number, y: number, width: number, height: number) => ({
+      x: bounds.x + x * bounds.width,
+      y: bounds.y + y * bounds.height,
+      width: width * bounds.width,
+      height: height * bounds.height,
+    })
+    const circle = (x: number, y: number, radius: number) => ({
+      x: bounds.x + x * bounds.width,
+      y: bounds.y + y * bounds.height,
+      radius: radius * Math.min(bounds.width, bounds.height),
+    })
+    const drawBar = (
+      region: { x: number; y: number; width: number; height: number },
+      ratio: number,
+      fillColor: number,
+      highlighted: boolean,
+    ): void => {
+      graphics.fillStyle(0x0d1418, 0.92)
+      graphics.fillRoundedRect(region.x, region.y, region.width, region.height, 6)
+      graphics.fillStyle(fillColor, highlighted ? 0.95 : 0.72)
+      graphics.fillRoundedRect(region.x + 2, region.y + 2, Math.max((region.width - 4) * ratio, 8), region.height - 4, 5)
+      graphics.lineStyle(1.4, highlighted ? 0xf0b45e : 0x5a7176, highlighted ? 0.95 : 0.7)
+      graphics.strokeRoundedRect(region.x, region.y, region.width, region.height, 6)
+    }
+
+    drawBar(rect(0.06, 0.06, 0.28, 0.08), hud.ownTowerHpRatio, 0xcf4f53, snapshot.activeTutorialCue?.chainId === 'battle-hud-guard-hp')
+    drawBar(rect(0.66, 0.06, 0.28, 0.08), hud.enemyTowerHpRatio, 0x8c62d8, snapshot.activeTutorialCue?.chainId === 'battle-hud-goal-hp')
+    drawBar(rect(0.06, 0.16, 0.26, 0.06), hud.manaRatio, 0x4b9df0, snapshot.activeTutorialCue?.chainId === 'battle-hud-mana-bar')
+    drawBar(rect(0.06, 0.23, 0.26, 0.035), hud.manaUpgradeProgressRatio, 0xe25c64, hud.highlightedTowerUpgradeId === 'mana')
+
+    const unitCardBase = rect(0.02, 0.58, 0.18, 0.26)
+    for (let index = 0; index < 4; index += 1) {
+      const card = {
+        x: unitCardBase.x,
+        y: unitCardBase.y + index * (unitCardBase.height / 4 + 2),
+        width: unitCardBase.width,
+        height: unitCardBase.height / 4 - 2,
+      }
+      const highlighted = hud.highlightedUnitCardIndex === index
+      graphics.fillStyle(highlighted ? 0xe3bb78 : 0x52646b, highlighted ? 0.85 : 0.5)
+      graphics.fillRoundedRect(card.x, card.y, card.width, card.height, 5)
+      graphics.lineStyle(1.2, highlighted ? 0xf0b45e : 0x304148, 0.8)
+      graphics.strokeRoundedRect(card.x, card.y, card.width, card.height, 5)
+    }
+
+    const heroPortrait = circle(0.12, 0.84, 0.06)
+    graphics.fillStyle(hud.heroDeployed ? 0x69a15b : 0x687882, hud.heroPortraitHighlighted ? 0.92 : 0.72)
+    graphics.fillCircle(heroPortrait.x, heroPortrait.y, heroPortrait.radius)
+    graphics.lineStyle(1.4, hud.heroPortraitHighlighted ? 0xf0b45e : 0x304148, 0.92)
+    graphics.strokeCircle(heroPortrait.x, heroPortrait.y, heroPortrait.radius)
+    if (hud.returnCooldownRatio > 0) {
+      graphics.lineStyle(4, 0xce6a70, 0.85)
+      graphics.beginPath()
+      graphics.arc(heroPortrait.x, heroPortrait.y, heroPortrait.radius + 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * hud.returnCooldownRatio, false)
+      graphics.strokePath()
+    }
+
+    if (hud.dispatchArrowsHighlighted || hud.leftDispatchCueVisible) {
+      const arrowLane = rect(0.88, 0.28, 0.07, 0.28)
+      for (let index = 0; index < 2; index += 1) {
+        const arrowY = arrowLane.y + 22 + index * 40
+        graphics.lineStyle(2.2, hud.dispatchArrowsHighlighted ? 0xf0b45e : 0x6a7c80, 0.88)
+        graphics.lineBetween(arrowLane.x + arrowLane.width / 2, arrowY, arrowLane.x + arrowLane.width / 2, arrowY + 20)
+        graphics.lineBetween(arrowLane.x + arrowLane.width / 2, arrowY, arrowLane.x + arrowLane.width / 2 - 8, arrowY + 8)
+        graphics.lineBetween(arrowLane.x + arrowLane.width / 2, arrowY, arrowLane.x + arrowLane.width / 2 + 8, arrowY + 8)
+      }
+      if (hud.leftDispatchCueVisible) {
+        const cue = rect(0.04, 0.36, 0.06, 0.16)
+        graphics.fillStyle(0xf0b45e, 0.24)
+        graphics.fillRoundedRect(cue.x, cue.y, cue.width, cue.height, 6)
+        graphics.lineStyle(1.4, 0xf0b45e, 0.8)
+        graphics.strokeRoundedRect(cue.x, cue.y, cue.width, cue.height, 6)
+      }
+    }
+
+    const menuBar = rect(0.30, 0.78, 0.50, 0.12)
+    const menuIds: Array<NonNullable<typeof hud.highlightedMenuId>> = ['tower', 'skill', 'item', 'system']
+    menuIds.forEach((menuId, index) => {
+      const buttonWidth = menuBar.width / 4 - 6
+      const button = {
+        x: menuBar.x + index * (buttonWidth + 6),
+        y: menuBar.y,
+        width: buttonWidth,
+        height: menuBar.height,
+      }
+      const active = hud.highlightedMenuId === menuId || hud.activePanel === menuId
+      graphics.fillStyle(active ? 0x7e6238 : 0x27343a, active ? 0.9 : 0.68)
+      graphics.fillRoundedRect(button.x, button.y, button.width, button.height, 7)
+      graphics.lineStyle(1.4, active ? 0xf0b45e : 0x425359, 0.88)
+      graphics.strokeRoundedRect(button.x, button.y, button.width, button.height, 7)
+    })
+
+    if (hud.activePanel === 'tower') {
+      const ids: Array<NonNullable<typeof hud.highlightedTowerUpgradeId>> = ['mana', 'population', 'attack']
+      ids.forEach((upgradeId, index) => {
+        const slot = circle(0.35 + index * 0.06, 0.72, 0.038)
+        const active = hud.highlightedTowerUpgradeId === upgradeId
+        graphics.fillStyle(active ? 0xf0b45e : 0x5a6b70, active ? 0.9 : 0.55)
+        graphics.fillCircle(slot.x, slot.y, slot.radius)
+        graphics.lineStyle(1.2, active ? 0xffefbf : 0x324147, 0.9)
+        graphics.strokeCircle(slot.x, slot.y, slot.radius)
+      })
+    }
+
+    if (hud.skillWindowVisible) {
+      const skillWindow = rect(0.48, 0.60, 0.28, 0.12)
+      graphics.fillStyle(0x182228, 0.86)
+      graphics.fillRoundedRect(skillWindow.x, skillWindow.y, skillWindow.width, skillWindow.height, 8)
+      graphics.lineStyle(1.2, 0x5f7478, 0.82)
+      graphics.strokeRoundedRect(skillWindow.x, skillWindow.y, skillWindow.width, skillWindow.height, 8)
+      for (let index = 0; index < 3; index += 1) {
+        const slot = {
+          x: skillWindow.x + 8 + index * ((skillWindow.width - 28) / 3 + 6),
+          y: skillWindow.y + 8,
+          width: (skillWindow.width - 28) / 3,
+          height: skillWindow.height - 16,
+        }
+        const highlighted = hud.skillSlotHighlighted && index === 0
+        graphics.fillStyle(highlighted ? 0xd88763 : 0x54666b, highlighted ? 0.88 : 0.55)
+        graphics.fillRoundedRect(slot.x, slot.y, slot.width, slot.height, 5)
+        graphics.lineStyle(1.2, highlighted ? 0xf0b45e : 0x304148, 0.85)
+        graphics.strokeRoundedRect(slot.x, slot.y, slot.width, slot.height, 5)
+      }
+    }
+
+    if (hud.itemWindowVisible) {
+      const itemWindow = rect(0.62, 0.60, 0.18, 0.12)
+      graphics.fillStyle(0x182228, 0.86)
+      graphics.fillRoundedRect(itemWindow.x, itemWindow.y, itemWindow.width, itemWindow.height, 8)
+      graphics.lineStyle(1.2, 0x5f7478, 0.82)
+      graphics.strokeRoundedRect(itemWindow.x, itemWindow.y, itemWindow.width, itemWindow.height, 8)
+      for (let index = 0; index < 2; index += 1) {
+        const slot = {
+          x: itemWindow.x + 8 + index * ((itemWindow.width - 22) / 2 + 6),
+          y: itemWindow.y + 8,
+          width: (itemWindow.width - 22) / 2,
+          height: itemWindow.height - 16,
+        }
+        const highlighted = hud.itemSlotHighlighted && index === 0
+        graphics.fillStyle(highlighted ? 0xd88763 : 0x54666b, highlighted ? 0.88 : 0.55)
+        graphics.fillRoundedRect(slot.x, slot.y, slot.width, slot.height, 5)
+        graphics.lineStyle(1.2, highlighted ? 0xf0b45e : 0x304148, 0.85)
+        graphics.strokeRoundedRect(slot.x, slot.y, slot.width, slot.height, 5)
+      }
+    }
+
+    if (hud.questVisible) {
+      const questPanel = rect(0.74, 0.16, 0.20, 0.12)
+      graphics.fillStyle(0x182228, 0.9)
+      graphics.fillRoundedRect(questPanel.x, questPanel.y, questPanel.width, questPanel.height, 8)
+      graphics.lineStyle(1.3, hud.questRewardReady ? 0xf0b45e : 0x5f7478, 0.88)
+      graphics.strokeRoundedRect(questPanel.x, questPanel.y, questPanel.width, questPanel.height, 8)
+      if (hud.questRewardReady) {
+        graphics.fillStyle(0xf0b45e, 0.92)
+        graphics.fillCircle(questPanel.x + questPanel.width - 12, questPanel.y + 12, 5)
       }
     }
   }

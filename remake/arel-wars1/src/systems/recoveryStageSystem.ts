@@ -2,6 +2,7 @@ import type {
   RecoveryBattleChannelState,
   RecoveryCatalog,
   RecoveryDialogueEvent,
+  RecoveryHudGhostState,
   RecoveryResolvedOpcodeCue,
   RecoveryPreviewFrame,
   RecoveryPreviewManifest,
@@ -29,6 +30,11 @@ const GENERIC_OPCODE_VARIANTS = new Set([
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
+}
+
+function oscillate(nowMs: number, periodMs: number, phaseOffsetMs: number): number {
+  const phase = ((nowMs + phaseOffsetMs) % periodMs) / periodMs
+  return 0.5 + Math.sin(phase * Math.PI * 2) * 0.5
 }
 
 function dialogueDurationMs(event: RecoveryDialogueEvent): number {
@@ -201,6 +207,7 @@ export class RecoveryStageSystem {
       activeOpcodeCue,
       channelStates,
       renderState: this.buildRenderState(currentStoryboard, channelStates),
+      hudState: this.buildHudState(currentStoryboard, activeTutorialCue, activeOpcodeCue, channelStates),
     }
   }
 
@@ -456,6 +463,140 @@ export class RecoveryStageSystem {
         ptcHint && typeof ptcHint === 'object' && 'primaryPtcStem' in ptcHint
           ? String(ptcHint.primaryPtcStem)
           : null,
+    }
+  }
+
+  private buildHudState(
+    storyboard: RecoveryStageStoryboard,
+    activeTutorialCue: RecoveryTutorialChainCue | null,
+    _activeOpcodeCue: RecoveryResolvedOpcodeCue | null,
+    channelStates: RecoveryBattleChannelState[],
+  ): RecoveryHudGhostState {
+    const elapsed = Math.max(this.lastUpdateNowMs - this.storyboardStartedAtMs, 0)
+    const runtimeFields = storyboard.stageBlueprint?.runtimeFields
+    const channelEnergy =
+      channelStates.length > 0
+        ? channelStates.reduce((sum, channel) => sum + channel.intensity, 0) / channelStates.length
+        : 0.5
+    let ownTowerHpRatio = clamp(0.72 + oscillate(elapsed, 5800, 0) * 0.12 - channelEnergy * 0.04, 0.1, 1)
+    let enemyTowerHpRatio = clamp(0.54 + oscillate(elapsed, 5300, 900) * 0.18, 0.1, 1)
+    let manaRatio = clamp(0.42 + oscillate(elapsed, 3600, 1400) * 0.5, 0.06, 1)
+    let manaUpgradeProgressRatio = clamp(0.18 + oscillate(elapsed, 4200, 600) * 0.72, 0.04, 1)
+    let activePanel: RecoveryHudGhostState['activePanel'] = null
+    let highlightedMenuId: RecoveryHudGhostState['highlightedMenuId'] = null
+    let highlightedTowerUpgradeId: RecoveryHudGhostState['highlightedTowerUpgradeId'] = null
+    let highlightedUnitCardIndex: number | null = null
+    let questVisible = (runtimeFields?.storyFlagCandidate ?? 0) === 1
+    let questRewardReady = false
+    let skillWindowVisible = false
+    let itemWindowVisible = false
+    let skillSlotHighlighted = false
+    let itemSlotHighlighted = false
+    let heroDeployed = oscillate(elapsed, 4400, 200) > 0.55
+    let heroPortraitHighlighted = false
+    let returnCooldownRatio = heroDeployed ? clamp(oscillate(elapsed, 2600, 1200), 0, 1) : 0
+    let dispatchArrowsHighlighted = false
+    let leftDispatchCueVisible = false
+
+    switch (activeTutorialCue?.chainId) {
+      case 'battle-hud-guard-hp':
+        ownTowerHpRatio = 0.16
+        break
+      case 'battle-hud-goal-hp':
+        enemyTowerHpRatio = 0.14
+        break
+      case 'battle-hud-dispatch-arrows':
+        dispatchArrowsHighlighted = true
+        leftDispatchCueVisible = true
+        break
+      case 'battle-hud-unit-card':
+        highlightedUnitCardIndex = 0
+        manaRatio = Math.max(manaRatio, 0.62)
+        break
+      case 'battle-hud-mana-bar':
+        manaRatio = 0.34
+        manaUpgradeProgressRatio = 0.12
+        break
+      case 'battle-hud-hero-sortie':
+        heroDeployed = false
+        heroPortraitHighlighted = true
+        returnCooldownRatio = 0
+        break
+      case 'battle-hud-hero-return':
+        heroDeployed = true
+        heroPortraitHighlighted = true
+        returnCooldownRatio = 0.78
+        break
+      case 'tower-menu-highlight':
+        activePanel = 'tower'
+        highlightedMenuId = 'tower'
+        break
+      case 'mana-upgrade-highlight':
+        activePanel = 'tower'
+        highlightedMenuId = 'tower'
+        highlightedTowerUpgradeId = 'mana'
+        manaRatio = 1
+        manaUpgradeProgressRatio = 0.82
+        break
+      case 'population-upgrade-highlight':
+        activePanel = 'tower'
+        highlightedMenuId = 'tower'
+        highlightedTowerUpgradeId = 'population'
+        break
+      case 'skill-menu-highlight':
+        activePanel = 'skill'
+        highlightedMenuId = 'skill'
+        skillWindowVisible = true
+        break
+      case 'skill-slot-highlight':
+        activePanel = 'skill'
+        highlightedMenuId = 'skill'
+        skillWindowVisible = true
+        skillSlotHighlighted = true
+        break
+      case 'item-menu-highlight':
+        activePanel = 'item'
+        highlightedMenuId = 'item'
+        itemWindowVisible = true
+        itemSlotHighlighted = true
+        break
+      case 'system-menu-highlight':
+        activePanel = 'system'
+        highlightedMenuId = 'system'
+        break
+      case 'quest-panel-highlight':
+        questVisible = true
+        questRewardReady = true
+        highlightedMenuId = 'system'
+        break
+      default:
+        break
+    }
+
+    if (activePanel === null && questVisible) {
+      highlightedMenuId = highlightedMenuId ?? 'system'
+    }
+
+    return {
+      ownTowerHpRatio,
+      enemyTowerHpRatio,
+      manaRatio,
+      manaUpgradeProgressRatio,
+      activePanel,
+      highlightedMenuId,
+      highlightedTowerUpgradeId,
+      highlightedUnitCardIndex,
+      questVisible,
+      questRewardReady,
+      skillWindowVisible,
+      itemWindowVisible,
+      skillSlotHighlighted,
+      itemSlotHighlighted,
+      heroDeployed,
+      heroPortraitHighlighted,
+      returnCooldownRatio,
+      dispatchArrowsHighlighted,
+      leftDispatchCueVisible,
     }
   }
 }
