@@ -21,6 +21,8 @@ Produce stage-by-stage evidence that the remake matches the original in:
   - [AW1.verification_spec.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.verification_spec.json)
 - Native truth manifest:
   - [AW1.native_truth_manifest.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.native_truth_manifest.json)
+- Original APK-derived reference bundle:
+  - [AW1.original_reference_bundle.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.original_reference_bundle.json)
 - Runtime trace export:
   - exported from the remake UI with `Export Verification`
 - Full replay suite export:

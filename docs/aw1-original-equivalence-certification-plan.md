@@ -93,6 +93,8 @@ Outputs:
 - original-side trace schema
 - original-side capture bundle directory
 - conversion tools that normalize legacy captures into the same schema the remake exports
+- APK-derived bootstrap reference bundle:
+  - [AW1.original_reference_bundle.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.original_reference_bundle.json)
 
 Exit condition:
 
