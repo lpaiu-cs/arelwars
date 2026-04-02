@@ -184,7 +184,7 @@ def main() -> None:
     featured_actions = [item for item in opcode_actions if bool(item["featuredInRuntime"])]
     findings = [
         "Opcode action export now separates mnemonic-wide hints from variant-local clues so runtime labels no longer depend on exporter-local constants.",
-        "The strongest tutorial/UI variants remain cmd-06(0x0d), cmd-07(0x40), cmd-0a(0x40), and cmd-0c(0x40).",
+        "The strongest tutorial/UI variants now include cmd-00(0x0d), cmd-06(0x0d), cmd-07/08/09/0a/0b/0c/0d/0e(0x40).",
         "The strongest presentation/emphasis variants remain cmd-05(0x03), cmd-08(0x00), cmd-0a(0x10), and cmd-0b(0x10).",
     ]
     payload = {

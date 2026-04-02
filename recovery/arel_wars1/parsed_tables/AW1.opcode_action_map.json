@@ -1,8 +1,8 @@
 {
   "summary": {
     "opcodeActionCount": 106,
-    "featuredOpcodeCount": 10,
-    "curatedVariantCount": 12
+    "featuredOpcodeCount": 15,
+    "curatedVariantCount": 18
   },
   "opcodeActions": [
     {
@@ -286,8 +286,8 @@
     },
     {
       "mnemonic": "cmd-08",
-      "label": "presentation-close",
-      "action": "release-dialogue-pose",
+      "label": "mixed-presentation-or-upgrade-target",
+      "action": "release-dialogue-pose-or-focus-upgrade-slot",
       "category": "presentation",
       "confidence": "medium",
       "count": 679,
@@ -295,7 +295,7 @@
       "evidenceSummary": [
         "Most common predecessor/follower is `cmd-05` (583x) -> `<end>` (599x).",
         "Frequently terminates pose-helper sequences that include cmd-05.",
-        "Best current reading is a close or release presentation command."
+        "Variant 0x40 is a strong tutorial highlight for the Mana upgrade icon."
       ],
       "variantHints": [
         {
@@ -374,6 +374,85 @@
               "speaker": "Cecil",
               "text": "Vincent, you haven't been in battle for a while now. Take it easy, alright?",
               "sequence": "cmd-10 > set-left-portrait > cmd-05 > cmd-08"
+            }
+          ]
+        },
+        {
+          "variant": "cmd-08:40",
+          "args": [
+            64
+          ],
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: mana, cff, upgrade.",
+            "Appears on tutorial lines about Mana regeneration speed and max Mana."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "mana",
+              "count": 9
+            },
+            {
+              "value": "cff",
+              "count": 3
+            },
+            {
+              "value": "upgrade",
+              "count": 3
+            },
+            {
+              "value": "increases",
+              "count": 3
+            },
+            {
+              "value": "regeneration",
+              "count": 3
+            },
+            {
+              "value": "speed",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+              "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+              "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+              "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
             }
           ]
         }
@@ -559,6 +638,285 @@
             "speaker": "Vincent",
             "text": "Umm, that was too easy!",
             "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
+          }
+        ]
+      }
+    },
+    {
+      "mnemonic": "cmd-00",
+      "label": "mixed-battlefield-selector",
+      "action": "select-contextual-battlefield-focus",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 236,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `cmd-0c` (113x) -> `<end>` (72x).",
+        "Variant 0x0d is strongly tied to the battle-HUD tutorial chain, but other uses remain mixed.",
+        "Treat the mnemonic-wide label as a selector family, not a final engine-name claim."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-00:0d",
+          "args": [
+            13
+          ],
+          "label": "battle-hud-focus-prelude",
+          "action": "enter-battle-hud-focus-mode",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 36,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0004.zt1`. Top English tokens: cff, cffffff, drop.",
+            "Repeated across `0004`, `0404`, and `0804` before tower HP, unit-card, mana-bar, sortie, and return-to-tower lines."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0004.zt1",
+              "count": 6
+            },
+            {
+              "value": "assets/script_eng/0404.zt1",
+              "count": 6
+            },
+            {
+              "value": "assets/script_eng/0804.zt1",
+              "count": 6
+            },
+            {
+              "value": "assets/script_kor/0004.zt1",
+              "count": 6
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "cff",
+              "count": 9
+            },
+            {
+              "value": "cffffff",
+              "count": 9
+            },
+            {
+              "value": "drop",
+              "count": 6
+            },
+            {
+              "value": "its",
+              "count": 6
+            },
+            {
+              "value": "hp",
+              "count": 6
+            },
+            {
+              "value": "unit",
+              "count": 6
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0004.zt1",
+              "speaker": "Cecil",
+              "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
+              "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+            },
+            {
+              "path": "assets/script_eng/0004.zt1",
+              "speaker": "Cecil",
+              "text": "!cff0005Drop its HP down to 0!cffffff, and you win.",
+              "sequence": "cmd-02 > cmd-00 > set-right-portrait > cmd-05 > cmd-02"
+            },
+            {
+              "path": "assets/script_eng/0004.zt1",
+              "speaker": "Cecil",
+              "text": "!cff0005Touch a unit card on the left!cffffff to produce the unit.",
+              "sequence": "cmd-02 > cmd-00 > set-left-portrait > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 59
+          },
+          {
+            "value": "0d",
+            "count": 36
+          },
+          {
+            "value": "03",
+            "count": 35
+          },
+          {
+            "value": "05",
+            "count": 23
+          },
+          {
+            "value": "01",
+            "count": 23
+          },
+          {
+            "value": "04",
+            "count": 16
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-0c > cmd-00",
+            "count": 38
+          },
+          {
+            "value": "cmd-02 > cmd-00 > cmd-06 > cmd-02 > set-right-portrait > cmd-00",
+            "count": 12
+          },
+          {
+            "value": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression",
+            "count": 8
+          },
+          {
+            "value": "cmd-0c > cmd-00 > set-expression",
+            "count": 8
+          },
+          {
+            "value": "cmd-0c > cmd-00 > cmd-09",
+            "count": 8
+          },
+          {
+            "value": "cmd-02 > cmd-00 > set-expression > cmd-02",
+            "count": 6
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "cmd-0c",
+            "count": 113
+          },
+          {
+            "value": "cmd-02",
+            "count": 36
+          },
+          {
+            "value": "cmd-06",
+            "count": 31
+          },
+          {
+            "value": "cmd-00",
+            "count": 13
+          },
+          {
+            "value": "cmd-09",
+            "count": 10
+          },
+          {
+            "value": "<start>",
+            "count": 8
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "<end>",
+            "count": 72
+          },
+          {
+            "value": "set-expression",
+            "count": 24
+          },
+          {
+            "value": "cmd-05",
+            "count": 23
+          },
+          {
+            "value": "cmd-08",
+            "count": 16
+          },
+          {
+            "value": "cmd-00",
+            "count": 13
+          },
+          {
+            "value": "set-left-portrait",
+            "count": 12
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Cecil",
+            "count": 13
+          },
+          {
+            "value": "Neive",
+            "count": 13
+          },
+          {
+            "value": "Theon",
+            "count": 13
+          },
+          {
+            "value": "세실",
+            "count": 13
+          },
+          {
+            "value": "Vincent",
+            "count": 12
+          },
+          {
+            "value": "빈센트",
+            "count": 12
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0004.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_eng/0404.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_eng/0804.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_kor/0004.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_kor/0404.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_kor/0804.zt1",
+            "count": 8
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Vincent",
+            "text": "Yo, General!",
+            "sequence": "set-expression > cmd-09 > cmd-00 > set-left-portrait > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0004.zt1",
+            "speaker": "Cecil",
+            "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
+            "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+          },
+          {
+            "path": "assets/script_eng/0004.zt1",
+            "speaker": "Cecil",
+            "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
+            "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+          },
+          {
+            "path": "assets/script_eng/0004.zt1",
+            "speaker": "Cecil",
+            "text": "!cff0005Drop its HP down to 0!cffffff, and you win.",
+            "sequence": "cmd-02 > cmd-00 > set-right-portrait > cmd-05 > cmd-02"
           }
         ]
       }
@@ -1187,7 +1545,7 @@
     {
       "mnemonic": "cmd-0b",
       "label": "mixed-emphasis-release",
-      "action": "release-emphasis-or-ui-target",
+      "action": "release-emphasis-or-focus-skill-slot",
       "category": "emphasis",
       "confidence": "medium",
       "count": 198,
@@ -1195,7 +1553,7 @@
       "evidenceSummary": [
         "Most common predecessor/follower is `cmd-0a` (114x) -> `<end>` (63x).",
         "Pairs strongly with cmd-0a in shock or impact lines.",
-        "Variant-level interpretation is safer than a global rename."
+        "Variant 0x40 is a strong tutorial highlight for the active skill window."
       ],
       "variantHints": [
         {
@@ -1274,6 +1632,85 @@
               "speaker": "Vincent",
               "text": "Hey, you're practically sending us to die!",
               "sequence": "set-left-portrait > set-right-portrait > cmd-0b"
+            }
+          ]
+        },
+        {
+          "variant": "cmd-0b:40",
+          "args": [
+            64
+          ],
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: skill, window, remember.",
+            "Appears on tutorial lines about touching a skill in the battle skill window."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "skill",
+              "count": 3
+            },
+            {
+              "value": "window",
+              "count": 3
+            },
+            {
+              "value": "remember",
+              "count": 3
+            },
+            {
+              "value": "only",
+              "count": 3
+            },
+            {
+              "value": "skills",
+              "count": 3
+            },
+            {
+              "value": "you've",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
             }
           ]
         }
@@ -1743,6 +2180,285 @@
       }
     },
     {
+      "mnemonic": "cmd-09",
+      "label": "mixed-population-selector",
+      "action": "focus-population-upgrade-or-related-ui-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 147,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (108x) -> `set-left-portrait` (26x).",
+        "Variant 0x40 is strongly tied to Upgrade Population in the menu tutorial.",
+        "The opcode family is not yet globally proven outside the tutorial path."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-09:40",
+          "args": [
+            64
+          ],
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: once, population, maxed.",
+            "Appears on tutorial lines about hitting max population and unit production capacity."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "once",
+              "count": 3
+            },
+            {
+              "value": "population",
+              "count": 3
+            },
+            {
+              "value": "maxed",
+              "count": 3
+            },
+            {
+              "value": "can't",
+              "count": 3
+            },
+            {
+              "value": "produce",
+              "count": 3
+            },
+            {
+              "value": "units",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+              "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+              "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+              "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "04",
+            "count": 49
+          },
+          {
+            "value": "00",
+            "count": 27
+          },
+          {
+            "value": "08",
+            "count": 15
+          },
+          {
+            "value": "01",
+            "count": 13
+          },
+          {
+            "value": "0c",
+            "count": 10
+          },
+          {
+            "value": "03",
+            "count": 10
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-09 > set-left-portrait > cmd-05 > cmd-08",
+            "count": 12
+          },
+          {
+            "value": "cmd-0c > cmd-00 > cmd-09",
+            "count": 8
+          },
+          {
+            "value": "cmd-09 > cmd-09 > cmd-08",
+            "count": 8
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-09 > set-left-portrait",
+            "count": 6
+          },
+          {
+            "value": "cmd-09 > cmd-05 > cmd-08",
+            "count": 6
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 108
+          },
+          {
+            "value": "cmd-06",
+            "count": 8
+          },
+          {
+            "value": "cmd-00",
+            "count": 8
+          },
+          {
+            "value": "cmd-09",
+            "count": 7
+          },
+          {
+            "value": "set-expression",
+            "count": 6
+          },
+          {
+            "value": "cmd-07",
+            "count": 4
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "set-left-portrait",
+            "count": 26
+          },
+          {
+            "value": "cmd-07",
+            "count": 18
+          },
+          {
+            "value": "cmd-0a",
+            "count": 16
+          },
+          {
+            "value": "<end>",
+            "count": 15
+          },
+          {
+            "value": "set-expression",
+            "count": 12
+          },
+          {
+            "value": "cmd-05",
+            "count": 12
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Theon",
+            "count": 18
+          },
+          {
+            "value": "테온",
+            "count": 14
+          },
+          {
+            "value": "Juno",
+            "count": 9
+          },
+          {
+            "value": "유노",
+            "count": 8
+          },
+          {
+            "value": "Martin",
+            "count": 5
+          },
+          {
+            "value": "Vincent",
+            "count": 5
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0993.zt1",
+            "count": 4
+          },
+          {
+            "value": "assets/script_eng/0000.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/0000.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0303.zt1",
+            "count": 2
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Martin",
+            "text": "Welcome to !cff37ffIron Castle!cffffff. I'm Guardian Knight !c00ffffMartin!cffffff.",
+            "sequence": "cmd-09 > set-expression > set-left-portrait > cmd-05 > cmd-09 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Martin",
+            "text": "Welcome to !cff37ffIron Castle!cffffff. I'm Guardian Knight !c00ffffMartin!cffffff.",
+            "sequence": "cmd-09 > set-expression > set-left-portrait > cmd-05 > cmd-09 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Vincent",
+            "text": "Yo, General!",
+            "sequence": "set-expression > cmd-09 > cmd-00 > set-left-portrait > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+            "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+          }
+        ]
+      }
+    },
+    {
       "mnemonic": "cmd-0c",
       "label": "tutorial-target-anchor",
       "action": "bind-guided-target",
@@ -2005,6 +2721,285 @@
             "speaker": "Arang",
             "text": "This time, us Busters will result in victory!",
             "sequence": "cmd-0c > set-left-portrait > cmd-05 > cmd-08 > cmd-06"
+          }
+        ]
+      }
+    },
+    {
+      "mnemonic": "cmd-07",
+      "label": "mixed-tower-selector",
+      "action": "focus-tower-menu-or-related-ui-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 119,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (32x) -> `cmd-05` (21x).",
+        "Variant 0x40 is strongly tied to the Tower menu tutorial highlight.",
+        "The wider opcode family is still not proven outside mirrored tutorial chains."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-07:40",
+          "args": [
+            64
+          ],
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: cffa, icons, tower.",
+            "Tied to tutorial lines about tower icons and upgrades."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "cffa",
+              "count": 3
+            },
+            {
+              "value": "icons",
+              "count": 3
+            },
+            {
+              "value": "tower",
+              "count": 3
+            },
+            {
+              "value": "cffffff",
+              "count": 3
+            },
+            {
+              "value": "stronger",
+              "count": 3
+            },
+            {
+              "value": "touching",
+              "count": 1
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "!cffa900Touching the icons in the Tower!cffffff will make you stronger.",
+              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "!cffa900Touch the icons in the Tower!cffffff to make Helba stronger.",
+              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "!cffa900Touch the icons in the Tower!cffffff to make Juno stronger.",
+              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 35
+          },
+          {
+            "value": "05",
+            "count": 32
+          },
+          {
+            "value": "04",
+            "count": 12
+          },
+          {
+            "value": "08",
+            "count": 10
+          },
+          {
+            "value": "07",
+            "count": 10
+          },
+          {
+            "value": "03",
+            "count": 10
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-07 > set-left-portrait > cmd-05 > cmd-08",
+            "count": 16
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-07 > cmd-09 > cmd-07 > cmd-07 > cmd-0a > cmd-0b > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-07 > cmd-07 > set-left-portrait > set-right-portrait",
+            "count": 4
+          },
+          {
+            "value": "cmd-07 > cmd-05 > cmd-0a > cmd-0b > set-left-portrait > set-right-portrait",
+            "count": 4
+          },
+          {
+            "value": "cmd-06 > cmd-07 > cmd-07 > cmd-00",
+            "count": 4
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 32
+          },
+          {
+            "value": "cmd-09",
+            "count": 18
+          },
+          {
+            "value": "cmd-06",
+            "count": 16
+          },
+          {
+            "value": "cmd-00",
+            "count": 12
+          },
+          {
+            "value": "cmd-07",
+            "count": 11
+          },
+          {
+            "value": "cmd-10",
+            "count": 6
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "cmd-05",
+            "count": 21
+          },
+          {
+            "value": "set-left-portrait",
+            "count": 20
+          },
+          {
+            "value": "<end>",
+            "count": 18
+          },
+          {
+            "value": "set-right-portrait",
+            "count": 17
+          },
+          {
+            "value": "cmd-07",
+            "count": 11
+          },
+          {
+            "value": "cmd-02",
+            "count": 6
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Juno",
+            "count": 21
+          },
+          {
+            "value": "유노",
+            "count": 15
+          },
+          {
+            "value": "Helba",
+            "count": 10
+          },
+          {
+            "value": "헬바",
+            "count": 8
+          },
+          {
+            "value": "Cecil",
+            "count": 5
+          },
+          {
+            "value": "세실",
+            "count": 5
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0430.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0993.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/1110.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/1110.zt1",
+            "count": 3
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "!cffa900Touching the icons in the Tower!cffffff will make you stronger.",
+            "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+          },
+          {
+            "path": "assets/script_eng/0030.zt1",
+            "speaker": "Vincent",
+            "text": "Err, did you hear that?",
+            "sequence": "cmd-06 > cmd-05 > cmd-07 > cmd-05 > set-left-portrait > set-right-portrait"
+          },
+          {
+            "path": "assets/script_eng/0031.zt1",
+            "speaker": "Cecil",
+            "text": "Vincent, we can't take too much damage... we're low on supplies!",
+            "sequence": "cmd-07 > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0040.zt1",
+            "speaker": "Mercenary 1",
+            "text": "Sound the alarm, it's Busters!",
+            "sequence": "set-expression > set-expression > cmd-07 > cmd-05"
           }
         ]
       }
@@ -2289,6 +3284,229 @@
       }
     },
     {
+      "mnemonic": "cmd-0d",
+      "label": "mixed-system-selector",
+      "action": "focus-system-menu-or-scene-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 32,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (26x) -> `set-left-portrait` (16x).",
+        "Variant 0x40 is strongly tied to the System menu tutorial highlight.",
+        "Variant 0x00 still appears in generic scene-opening chains, so the family remains mixed."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-0d:40",
+          "args": [
+            64
+          ],
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: system, menu, resume.",
+            "Appears on tutorial lines about pausing, resuming, and configuration settings."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "system",
+              "count": 3
+            },
+            {
+              "value": "menu",
+              "count": 3
+            },
+            {
+              "value": "resume",
+              "count": 3
+            },
+            {
+              "value": "battling",
+              "count": 3
+            },
+            {
+              "value": "configure",
+              "count": 3
+            },
+            {
+              "value": "settings",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "You can use the System menu to resume battling, or to configure your settings.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "You can use the System menu to resume battling, or to configure your settings.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "You can use the System menu to resume battling, or to configure your settings.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 26
+          },
+          {
+            "value": "40",
+            "count": 6
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-0d > set-left-portrait > cmd-05 > cmd-08",
+            "count": 16
+          },
+          {
+            "value": "cmd-0d > cmd-05 > cmd-08",
+            "count": 10
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05",
+            "count": 6
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 26
+          },
+          {
+            "value": "cmd-06",
+            "count": 6
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "set-left-portrait",
+            "count": 16
+          },
+          {
+            "value": "cmd-05",
+            "count": 10
+          },
+          {
+            "value": "cmd-02",
+            "count": 6
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Vincent",
+            "count": 3
+          },
+          {
+            "value": "Juno",
+            "count": 3
+          },
+          {
+            "value": "빈센트",
+            "count": 3
+          },
+          {
+            "value": "유노",
+            "count": 3
+          },
+          {
+            "value": "Cecil",
+            "count": 1
+          },
+          {
+            "value": "Proxy",
+            "count": 1
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0003.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0014.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0160.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0301.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0414.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0420.zt1",
+            "count": 1
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0003.zt1",
+            "speaker": "Vincent",
+            "text": "Umm, that was too easy!",
+            "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "You can use the System menu to resume battling, or to configure your settings.",
+            "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+          },
+          {
+            "path": "assets/script_eng/0160.zt1",
+            "speaker": "Vincent",
+            "text": "I can see the Free Trade Harbor!",
+            "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0301.zt1",
+            "speaker": "Proxy",
+            "text": "You fools!  How dare you bite the hand that feeds you!",
+            "sequence": "cmd-0d > cmd-05 > cmd-08"
+          }
+        ]
+      }
+    },
+    {
       "mnemonic": "cmd-18",
       "label": "banter-entry-preset",
       "action": "load-banter-entry-layout",
@@ -2496,6 +3714,233 @@
       }
     },
     {
+      "mnemonic": "cmd-0e",
+      "label": "mixed-quest-selector",
+      "action": "focus-quest-panel-or-scene-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 19,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (13x) -> `set-left-portrait` (10x).",
+        "Variant 0x40 is strongly tied to the quest panel and rewards tutorial chain.",
+        "Variant 0x00 also appears as a generic scene-opening opcode, so the family remains mixed."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-0e:40",
+          "args": [
+            64
+          ],
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: quests, come, with.",
+            "Appears on tutorial lines about quest rewards on the upper-right side."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "quests",
+              "count": 3
+            },
+            {
+              "value": "come",
+              "count": 3
+            },
+            {
+              "value": "with",
+              "count": 3
+            },
+            {
+              "value": "special",
+              "count": 3
+            },
+            {
+              "value": "rewards",
+              "count": 3
+            },
+            {
+              "value": "try",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "Quests come with special rewards, try to complete them.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "Quests come with special rewards, try to complete them.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "Quests come with special rewards, try to complete them.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 13
+          },
+          {
+            "value": "40",
+            "count": 6
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-0e > set-left-portrait > cmd-05 > cmd-08",
+            "count": 8
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-0e > cmd-05 > cmd-08",
+            "count": 3
+          },
+          {
+            "value": "cmd-0e > set-left-portrait > set-right-portrait > cmd-05 > cmd-08",
+            "count": 2
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 13
+          },
+          {
+            "value": "cmd-06",
+            "count": 6
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "set-left-portrait",
+            "count": 10
+          },
+          {
+            "value": "set-right-portrait",
+            "count": 6
+          },
+          {
+            "value": "cmd-05",
+            "count": 3
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Cecil",
+            "count": 2
+          },
+          {
+            "value": "Juno",
+            "count": 2
+          },
+          {
+            "value": "세실",
+            "count": 2
+          },
+          {
+            "value": "유노",
+            "count": 2
+          },
+          {
+            "value": "Helba",
+            "count": 1
+          },
+          {
+            "value": "Arang",
+            "count": 1
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0014.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0063.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0401.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0414.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0441.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0810.zt1",
+            "count": 1
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "Quests come with special rewards, try to complete them.",
+            "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+          },
+          {
+            "path": "assets/script_eng/0063.zt1",
+            "speaker": "Cecil",
+            "text": "Vincent, the Hunters are back.",
+            "sequence": "cmd-0e > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0401.zt1",
+            "speaker": "Helba",
+            "text": "Elven, why are you attacking us?!",
+            "sequence": "cmd-0e > set-left-portrait > set-right-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0414.zt1",
+            "speaker": "Arang",
+            "text": "Quests come with special rewards, try to complete them.",
+            "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+          }
+        ]
+      }
+    },
+    {
       "mnemonic": "cmd-43",
       "label": "tutorial-bootstrap",
       "action": "enter-tutorial-narration",
@@ -2686,818 +4131,6 @@
             "speaker": "세실",
             "text": "전투하는 법에 대해 설명해 줄게.",
             "sequence": "cmd-43 > set-left-portrait > cmd-05 > cmd-08 > cmd-05"
-          }
-        ]
-      }
-    },
-    {
-      "mnemonic": "cmd-00",
-      "label": "cmd-00",
-      "action": "unknown-runtime-action",
-      "category": "unknown",
-      "confidence": "low",
-      "count": 236,
-      "featuredInRuntime": false,
-      "evidenceSummary": [
-        "Most common predecessor/follower is `cmd-0c` (113x) -> `<end>` (72x)."
-      ],
-      "variantHints": [],
-      "signalProfile": {
-        "topArgs": [
-          {
-            "value": "00",
-            "count": 59
-          },
-          {
-            "value": "0d",
-            "count": 36
-          },
-          {
-            "value": "03",
-            "count": 35
-          },
-          {
-            "value": "05",
-            "count": 23
-          },
-          {
-            "value": "01",
-            "count": 23
-          },
-          {
-            "value": "04",
-            "count": 16
-          }
-        ],
-        "topSequences": [
-          {
-            "value": "cmd-0c > cmd-00",
-            "count": 38
-          },
-          {
-            "value": "cmd-02 > cmd-00 > cmd-06 > cmd-02 > set-right-portrait > cmd-00",
-            "count": 12
-          },
-          {
-            "value": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression",
-            "count": 8
-          },
-          {
-            "value": "cmd-0c > cmd-00 > set-expression",
-            "count": 8
-          },
-          {
-            "value": "cmd-0c > cmd-00 > cmd-09",
-            "count": 8
-          },
-          {
-            "value": "cmd-02 > cmd-00 > set-expression > cmd-02",
-            "count": 6
-          }
-        ],
-        "previousCommands": [
-          {
-            "value": "cmd-0c",
-            "count": 113
-          },
-          {
-            "value": "cmd-02",
-            "count": 36
-          },
-          {
-            "value": "cmd-06",
-            "count": 31
-          },
-          {
-            "value": "cmd-00",
-            "count": 13
-          },
-          {
-            "value": "cmd-09",
-            "count": 10
-          },
-          {
-            "value": "<start>",
-            "count": 8
-          }
-        ],
-        "nextCommands": [
-          {
-            "value": "<end>",
-            "count": 72
-          },
-          {
-            "value": "set-expression",
-            "count": 24
-          },
-          {
-            "value": "cmd-05",
-            "count": 23
-          },
-          {
-            "value": "cmd-08",
-            "count": 16
-          },
-          {
-            "value": "cmd-00",
-            "count": 13
-          },
-          {
-            "value": "set-left-portrait",
-            "count": 12
-          }
-        ],
-        "topSpeakers": [
-          {
-            "value": "Cecil",
-            "count": 13
-          },
-          {
-            "value": "Neive",
-            "count": 13
-          },
-          {
-            "value": "Theon",
-            "count": 13
-          },
-          {
-            "value": "세실",
-            "count": 13
-          },
-          {
-            "value": "Vincent",
-            "count": 12
-          },
-          {
-            "value": "빈센트",
-            "count": 12
-          }
-        ],
-        "topScripts": [
-          {
-            "value": "assets/script_eng/0004.zt1",
-            "count": 8
-          },
-          {
-            "value": "assets/script_eng/0404.zt1",
-            "count": 8
-          },
-          {
-            "value": "assets/script_eng/0804.zt1",
-            "count": 8
-          },
-          {
-            "value": "assets/script_kor/0004.zt1",
-            "count": 8
-          },
-          {
-            "value": "assets/script_kor/0404.zt1",
-            "count": 8
-          },
-          {
-            "value": "assets/script_kor/0804.zt1",
-            "count": 8
-          }
-        ],
-        "samples": [
-          {
-            "path": "assets/script_eng/0000.zt1",
-            "speaker": "Vincent",
-            "text": "Yo, General!",
-            "sequence": "set-expression > cmd-09 > cmd-00 > set-left-portrait > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0004.zt1",
-            "speaker": "Cecil",
-            "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
-            "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
-          },
-          {
-            "path": "assets/script_eng/0004.zt1",
-            "speaker": "Cecil",
-            "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
-            "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
-          },
-          {
-            "path": "assets/script_eng/0004.zt1",
-            "speaker": "Cecil",
-            "text": "!cff0005Drop its HP down to 0!cffffff, and you win.",
-            "sequence": "cmd-02 > cmd-00 > set-right-portrait > cmd-05 > cmd-02"
-          }
-        ]
-      }
-    },
-    {
-      "mnemonic": "cmd-09",
-      "label": "cmd-09",
-      "action": "unknown-runtime-action",
-      "category": "unknown",
-      "confidence": "low",
-      "count": 147,
-      "featuredInRuntime": false,
-      "evidenceSummary": [
-        "Most common predecessor/follower is `<start>` (108x) -> `set-left-portrait` (26x)."
-      ],
-      "variantHints": [],
-      "signalProfile": {
-        "topArgs": [
-          {
-            "value": "04",
-            "count": 49
-          },
-          {
-            "value": "00",
-            "count": 27
-          },
-          {
-            "value": "08",
-            "count": 15
-          },
-          {
-            "value": "01",
-            "count": 13
-          },
-          {
-            "value": "0c",
-            "count": 10
-          },
-          {
-            "value": "03",
-            "count": 10
-          }
-        ],
-        "topSequences": [
-          {
-            "value": "cmd-09 > set-left-portrait > cmd-05 > cmd-08",
-            "count": 12
-          },
-          {
-            "value": "cmd-0c > cmd-00 > cmd-09",
-            "count": 8
-          },
-          {
-            "value": "cmd-09 > cmd-09 > cmd-08",
-            "count": 8
-          },
-          {
-            "value": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05",
-            "count": 6
-          },
-          {
-            "value": "cmd-09 > set-left-portrait",
-            "count": 6
-          },
-          {
-            "value": "cmd-09 > cmd-05 > cmd-08",
-            "count": 6
-          }
-        ],
-        "previousCommands": [
-          {
-            "value": "<start>",
-            "count": 108
-          },
-          {
-            "value": "cmd-06",
-            "count": 8
-          },
-          {
-            "value": "cmd-00",
-            "count": 8
-          },
-          {
-            "value": "cmd-09",
-            "count": 7
-          },
-          {
-            "value": "set-expression",
-            "count": 6
-          },
-          {
-            "value": "cmd-07",
-            "count": 4
-          }
-        ],
-        "nextCommands": [
-          {
-            "value": "set-left-portrait",
-            "count": 26
-          },
-          {
-            "value": "cmd-07",
-            "count": 18
-          },
-          {
-            "value": "cmd-0a",
-            "count": 16
-          },
-          {
-            "value": "<end>",
-            "count": 15
-          },
-          {
-            "value": "set-expression",
-            "count": 12
-          },
-          {
-            "value": "cmd-05",
-            "count": 12
-          }
-        ],
-        "topSpeakers": [
-          {
-            "value": "Theon",
-            "count": 18
-          },
-          {
-            "value": "테온",
-            "count": 14
-          },
-          {
-            "value": "Juno",
-            "count": 9
-          },
-          {
-            "value": "유노",
-            "count": 8
-          },
-          {
-            "value": "Martin",
-            "count": 5
-          },
-          {
-            "value": "Vincent",
-            "count": 5
-          }
-        ],
-        "topScripts": [
-          {
-            "value": "assets/script_eng/0993.zt1",
-            "count": 4
-          },
-          {
-            "value": "assets/script_eng/0000.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_eng/0923.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_kor/0000.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_kor/0923.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_eng/0303.zt1",
-            "count": 2
-          }
-        ],
-        "samples": [
-          {
-            "path": "assets/script_eng/0000.zt1",
-            "speaker": "Martin",
-            "text": "Welcome to !cff37ffIron Castle!cffffff. I'm Guardian Knight !c00ffffMartin!cffffff.",
-            "sequence": "cmd-09 > set-expression > set-left-portrait > cmd-05 > cmd-09 > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0000.zt1",
-            "speaker": "Martin",
-            "text": "Welcome to !cff37ffIron Castle!cffffff. I'm Guardian Knight !c00ffffMartin!cffffff.",
-            "sequence": "cmd-09 > set-expression > set-left-portrait > cmd-05 > cmd-09 > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0000.zt1",
-            "speaker": "Vincent",
-            "text": "Yo, General!",
-            "sequence": "set-expression > cmd-09 > cmd-00 > set-left-portrait > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0014.zt1",
-            "speaker": "Cecil",
-            "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
-            "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
-          }
-        ]
-      }
-    },
-    {
-      "mnemonic": "cmd-07",
-      "label": "cmd-07",
-      "action": "unknown-runtime-action",
-      "category": "unknown",
-      "confidence": "low",
-      "count": 119,
-      "featuredInRuntime": false,
-      "evidenceSummary": [
-        "Most common predecessor/follower is `<start>` (32x) -> `cmd-05` (21x)."
-      ],
-      "variantHints": [
-        {
-          "variant": "cmd-07:40",
-          "args": [
-            64
-          ],
-          "label": "tower-menu-highlight",
-          "action": "focus-tower-upgrade-menu",
-          "category": "ui-focus",
-          "confidence": "high",
-          "count": 6,
-          "evidenceSummary": [
-            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: cffa, icons, tower.",
-            "Tied to tutorial lines about tower icons and upgrades."
-          ],
-          "topScripts": [
-            {
-              "value": "assets/script_eng/0014.zt1",
-              "count": 1
-            },
-            {
-              "value": "assets/script_eng/0414.zt1",
-              "count": 1
-            },
-            {
-              "value": "assets/script_eng/0814.zt1",
-              "count": 1
-            },
-            {
-              "value": "assets/script_kor/0014.zt1",
-              "count": 1
-            }
-          ],
-          "topEnglishTokens": [
-            {
-              "value": "cffa",
-              "count": 3
-            },
-            {
-              "value": "icons",
-              "count": 3
-            },
-            {
-              "value": "tower",
-              "count": 3
-            },
-            {
-              "value": "cffffff",
-              "count": 3
-            },
-            {
-              "value": "stronger",
-              "count": 3
-            },
-            {
-              "value": "touching",
-              "count": 1
-            }
-          ],
-          "samples": [
-            {
-              "path": "assets/script_eng/0014.zt1",
-              "speaker": "Cecil",
-              "text": "!cffa900Touching the icons in the Tower!cffffff will make you stronger.",
-              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
-            },
-            {
-              "path": "assets/script_eng/0414.zt1",
-              "speaker": "Arang",
-              "text": "!cffa900Touch the icons in the Tower!cffffff to make Helba stronger.",
-              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
-            },
-            {
-              "path": "assets/script_eng/0814.zt1",
-              "speaker": "Lantere",
-              "text": "!cffa900Touch the icons in the Tower!cffffff to make Juno stronger.",
-              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
-            }
-          ]
-        }
-      ],
-      "signalProfile": {
-        "topArgs": [
-          {
-            "value": "00",
-            "count": 35
-          },
-          {
-            "value": "05",
-            "count": 32
-          },
-          {
-            "value": "04",
-            "count": 12
-          },
-          {
-            "value": "08",
-            "count": 10
-          },
-          {
-            "value": "07",
-            "count": 10
-          },
-          {
-            "value": "03",
-            "count": 10
-          }
-        ],
-        "topSequences": [
-          {
-            "value": "cmd-07 > set-left-portrait > cmd-05 > cmd-08",
-            "count": 16
-          },
-          {
-            "value": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05",
-            "count": 6
-          },
-          {
-            "value": "cmd-07 > cmd-09 > cmd-07 > cmd-07 > cmd-0a > cmd-0b > cmd-05",
-            "count": 6
-          },
-          {
-            "value": "cmd-07 > cmd-07 > set-left-portrait > set-right-portrait",
-            "count": 4
-          },
-          {
-            "value": "cmd-07 > cmd-05 > cmd-0a > cmd-0b > set-left-portrait > set-right-portrait",
-            "count": 4
-          },
-          {
-            "value": "cmd-06 > cmd-07 > cmd-07 > cmd-00",
-            "count": 4
-          }
-        ],
-        "previousCommands": [
-          {
-            "value": "<start>",
-            "count": 32
-          },
-          {
-            "value": "cmd-09",
-            "count": 18
-          },
-          {
-            "value": "cmd-06",
-            "count": 16
-          },
-          {
-            "value": "cmd-00",
-            "count": 12
-          },
-          {
-            "value": "cmd-07",
-            "count": 11
-          },
-          {
-            "value": "cmd-10",
-            "count": 6
-          }
-        ],
-        "nextCommands": [
-          {
-            "value": "cmd-05",
-            "count": 21
-          },
-          {
-            "value": "set-left-portrait",
-            "count": 20
-          },
-          {
-            "value": "<end>",
-            "count": 18
-          },
-          {
-            "value": "set-right-portrait",
-            "count": 17
-          },
-          {
-            "value": "cmd-07",
-            "count": 11
-          },
-          {
-            "value": "cmd-02",
-            "count": 6
-          }
-        ],
-        "topSpeakers": [
-          {
-            "value": "Juno",
-            "count": 21
-          },
-          {
-            "value": "유노",
-            "count": 15
-          },
-          {
-            "value": "Helba",
-            "count": 10
-          },
-          {
-            "value": "헬바",
-            "count": 8
-          },
-          {
-            "value": "Cecil",
-            "count": 5
-          },
-          {
-            "value": "세실",
-            "count": 5
-          }
-        ],
-        "topScripts": [
-          {
-            "value": "assets/script_eng/0430.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_eng/0923.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_eng/0993.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_eng/1110.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_kor/0923.zt1",
-            "count": 3
-          },
-          {
-            "value": "assets/script_kor/1110.zt1",
-            "count": 3
-          }
-        ],
-        "samples": [
-          {
-            "path": "assets/script_eng/0014.zt1",
-            "speaker": "Cecil",
-            "text": "!cffa900Touching the icons in the Tower!cffffff will make you stronger.",
-            "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
-          },
-          {
-            "path": "assets/script_eng/0030.zt1",
-            "speaker": "Vincent",
-            "text": "Err, did you hear that?",
-            "sequence": "cmd-06 > cmd-05 > cmd-07 > cmd-05 > set-left-portrait > set-right-portrait"
-          },
-          {
-            "path": "assets/script_eng/0031.zt1",
-            "speaker": "Cecil",
-            "text": "Vincent, we can't take too much damage... we're low on supplies!",
-            "sequence": "cmd-07 > set-left-portrait > cmd-05 > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0040.zt1",
-            "speaker": "Mercenary 1",
-            "text": "Sound the alarm, it's Busters!",
-            "sequence": "set-expression > set-expression > cmd-07 > cmd-05"
-          }
-        ]
-      }
-    },
-    {
-      "mnemonic": "cmd-0d",
-      "label": "cmd-0d",
-      "action": "unknown-runtime-action",
-      "category": "unknown",
-      "confidence": "low",
-      "count": 32,
-      "featuredInRuntime": false,
-      "evidenceSummary": [
-        "Most common predecessor/follower is `<start>` (26x) -> `set-left-portrait` (16x)."
-      ],
-      "variantHints": [],
-      "signalProfile": {
-        "topArgs": [
-          {
-            "value": "00",
-            "count": 26
-          },
-          {
-            "value": "40",
-            "count": 6
-          }
-        ],
-        "topSequences": [
-          {
-            "value": "cmd-0d > set-left-portrait > cmd-05 > cmd-08",
-            "count": 16
-          },
-          {
-            "value": "cmd-0d > cmd-05 > cmd-08",
-            "count": 10
-          },
-          {
-            "value": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05",
-            "count": 6
-          }
-        ],
-        "previousCommands": [
-          {
-            "value": "<start>",
-            "count": 26
-          },
-          {
-            "value": "cmd-06",
-            "count": 6
-          }
-        ],
-        "nextCommands": [
-          {
-            "value": "set-left-portrait",
-            "count": 16
-          },
-          {
-            "value": "cmd-05",
-            "count": 10
-          },
-          {
-            "value": "cmd-02",
-            "count": 6
-          }
-        ],
-        "topSpeakers": [
-          {
-            "value": "Vincent",
-            "count": 3
-          },
-          {
-            "value": "Juno",
-            "count": 3
-          },
-          {
-            "value": "빈센트",
-            "count": 3
-          },
-          {
-            "value": "유노",
-            "count": 3
-          },
-          {
-            "value": "Cecil",
-            "count": 1
-          },
-          {
-            "value": "Proxy",
-            "count": 1
-          }
-        ],
-        "topScripts": [
-          {
-            "value": "assets/script_eng/0003.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0014.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0160.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0301.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0414.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0420.zt1",
-            "count": 1
-          }
-        ],
-        "samples": [
-          {
-            "path": "assets/script_eng/0003.zt1",
-            "speaker": "Vincent",
-            "text": "Umm, that was too easy!",
-            "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0014.zt1",
-            "speaker": "Cecil",
-            "text": "You can use the System menu to resume battling, or to configure your settings.",
-            "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
-          },
-          {
-            "path": "assets/script_eng/0160.zt1",
-            "speaker": "Vincent",
-            "text": "I can see the Free Trade Harbor!",
-            "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0301.zt1",
-            "speaker": "Proxy",
-            "text": "You fools!  How dare you bite the hand that feeds you!",
-            "sequence": "cmd-0d > cmd-05 > cmd-08"
           }
         ]
       }
@@ -4146,151 +4779,6 @@
             "speaker": "Helba",
             "text": "Theon, there must be a way to turn him back to normal.",
             "sequence": "cmd-12 > set-left-portrait > cmd-05 > cmd-08"
-          }
-        ]
-      }
-    },
-    {
-      "mnemonic": "cmd-0e",
-      "label": "cmd-0e",
-      "action": "unknown-runtime-action",
-      "category": "unknown",
-      "confidence": "low",
-      "count": 19,
-      "featuredInRuntime": false,
-      "evidenceSummary": [
-        "Most common predecessor/follower is `<start>` (13x) -> `set-left-portrait` (10x)."
-      ],
-      "variantHints": [],
-      "signalProfile": {
-        "topArgs": [
-          {
-            "value": "00",
-            "count": 13
-          },
-          {
-            "value": "40",
-            "count": 6
-          }
-        ],
-        "topSequences": [
-          {
-            "value": "cmd-0e > set-left-portrait > cmd-05 > cmd-08",
-            "count": 8
-          },
-          {
-            "value": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05",
-            "count": 6
-          },
-          {
-            "value": "cmd-0e > cmd-05 > cmd-08",
-            "count": 3
-          },
-          {
-            "value": "cmd-0e > set-left-portrait > set-right-portrait > cmd-05 > cmd-08",
-            "count": 2
-          }
-        ],
-        "previousCommands": [
-          {
-            "value": "<start>",
-            "count": 13
-          },
-          {
-            "value": "cmd-06",
-            "count": 6
-          }
-        ],
-        "nextCommands": [
-          {
-            "value": "set-left-portrait",
-            "count": 10
-          },
-          {
-            "value": "set-right-portrait",
-            "count": 6
-          },
-          {
-            "value": "cmd-05",
-            "count": 3
-          }
-        ],
-        "topSpeakers": [
-          {
-            "value": "Cecil",
-            "count": 2
-          },
-          {
-            "value": "Juno",
-            "count": 2
-          },
-          {
-            "value": "세실",
-            "count": 2
-          },
-          {
-            "value": "유노",
-            "count": 2
-          },
-          {
-            "value": "Helba",
-            "count": 1
-          },
-          {
-            "value": "Arang",
-            "count": 1
-          }
-        ],
-        "topScripts": [
-          {
-            "value": "assets/script_eng/0014.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0063.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0401.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0414.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0441.zt1",
-            "count": 1
-          },
-          {
-            "value": "assets/script_eng/0810.zt1",
-            "count": 1
-          }
-        ],
-        "samples": [
-          {
-            "path": "assets/script_eng/0014.zt1",
-            "speaker": "Cecil",
-            "text": "Quests come with special rewards, try to complete them.",
-            "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
-          },
-          {
-            "path": "assets/script_eng/0063.zt1",
-            "speaker": "Cecil",
-            "text": "Vincent, the Hunters are back.",
-            "sequence": "cmd-0e > set-left-portrait > cmd-05 > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0401.zt1",
-            "speaker": "Helba",
-            "text": "Elven, why are you attacking us?!",
-            "sequence": "cmd-0e > set-left-portrait > set-right-portrait > cmd-05 > cmd-08"
-          },
-          {
-            "path": "assets/script_eng/0414.zt1",
-            "speaker": "Arang",
-            "text": "Quests come with special rewards, try to complete them.",
-            "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
           }
         ]
       }
@@ -13343,8 +13831,8 @@
     },
     {
       "mnemonic": "cmd-08",
-      "label": "presentation-close",
-      "action": "release-dialogue-pose",
+      "label": "mixed-presentation-or-upgrade-target",
+      "action": "release-dialogue-pose-or-focus-upgrade-slot",
       "category": "presentation",
       "confidence": "medium",
       "count": 679,
@@ -13352,7 +13840,7 @@
       "evidenceSummary": [
         "Most common predecessor/follower is `cmd-05` (583x) -> `<end>` (599x).",
         "Frequently terminates pose-helper sequences that include cmd-05.",
-        "Best current reading is a close or release presentation command."
+        "Variant 0x40 is a strong tutorial highlight for the Mana upgrade icon."
       ],
       "variantHints": [
         {
@@ -13431,6 +13919,85 @@
               "speaker": "Cecil",
               "text": "Vincent, you haven't been in battle for a while now. Take it easy, alright?",
               "sequence": "cmd-10 > set-left-portrait > cmd-05 > cmd-08"
+            }
+          ]
+        },
+        {
+          "variant": "cmd-08:40",
+          "args": [
+            64
+          ],
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: mana, cff, upgrade.",
+            "Appears on tutorial lines about Mana regeneration speed and max Mana."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "mana",
+              "count": 9
+            },
+            {
+              "value": "cff",
+              "count": 3
+            },
+            {
+              "value": "upgrade",
+              "count": 3
+            },
+            {
+              "value": "increases",
+              "count": 3
+            },
+            {
+              "value": "regeneration",
+              "count": 3
+            },
+            {
+              "value": "speed",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+              "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+              "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+              "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
             }
           ]
         }
@@ -13616,6 +14183,285 @@
             "speaker": "Vincent",
             "text": "Umm, that was too easy!",
             "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
+          }
+        ]
+      }
+    },
+    {
+      "mnemonic": "cmd-00",
+      "label": "mixed-battlefield-selector",
+      "action": "select-contextual-battlefield-focus",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 236,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `cmd-0c` (113x) -> `<end>` (72x).",
+        "Variant 0x0d is strongly tied to the battle-HUD tutorial chain, but other uses remain mixed.",
+        "Treat the mnemonic-wide label as a selector family, not a final engine-name claim."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-00:0d",
+          "args": [
+            13
+          ],
+          "label": "battle-hud-focus-prelude",
+          "action": "enter-battle-hud-focus-mode",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 36,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0004.zt1`. Top English tokens: cff, cffffff, drop.",
+            "Repeated across `0004`, `0404`, and `0804` before tower HP, unit-card, mana-bar, sortie, and return-to-tower lines."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0004.zt1",
+              "count": 6
+            },
+            {
+              "value": "assets/script_eng/0404.zt1",
+              "count": 6
+            },
+            {
+              "value": "assets/script_eng/0804.zt1",
+              "count": 6
+            },
+            {
+              "value": "assets/script_kor/0004.zt1",
+              "count": 6
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "cff",
+              "count": 9
+            },
+            {
+              "value": "cffffff",
+              "count": 9
+            },
+            {
+              "value": "drop",
+              "count": 6
+            },
+            {
+              "value": "its",
+              "count": 6
+            },
+            {
+              "value": "hp",
+              "count": 6
+            },
+            {
+              "value": "unit",
+              "count": 6
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0004.zt1",
+              "speaker": "Cecil",
+              "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
+              "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+            },
+            {
+              "path": "assets/script_eng/0004.zt1",
+              "speaker": "Cecil",
+              "text": "!cff0005Drop its HP down to 0!cffffff, and you win.",
+              "sequence": "cmd-02 > cmd-00 > set-right-portrait > cmd-05 > cmd-02"
+            },
+            {
+              "path": "assets/script_eng/0004.zt1",
+              "speaker": "Cecil",
+              "text": "!cff0005Touch a unit card on the left!cffffff to produce the unit.",
+              "sequence": "cmd-02 > cmd-00 > set-left-portrait > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 59
+          },
+          {
+            "value": "0d",
+            "count": 36
+          },
+          {
+            "value": "03",
+            "count": 35
+          },
+          {
+            "value": "05",
+            "count": 23
+          },
+          {
+            "value": "01",
+            "count": 23
+          },
+          {
+            "value": "04",
+            "count": 16
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-0c > cmd-00",
+            "count": 38
+          },
+          {
+            "value": "cmd-02 > cmd-00 > cmd-06 > cmd-02 > set-right-portrait > cmd-00",
+            "count": 12
+          },
+          {
+            "value": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression",
+            "count": 8
+          },
+          {
+            "value": "cmd-0c > cmd-00 > set-expression",
+            "count": 8
+          },
+          {
+            "value": "cmd-0c > cmd-00 > cmd-09",
+            "count": 8
+          },
+          {
+            "value": "cmd-02 > cmd-00 > set-expression > cmd-02",
+            "count": 6
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "cmd-0c",
+            "count": 113
+          },
+          {
+            "value": "cmd-02",
+            "count": 36
+          },
+          {
+            "value": "cmd-06",
+            "count": 31
+          },
+          {
+            "value": "cmd-00",
+            "count": 13
+          },
+          {
+            "value": "cmd-09",
+            "count": 10
+          },
+          {
+            "value": "<start>",
+            "count": 8
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "<end>",
+            "count": 72
+          },
+          {
+            "value": "set-expression",
+            "count": 24
+          },
+          {
+            "value": "cmd-05",
+            "count": 23
+          },
+          {
+            "value": "cmd-08",
+            "count": 16
+          },
+          {
+            "value": "cmd-00",
+            "count": 13
+          },
+          {
+            "value": "set-left-portrait",
+            "count": 12
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Cecil",
+            "count": 13
+          },
+          {
+            "value": "Neive",
+            "count": 13
+          },
+          {
+            "value": "Theon",
+            "count": 13
+          },
+          {
+            "value": "세실",
+            "count": 13
+          },
+          {
+            "value": "Vincent",
+            "count": 12
+          },
+          {
+            "value": "빈센트",
+            "count": 12
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0004.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_eng/0404.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_eng/0804.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_kor/0004.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_kor/0404.zt1",
+            "count": 8
+          },
+          {
+            "value": "assets/script_kor/0804.zt1",
+            "count": 8
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Vincent",
+            "text": "Yo, General!",
+            "sequence": "set-expression > cmd-09 > cmd-00 > set-left-portrait > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0004.zt1",
+            "speaker": "Cecil",
+            "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
+            "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+          },
+          {
+            "path": "assets/script_eng/0004.zt1",
+            "speaker": "Cecil",
+            "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
+            "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+          },
+          {
+            "path": "assets/script_eng/0004.zt1",
+            "speaker": "Cecil",
+            "text": "!cff0005Drop its HP down to 0!cffffff, and you win.",
+            "sequence": "cmd-02 > cmd-00 > set-right-portrait > cmd-05 > cmd-02"
           }
         ]
       }
@@ -14244,7 +15090,7 @@
     {
       "mnemonic": "cmd-0b",
       "label": "mixed-emphasis-release",
-      "action": "release-emphasis-or-ui-target",
+      "action": "release-emphasis-or-focus-skill-slot",
       "category": "emphasis",
       "confidence": "medium",
       "count": 198,
@@ -14252,7 +15098,7 @@
       "evidenceSummary": [
         "Most common predecessor/follower is `cmd-0a` (114x) -> `<end>` (63x).",
         "Pairs strongly with cmd-0a in shock or impact lines.",
-        "Variant-level interpretation is safer than a global rename."
+        "Variant 0x40 is a strong tutorial highlight for the active skill window."
       ],
       "variantHints": [
         {
@@ -14331,6 +15177,85 @@
               "speaker": "Vincent",
               "text": "Hey, you're practically sending us to die!",
               "sequence": "set-left-portrait > set-right-portrait > cmd-0b"
+            }
+          ]
+        },
+        {
+          "variant": "cmd-0b:40",
+          "args": [
+            64
+          ],
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: skill, window, remember.",
+            "Appears on tutorial lines about touching a skill in the battle skill window."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "skill",
+              "count": 3
+            },
+            {
+              "value": "window",
+              "count": 3
+            },
+            {
+              "value": "remember",
+              "count": 3
+            },
+            {
+              "value": "only",
+              "count": 3
+            },
+            {
+              "value": "skills",
+              "count": 3
+            },
+            {
+              "value": "you've",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
             }
           ]
         }
@@ -14800,6 +15725,285 @@
       }
     },
     {
+      "mnemonic": "cmd-09",
+      "label": "mixed-population-selector",
+      "action": "focus-population-upgrade-or-related-ui-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 147,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (108x) -> `set-left-portrait` (26x).",
+        "Variant 0x40 is strongly tied to Upgrade Population in the menu tutorial.",
+        "The opcode family is not yet globally proven outside the tutorial path."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-09:40",
+          "args": [
+            64
+          ],
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: once, population, maxed.",
+            "Appears on tutorial lines about hitting max population and unit production capacity."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "once",
+              "count": 3
+            },
+            {
+              "value": "population",
+              "count": 3
+            },
+            {
+              "value": "maxed",
+              "count": 3
+            },
+            {
+              "value": "can't",
+              "count": 3
+            },
+            {
+              "value": "produce",
+              "count": 3
+            },
+            {
+              "value": "units",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+              "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+              "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+              "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "04",
+            "count": 49
+          },
+          {
+            "value": "00",
+            "count": 27
+          },
+          {
+            "value": "08",
+            "count": 15
+          },
+          {
+            "value": "01",
+            "count": 13
+          },
+          {
+            "value": "0c",
+            "count": 10
+          },
+          {
+            "value": "03",
+            "count": 10
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-09 > set-left-portrait > cmd-05 > cmd-08",
+            "count": 12
+          },
+          {
+            "value": "cmd-0c > cmd-00 > cmd-09",
+            "count": 8
+          },
+          {
+            "value": "cmd-09 > cmd-09 > cmd-08",
+            "count": 8
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-09 > set-left-portrait",
+            "count": 6
+          },
+          {
+            "value": "cmd-09 > cmd-05 > cmd-08",
+            "count": 6
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 108
+          },
+          {
+            "value": "cmd-06",
+            "count": 8
+          },
+          {
+            "value": "cmd-00",
+            "count": 8
+          },
+          {
+            "value": "cmd-09",
+            "count": 7
+          },
+          {
+            "value": "set-expression",
+            "count": 6
+          },
+          {
+            "value": "cmd-07",
+            "count": 4
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "set-left-portrait",
+            "count": 26
+          },
+          {
+            "value": "cmd-07",
+            "count": 18
+          },
+          {
+            "value": "cmd-0a",
+            "count": 16
+          },
+          {
+            "value": "<end>",
+            "count": 15
+          },
+          {
+            "value": "set-expression",
+            "count": 12
+          },
+          {
+            "value": "cmd-05",
+            "count": 12
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Theon",
+            "count": 18
+          },
+          {
+            "value": "테온",
+            "count": 14
+          },
+          {
+            "value": "Juno",
+            "count": 9
+          },
+          {
+            "value": "유노",
+            "count": 8
+          },
+          {
+            "value": "Martin",
+            "count": 5
+          },
+          {
+            "value": "Vincent",
+            "count": 5
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0993.zt1",
+            "count": 4
+          },
+          {
+            "value": "assets/script_eng/0000.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/0000.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0303.zt1",
+            "count": 2
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Martin",
+            "text": "Welcome to !cff37ffIron Castle!cffffff. I'm Guardian Knight !c00ffffMartin!cffffff.",
+            "sequence": "cmd-09 > set-expression > set-left-portrait > cmd-05 > cmd-09 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Martin",
+            "text": "Welcome to !cff37ffIron Castle!cffffff. I'm Guardian Knight !c00ffffMartin!cffffff.",
+            "sequence": "cmd-09 > set-expression > set-left-portrait > cmd-05 > cmd-09 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0000.zt1",
+            "speaker": "Vincent",
+            "text": "Yo, General!",
+            "sequence": "set-expression > cmd-09 > cmd-00 > set-left-portrait > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+            "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+          }
+        ]
+      }
+    },
+    {
       "mnemonic": "cmd-0c",
       "label": "tutorial-target-anchor",
       "action": "bind-guided-target",
@@ -15062,6 +16266,285 @@
             "speaker": "Arang",
             "text": "This time, us Busters will result in victory!",
             "sequence": "cmd-0c > set-left-portrait > cmd-05 > cmd-08 > cmd-06"
+          }
+        ]
+      }
+    },
+    {
+      "mnemonic": "cmd-07",
+      "label": "mixed-tower-selector",
+      "action": "focus-tower-menu-or-related-ui-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 119,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (32x) -> `cmd-05` (21x).",
+        "Variant 0x40 is strongly tied to the Tower menu tutorial highlight.",
+        "The wider opcode family is still not proven outside mirrored tutorial chains."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-07:40",
+          "args": [
+            64
+          ],
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: cffa, icons, tower.",
+            "Tied to tutorial lines about tower icons and upgrades."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "cffa",
+              "count": 3
+            },
+            {
+              "value": "icons",
+              "count": 3
+            },
+            {
+              "value": "tower",
+              "count": 3
+            },
+            {
+              "value": "cffffff",
+              "count": 3
+            },
+            {
+              "value": "stronger",
+              "count": 3
+            },
+            {
+              "value": "touching",
+              "count": 1
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "!cffa900Touching the icons in the Tower!cffffff will make you stronger.",
+              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "!cffa900Touch the icons in the Tower!cffffff to make Helba stronger.",
+              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "!cffa900Touch the icons in the Tower!cffffff to make Juno stronger.",
+              "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 35
+          },
+          {
+            "value": "05",
+            "count": 32
+          },
+          {
+            "value": "04",
+            "count": 12
+          },
+          {
+            "value": "08",
+            "count": 10
+          },
+          {
+            "value": "07",
+            "count": 10
+          },
+          {
+            "value": "03",
+            "count": 10
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-07 > set-left-portrait > cmd-05 > cmd-08",
+            "count": 16
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-07 > cmd-09 > cmd-07 > cmd-07 > cmd-0a > cmd-0b > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-07 > cmd-07 > set-left-portrait > set-right-portrait",
+            "count": 4
+          },
+          {
+            "value": "cmd-07 > cmd-05 > cmd-0a > cmd-0b > set-left-portrait > set-right-portrait",
+            "count": 4
+          },
+          {
+            "value": "cmd-06 > cmd-07 > cmd-07 > cmd-00",
+            "count": 4
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 32
+          },
+          {
+            "value": "cmd-09",
+            "count": 18
+          },
+          {
+            "value": "cmd-06",
+            "count": 16
+          },
+          {
+            "value": "cmd-00",
+            "count": 12
+          },
+          {
+            "value": "cmd-07",
+            "count": 11
+          },
+          {
+            "value": "cmd-10",
+            "count": 6
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "cmd-05",
+            "count": 21
+          },
+          {
+            "value": "set-left-portrait",
+            "count": 20
+          },
+          {
+            "value": "<end>",
+            "count": 18
+          },
+          {
+            "value": "set-right-portrait",
+            "count": 17
+          },
+          {
+            "value": "cmd-07",
+            "count": 11
+          },
+          {
+            "value": "cmd-02",
+            "count": 6
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Juno",
+            "count": 21
+          },
+          {
+            "value": "유노",
+            "count": 15
+          },
+          {
+            "value": "Helba",
+            "count": 10
+          },
+          {
+            "value": "헬바",
+            "count": 8
+          },
+          {
+            "value": "Cecil",
+            "count": 5
+          },
+          {
+            "value": "세실",
+            "count": 5
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0430.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/0993.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_eng/1110.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/0923.zt1",
+            "count": 3
+          },
+          {
+            "value": "assets/script_kor/1110.zt1",
+            "count": 3
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "!cffa900Touching the icons in the Tower!cffffff will make you stronger.",
+            "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+          },
+          {
+            "path": "assets/script_eng/0030.zt1",
+            "speaker": "Vincent",
+            "text": "Err, did you hear that?",
+            "sequence": "cmd-06 > cmd-05 > cmd-07 > cmd-05 > set-left-portrait > set-right-portrait"
+          },
+          {
+            "path": "assets/script_eng/0031.zt1",
+            "speaker": "Cecil",
+            "text": "Vincent, we can't take too much damage... we're low on supplies!",
+            "sequence": "cmd-07 > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0040.zt1",
+            "speaker": "Mercenary 1",
+            "text": "Sound the alarm, it's Busters!",
+            "sequence": "set-expression > set-expression > cmd-07 > cmd-05"
           }
         ]
       }
@@ -15346,6 +16829,229 @@
       }
     },
     {
+      "mnemonic": "cmd-0d",
+      "label": "mixed-system-selector",
+      "action": "focus-system-menu-or-scene-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 32,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (26x) -> `set-left-portrait` (16x).",
+        "Variant 0x40 is strongly tied to the System menu tutorial highlight.",
+        "Variant 0x00 still appears in generic scene-opening chains, so the family remains mixed."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-0d:40",
+          "args": [
+            64
+          ],
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: system, menu, resume.",
+            "Appears on tutorial lines about pausing, resuming, and configuration settings."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "system",
+              "count": 3
+            },
+            {
+              "value": "menu",
+              "count": 3
+            },
+            {
+              "value": "resume",
+              "count": 3
+            },
+            {
+              "value": "battling",
+              "count": 3
+            },
+            {
+              "value": "configure",
+              "count": 3
+            },
+            {
+              "value": "settings",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "You can use the System menu to resume battling, or to configure your settings.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "You can use the System menu to resume battling, or to configure your settings.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "You can use the System menu to resume battling, or to configure your settings.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 26
+          },
+          {
+            "value": "40",
+            "count": 6
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-0d > set-left-portrait > cmd-05 > cmd-08",
+            "count": 16
+          },
+          {
+            "value": "cmd-0d > cmd-05 > cmd-08",
+            "count": 10
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05",
+            "count": 6
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 26
+          },
+          {
+            "value": "cmd-06",
+            "count": 6
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "set-left-portrait",
+            "count": 16
+          },
+          {
+            "value": "cmd-05",
+            "count": 10
+          },
+          {
+            "value": "cmd-02",
+            "count": 6
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Vincent",
+            "count": 3
+          },
+          {
+            "value": "Juno",
+            "count": 3
+          },
+          {
+            "value": "빈센트",
+            "count": 3
+          },
+          {
+            "value": "유노",
+            "count": 3
+          },
+          {
+            "value": "Cecil",
+            "count": 1
+          },
+          {
+            "value": "Proxy",
+            "count": 1
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0003.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0014.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0160.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0301.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0414.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0420.zt1",
+            "count": 1
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0003.zt1",
+            "speaker": "Vincent",
+            "text": "Umm, that was too easy!",
+            "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "You can use the System menu to resume battling, or to configure your settings.",
+            "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+          },
+          {
+            "path": "assets/script_eng/0160.zt1",
+            "speaker": "Vincent",
+            "text": "I can see the Free Trade Harbor!",
+            "sequence": "cmd-0d > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0301.zt1",
+            "speaker": "Proxy",
+            "text": "You fools!  How dare you bite the hand that feeds you!",
+            "sequence": "cmd-0d > cmd-05 > cmd-08"
+          }
+        ]
+      }
+    },
+    {
       "mnemonic": "cmd-18",
       "label": "banter-entry-preset",
       "action": "load-banter-entry-layout",
@@ -15553,6 +17259,233 @@
       }
     },
     {
+      "mnemonic": "cmd-0e",
+      "label": "mixed-quest-selector",
+      "action": "focus-quest-panel-or-scene-slot",
+      "category": "ui-focus",
+      "confidence": "low",
+      "count": 19,
+      "featuredInRuntime": true,
+      "evidenceSummary": [
+        "Most common predecessor/follower is `<start>` (13x) -> `set-left-portrait` (10x).",
+        "Variant 0x40 is strongly tied to the quest panel and rewards tutorial chain.",
+        "Variant 0x00 also appears as a generic scene-opening opcode, so the family remains mixed."
+      ],
+      "variantHints": [
+        {
+          "variant": "cmd-0e:40",
+          "args": [
+            64
+          ],
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "category": "ui-focus",
+          "confidence": "high",
+          "count": 6,
+          "evidenceSummary": [
+            "Top script is `assets/script_eng/0014.zt1`. Top English tokens: quests, come, with.",
+            "Appears on tutorial lines about quest rewards on the upper-right side."
+          ],
+          "topScripts": [
+            {
+              "value": "assets/script_eng/0014.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0414.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_eng/0814.zt1",
+              "count": 1
+            },
+            {
+              "value": "assets/script_kor/0014.zt1",
+              "count": 1
+            }
+          ],
+          "topEnglishTokens": [
+            {
+              "value": "quests",
+              "count": 3
+            },
+            {
+              "value": "come",
+              "count": 3
+            },
+            {
+              "value": "with",
+              "count": 3
+            },
+            {
+              "value": "special",
+              "count": 3
+            },
+            {
+              "value": "rewards",
+              "count": 3
+            },
+            {
+              "value": "try",
+              "count": 3
+            }
+          ],
+          "samples": [
+            {
+              "path": "assets/script_eng/0014.zt1",
+              "speaker": "Cecil",
+              "text": "Quests come with special rewards, try to complete them.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0414.zt1",
+              "speaker": "Arang",
+              "text": "Quests come with special rewards, try to complete them.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+            },
+            {
+              "path": "assets/script_eng/0814.zt1",
+              "speaker": "Lantere",
+              "text": "Quests come with special rewards, try to complete them.",
+              "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+            }
+          ]
+        }
+      ],
+      "signalProfile": {
+        "topArgs": [
+          {
+            "value": "00",
+            "count": 13
+          },
+          {
+            "value": "40",
+            "count": 6
+          }
+        ],
+        "topSequences": [
+          {
+            "value": "cmd-0e > set-left-portrait > cmd-05 > cmd-08",
+            "count": 8
+          },
+          {
+            "value": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05",
+            "count": 6
+          },
+          {
+            "value": "cmd-0e > cmd-05 > cmd-08",
+            "count": 3
+          },
+          {
+            "value": "cmd-0e > set-left-portrait > set-right-portrait > cmd-05 > cmd-08",
+            "count": 2
+          }
+        ],
+        "previousCommands": [
+          {
+            "value": "<start>",
+            "count": 13
+          },
+          {
+            "value": "cmd-06",
+            "count": 6
+          }
+        ],
+        "nextCommands": [
+          {
+            "value": "set-left-portrait",
+            "count": 10
+          },
+          {
+            "value": "set-right-portrait",
+            "count": 6
+          },
+          {
+            "value": "cmd-05",
+            "count": 3
+          }
+        ],
+        "topSpeakers": [
+          {
+            "value": "Cecil",
+            "count": 2
+          },
+          {
+            "value": "Juno",
+            "count": 2
+          },
+          {
+            "value": "세실",
+            "count": 2
+          },
+          {
+            "value": "유노",
+            "count": 2
+          },
+          {
+            "value": "Helba",
+            "count": 1
+          },
+          {
+            "value": "Arang",
+            "count": 1
+          }
+        ],
+        "topScripts": [
+          {
+            "value": "assets/script_eng/0014.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0063.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0401.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0414.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0441.zt1",
+            "count": 1
+          },
+          {
+            "value": "assets/script_eng/0810.zt1",
+            "count": 1
+          }
+        ],
+        "samples": [
+          {
+            "path": "assets/script_eng/0014.zt1",
+            "speaker": "Cecil",
+            "text": "Quests come with special rewards, try to complete them.",
+            "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+          },
+          {
+            "path": "assets/script_eng/0063.zt1",
+            "speaker": "Cecil",
+            "text": "Vincent, the Hunters are back.",
+            "sequence": "cmd-0e > set-left-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0401.zt1",
+            "speaker": "Helba",
+            "text": "Elven, why are you attacking us?!",
+            "sequence": "cmd-0e > set-left-portrait > set-right-portrait > cmd-05 > cmd-08"
+          },
+          {
+            "path": "assets/script_eng/0414.zt1",
+            "speaker": "Arang",
+            "text": "Quests come with special rewards, try to complete them.",
+            "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+          }
+        ]
+      }
+    },
+    {
       "mnemonic": "cmd-43",
       "label": "tutorial-bootstrap",
       "action": "enter-tutorial-narration",
@@ -15750,7 +17683,7 @@
   ],
   "findings": [
     "Opcode action export now separates mnemonic-wide hints from variant-local clues so runtime labels no longer depend on exporter-local constants.",
-    "The strongest tutorial/UI variants remain cmd-06(0x0d), cmd-07(0x40), cmd-0a(0x40), and cmd-0c(0x40).",
+    "The strongest tutorial/UI variants now include cmd-00(0x0d), cmd-06(0x0d), cmd-07/08/09/0a/0b/0c/0d/0e(0x40).",
     "The strongest presentation/emphasis variants remain cmd-05(0x03), cmd-08(0x00), cmd-0a(0x10), and cmd-0b(0x10)."
   ]
 }

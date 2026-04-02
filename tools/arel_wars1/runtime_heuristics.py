@@ -4,6 +4,16 @@ from typing import Any
 
 
 OPCODE_ACTION_OVERRIDES: dict[str, dict[str, Any]] = {
+    "cmd-00": {
+        "label": "mixed-battlefield-selector",
+        "action": "select-contextual-battlefield-focus",
+        "category": "ui-focus",
+        "confidence": "low",
+        "notes": [
+            "Variant 0x0d is strongly tied to the battle-HUD tutorial chain, but other uses remain mixed.",
+            "Treat the mnemonic-wide label as a selector family, not a final engine-name claim.",
+        ],
+    },
     "cmd-02": {
         "label": "tutorial-focus-anchor",
         "action": "guided-highlight-anchor",
@@ -34,14 +44,34 @@ OPCODE_ACTION_OVERRIDES: dict[str, dict[str, Any]] = {
             "Best current reading is a submode or target selector for tutorial focus.",
         ],
     },
+    "cmd-07": {
+        "label": "mixed-tower-selector",
+        "action": "focus-tower-menu-or-related-ui-slot",
+        "category": "ui-focus",
+        "confidence": "low",
+        "notes": [
+            "Variant 0x40 is strongly tied to the Tower menu tutorial highlight.",
+            "The wider opcode family is still not proven outside mirrored tutorial chains.",
+        ],
+    },
     "cmd-08": {
-        "label": "presentation-close",
-        "action": "release-dialogue-pose",
+        "label": "mixed-presentation-or-upgrade-target",
+        "action": "release-dialogue-pose-or-focus-upgrade-slot",
         "category": "presentation",
         "confidence": "medium",
         "notes": [
             "Frequently terminates pose-helper sequences that include cmd-05.",
-            "Best current reading is a close or release presentation command.",
+            "Variant 0x40 is a strong tutorial highlight for the Mana upgrade icon.",
+        ],
+    },
+    "cmd-09": {
+        "label": "mixed-population-selector",
+        "action": "focus-population-upgrade-or-related-ui-slot",
+        "category": "ui-focus",
+        "confidence": "low",
+        "notes": [
+            "Variant 0x40 is strongly tied to Upgrade Population in the menu tutorial.",
+            "The opcode family is not yet globally proven outside the tutorial path.",
         ],
     },
     "cmd-0a": {
@@ -56,12 +86,12 @@ OPCODE_ACTION_OVERRIDES: dict[str, dict[str, Any]] = {
     },
     "cmd-0b": {
         "label": "mixed-emphasis-release",
-        "action": "release-emphasis-or-ui-target",
+        "action": "release-emphasis-or-focus-skill-slot",
         "category": "emphasis",
         "confidence": "medium",
         "notes": [
             "Pairs strongly with cmd-0a in shock or impact lines.",
-            "Variant-level interpretation is safer than a global rename.",
+            "Variant 0x40 is a strong tutorial highlight for the active skill window.",
         ],
     },
     "cmd-0c": {
@@ -72,6 +102,26 @@ OPCODE_ACTION_OVERRIDES: dict[str, dict[str, Any]] = {
         "notes": [
             "Appears in tutorial and scripted explanation contexts with cmd-02 and cmd-00.",
             "Best current reading is a tutorial anchor or focus target opcode.",
+        ],
+    },
+    "cmd-0d": {
+        "label": "mixed-system-selector",
+        "action": "focus-system-menu-or-scene-slot",
+        "category": "ui-focus",
+        "confidence": "low",
+        "notes": [
+            "Variant 0x40 is strongly tied to the System menu tutorial highlight.",
+            "Variant 0x00 still appears in generic scene-opening chains, so the family remains mixed.",
+        ],
+    },
+    "cmd-0e": {
+        "label": "mixed-quest-selector",
+        "action": "focus-quest-panel-or-scene-slot",
+        "category": "ui-focus",
+        "confidence": "low",
+        "notes": [
+            "Variant 0x40 is strongly tied to the quest panel and rewards tutorial chain.",
+            "Variant 0x00 also appears as a generic scene-opening opcode, so the family remains mixed.",
         ],
     },
     "cmd-10": {
@@ -107,6 +157,15 @@ OPCODE_ACTION_OVERRIDES: dict[str, dict[str, Any]] = {
 }
 
 OPCODE_VARIANT_OVERRIDES: dict[str, dict[str, Any]] = {
+    "cmd-00:0d": {
+        "label": "battle-hud-focus-prelude",
+        "action": "enter-battle-hud-focus-mode",
+        "category": "ui-focus",
+        "confidence": "high",
+        "notes": [
+            "Repeated across `0004`, `0404`, and `0804` before tower HP, unit-card, mana-bar, sortie, and return-to-tower lines.",
+        ],
+    },
     "cmd-02:05": {
         "label": "tutorial-highlight-subject",
         "action": "focus-current-tutorial-subject",
@@ -143,6 +202,15 @@ OPCODE_VARIANT_OVERRIDES: dict[str, dict[str, Any]] = {
             "Tied to tutorial lines about tower icons and upgrades.",
         ],
     },
+    "cmd-08:40": {
+        "label": "mana-upgrade-highlight",
+        "action": "focus-mana-upgrade-slot",
+        "category": "ui-focus",
+        "confidence": "high",
+        "notes": [
+            "Appears on tutorial lines about Mana regeneration speed and max Mana.",
+        ],
+    },
     "cmd-08:00": {
         "label": "presentation-close",
         "action": "release-dialogue-pose",
@@ -150,6 +218,15 @@ OPCODE_VARIANT_OVERRIDES: dict[str, dict[str, Any]] = {
         "confidence": "high",
         "notes": [
             "Overwhelmingly ends a cmd-05 presentation chain.",
+        ],
+    },
+    "cmd-09:40": {
+        "label": "population-upgrade-highlight",
+        "action": "focus-population-upgrade-slot",
+        "category": "ui-focus",
+        "confidence": "high",
+        "notes": [
+            "Appears on tutorial lines about hitting max population and unit production capacity.",
         ],
     },
     "cmd-0a:10": {
@@ -179,6 +256,15 @@ OPCODE_VARIANT_OVERRIDES: dict[str, dict[str, Any]] = {
             "Usually paired with cmd-0a(0x10) around abrupt reactions.",
         ],
     },
+    "cmd-0b:40": {
+        "label": "skill-slot-highlight",
+        "action": "focus-skill-window-slot",
+        "category": "ui-focus",
+        "confidence": "high",
+        "notes": [
+            "Appears on tutorial lines about touching a skill in the battle skill window.",
+        ],
+    },
     "cmd-0c:40": {
         "label": "item-menu-highlight",
         "action": "focus-item-menu",
@@ -186,6 +272,24 @@ OPCODE_VARIANT_OVERRIDES: dict[str, dict[str, Any]] = {
         "confidence": "high",
         "notes": [
             "Appears on tutorial lines about equipped items before battle.",
+        ],
+    },
+    "cmd-0d:40": {
+        "label": "system-menu-highlight",
+        "action": "focus-system-menu",
+        "category": "ui-focus",
+        "confidence": "high",
+        "notes": [
+            "Appears on tutorial lines about pausing, resuming, and configuration settings.",
+        ],
+    },
+    "cmd-0e:40": {
+        "label": "quest-panel-highlight",
+        "action": "focus-quest-panel",
+        "category": "ui-focus",
+        "confidence": "high",
+        "notes": [
+            "Appears on tutorial lines about quest rewards on the upper-right side.",
         ],
     },
     "cmd-10:00": {
@@ -218,13 +322,18 @@ OPCODE_VARIANT_OVERRIDES: dict[str, dict[str, Any]] = {
 }
 
 RUNTIME_FEATURED_MNEMONICS = [
+    "cmd-00",
     "cmd-02",
     "cmd-05",
     "cmd-06",
+    "cmd-07",
     "cmd-08",
+    "cmd-09",
     "cmd-0a",
     "cmd-0b",
     "cmd-0c",
+    "cmd-0d",
+    "cmd-0e",
     "cmd-10",
     "cmd-18",
     "cmd-43",
@@ -264,4 +373,3 @@ def render_intensity_label(region_candidate: int, tier_candidate: int, story_fla
     if story_flag_candidate == 1:
         return "medium"
     return "low"
-

@@ -7,6 +7,7 @@ Primary data source:
 
 - [script_event_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/script_event_report.json)
 - [AW1.opcode_action_map.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json)
+- [AW1.tutorial_opcode_chains.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.tutorial_opcode_chains.json)
 
 ## Important Constraint
 
@@ -31,7 +32,17 @@ It keeps two layers separate:
 
 This keeps the runtime-facing labels stable without pretending the binary grammar is fully proven.
 
+`AW1.tutorial_opcode_chains.json` adds a third layer for cases where the current parser still under-reads selector bytes.
+That proof layer uses exact raw-prefix needles mirrored across tutorial families.
+
 ### Tutorial / UI Guidance Cluster
+
+- `cmd-00(0x0d)`
+  - strongest current role: battle-HUD focus prelude
+  - evidence:
+    - repeats across `0004`, `0404`, and `0804`
+    - sits directly before the own-tower HP, enemy-tower HP, unit-card, mana-bar, sortie, and return chains
+    - exported as a high-confidence variant hint plus raw-chain proofs
 
 - `cmd-06(0x0d)`
   - strongest current role: tutorial-focus prelude or tutorial overlay mode
@@ -49,17 +60,71 @@ This keeps the runtime-facing labels stable without pretending the binary gramma
       - `assets/script_eng/0014.zt1`
       - `assets/script_eng/0414.zt1`
 
+- `cmd-08(0x40)`
+  - strongest current role: mana upgrade highlight
+  - evidence:
+    - clustered around `Upgrade Mana increases your Mana Regeneration Speed and Max Mana`
+    - mirrored across `0014`, `0414`, `0814`
+
+- `cmd-09(0x40)`
+  - strongest current role: population upgrade highlight
+  - evidence:
+    - clustered around max-population warnings and production-capacity lines
+    - mirrored across `0014`, `0414`, `0814`
+
 - `cmd-0a(0x40)`
   - strongest current role: skill menu highlight
   - evidence:
     - tied to lines such as `Let's check your skills.`
     - appears inside the same `cmd-02 > cmd-06 > cmd-0a > cmd-02 > cmd-05` tutorial sequence in mirrored scripts
 
+- `cmd-0b(0x40)`
+  - strongest current role: skill window / skill slot highlight
+  - evidence:
+    - tied to `Touch a skill in the window to use`
+    - mirrored across `0014`, `0414`, `0814`
+
 - `cmd-0c(0x40)`
   - strongest current role: item menu highlight
   - evidence:
     - tied to lines about items equipped before battle
     - appears inside the same tutorial focus sequence shape as the skill-menu case
+
+- `cmd-0d(0x40)`
+  - strongest current role: system menu highlight
+  - evidence:
+    - tied to lines about pause, resume, and settings
+    - mirrored across `0014`, `0414`, `0814`
+
+- `cmd-0e(0x40)`
+  - strongest current role: quest panel highlight
+  - evidence:
+    - tied to lines about upper-right quest rewards
+    - mirrored across `0014`, `0414`, `0814`
+
+## Exact Tutorial Chain Proofs
+
+The current prefix parser still flattens some selector bytes into existing command families.
+For that reason, `AW1.tutorial_opcode_chains.json` tracks raw-prefix needles that stay stable across mirrored tutorial scripts.
+
+- battle HUD family
+  - `000d0040` -> own tower HP / loss-condition highlight
+  - `000d0140` -> enemy tower HP / victory-condition highlight
+  - `060d0240` -> dispatch arrows
+  - `000d0340` -> unit production card
+  - `000d0440` -> mana bar
+  - `000d0540` -> hero sortie button
+  - `000d0640` -> return-to-tower button
+
+- menu training family
+  - `060d0740` -> tower menu
+  - `060d0840` -> mana upgrade
+  - `060d0940` -> population upgrade
+  - `060d0a40` -> skill menu
+  - `060d0b40` -> skill window
+  - `060d0c40` -> item menu
+  - `060d0d40` -> system menu
+  - `060d0e40` -> quest panel
 
 ### Presentation / Emphasis Cluster
 

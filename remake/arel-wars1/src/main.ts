@@ -122,7 +122,7 @@ async function bootstrap(): Promise<void> {
     stage.textContent = previewManifest
       ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapProofCount ?? 0} map proofs)`
       : 'ZT1 decoded, Android APK verified'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapProofCount} scored map proofs, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics.` : ''} Android packaging has been verified on a modern emulator.`
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapProofCount} scored map proofs, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics, ${runtimeBlueprint.summary.tutorialChainCount} mirrored tutorial chains.` : ''} Android packaging has been verified on a modern emulator.`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
@@ -133,6 +133,7 @@ async function bootstrap(): Promise<void> {
       statCard('Archetypes', String(runtimeBlueprint?.summary.archetypeCount ?? 0)),
       statCard('Stage Plans', String(runtimeBlueprint?.summary.stageBlueprintCount ?? 0)),
       statCard('Opcode Hints', String(runtimeBlueprint?.summary.opcodeHeuristicCount ?? 0)),
+      statCard('Tutorial Chains', String(runtimeBlueprint?.summary.tutorialChainCount ?? 0)),
     ].join('')
 
     scripts.innerHTML = catalog.featuredScripts
@@ -317,6 +318,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const speakerLine = activeEvent.speaker ? `${activeEvent.speaker} · tag ${activeEvent.speakerTag ?? 'n/a'}` : 'Narration'
   const stage = snapshot.currentStoryboard.stageBlueprint
   const opcodePills = stage?.opcodeCues.slice(0, 4).map((cue) => cue.label) ?? []
+  const tutorialPills = stage?.tutorialChainCues.slice(0, 4).map((cue) => cue.label) ?? []
   const archetypePills = stage?.recommendedArchetypeIds.slice(0, 4) ?? []
   const channelPills = snapshot.channelStates.slice(0, 4).map((channel) => `${channel.label} ${channel.phaseLabel}`)
   const mapLine = stage?.mapBinding
@@ -344,6 +346,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       </div>
       <div class="story-tags">
         ${opcodePills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
+        ${tutorialPills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
         ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
       </div>
       <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${opcodeAction ? ` · ${escapeHtml(opcodeAction)}` : ''}</p>

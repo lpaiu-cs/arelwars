@@ -1,0 +1,1878 @@
+{
+  "summary": {
+    "chainDefinitionCount": 15,
+    "matchedChainCount": 15,
+    "scriptHitCount": 6,
+    "familyHitCount": 6,
+    "totalHitCount": 45
+  },
+  "chains": [
+    {
+      "chainId": "battle-hud-guard-hp",
+      "label": "guard-own-tower-hp",
+      "action": "focus-own-tower-hp-loss-condition",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "battle-hud",
+      "prefixNeedle": "000d0040",
+      "expectedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedFamilyIds": [
+        "000",
+        "040",
+        "080"
+      ],
+      "requiredTextTokens": [
+        "drop",
+        "hp",
+        "lose"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain always appears immediately after the line that names the red tower-HP bar.",
+        "Best current reading is an own-tower HP guard/loss-condition highlight."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0004",
+          "path": "assets/script_eng/0004.zt1",
+          "eventIndex": 2,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or you'll lose.",
+          "prefixHex": "0205000d004002050101050400",
+          "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+        },
+        {
+          "scriptStem": "0404",
+          "path": "assets/script_eng/0404.zt1",
+          "eventIndex": 2,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or we lose.",
+          "prefixHex": "0206000d004002060101060300",
+          "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait"
+        },
+        {
+          "scriptStem": "0804",
+          "path": "assets/script_eng/0804.zt1",
+          "eventIndex": 2,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Don't let the enemy !cff0005drop its HP down to 0!cffffff, or we lose.",
+          "prefixHex": "0201000d004002010101010400",
+          "sequence": "cmd-02 > cmd-00 > cmd-00 > cmd-02 > set-right-portrait > set-expression"
+        }
+      ]
+    },
+    {
+      "chainId": "battle-hud-goal-hp",
+      "label": "focus-enemy-tower-hp",
+      "action": "focus-enemy-tower-hp-win-condition",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "battle-hud",
+      "prefixNeedle": "000d0140",
+      "expectedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedFamilyIds": [
+        "000",
+        "040",
+        "080"
+      ],
+      "requiredTextTokens": [
+        "drop",
+        "hp",
+        "win"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain always follows the line that names the enemy tower HP bar.",
+        "Best current reading is an enemy-tower HP / victory-condition highlight."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0004",
+          "path": "assets/script_eng/0004.zt1",
+          "eventIndex": 4,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "!cff0005Drop its HP down to 0!cffffff, and you win.",
+          "prefixHex": "0205000d014001050102050100",
+          "sequence": "cmd-02 > cmd-00 > set-right-portrait > cmd-05 > cmd-02"
+        },
+        {
+          "scriptStem": "0404",
+          "path": "assets/script_eng/0404.zt1",
+          "eventIndex": 4,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "!cff0005Drop its HP down to 0!cffffff, then we win!",
+          "prefixHex": "0206000d014001060102060100",
+          "sequence": "cmd-02 > cmd-00 > set-right-portrait > cmd-06 > cmd-02"
+        },
+        {
+          "scriptStem": "0804",
+          "path": "assets/script_eng/0804.zt1",
+          "eventIndex": 4,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "!cff0005Drop its HP down to 0!cffffff, then we win!",
+          "prefixHex": "0201000d014001010102010100",
+          "sequence": "cmd-02 > cmd-00 > set-right-portrait > set-right-portrait > set-right-portrait"
+        }
+      ]
+    },
+    {
+      "chainId": "battle-hud-dispatch-arrows",
+      "label": "dispatch-arrow-highlight",
+      "action": "focus-dispatch-arrows",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "battle-hud",
+      "prefixNeedle": "060d0240",
+      "expectedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedFamilyIds": [
+        "000",
+        "040",
+        "080"
+      ],
+      "requiredTextTokens": [
+        "arrows",
+        "dispatch"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain consistently appears on the battle-path explanation line."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0004",
+          "path": "assets/script_eng/0004.zt1",
+          "eventIndex": 7,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "!cff0005Touch the arrows on the right to dispatch your units to either path.!cffffff",
+          "prefixHex": "0205060d024002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-02 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0404",
+          "path": "assets/script_eng/0404.zt1",
+          "eventIndex": 7,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "!cff0005Touch the right arrows to dispatch your units to either path.!cffffff",
+          "prefixHex": "0206060d024002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-02 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0804",
+          "path": "assets/script_eng/0804.zt1",
+          "eventIndex": 7,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "!cff0005Touch the right arrows to dispatch your units to either path.!cffffff",
+          "prefixHex": "0201060d024002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-02 > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "battle-hud-unit-card",
+      "label": "unit-card-highlight",
+      "action": "focus-unit-production-card",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "battle-hud",
+      "prefixNeedle": "000d0340",
+      "expectedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedFamilyIds": [
+        "000",
+        "040",
+        "080"
+      ],
+      "requiredTextTokens": [
+        "unit",
+        "card",
+        "produce"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain is tied to the left-side unit card explanation in all three mirrored tutorials."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0004",
+          "path": "assets/script_eng/0004.zt1",
+          "eventIndex": 9,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "!cff0005Touch a unit card on the left!cffffff to produce the unit.",
+          "prefixHex": "0205000d034002050100",
+          "sequence": "cmd-02 > cmd-00 > set-left-portrait > cmd-05"
+        },
+        {
+          "scriptStem": "0404",
+          "path": "assets/script_eng/0404.zt1",
+          "eventIndex": 9,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "!cff0005Touch a unit card on the left side!cffffff to produce the unit.",
+          "prefixHex": "0206000d034002060100",
+          "sequence": "cmd-02 > cmd-00 > set-left-portrait > cmd-06"
+        },
+        {
+          "scriptStem": "0804",
+          "path": "assets/script_eng/0804.zt1",
+          "eventIndex": 9,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "!cff0005Touch a unit card on the left side!cffffff to produce the unit.",
+          "prefixHex": "0201000d034002010100",
+          "sequence": "cmd-02 > cmd-00 > set-left-portrait > set-right-portrait"
+        }
+      ]
+    },
+    {
+      "chainId": "battle-hud-mana-bar",
+      "label": "mana-bar-highlight",
+      "action": "focus-mana-bar",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "battle-hud",
+      "prefixNeedle": "000d0440",
+      "expectedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedFamilyIds": [
+        "000",
+        "040",
+        "080"
+      ],
+      "requiredTextTokens": [
+        "mana",
+        "regenerates"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain appears on the line that explains mana drain and regeneration."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0004",
+          "path": "assets/script_eng/0004.zt1",
+          "eventIndex": 13,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Your mana drops each time you produce, but regenerates with time.",
+          "prefixHex": "0205000d044002050100",
+          "sequence": "cmd-02 > cmd-00 > set-expression > cmd-02"
+        },
+        {
+          "scriptStem": "0404",
+          "path": "assets/script_eng/0404.zt1",
+          "eventIndex": 13,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Your mana drops each time you produce, but regenerates with time.",
+          "prefixHex": "0206000d044002060100",
+          "sequence": "cmd-02 > cmd-00 > set-expression > cmd-02"
+        },
+        {
+          "scriptStem": "0804",
+          "path": "assets/script_eng/0804.zt1",
+          "eventIndex": 13,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Your mana drops each time you produce, but regenerates with time.",
+          "prefixHex": "0201000d044002010100",
+          "sequence": "cmd-02 > cmd-00 > set-expression > cmd-02"
+        }
+      ]
+    },
+    {
+      "chainId": "battle-hud-hero-sortie",
+      "label": "hero-sortie-button-highlight",
+      "action": "focus-hero-sortie-button",
+      "category": "ui-focus",
+      "confidence": "medium",
+      "groupId": "battle-hud",
+      "prefixNeedle": "000d0540",
+      "expectedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedFamilyIds": [
+        "000",
+        "040",
+        "080"
+      ],
+      "requiredTextTokens": [
+        "touch",
+        "fight"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The parser still misreads the selector byte as cmd-05(0x40), but the raw chain is stable."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0004",
+          "path": "assets/script_eng/0004.zt1",
+          "eventIndex": 17,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Touch it to leave the tower and fight.",
+          "prefixHex": "0205000d054002050100",
+          "sequence": "cmd-02 > cmd-00 > cmd-05 > cmd-02"
+        },
+        {
+          "scriptStem": "0404",
+          "path": "assets/script_eng/0404.zt1",
+          "eventIndex": 17,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Touch it when you want to go out and fight.",
+          "prefixHex": "0206000d054002060100",
+          "sequence": "cmd-02 > cmd-00 > cmd-05 > cmd-02"
+        },
+        {
+          "scriptStem": "0804",
+          "path": "assets/script_eng/0804.zt1",
+          "eventIndex": 17,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Touch it when you want to go out and fight.",
+          "prefixHex": "0201000d054002010100",
+          "sequence": "cmd-02 > cmd-00 > cmd-05 > cmd-02"
+        }
+      ]
+    },
+    {
+      "chainId": "battle-hud-hero-return",
+      "label": "hero-return-button-highlight",
+      "action": "focus-return-to-tower-button",
+      "category": "ui-focus",
+      "confidence": "medium",
+      "groupId": "battle-hud",
+      "prefixNeedle": "000d0640",
+      "expectedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedScriptStems": [
+        "0004",
+        "0404",
+        "0804"
+      ],
+      "matchedFamilyIds": [
+        "000",
+        "040",
+        "080"
+      ],
+      "requiredTextTokens": [
+        "return",
+        "tower"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The parser still misreads the selector byte as cmd-06(0x40), but the raw chain is stable."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0004",
+          "path": "assets/script_eng/0004.zt1",
+          "eventIndex": 25,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Touch your face again when out fighting to return to your tower.",
+          "prefixHex": "0205000d064002050101050000",
+          "sequence": "cmd-02 > cmd-00 > cmd-06 > cmd-02 > set-right-portrait > cmd-00"
+        },
+        {
+          "scriptStem": "0404",
+          "path": "assets/script_eng/0404.zt1",
+          "eventIndex": 24,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Touch your face again when out fighting to return to your tower.",
+          "prefixHex": "0206000d064002060101060000",
+          "sequence": "cmd-02 > cmd-00 > cmd-06 > cmd-02 > set-right-portrait > cmd-00"
+        },
+        {
+          "scriptStem": "0804",
+          "path": "assets/script_eng/0804.zt1",
+          "eventIndex": 24,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "While out on the field, touch your face again whenever you have to return to your tower.",
+          "prefixHex": "0201000d064002010101010000",
+          "sequence": "cmd-02 > cmd-00 > cmd-06 > cmd-02 > set-right-portrait > cmd-00"
+        }
+      ]
+    },
+    {
+      "chainId": "tower-menu-highlight",
+      "label": "tower-menu-highlight",
+      "action": "focus-tower-upgrade-menu",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0740",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "tower",
+        "icons"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "This chain is mirrored one-for-one across the Vincent, Helba, and Juno menu tutorials."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 2,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "!cffa900Touching the icons in the Tower!cffffff will make you stronger.",
+          "prefixHex": "0205060d074002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 2,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "!cffa900Touch the icons in the Tower!cffffff to make Helba stronger.",
+          "prefixHex": "0206060d074002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 2,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "!cffa900Touch the icons in the Tower!cffffff to make Juno stronger.",
+          "prefixHex": "0201060d074002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-07 > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "mana-upgrade-highlight",
+      "label": "mana-upgrade-highlight",
+      "action": "focus-mana-upgrade-slot",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0840",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "upgrade",
+        "mana"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain is tied to the Potion icon and mana-regeneration explanation."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 5,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+          "prefixHex": "0205060d084002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 5,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+          "prefixHex": "0206060d084002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 5,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "!cff0005Upgrade Mana increases your Mana Regeneration Speed and Max Mana!cffffff. ",
+          "prefixHex": "0201060d084002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-08 > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "population-upgrade-highlight",
+      "label": "population-upgrade-highlight",
+      "action": "focus-population-upgrade-slot",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0940",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "population",
+        "produce"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain is tied to the House icon and max-population warning."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 12,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+          "prefixHex": "0205060d094002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 12,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+          "prefixHex": "0206060d094002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 12,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Once your population is maxed, you can't produce more units. So use it before that happens.",
+          "prefixHex": "0201060d094002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-09 > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "skill-menu-highlight",
+      "label": "skill-menu-highlight",
+      "action": "focus-skill-menu",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0a40",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "check",
+        "skills"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain appears on the scene pivot that introduces the Skill menu."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 14,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Let's check your skills.",
+          "prefixHex": "0205060d0a4002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0a > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 14,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Let's check your skills.",
+          "prefixHex": "0206060d0a4002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0a > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 14,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Let's check your skills.",
+          "prefixHex": "0201060d0a4002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0a > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "skill-slot-highlight",
+      "label": "skill-slot-highlight",
+      "action": "focus-skill-window-slot",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0b40",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "skill",
+        "window"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "This chain is tied to touching a skill inside the battle skill window."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 16,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+          "prefixHex": "0205060d0b4002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 16,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+          "prefixHex": "0206060d0b4002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 16,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Touch a skill in the window to use. Remember, you can only use skills that you've equipped prior to battle.",
+          "prefixHex": "0201060d0b4002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0b > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "item-menu-highlight",
+      "label": "item-menu-highlight",
+      "action": "focus-item-menu",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0c40",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "items",
+        "equipped"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain appears directly after the line that introduces the Item menu."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 25,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Like skills, you can only use items that have been equipped prior to battle.",
+          "prefixHex": "0205060d0c4002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0c > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 25,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Like skills, you can only use items that have been equipped prior to battle.",
+          "prefixHex": "0206060d0c4002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0c > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 25,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Like skills, you can only use items that have been equipped prior to battle.",
+          "prefixHex": "0201060d0c4002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0c > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "system-menu-highlight",
+      "label": "system-menu-highlight",
+      "action": "focus-system-menu",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0d40",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "system",
+        "menu"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain appears on the line about resume battling and configuration settings."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 30,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "You can use the System menu to resume battling, or to configure your settings.",
+          "prefixHex": "0205060d0d4002050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 30,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "You can use the System menu to resume battling, or to configure your settings.",
+          "prefixHex": "0206060d0d4002060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 30,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "You can use the System menu to resume battling, or to configure your settings.",
+          "prefixHex": "0201060d0d4002010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0d > cmd-02 > cmd-05"
+        }
+      ]
+    },
+    {
+      "chainId": "quest-panel-highlight",
+      "label": "quest-panel-highlight",
+      "action": "focus-quest-panel",
+      "category": "ui-focus",
+      "confidence": "high",
+      "groupId": "menu-training",
+      "prefixNeedle": "060d0e40",
+      "expectedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedScriptStems": [
+        "0014",
+        "0414",
+        "0814"
+      ],
+      "matchedFamilyIds": [
+        "001",
+        "041",
+        "081"
+      ],
+      "requiredTextTokens": [
+        "quests",
+        "rewards"
+      ],
+      "hitCount": 3,
+      "notes": [
+        "The chain is tied to the upper-right quest UI and reward explanation."
+      ],
+      "samples": [
+        {
+          "scriptStem": "0014",
+          "path": "assets/script_eng/0014.zt1",
+          "eventIndex": 33,
+          "speaker": "Cecil",
+          "speakerTag": 1,
+          "text": "Quests come with special rewards, try to complete them.",
+          "prefixHex": "0205060d0e4001050102050500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0414",
+          "path": "assets/script_eng/0414.zt1",
+          "eventIndex": 33,
+          "speaker": "Arang",
+          "speakerTag": 7,
+          "text": "Quests come with special rewards, try to complete them.",
+          "prefixHex": "0206060d0e4001060102060500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+        },
+        {
+          "scriptStem": "0814",
+          "path": "assets/script_eng/0814.zt1",
+          "eventIndex": 33,
+          "speaker": "Lantere",
+          "speakerTag": 13,
+          "text": "Quests come with special rewards, try to complete them.",
+          "prefixHex": "0201060d0e4001010102010500",
+          "sequence": "cmd-02 > cmd-06 > cmd-0e > set-right-portrait > cmd-02 > cmd-05"
+        }
+      ]
+    }
+  ],
+  "scriptHits": [
+    {
+      "path": "assets/script_eng/0004.zt1",
+      "scriptStem": "0004",
+      "familyId": "000",
+      "chainIds": [
+        "battle-hud-dispatch-arrows",
+        "battle-hud-goal-hp",
+        "battle-hud-guard-hp",
+        "battle-hud-hero-return",
+        "battle-hud-hero-sortie",
+        "battle-hud-mana-bar",
+        "battle-hud-unit-card"
+      ],
+      "chains": [
+        {
+          "chainId": "battle-hud-dispatch-arrows",
+          "label": "dispatch-arrow-highlight",
+          "action": "focus-dispatch-arrows",
+          "confidence": "high",
+          "prefixNeedle": "060d0240"
+        },
+        {
+          "chainId": "battle-hud-goal-hp",
+          "label": "focus-enemy-tower-hp",
+          "action": "focus-enemy-tower-hp-win-condition",
+          "confidence": "high",
+          "prefixNeedle": "000d0140"
+        },
+        {
+          "chainId": "battle-hud-guard-hp",
+          "label": "guard-own-tower-hp",
+          "action": "focus-own-tower-hp-loss-condition",
+          "confidence": "high",
+          "prefixNeedle": "000d0040"
+        },
+        {
+          "chainId": "battle-hud-hero-return",
+          "label": "hero-return-button-highlight",
+          "action": "focus-return-to-tower-button",
+          "confidence": "medium",
+          "prefixNeedle": "000d0640"
+        },
+        {
+          "chainId": "battle-hud-hero-sortie",
+          "label": "hero-sortie-button-highlight",
+          "action": "focus-hero-sortie-button",
+          "confidence": "medium",
+          "prefixNeedle": "000d0540"
+        },
+        {
+          "chainId": "battle-hud-mana-bar",
+          "label": "mana-bar-highlight",
+          "action": "focus-mana-bar",
+          "confidence": "high",
+          "prefixNeedle": "000d0440"
+        },
+        {
+          "chainId": "battle-hud-unit-card",
+          "label": "unit-card-highlight",
+          "action": "focus-unit-production-card",
+          "confidence": "high",
+          "prefixNeedle": "000d0340"
+        }
+      ]
+    },
+    {
+      "path": "assets/script_eng/0014.zt1",
+      "scriptStem": "0014",
+      "familyId": "001",
+      "chainIds": [
+        "item-menu-highlight",
+        "mana-upgrade-highlight",
+        "population-upgrade-highlight",
+        "quest-panel-highlight",
+        "skill-menu-highlight",
+        "skill-slot-highlight",
+        "system-menu-highlight",
+        "tower-menu-highlight"
+      ],
+      "chains": [
+        {
+          "chainId": "item-menu-highlight",
+          "label": "item-menu-highlight",
+          "action": "focus-item-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0c40"
+        },
+        {
+          "chainId": "mana-upgrade-highlight",
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0840"
+        },
+        {
+          "chainId": "population-upgrade-highlight",
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0940"
+        },
+        {
+          "chainId": "quest-panel-highlight",
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "confidence": "high",
+          "prefixNeedle": "060d0e40"
+        },
+        {
+          "chainId": "skill-menu-highlight",
+          "label": "skill-menu-highlight",
+          "action": "focus-skill-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0a40"
+        },
+        {
+          "chainId": "skill-slot-highlight",
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0b40"
+        },
+        {
+          "chainId": "system-menu-highlight",
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0d40"
+        },
+        {
+          "chainId": "tower-menu-highlight",
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0740"
+        }
+      ]
+    },
+    {
+      "path": "assets/script_eng/0404.zt1",
+      "scriptStem": "0404",
+      "familyId": "040",
+      "chainIds": [
+        "battle-hud-dispatch-arrows",
+        "battle-hud-goal-hp",
+        "battle-hud-guard-hp",
+        "battle-hud-hero-return",
+        "battle-hud-hero-sortie",
+        "battle-hud-mana-bar",
+        "battle-hud-unit-card"
+      ],
+      "chains": [
+        {
+          "chainId": "battle-hud-dispatch-arrows",
+          "label": "dispatch-arrow-highlight",
+          "action": "focus-dispatch-arrows",
+          "confidence": "high",
+          "prefixNeedle": "060d0240"
+        },
+        {
+          "chainId": "battle-hud-goal-hp",
+          "label": "focus-enemy-tower-hp",
+          "action": "focus-enemy-tower-hp-win-condition",
+          "confidence": "high",
+          "prefixNeedle": "000d0140"
+        },
+        {
+          "chainId": "battle-hud-guard-hp",
+          "label": "guard-own-tower-hp",
+          "action": "focus-own-tower-hp-loss-condition",
+          "confidence": "high",
+          "prefixNeedle": "000d0040"
+        },
+        {
+          "chainId": "battle-hud-hero-return",
+          "label": "hero-return-button-highlight",
+          "action": "focus-return-to-tower-button",
+          "confidence": "medium",
+          "prefixNeedle": "000d0640"
+        },
+        {
+          "chainId": "battle-hud-hero-sortie",
+          "label": "hero-sortie-button-highlight",
+          "action": "focus-hero-sortie-button",
+          "confidence": "medium",
+          "prefixNeedle": "000d0540"
+        },
+        {
+          "chainId": "battle-hud-mana-bar",
+          "label": "mana-bar-highlight",
+          "action": "focus-mana-bar",
+          "confidence": "high",
+          "prefixNeedle": "000d0440"
+        },
+        {
+          "chainId": "battle-hud-unit-card",
+          "label": "unit-card-highlight",
+          "action": "focus-unit-production-card",
+          "confidence": "high",
+          "prefixNeedle": "000d0340"
+        }
+      ]
+    },
+    {
+      "path": "assets/script_eng/0414.zt1",
+      "scriptStem": "0414",
+      "familyId": "041",
+      "chainIds": [
+        "item-menu-highlight",
+        "mana-upgrade-highlight",
+        "population-upgrade-highlight",
+        "quest-panel-highlight",
+        "skill-menu-highlight",
+        "skill-slot-highlight",
+        "system-menu-highlight",
+        "tower-menu-highlight"
+      ],
+      "chains": [
+        {
+          "chainId": "item-menu-highlight",
+          "label": "item-menu-highlight",
+          "action": "focus-item-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0c40"
+        },
+        {
+          "chainId": "mana-upgrade-highlight",
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0840"
+        },
+        {
+          "chainId": "population-upgrade-highlight",
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0940"
+        },
+        {
+          "chainId": "quest-panel-highlight",
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "confidence": "high",
+          "prefixNeedle": "060d0e40"
+        },
+        {
+          "chainId": "skill-menu-highlight",
+          "label": "skill-menu-highlight",
+          "action": "focus-skill-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0a40"
+        },
+        {
+          "chainId": "skill-slot-highlight",
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0b40"
+        },
+        {
+          "chainId": "system-menu-highlight",
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0d40"
+        },
+        {
+          "chainId": "tower-menu-highlight",
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0740"
+        }
+      ]
+    },
+    {
+      "path": "assets/script_eng/0804.zt1",
+      "scriptStem": "0804",
+      "familyId": "080",
+      "chainIds": [
+        "battle-hud-dispatch-arrows",
+        "battle-hud-goal-hp",
+        "battle-hud-guard-hp",
+        "battle-hud-hero-return",
+        "battle-hud-hero-sortie",
+        "battle-hud-mana-bar",
+        "battle-hud-unit-card"
+      ],
+      "chains": [
+        {
+          "chainId": "battle-hud-dispatch-arrows",
+          "label": "dispatch-arrow-highlight",
+          "action": "focus-dispatch-arrows",
+          "confidence": "high",
+          "prefixNeedle": "060d0240"
+        },
+        {
+          "chainId": "battle-hud-goal-hp",
+          "label": "focus-enemy-tower-hp",
+          "action": "focus-enemy-tower-hp-win-condition",
+          "confidence": "high",
+          "prefixNeedle": "000d0140"
+        },
+        {
+          "chainId": "battle-hud-guard-hp",
+          "label": "guard-own-tower-hp",
+          "action": "focus-own-tower-hp-loss-condition",
+          "confidence": "high",
+          "prefixNeedle": "000d0040"
+        },
+        {
+          "chainId": "battle-hud-hero-return",
+          "label": "hero-return-button-highlight",
+          "action": "focus-return-to-tower-button",
+          "confidence": "medium",
+          "prefixNeedle": "000d0640"
+        },
+        {
+          "chainId": "battle-hud-hero-sortie",
+          "label": "hero-sortie-button-highlight",
+          "action": "focus-hero-sortie-button",
+          "confidence": "medium",
+          "prefixNeedle": "000d0540"
+        },
+        {
+          "chainId": "battle-hud-mana-bar",
+          "label": "mana-bar-highlight",
+          "action": "focus-mana-bar",
+          "confidence": "high",
+          "prefixNeedle": "000d0440"
+        },
+        {
+          "chainId": "battle-hud-unit-card",
+          "label": "unit-card-highlight",
+          "action": "focus-unit-production-card",
+          "confidence": "high",
+          "prefixNeedle": "000d0340"
+        }
+      ]
+    },
+    {
+      "path": "assets/script_eng/0814.zt1",
+      "scriptStem": "0814",
+      "familyId": "081",
+      "chainIds": [
+        "item-menu-highlight",
+        "mana-upgrade-highlight",
+        "population-upgrade-highlight",
+        "quest-panel-highlight",
+        "skill-menu-highlight",
+        "skill-slot-highlight",
+        "system-menu-highlight",
+        "tower-menu-highlight"
+      ],
+      "chains": [
+        {
+          "chainId": "item-menu-highlight",
+          "label": "item-menu-highlight",
+          "action": "focus-item-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0c40"
+        },
+        {
+          "chainId": "mana-upgrade-highlight",
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0840"
+        },
+        {
+          "chainId": "population-upgrade-highlight",
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0940"
+        },
+        {
+          "chainId": "quest-panel-highlight",
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "confidence": "high",
+          "prefixNeedle": "060d0e40"
+        },
+        {
+          "chainId": "skill-menu-highlight",
+          "label": "skill-menu-highlight",
+          "action": "focus-skill-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0a40"
+        },
+        {
+          "chainId": "skill-slot-highlight",
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "confidence": "high",
+          "prefixNeedle": "060d0b40"
+        },
+        {
+          "chainId": "system-menu-highlight",
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0d40"
+        },
+        {
+          "chainId": "tower-menu-highlight",
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "confidence": "high",
+          "prefixNeedle": "060d0740"
+        }
+      ]
+    }
+  ],
+  "familyHits": [
+    {
+      "familyId": "000",
+      "scriptPaths": [
+        "assets/script_eng/0004.zt1"
+      ],
+      "chainIds": [
+        "battle-hud-dispatch-arrows",
+        "battle-hud-goal-hp",
+        "battle-hud-guard-hp",
+        "battle-hud-hero-return",
+        "battle-hud-hero-sortie",
+        "battle-hud-mana-bar",
+        "battle-hud-unit-card"
+      ],
+      "chains": [
+        {
+          "chainId": "battle-hud-dispatch-arrows",
+          "label": "dispatch-arrow-highlight",
+          "action": "focus-dispatch-arrows",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0240"
+        },
+        {
+          "chainId": "battle-hud-goal-hp",
+          "label": "focus-enemy-tower-hp",
+          "action": "focus-enemy-tower-hp-win-condition",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0140"
+        },
+        {
+          "chainId": "battle-hud-guard-hp",
+          "label": "guard-own-tower-hp",
+          "action": "focus-own-tower-hp-loss-condition",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0040"
+        },
+        {
+          "chainId": "battle-hud-hero-return",
+          "label": "hero-return-button-highlight",
+          "action": "focus-return-to-tower-button",
+          "category": "ui-focus",
+          "confidence": "medium",
+          "prefixNeedle": "000d0640"
+        },
+        {
+          "chainId": "battle-hud-hero-sortie",
+          "label": "hero-sortie-button-highlight",
+          "action": "focus-hero-sortie-button",
+          "category": "ui-focus",
+          "confidence": "medium",
+          "prefixNeedle": "000d0540"
+        },
+        {
+          "chainId": "battle-hud-mana-bar",
+          "label": "mana-bar-highlight",
+          "action": "focus-mana-bar",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0440"
+        },
+        {
+          "chainId": "battle-hud-unit-card",
+          "label": "unit-card-highlight",
+          "action": "focus-unit-production-card",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0340"
+        }
+      ]
+    },
+    {
+      "familyId": "001",
+      "scriptPaths": [
+        "assets/script_eng/0014.zt1"
+      ],
+      "chainIds": [
+        "item-menu-highlight",
+        "mana-upgrade-highlight",
+        "population-upgrade-highlight",
+        "quest-panel-highlight",
+        "skill-menu-highlight",
+        "skill-slot-highlight",
+        "system-menu-highlight",
+        "tower-menu-highlight"
+      ],
+      "chains": [
+        {
+          "chainId": "item-menu-highlight",
+          "label": "item-menu-highlight",
+          "action": "focus-item-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0c40"
+        },
+        {
+          "chainId": "mana-upgrade-highlight",
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0840"
+        },
+        {
+          "chainId": "population-upgrade-highlight",
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0940"
+        },
+        {
+          "chainId": "quest-panel-highlight",
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0e40"
+        },
+        {
+          "chainId": "skill-menu-highlight",
+          "label": "skill-menu-highlight",
+          "action": "focus-skill-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0a40"
+        },
+        {
+          "chainId": "skill-slot-highlight",
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0b40"
+        },
+        {
+          "chainId": "system-menu-highlight",
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0d40"
+        },
+        {
+          "chainId": "tower-menu-highlight",
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0740"
+        }
+      ]
+    },
+    {
+      "familyId": "040",
+      "scriptPaths": [
+        "assets/script_eng/0404.zt1"
+      ],
+      "chainIds": [
+        "battle-hud-dispatch-arrows",
+        "battle-hud-goal-hp",
+        "battle-hud-guard-hp",
+        "battle-hud-hero-return",
+        "battle-hud-hero-sortie",
+        "battle-hud-mana-bar",
+        "battle-hud-unit-card"
+      ],
+      "chains": [
+        {
+          "chainId": "battle-hud-dispatch-arrows",
+          "label": "dispatch-arrow-highlight",
+          "action": "focus-dispatch-arrows",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0240"
+        },
+        {
+          "chainId": "battle-hud-goal-hp",
+          "label": "focus-enemy-tower-hp",
+          "action": "focus-enemy-tower-hp-win-condition",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0140"
+        },
+        {
+          "chainId": "battle-hud-guard-hp",
+          "label": "guard-own-tower-hp",
+          "action": "focus-own-tower-hp-loss-condition",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0040"
+        },
+        {
+          "chainId": "battle-hud-hero-return",
+          "label": "hero-return-button-highlight",
+          "action": "focus-return-to-tower-button",
+          "category": "ui-focus",
+          "confidence": "medium",
+          "prefixNeedle": "000d0640"
+        },
+        {
+          "chainId": "battle-hud-hero-sortie",
+          "label": "hero-sortie-button-highlight",
+          "action": "focus-hero-sortie-button",
+          "category": "ui-focus",
+          "confidence": "medium",
+          "prefixNeedle": "000d0540"
+        },
+        {
+          "chainId": "battle-hud-mana-bar",
+          "label": "mana-bar-highlight",
+          "action": "focus-mana-bar",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0440"
+        },
+        {
+          "chainId": "battle-hud-unit-card",
+          "label": "unit-card-highlight",
+          "action": "focus-unit-production-card",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0340"
+        }
+      ]
+    },
+    {
+      "familyId": "041",
+      "scriptPaths": [
+        "assets/script_eng/0414.zt1"
+      ],
+      "chainIds": [
+        "item-menu-highlight",
+        "mana-upgrade-highlight",
+        "population-upgrade-highlight",
+        "quest-panel-highlight",
+        "skill-menu-highlight",
+        "skill-slot-highlight",
+        "system-menu-highlight",
+        "tower-menu-highlight"
+      ],
+      "chains": [
+        {
+          "chainId": "item-menu-highlight",
+          "label": "item-menu-highlight",
+          "action": "focus-item-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0c40"
+        },
+        {
+          "chainId": "mana-upgrade-highlight",
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0840"
+        },
+        {
+          "chainId": "population-upgrade-highlight",
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0940"
+        },
+        {
+          "chainId": "quest-panel-highlight",
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0e40"
+        },
+        {
+          "chainId": "skill-menu-highlight",
+          "label": "skill-menu-highlight",
+          "action": "focus-skill-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0a40"
+        },
+        {
+          "chainId": "skill-slot-highlight",
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0b40"
+        },
+        {
+          "chainId": "system-menu-highlight",
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0d40"
+        },
+        {
+          "chainId": "tower-menu-highlight",
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0740"
+        }
+      ]
+    },
+    {
+      "familyId": "080",
+      "scriptPaths": [
+        "assets/script_eng/0804.zt1"
+      ],
+      "chainIds": [
+        "battle-hud-dispatch-arrows",
+        "battle-hud-goal-hp",
+        "battle-hud-guard-hp",
+        "battle-hud-hero-return",
+        "battle-hud-hero-sortie",
+        "battle-hud-mana-bar",
+        "battle-hud-unit-card"
+      ],
+      "chains": [
+        {
+          "chainId": "battle-hud-dispatch-arrows",
+          "label": "dispatch-arrow-highlight",
+          "action": "focus-dispatch-arrows",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0240"
+        },
+        {
+          "chainId": "battle-hud-goal-hp",
+          "label": "focus-enemy-tower-hp",
+          "action": "focus-enemy-tower-hp-win-condition",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0140"
+        },
+        {
+          "chainId": "battle-hud-guard-hp",
+          "label": "guard-own-tower-hp",
+          "action": "focus-own-tower-hp-loss-condition",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0040"
+        },
+        {
+          "chainId": "battle-hud-hero-return",
+          "label": "hero-return-button-highlight",
+          "action": "focus-return-to-tower-button",
+          "category": "ui-focus",
+          "confidence": "medium",
+          "prefixNeedle": "000d0640"
+        },
+        {
+          "chainId": "battle-hud-hero-sortie",
+          "label": "hero-sortie-button-highlight",
+          "action": "focus-hero-sortie-button",
+          "category": "ui-focus",
+          "confidence": "medium",
+          "prefixNeedle": "000d0540"
+        },
+        {
+          "chainId": "battle-hud-mana-bar",
+          "label": "mana-bar-highlight",
+          "action": "focus-mana-bar",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0440"
+        },
+        {
+          "chainId": "battle-hud-unit-card",
+          "label": "unit-card-highlight",
+          "action": "focus-unit-production-card",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "000d0340"
+        }
+      ]
+    },
+    {
+      "familyId": "081",
+      "scriptPaths": [
+        "assets/script_eng/0814.zt1"
+      ],
+      "chainIds": [
+        "item-menu-highlight",
+        "mana-upgrade-highlight",
+        "population-upgrade-highlight",
+        "quest-panel-highlight",
+        "skill-menu-highlight",
+        "skill-slot-highlight",
+        "system-menu-highlight",
+        "tower-menu-highlight"
+      ],
+      "chains": [
+        {
+          "chainId": "item-menu-highlight",
+          "label": "item-menu-highlight",
+          "action": "focus-item-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0c40"
+        },
+        {
+          "chainId": "mana-upgrade-highlight",
+          "label": "mana-upgrade-highlight",
+          "action": "focus-mana-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0840"
+        },
+        {
+          "chainId": "population-upgrade-highlight",
+          "label": "population-upgrade-highlight",
+          "action": "focus-population-upgrade-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0940"
+        },
+        {
+          "chainId": "quest-panel-highlight",
+          "label": "quest-panel-highlight",
+          "action": "focus-quest-panel",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0e40"
+        },
+        {
+          "chainId": "skill-menu-highlight",
+          "label": "skill-menu-highlight",
+          "action": "focus-skill-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0a40"
+        },
+        {
+          "chainId": "skill-slot-highlight",
+          "label": "skill-slot-highlight",
+          "action": "focus-skill-window-slot",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0b40"
+        },
+        {
+          "chainId": "system-menu-highlight",
+          "label": "system-menu-highlight",
+          "action": "focus-system-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0d40"
+        },
+        {
+          "chainId": "tower-menu-highlight",
+          "label": "tower-menu-highlight",
+          "action": "focus-tower-upgrade-menu",
+          "category": "ui-focus",
+          "confidence": "high",
+          "prefixNeedle": "060d0740"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "battle-hud-guard-hp is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0040`.",
+    "battle-hud-goal-hp is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0140`.",
+    "battle-hud-dispatch-arrows is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0240`.",
+    "battle-hud-unit-card is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0340`.",
+    "battle-hud-mana-bar is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0440`.",
+    "battle-hud-hero-sortie is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0540`.",
+    "battle-hud-hero-return is mirrored across 3/3 expected English tutorial scripts via raw prefix `000d0640`.",
+    "tower-menu-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0740`.",
+    "mana-upgrade-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0840`.",
+    "population-upgrade-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0940`.",
+    "skill-menu-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0a40`.",
+    "skill-slot-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0b40`.",
+    "item-menu-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0c40`.",
+    "system-menu-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0d40`.",
+    "quest-panel-highlight is mirrored across 3/3 expected English tutorial scripts via raw prefix `060d0e40`.",
+    "The battle-HUD family still relies on raw prefix substrings because the current prefix parser under-reads some selector bytes as standard portrait or pose commands.",
+    "The menu-training family is structurally cleaner: the same `cmd-02 > cmd-06 > selector(0x40) > cmd-02 > cmd-05` shape repeats across Vincent, Helba, and Juno tutorials."
+  ]
+}

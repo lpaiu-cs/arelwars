@@ -151,6 +151,15 @@ export interface RecoveryStageRenderIntent {
   packedPixelHint: string
 }
 
+export interface RecoveryTutorialChainCue {
+  chainId: string
+  label: string
+  action: string
+  category: string
+  confidence: string
+  prefixNeedle: string
+}
+
 export interface RecoveryStageBlueprint {
   familyId: string
   aiIndexCandidate: number | null
@@ -164,6 +173,7 @@ export interface RecoveryStageBlueprint {
   runtimeFields: RecoveryStageRuntimeFields | null
   mapBinding: RecoveryStageMapBinding | null
   opcodeCues: RecoveryOpcodeHeuristic[]
+  tutorialChainCues: RecoveryTutorialChainCue[]
   recommendedArchetypeIds: string[]
   renderIntent: RecoveryStageRenderIntent | null
 }
@@ -194,9 +204,12 @@ export interface RecoveryRuntimeBlueprint {
     featuredArchetypeCount: number
     opcodeHeuristicCount: number
     stageMapProofCount: number
+    tutorialChainCount: number
+    tutorialFamilyCueCount: number
   }
   stageBlueprints: RecoveryStageBlueprint[]
   opcodeHeuristics: RecoveryOpcodeHeuristic[]
+  tutorialChains: RecoveryTutorialChainCue[]
   featuredArchetypes: RecoveryHeroRuntimeArchetype[]
   renderProfile: RecoveryRenderProfile
   findings: string[]
