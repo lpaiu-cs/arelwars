@@ -36,6 +36,9 @@ Produce stage-by-stage evidence that the remake matches the original in:
 - side-by-side certification comparator:
   - [compare_aw1_side_by_side.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/compare_aw1_side_by_side.py)
   - [AW1.side_by_side_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.side_by_side_report.json)
+- regression-stem certification layer:
+  - [export_aw1_regression_stem_certification.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_regression_stem_certification.py)
+  - [AW1.regression_stem_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.regression_stem_certification.json)
 
 ## Required Exact Checks
 

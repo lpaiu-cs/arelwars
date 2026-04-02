@@ -148,6 +148,8 @@ Focus:
 Exit condition:
 
 - no unresolved structural mismatch on the regression set
+- regression certification report:
+  - [AW1.regression_stem_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.regression_stem_certification.json)
 
 ### Stage 4. Certify Stage Flow Across All 111 Stages
 

@@ -1,0 +1,821 @@
+{
+  "specVersion": "aw1-regression-certification-v1",
+  "generatedAtIso": "2026-04-02T13:23:41+00:00",
+  "summary": {
+    "regressionStemCount": 8,
+    "certifiedStemCount": 8,
+    "blockedStemCount": 0,
+    "unresolvedStructuralMismatchCount": 0,
+    "heuristicWaiverCount": 16,
+    "nativeTruthLayerIds": [
+      "pza-base-clip-timing",
+      "pzf-frame-composition",
+      "pzd-image-pool-layout",
+      "mpl-flag-bank-switching",
+      "packed-pixel-179-special"
+    ]
+  },
+  "nativeTruthReferences": {
+    "pzaBaseTiming": {
+      "id": "pza-base-clip-timing",
+      "label": "PZA base clip timing",
+      "domain": "animation-timing",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "timing truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md",
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-original-equivalence-certification-plan.md"
+      ],
+      "proofSummary": [
+        "Embedded PZA delay is the authoritative base-clip timing when present.",
+        "Main-branch playbackDurationMs must not be treated as a substitute for native PZA delay."
+      ],
+      "regressionStemSet": [
+        "082",
+        "084",
+        "208",
+        "209",
+        "215",
+        "226",
+        "230",
+        "240"
+      ]
+    },
+    "pzfFrameComposition": {
+      "id": "pzf-frame-composition",
+      "label": "PZF frame composition",
+      "domain": "render-stack",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "frame assembly truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md"
+      ],
+      "proofSummary": [
+        "PZF owns frame composition and sub-frame placement.",
+        "Grouped tail overlays must not replace PZF frame-order truth in certification work."
+      ]
+    },
+    "pzdImagePoolLayout": {
+      "id": "pzd-image-pool-layout",
+      "label": "PZD image-pool layout",
+      "domain": "render-stack",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "bitmap indexing truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md"
+      ],
+      "proofSummary": [
+        "PZD type 8 aligns to chunk-indexed pools; type 7 aligns to row-stream image indexes.",
+        "This is the canonical source for image-pool identity during certification."
+      ]
+    },
+    "mplBankSwitching": {
+      "id": "mpl-flag-bank-switching",
+      "label": "MPL flag-driven bank switching",
+      "domain": "render-stack",
+      "certaintyLevel": "native-confirmed",
+      "provenance": "native-disassembly",
+      "certificationRole": "palette state truth",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.render_semantics.json"
+      ],
+      "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+      "counts": {
+        "exactStateCount": 224,
+        "bankStateCount": 224
+      },
+      "proofSummary": [
+        "Anchor and tail item flags are now exported per preview frame instead of inferred from overlay-only event labels.",
+        "Runtime bank overlays now read exact flagged-item counts and bank transitions from preview frames."
+      ]
+    },
+    "packedPixel179Special": {
+      "id": "packed-pixel-179-special",
+      "label": "179 packed-pixel special case",
+      "domain": "render-stack",
+      "certaintyLevel": "asset-structural",
+      "provenance": "apk-structural-exact",
+      "certificationRole": "special render handling",
+      "supportingDocs": [
+        "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.render_semantics.json"
+      ],
+      "proofSummary": [
+        "This packed-pixel rule is treated as a special 179-only mapping.",
+        "It is stronger than a generic preview heuristic, but it should not be generalized onto normal PZX/MPL stems."
+      ],
+      "notes": [
+        "Treat 179 as an isolated structural special case.",
+        "Do not generalize its packed-pixel mapping onto normal stems during certification."
+      ]
+    }
+  },
+  "heuristicWaiverPolicy": {
+    "allowedFields": {
+      "timelineKindConfidence": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification.",
+      "overlayCadenceConfidence": "overlay cadence remains a heuristic layer until original-side live traces are available."
+    },
+    "notes": [
+      "Regression-stem certification blocks only on exact or tolerant structural mismatches.",
+      "Heuristic-only mismatches remain visible and must be re-checked once live original traces become available."
+    ]
+  },
+  "stems": [
+    {
+      "stem": "082",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 98
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 98
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 86,
+          "remakeFrameCount": 86
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 15,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 2,
+              "2": 7
+            },
+            {
+              "1": 8
+            },
+            {
+              "1": 4
+            },
+            {
+              "1": 4
+            },
+            {
+              "1": 1,
+              "2": 5,
+              "6": 1
+            },
+            {
+              "1": 4,
+              "2": 5
+            },
+            {
+              "1": 2,
+              "2": 1,
+              "3": 1
+            },
+            {
+              "1": 2,
+              "2": 1,
+              "3": 1
+            },
+            {
+              "1": 5,
+              "2": 2,
+              "3": 1
+            },
+            {
+              "1": 3,
+              "2": 2
+            },
+            {
+              "1": 8,
+              "2": 3
+            },
+            {
+              "1": 4
+            },
+            {
+              "1": 4,
+              "2": 1
+            },
+            {
+              "1": 4,
+              "2": 1
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-tail-overlay"
+          ],
+          "bankTransitions": [
+            "bank-b->bank-a",
+            "bank-b->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/082.pzx",
+        "previewTimelineKind": "single-anchor-cadence",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    },
+    {
+      "stem": "084",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 74
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 74
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 35,
+          "remakeFrameCount": 35
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 6,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 2,
+              "2": 2,
+              "3": 4
+            },
+            {
+              "1": 2,
+              "2": 2,
+              "3": 4
+            },
+            {
+              "1": 3,
+              "2": 1
+            },
+            {
+              "1": 3,
+              "2": 1
+            },
+            {
+              "1": 2,
+              "2": 12
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a",
+            "bank-b+a->bank-a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/084.pzx",
+        "previewTimelineKind": "rising-anchor-with-overlays",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    },
+    {
+      "stem": "208",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 38
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 38
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 21,
+          "remakeFrameCount": 21
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 4,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 12
+            },
+            {
+              "1": 12
+            },
+            {
+              "1": 6,
+              "2": 1
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/208.pzx",
+        "previewTimelineKind": "single-anchor-cadence",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    },
+    {
+      "stem": "209",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 36
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 36
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 26,
+          "remakeFrameCount": 26
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 1,
+              "2": 1,
+              "3": 5
+            },
+            {
+              "2": 2,
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-tail-overlay"
+          ],
+          "bankTransitions": [
+            "bank-b->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/209.pzx",
+        "previewTimelineKind": "single-anchor-cadence",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    },
+    {
+      "stem": "215",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 28
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 28
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 21,
+          "remakeFrameCount": 21
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "2": 6
+            },
+            {
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a",
+            "bank-b+a->bank-a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/215.pzx",
+        "previewTimelineKind": "mixed-anchor-overlay",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    },
+    {
+      "stem": "226",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 32
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 32
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 26,
+          "remakeFrameCount": 26
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "2": 2,
+              "3": 4
+            },
+            {
+              "2": 2,
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a",
+            "bank-b+a->bank-a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/226.pzx",
+        "previewTimelineKind": "rising-anchor-with-overlays",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    },
+    {
+      "stem": "230",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 35
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 35
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 24,
+          "remakeFrameCount": 24
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "2": 2,
+              "3": 4
+            },
+            {
+              "2": 2,
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/230.pzx",
+        "previewTimelineKind": "linked-only-scatter",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    },
+    {
+      "stem": "240",
+      "certificationVerdict": "certified",
+      "structuralMismatchCount": 0,
+      "heuristicWaiverCount": 2,
+      "proofs": {
+        "pzdImagePool": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 52
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 52
+          }
+        },
+        "pzfFrameComposition": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 26,
+          "remakeFrameCount": 26
+        },
+        "pzaBaseTiming": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 4,
+              "2": 6
+            },
+            {
+              "2": 6
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "renderStateTransitions": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-tail-overlay"
+          ],
+          "bankTransitions": [
+            "bank-b->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      "structuralMismatches": [],
+      "heuristicWaivers": [
+        {
+          "field": "timelineKindConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+        },
+        {
+          "field": "overlayCadenceConfidence",
+          "original": "native-confirmed preferred",
+          "remake": "runtime-consistent heuristic",
+          "reason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+        }
+      ],
+      "unresolvedHeuristicMismatches": [],
+      "sourceEvidence": {
+        "referenceAssetPath": "assets/img/240.pzx",
+        "previewTimelineKind": "single-anchor-cadence",
+        "previewTimelineKindConfidence": "runtime-consistent heuristic",
+        "overlayCadenceConfidence": "runtime-consistent heuristic"
+      }
+    }
+  ],
+  "findings": [
+    "The regression set is certified only if every stem has zero structural mismatches.",
+    "Current waivers cover timeline-kind and overlay-cadence labels, not PZA/PZF/PZD structure or bank switching."
+  ]
+}
