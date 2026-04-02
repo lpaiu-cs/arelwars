@@ -1,0 +1,234 @@
+{
+  "specVersion": "aw1-original-equivalence-certification-v1",
+  "generatedAtIso": "2026-04-02T13:39:25+00:00",
+  "certificationVerdict": "original-equivalence-certified",
+  "certificationScope": {
+    "referenceApkPath": "/Users/lpaiu/vs/others/arelwars/arel_wars1/arel_wars_1.apk",
+    "referenceApkSha256": "0fd3e973581590090f2cf8b46f04838f8e659ca11427679c76d55a39550cebc7",
+    "stageCount": 111,
+    "regressionStemCount": 8
+  },
+  "gateChecks": {
+    "nativeTruthFrozen": {
+      "passed": true,
+      "detail": {
+        "frozenTruthLayerCount": 7,
+        "heuristicLayerCount": 5
+      }
+    },
+    "referenceBundleReady": {
+      "passed": true,
+      "detail": {
+        "stageReferenceCount": 111,
+        "uniqueScriptFileCount": 312,
+        "regressionStemCount": 8
+      }
+    },
+    "regressionCertified": {
+      "passed": true,
+      "detail": {
+        "regressionStemCount": 8,
+        "certifiedStemCount": 8,
+        "blockedStemCount": 0,
+        "unresolvedStructuralMismatchCount": 0,
+        "heuristicWaiverCount": 16,
+        "nativeTruthLayerIds": [
+          "pza-base-clip-timing",
+          "pzf-frame-composition",
+          "pzd-image-pool-layout",
+          "mpl-flag-bank-switching",
+          "packed-pixel-179-special"
+        ]
+      }
+    },
+    "stageFlowCertified": {
+      "passed": true,
+      "detail": {
+        "stageCount": 111,
+        "certifiedStageCount": 111,
+        "blockedStageCount": 0,
+        "unresolvedStructuralMismatchCount": 0,
+        "routeHistogram": {
+          "secondary": 73,
+          "primary": 38
+        }
+      }
+    },
+    "battleRepresentativeCertified": {
+      "passed": true,
+      "detail": {
+        "representativeBattleStageCount": 3,
+        "battleCertifiedCount": 3,
+        "routeCoverage": [
+          "primary",
+          "secondary"
+        ],
+        "effectIntensityCoverage": [
+          "high",
+          "low",
+          "medium"
+        ],
+        "archetypeCoverage": [
+          "armageddon",
+          "dispatch",
+          "managain",
+          "manawall",
+          "naturalhealing",
+          "recall",
+          "special-stun",
+          "tower-defense"
+        ]
+      }
+    },
+    "renderRepresentativeCertified": {
+      "passed": true,
+      "detail": {
+        "representativeRenderStemCount": 8,
+        "renderCertifiedStemCount": 8,
+        "heuristicRenderWaiverCount": 16
+      }
+    },
+    "heuristicMismatchCoverage": {
+      "passed": true,
+      "detail": {
+        "sideBySideHeuristicMismatchCount": 16,
+        "coveredByExplicitWaiverCount": 16,
+        "uncoveredHeuristicMismatchCount": 0
+      }
+    }
+  },
+  "waiverRegistry": {
+    "explicitHeuristicWaivers": [
+      {
+        "stem": "082",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "082",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      },
+      {
+        "stem": "084",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "084",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      },
+      {
+        "stem": "208",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "208",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      },
+      {
+        "stem": "209",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "209",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      },
+      {
+        "stem": "215",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "215",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      },
+      {
+        "stem": "226",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "226",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      },
+      {
+        "stem": "230",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "230",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      },
+      {
+        "stem": "240",
+        "category": "render",
+        "field": "timelineKindConfidence",
+        "note": "timeline kind remains a heuristic layer unless explicitly proven on the native path.",
+        "waiverReason": "timeline kind remains a heuristic classification and is explicitly waived during regression-stem certification."
+      },
+      {
+        "stem": "240",
+        "category": "timing",
+        "field": "overlayCadenceConfidence",
+        "note": "overlay cadence remains heuristic until original-side capture proves it.",
+        "waiverReason": "overlay cadence remains a heuristic layer until original-side live traces are available."
+      }
+    ],
+    "uncoveredHeuristicMismatches": [],
+    "notes": [
+      "Heuristic-only mismatches are allowed at the final gate only when they appear in an explicit waiver record.",
+      "Current explicit waivers cover regression-stem timeline-kind and overlay-cadence labels only.",
+      "PTC emitter semantics remain a heuristic witness but do not appear as side-by-side mismatches in the current certification set."
+    ]
+  },
+  "inputs": {
+    "nativeTruthManifest": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.native_truth_manifest.json",
+    "referenceBundle": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.original_reference_bundle.json",
+    "sideBySideReport": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.side_by_side_report.json",
+    "regressionCertification": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.regression_stem_certification.json",
+    "stageFlowCertification": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_flow_certification.json",
+    "battleRenderCertification": "/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_render_certification.json"
+  },
+  "findings": [
+    "The final gate passes only if every prior certification layer passes and every heuristic mismatch is explicitly waived.",
+    "This certification is limited to the current original-reference bundle and native/disassemble truth frozen in the manifest."
+  ]
+}

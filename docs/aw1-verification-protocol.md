@@ -45,6 +45,9 @@ Produce stage-by-stage evidence that the remake matches the original in:
 - representative battle/render certification layer:
   - [export_aw1_battle_render_certification.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_battle_render_certification.py)
   - [AW1.battle_render_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_render_certification.json)
+- final original-equivalence gate:
+  - [export_aw1_original_equivalence_certification.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_original_equivalence_certification.py)
+  - [AW1.original_equivalence_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.original_equivalence_certification.json)
 
 ## Required Exact Checks
 

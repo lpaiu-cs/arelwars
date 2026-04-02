@@ -215,6 +215,12 @@ The project can claim original-equivalence certification only when all are true:
 - representative render set passes render comparison
 - no remaining mismatch is hidden behind a heuristic-only label without explicit waiver
 
+Final artifact:
+
+- [AW1.original_equivalence_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.original_equivalence_certification.json)
+- certification note:
+  - [aw1-original-equivalence-certified.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-original-equivalence-certified.md)
+
 ## Recommended First Tasks
 
 1. Mirror or port the disassemble-side regression comparator onto `main`.
