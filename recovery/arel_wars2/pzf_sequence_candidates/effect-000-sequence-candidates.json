@@ -1,0 +1,139 @@
+{
+  "path": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\effect\\000.pzf",
+  "variant": "anchor+marker",
+  "compactCoordinateCount": 299,
+  "anchorCount": 9,
+  "matchedPzdPath": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\effect\\0\\000.pzd",
+  "matchCount": 9,
+  "indexedGroupCount": 10,
+  "controlGroupCount": 35,
+  "indexedGroups": [
+    {
+      "index": 0,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0404": 1
+      }
+    },
+    {
+      "index": 6,
+      "pointCount": 6,
+      "controlHistogram": {
+        "0337": 3,
+        "0437": 3
+      }
+    },
+    {
+      "index": 26,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 31,
+      "pointCount": 31,
+      "controlHistogram": {
+        "0200": 6,
+        "0300": 3,
+        "0400": 3,
+        "0600": 5,
+        "0b00": 2,
+        "0e00": 12
+      }
+    },
+    {
+      "index": 35,
+      "pointCount": 6,
+      "controlHistogram": {
+        "0403": 6
+      }
+    },
+    {
+      "index": 41,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0403": 1
+      }
+    },
+    {
+      "index": 53,
+      "pointCount": 3,
+      "controlHistogram": {
+        "0403": 3
+      }
+    },
+    {
+      "index": 216,
+      "pointCount": 6,
+      "controlHistogram": {
+        "0423": 6
+      }
+    },
+    {
+      "index": 218,
+      "pointCount": 6,
+      "controlHistogram": {
+        "0323": 6
+      }
+    },
+    {
+      "index": 226,
+      "pointCount": 2,
+      "controlHistogram": {
+        "032a": 1,
+        "0429": 1
+      }
+    }
+  ],
+  "controlGroups": [
+    {
+      "controlWordHex": "2000",
+      "pointCount": 51
+    },
+    {
+      "controlWordHex": "3600",
+      "pointCount": 27
+    },
+    {
+      "controlWordHex": "3800",
+      "pointCount": 27
+    },
+    {
+      "controlWordHex": "2200",
+      "pointCount": 25
+    },
+    {
+      "controlWordHex": "3c00",
+      "pointCount": 13
+    },
+    {
+      "controlWordHex": "2100",
+      "pointCount": 12
+    },
+    {
+      "controlWordHex": "1100",
+      "pointCount": 7
+    },
+    {
+      "controlWordHex": "2300",
+      "pointCount": 7
+    },
+    {
+      "controlWordHex": "0f00",
+      "pointCount": 6
+    },
+    {
+      "controlWordHex": "2400",
+      "pointCount": 6
+    },
+    {
+      "controlWordHex": "3500",
+      "pointCount": 6
+    },
+    {
+      "controlWordHex": "3900",
+      "pointCount": 5
+    }
+  ]
+}

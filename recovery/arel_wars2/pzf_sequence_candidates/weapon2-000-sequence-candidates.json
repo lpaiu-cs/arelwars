@@ -1,0 +1,107 @@
+{
+  "path": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\weapon2\\000.pzf",
+  "variant": "anchor+marker",
+  "compactCoordinateCount": 75,
+  "anchorCount": 9,
+  "matchedPzdPath": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\weapon2\\0\\000.pzd",
+  "matchCount": 9,
+  "indexedGroupCount": 10,
+  "controlGroupCount": 5,
+  "indexedGroups": [
+    {
+      "index": 2,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 3,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 4,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 5,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 6,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 7,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 8,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 9,
+      "pointCount": 14,
+      "controlHistogram": {
+        "0100": 10,
+        "0200": 4
+      }
+    },
+    {
+      "index": 10,
+      "pointCount": 10,
+      "controlHistogram": {
+        "0100": 7,
+        "0200": 3
+      }
+    },
+    {
+      "index": 11,
+      "pointCount": 13,
+      "controlHistogram": {
+        "0100": 10,
+        "0200": 3
+      }
+    }
+  ],
+  "controlGroups": [
+    {
+      "controlWordHex": "0000",
+      "pointCount": 16
+    },
+    {
+      "controlWordHex": "0100",
+      "pointCount": 8
+    },
+    {
+      "controlWordHex": "0200",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "0600",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "0a00",
+      "pointCount": 1
+    }
+  ]
+}

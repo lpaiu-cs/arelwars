@@ -1,0 +1,126 @@
+{
+  "path": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\weapon2\\003.pzf",
+  "variant": "marker-only",
+  "compactCoordinateCount": 130,
+  "anchorCount": 0,
+  "matchedPzdPath": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\weapon2\\0\\003.pzd",
+  "matchCount": 0,
+  "indexedGroupCount": 12,
+  "controlGroupCount": 5,
+  "indexedGroups": [
+    {
+      "index": 0,
+      "pointCount": 17,
+      "controlHistogram": {
+        "0100": 17
+      }
+    },
+    {
+      "index": 1,
+      "pointCount": 12,
+      "controlHistogram": {
+        "0000": 6,
+        "0100": 5,
+        "0200": 1
+      }
+    },
+    {
+      "index": 2,
+      "pointCount": 5,
+      "controlHistogram": {
+        "0000": 1,
+        "0100": 4
+      }
+    },
+    {
+      "index": 3,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 4,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 5,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 6,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 7,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 8,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 9,
+      "pointCount": 22,
+      "controlHistogram": {
+        "0100": 13,
+        "0200": 7,
+        "0300": 2
+      }
+    },
+    {
+      "index": 10,
+      "pointCount": 16,
+      "controlHistogram": {
+        "0100": 8,
+        "0200": 8
+      }
+    },
+    {
+      "index": 11,
+      "pointCount": 21,
+      "controlHistogram": {
+        "0100": 12,
+        "0200": 8,
+        "0300": 1
+      }
+    }
+  ],
+  "controlGroups": [
+    {
+      "controlWordHex": "0000",
+      "pointCount": 16
+    },
+    {
+      "controlWordHex": "0100",
+      "pointCount": 8
+    },
+    {
+      "controlWordHex": "0200",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "0600",
+      "pointCount": 3
+    },
+    {
+      "controlWordHex": "0a00",
+      "pointCount": 1
+    }
+  ]
+}

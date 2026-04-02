@@ -1,0 +1,67 @@
+{
+  "path": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\weapon2\\001.pzf",
+  "variant": "anchor+marker",
+  "compactCoordinateCount": 8,
+  "anchorCount": 7,
+  "matchedPzdPath": "C:\\vs\\other\\arelwars\\recovery\\arel_wars2\\apk_unzip\\assets\\pc\\weapon2\\0\\001.pzd",
+  "matchCount": 7,
+  "indexedGroupCount": 7,
+  "controlGroupCount": 1,
+  "indexedGroups": [
+    {
+      "index": 0,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0401": 1
+      }
+    },
+    {
+      "index": 12,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 13,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 14,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 15,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 16,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    },
+    {
+      "index": 17,
+      "pointCount": 1,
+      "controlHistogram": {
+        "0100": 1
+      }
+    }
+  ],
+  "controlGroups": [
+    {
+      "controlWordHex": "1100",
+      "pointCount": 1
+    }
+  ]
+}

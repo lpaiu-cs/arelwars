@@ -13,6 +13,9 @@ recovery/arel_wars1/mpl_palette_probes/
 recovery/arel_wars1/disassembly/
 recovery/arel_wars1/native_tmp/
 recovery/arel_wars2/native_tmp/
+recovery/arel_wars2/apk_unzip/
+recovery/arel_wars2/decoded/
+recovery/arel_wars2/pzd_previews/
 
 remake/arel-wars1/node_modules/
 remake/arel-wars1/dist/
