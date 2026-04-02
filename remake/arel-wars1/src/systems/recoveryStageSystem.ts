@@ -27,6 +27,7 @@ import type {
 const MIN_DIALOGUE_DURATION_MS = 1400
 const MAX_DIALOGUE_DURATION_MS = 4200
 const STORYBOARD_GAP_MS = 900
+const RESULT_HOLD_MS = 1800
 const MANA_RECOVERY_PER_BEAT = 0.018
 const UPGRADE_PROGRESS_RECOVERY_PER_BEAT = 0.012
 const SKILL_COOLDOWN_MS = 2600
@@ -264,6 +265,12 @@ export class RecoveryStageSystem {
 
   private alliedWavePlan: RecoveryBattleWaveDirective[] = []
 
+  private battleResolutionOutcome: 'victory' | 'defeat' | null = null
+
+  private battleResolutionReason: string | null = null
+
+  private battleResolutionAutoAdvanceAtMs = 0
+
   private lastActionId: RecoveryGameplayActionId | null = null
 
   private lastActionAccepted = false
@@ -403,16 +410,24 @@ export class RecoveryStageSystem {
       changed = true
     }
 
-    while (nowMs >= this.nextDialogueAtMs) {
-      this.stepDialogue(nowMs)
-      changed = true
-    }
+    if (this.battleResolutionOutcome) {
+      if (this.battleResolutionAutoAdvanceAtMs > 0 && nowMs >= this.battleResolutionAutoAdvanceAtMs) {
+        this.advanceStoryboard(nowMs)
+        this.version += 1
+        return true
+      }
+    } else {
+      while (nowMs >= this.nextDialogueAtMs) {
+        this.stepDialogue(nowMs)
+        changed = true
+      }
 
-    const channelBeat = Math.floor(Math.max(nowMs - this.storyboardStartedAtMs, 0) / 120)
-    if (channelBeat !== this.lastChannelBeat) {
-      this.lastChannelBeat = channelBeat
-      this.tickPersistentPreview()
-      changed = true
+      const channelBeat = Math.floor(Math.max(nowMs - this.storyboardStartedAtMs, 0) / 120)
+      if (channelBeat !== this.lastChannelBeat) {
+        this.lastChannelBeat = channelBeat
+        this.tickPersistentPreview()
+        changed = true
+      }
     }
 
     if (changed) {
@@ -840,7 +855,54 @@ export class RecoveryStageSystem {
     const directive = this.currentWaveDirective(plan)
     this.applyWaveDirective(side, directive)
     this.resetWaveCountdown(side, directive)
+    this.evaluateBattleResolution()
     this.lastScriptedBeatNote = directive ? `${note} (${directive.label})` : note
+  }
+
+  private resolveBattleOutcome(outcome: 'victory' | 'defeat', reason: string): void {
+    if (this.battleResolutionOutcome) {
+      return
+    }
+    this.battleResolutionOutcome = outcome
+    this.battleResolutionReason = reason
+    this.battleResolutionAutoAdvanceAtMs = this.lastUpdateNowMs + RESULT_HOLD_MS
+    if (outcome === 'victory') {
+      this.currentObjectivePhase = 'quest-resolution'
+      this.currentObjectiveLabel = 'stage clear, collect rewards, advance'
+      this.panelOverride = 'system'
+      this.questRewardClaimed = false
+    } else {
+      this.currentObjectivePhase = 'tower-management'
+      this.currentObjectiveLabel = 'tower breached, regroup for the next attempt'
+      this.panelOverride = 'system'
+    }
+    this.lastScriptedBeatNote = `${outcome === 'victory' ? 'stage clear' : 'stage failed'}: ${reason}`
+  }
+
+  private evaluateBattleResolution(): void {
+    if (this.battleResolutionOutcome) {
+      return
+    }
+
+    const allyMomentum = (this.laneBattleState.upper.alliedPressure + this.laneBattleState.lower.alliedPressure) / 2
+    const enemyMomentum = (this.laneBattleState.upper.enemyPressure + this.laneBattleState.lower.enemyPressure) / 2
+
+    if (
+      this.previewEnemyTowerHpRatio <= 0.11
+      || (this.currentObjectivePhase === 'siege' && this.previewEnemyTowerHpRatio <= 0.16)
+      || (this.objectiveProgressRatio >= 0.98 && allyMomentum >= enemyMomentum - 0.02)
+    ) {
+      this.resolveBattleOutcome('victory', 'enemy tower pressure collapsed')
+      return
+    }
+
+    if (
+      this.previewOwnTowerHpRatio <= 0.12
+      || (this.previewOwnTowerHpRatio <= 0.18 && enemyMomentum - allyMomentum > 0.12)
+      || (this.currentObjectivePhase === 'lane-control' && enemyMomentum > 0.9 && this.objectiveProgressRatio < 0.28)
+    ) {
+      this.resolveBattleOutcome('defeat', 'enemy lane pressure breached the guard line')
+    }
   }
 
   private buildWavePlan(
@@ -1144,6 +1206,18 @@ export class RecoveryStageSystem {
       questRewardReady = false
     }
 
+    if (this.battleResolutionOutcome === 'victory') {
+      activePanel = 'system'
+      questVisible = true
+      questRewardReady = !this.questRewardClaimed
+      ownTowerHpRatio = Math.max(ownTowerHpRatio, 0.34)
+      enemyTowerHpRatio = Math.min(enemyTowerHpRatio, 0.1)
+    } else if (this.battleResolutionOutcome === 'defeat') {
+      activePanel = 'system'
+      questRewardReady = false
+      ownTowerHpRatio = Math.min(ownTowerHpRatio, 0.12)
+    }
+
     return {
       ownTowerHpRatio,
       enemyTowerHpRatio,
@@ -1376,6 +1450,37 @@ export class RecoveryStageSystem {
       }
     }
 
+    if (this.battleResolutionOutcome) {
+      mode = 'guided-preview'
+      openPanel = 'system'
+      enabledInputs.clear()
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('return-to-tower')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
+      if (this.battleResolutionOutcome === 'victory') {
+        objectiveMode = 'review-quests'
+        questState = this.questRewardClaimed ? 'available' : 'reward-ready'
+        primaryHint = 'Stage clear. Claim the reward or wait for auto-advance.'
+        enabledInputs.add('open-system-menu')
+        enabledInputs.add('review-quest-rewards')
+        if (!this.questRewardClaimed) {
+          enabledInputs.add('claim-quest-reward')
+        }
+      } else {
+        objectiveMode = 'system-navigation'
+        questState = 'hidden'
+        primaryHint = 'Tower breached. Preview will roll to the next storyboard.'
+        enabledInputs.add('open-system-menu')
+        enabledInputs.add('observe-stage-preview')
+      }
+    }
+
     return {
       mode,
       openPanel,
@@ -1425,6 +1530,9 @@ export class RecoveryStageSystem {
     this.alliedWaveCountdownBeats = 5
     this.enemyWavePlan = []
     this.alliedWavePlan = []
+    this.battleResolutionOutcome = null
+    this.battleResolutionReason = null
+    this.battleResolutionAutoAdvanceAtMs = 0
     this.towerUpgradeLevels.mana = 1
     this.towerUpgradeLevels.population = 1
     this.towerUpgradeLevels.attack = 1
@@ -1961,6 +2069,23 @@ export class RecoveryStageSystem {
         enemyDirective: this.currentWaveDirective(this.enemyWavePlan),
         alliedDirective: this.currentWaveDirective(this.alliedWavePlan),
       },
+      resolution: {
+        status: this.battleResolutionOutcome ?? 'active',
+        label:
+          this.battleResolutionOutcome === 'victory'
+            ? 'Stage Clear'
+            : this.battleResolutionOutcome === 'defeat'
+              ? 'Tower Breached'
+              : 'Battle Active',
+        reason:
+          this.battleResolutionReason
+          ?? (this.battleResolutionOutcome ? 'resolved' : 'battle pressure still contested'),
+        autoAdvanceInMs:
+          this.battleResolutionOutcome && this.battleResolutionAutoAdvanceAtMs > 0
+            ? Math.max(this.battleResolutionAutoAdvanceAtMs - this.lastUpdateNowMs, 0)
+            : null,
+        questRewardReady: this.battleResolutionOutcome === 'victory' && !this.questRewardClaimed,
+      },
     }
   }
 
@@ -2080,5 +2205,7 @@ export class RecoveryStageSystem {
       this.currentObjectivePhase = 'lane-control'
       this.currentObjectiveLabel = 'convert wave tempo into lane control'
     }
+
+    this.evaluateBattleResolution()
   }
 }

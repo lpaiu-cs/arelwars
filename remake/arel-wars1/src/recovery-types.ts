@@ -508,6 +508,14 @@ export interface RecoveryBattleWaveDirective {
   label: string
 }
 
+export interface RecoveryBattleResolutionState {
+  status: 'active' | 'victory' | 'defeat'
+  label: string
+  reason: string
+  autoAdvanceInMs: number | null
+  questRewardReady: boolean
+}
+
 export interface RecoveryBattlePreviewState {
   lanes: RecoveryLaneBattleState[]
   selectedLane: 'upper' | 'lower' | null
@@ -517,6 +525,7 @@ export interface RecoveryBattlePreviewState {
   towerThreat: number
   stageProfile: RecoveryStageBattleProfile
   objective: RecoveryBattleObjectiveState
+  resolution: RecoveryBattleResolutionState
 }
 
 export interface RecoveryStageSnapshot {

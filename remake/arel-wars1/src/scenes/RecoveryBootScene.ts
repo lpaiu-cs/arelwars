@@ -342,13 +342,18 @@ export class RecoveryBootScene extends Phaser.Scene {
       .map((entry) => `${entry.laneId}:${entry.momentum} ${entry.alliedUnits}-${entry.enemyUnits}`)
       .join(' · ')
     const objective = snapshot.battlePreviewState.objective
+    const resolution = snapshot.battlePreviewState.resolution
     const directives = `waves ${objective.alliedDirective?.label ?? 'ally idle'} / ${objective.enemyDirective?.label ?? 'enemy idle'}`
     const signals = profile.archetypeSignals.length > 0 ? profile.archetypeSignals.join('/') : 'baseline'
     const scriptedBeat = state.scriptedBeatNote ? `script ${state.scriptedBeatNote}` : 'script idle'
+    const resolutionLine =
+      resolution.status === 'active'
+        ? 'result active'
+        : `result ${resolution.status} ${resolution.label} ${resolution.autoAdvanceInMs !== null ? `in ${Math.ceil(resolution.autoAdvanceInMs / 100) / 10}s` : ''}`
     const lastAction = state.lastActionId
       ? `${state.lastActionId} ${state.lastActionAccepted ? 'ok' : 'blocked'}`
       : 'no-input-yet'
-    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
+    return `${state.mode}${state.battlePaused ? ' paused' : ''} · ${profile.label} · ${profile.tacticalBias} · signals ${signals} · objective ${objective.phase} ${objective.waveIndex}/${objective.totalWaves} ${objective.label} · next a${objective.alliedWaveCountdownBeats}/e${objective.enemyWaveCountdownBeats} · ${directives} · ${resolutionLine} · panel ${panel} · hero ${state.heroMode} · lane ${lane} · queue ${state.queuedUnitCount} · ${upgrades} · ${cooldowns} · ${battle} · ${state.primaryHint} · ${scriptedBeat} · inputs ${enabled} · ${lastAction}`
   }
 
   private handleActionKey(key: string): void {
