@@ -153,6 +153,8 @@ References:
     - `12/12` primary ids and `10/10` nonzero secondary ids resolve directly to `ptc/NNN.ptc`
     - `XlsHeroActiveSkill.tailPairBE` produces exact projectile/effect hits in `5/25` rows
     - `XlsHeroSkill.slotOrPowerCandidate` is now a high-confidence direct slot index into `XlsHeroPassiveSkill` for slots `0..23`
+    - the same slot index reaches `24/25` rows in `XlsHeroActiveSkill`, leaving only active row `24` orphaned for now
+    - `XlsHeroBuffSkill.tailLinkCandidate` also behaves like a slot bridge when non-`255`
 
 ### Phase 4. Build Deterministic Runtime Systems
 

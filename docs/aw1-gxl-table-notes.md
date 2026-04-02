@@ -257,9 +257,12 @@ Evidence:
   - `skillIdCandidate -> matchingHeroSkillsByAiCode`
 - The stronger current hero-skill finding lives in [`AW1.hero_skill_links.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json):
   - `slotOrPowerCandidate` is now a high-confidence direct slot index into `XlsHeroPassiveSkill` for slots `0..23`
+  - the same slot index also reaches `24/25` rows in `XlsHeroActiveSkill`
+  - current orphan active row is `24`
   - `24/24` passive rows are reachable by hero-skill slot index
   - `21` rows match by exact normalized name
   - slots `6`, `13`, and `23` are alias cases where `Defend Tower` in the master table maps to `Thief/Helba/Juno Tower Defense` in the passive table
+  - `XlsHeroBuffSkill.tailLinkCandidate` is also slot-like when non-`255`, currently landing on slots `11`, `14`, `15`, `19`, `20`, `21`, `22`, and `23`
   - slots `29`, `30`, and `31` sit outside the passive table and currently host special `mode 0:2` rows: `Stun`, `Smoke`, and `Armageddon Buff`
 
 ### XlsHeroActiveSkill
@@ -276,6 +279,10 @@ Evidence:
   - row `1` pair `(3, 2)` exactly matches effect row `26`
   - row `2` pair `(3, 0)` exactly matches both projectile row `4` and effect row `24`
 - This is still not enough to fully name the tail pair payload, but it is strong evidence that at least part of the block is a direct projectile/effect reference table.
+- [`AW1.hero_skill_links.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json) also shows that `XlsHeroActiveSkill` behaves like a parallel slot table:
+  - slots `0..23` are all reachable from the hero-skill master table
+  - row `24` is present in `XlsHeroActiveSkill` but currently has no hero-skill slot owner
+  - slots `19..23` are especially structured, with timing ladders that line up against `Mana Gain`, three `Dispatch` rows, and `Defend Tower`
 
 ### XlsHeroBuffSkill
 
@@ -289,6 +296,9 @@ Evidence:
   - `profileCandidate`
   - `tailLinkCandidate`
 - This is still provisional, but rows visibly carry compact skill or profile ids in the low teens and low twenties, which makes it a good next runtime-schema target.
+- New slot-link evidence improves that a bit:
+  - when `tailLinkCandidate != 255`, the target currently lands on hero-skill slots `11`, `14`, `15`, `19`, `20`, `21`, `22`, and `23`
+  - that puts the linked rows close to `Natural Healing`, `HP Up`, `Mana Wall`, `Mana Gain`, the three `Dispatch` rows, and `Defend Tower`
 
 ### XlsHeroPassiveSkill
 

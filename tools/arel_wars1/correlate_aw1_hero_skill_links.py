@@ -51,6 +51,8 @@ def main() -> None:
 
     hero_skills = read_json(parsed_dir / "XlsHeroSkill.eng.parsed.json")["records"]
     passive_rows = read_json(parsed_dir / "XlsHeroPassiveSkill.eng.parsed.json")["records"]
+    active_rows = read_json(parsed_dir / "XlsHeroActiveSkill.eng.parsed.json")["records"]
+    buff_rows = read_json(parsed_dir / "XlsHeroBuffSkill.eng.parsed.json")["records"]
     skill_ai = read_json(parsed_dir / "XlsSkill_Ai.eng.parsed.json")["records"]
     effect_runtime = read_json(parsed_dir / "AW1.effect_runtime_links.json")
 
@@ -58,12 +60,36 @@ def main() -> None:
     for row in skill_ai:
         skill_ai_by_id[int(row["skillIdCandidate"])].append(row)
 
-    hero_active_rows_with_effect_hits = {
-        int(row["index"]): row for row in effect_runtime["heroActiveTailLinks"]
-    }
+    active_rows_by_index = {int(row["index"]): row for row in active_rows}
+    hero_active_exact_tail_rows: dict[int, dict[str, Any]] = {}
+    hero_active_hint_rows: dict[int, dict[str, Any]] = {}
+    for row in effect_runtime["heroActiveTailLinks"]:
+        row_index = int(row["index"])
+        hero_active_hint_rows[row_index] = row
+        if any(
+            report["projectileExactMatches"] or report["effectExactMatches"] or report["particleExactMatches"]
+            for report in row["pairReports"]
+        ):
+            hero_active_exact_tail_rows[row_index] = row
+
+    buff_rows_by_tail_link: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for row in buff_rows:
+        tail_link = int(row["tailLinkCandidate"])
+        if tail_link != 255:
+            buff_rows_by_tail_link[tail_link].append(
+                {
+                    "index": row["index"],
+                    "familyCandidate": row["familyCandidate"],
+                    "tierCandidate": row["tierCandidate"],
+                    "triggerModeCandidate": row["triggerModeCandidate"],
+                    "skillCodeCandidate": row["skillCodeCandidate"],
+                    "profileCandidate": row["profileCandidate"],
+                }
+            )
 
     linked_rows: list[dict[str, Any]] = []
     passive_row_coverage: dict[int, list[int]] = defaultdict(list)
+    active_row_coverage: dict[int, list[int]] = defaultdict(list)
     slot_groups: dict[int, list[dict[str, Any]]] = defaultdict(list)
     mode_histogram: Counter[str] = Counter()
 
@@ -112,28 +138,51 @@ def main() -> None:
             }
             for item in skill_ai_by_id.get(int(row["aiCodeCandidate"]), [])
         ]
-        active_runtime_hint = hero_active_rows_with_effect_hits.get(slot)
+        active_slot_row = None
+        if 0 <= slot < len(active_rows):
+            active = active_rows_by_index[slot]
+            active_slot_row = {
+                "index": active["index"],
+                "headerBytes": active["headerBytes"],
+                "timingWindowA": active["timingWindowA"],
+                "timingWindowB": active["timingWindowB"],
+                "tailPairBE": active["tailPairBE"],
+            }
+            active_row_coverage[int(active["index"])].append(int(row["index"]))
+
+        active_exact_tail_link = hero_active_exact_tail_rows.get(slot)
+        active_hint_row = hero_active_hint_rows.get(slot)
+        buff_tail_matches = buff_rows_by_tail_link.get(slot, [])
 
         tags: list[str] = [f"mode-{mode_key}"]
         if passive_slot_match is not None:
             tags.append("passive-slot-linked")
             if passive_slot_match["matchKind"] == "tower-defense-alias":
                 tags.append("tower-defense-alias")
+        if active_slot_row is not None:
+            tags.append("active-slot-linked")
         if exact_skill_ai_by_skill_code:
             tags.append("skill-ai-skill-code")
         if exact_skill_ai_by_ai_code:
             tags.append("skill-ai-ai-code")
-        if active_runtime_hint is not None:
-            tags.append("active-runtime-tail-hit")
+        if active_exact_tail_link is not None:
+            tags.append("active-exact-tail-hit")
+        elif active_hint_row is not None:
+            tags.append("active-tail-hint")
+        if buff_tail_matches:
+            tags.append("buff-tail-linked")
         if slot >= 29:
             tags.append("special-slot-29plus")
 
         linked = {
             **row,
             "passiveSlotMatch": passive_slot_match,
+            "activeSlotRow": active_slot_row,
             "matchingSkillAiBySkillCode": exact_skill_ai_by_skill_code,
             "matchingSkillAiByAiCode": exact_skill_ai_by_ai_code,
-            "activeRuntimeHint": active_runtime_hint,
+            "activeExactTailLink": active_exact_tail_link,
+            "activeTailHintRow": active_hint_row if active_exact_tail_link is None else None,
+            "buffTailMatches": buff_tail_matches,
             "tags": tags,
         }
         linked_rows.append(linked)
@@ -162,6 +211,7 @@ def main() -> None:
     slot_group_entries = []
     for slot, rows in sorted(slot_groups.items()):
         passive = passive_rows[slot] if 0 <= slot < len(passive_rows) else None
+        active = active_rows_by_index.get(slot)
         slot_group_entries.append(
             {
                 "slot": slot,
@@ -176,13 +226,32 @@ def main() -> None:
                     if passive is not None
                     else None
                 ),
+                "activeRow": (
+                    {
+                        "index": active["index"],
+                        "headerBytes": active["headerBytes"],
+                        "timingWindowA": active["timingWindowA"],
+                        "timingWindowB": active["timingWindowB"],
+                        "tailPairBE": active["tailPairBE"],
+                    }
+                    if active is not None
+                    else None
+                ),
+                "activeExactTailLink": hero_active_exact_tail_rows.get(slot),
+                "buffTailRows": buff_rows_by_tail_link.get(slot, []),
             }
         )
+
+    active_orphan_rows = [
+        index for index in sorted(active_rows_by_index) if index not in active_row_coverage
+    ]
 
     findings = [
         f"{len(passive_row_coverage)}/{len(passive_rows)} passive rows are reachable directly by hero-skill slotOrPowerCandidate indices.",
         f"{passive_exact_count} hero-skill rows match passive rows by exact normalized name, and {passive_alias_count} more match as Defend Tower -> * Tower Defense aliases.",
+        f"{len(active_row_coverage)}/{len(active_rows)} active rows are also reachable directly by slot index; the current orphan active rows are {active_orphan_rows}.",
         "Slots 6, 13, and 23 are the clearest alias cases: three Defend Tower master rows line up with Thief/Helba/Juno Tower Defense passive rows.",
+        "Buff rows with explicit tail links currently land on slots 11, 14, 15, 19, 20, 21, 22, and 23, which suggests XlsHeroBuffSkill tailLinkCandidate is another slot-based runtime bridge.",
         "Slots 29, 30, and 31 remain outside the passive-row range and currently host special mode-0:2 rows such as Stun, Smoke, and Armageddon Buff.",
     ]
 
@@ -190,12 +259,18 @@ def main() -> None:
         "summary": {
             "heroSkillRowCount": len(hero_skills),
             "passiveRowCount": len(passive_rows),
+            "activeRowCount": len(active_rows),
+            "buffRowCount": len(buff_rows),
             "skillAiRowCount": len(skill_ai),
-            "heroActiveRowsWithEffectHits": len(hero_active_rows_with_effect_hits),
             "passiveRowsReachableBySlot": len(passive_row_coverage),
+            "activeRowsReachableBySlot": len(active_row_coverage),
             "heroSkillExactPassiveMatchCount": passive_exact_count,
             "heroSkillTowerDefenseAliasCount": passive_alias_count,
+            "activeRowsWithExactTailHits": len(hero_active_exact_tail_rows),
+            "activeRowsWithHintTailLinks": len(hero_active_hint_rows),
+            "buffTailLinkedSlotCount": len(buff_rows_by_tail_link),
             "modeHistogram": dict(sorted(mode_histogram.items())),
+            "activeOrphanRows": active_orphan_rows,
             "specialSlotValues": sorted(
                 {
                     int(row["slotOrPowerCandidate"])
