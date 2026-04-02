@@ -134,6 +134,9 @@ export interface RecoveryStageMapBinding {
   templateGroupId: number
   mapPairIndices: number[]
   preferredMapIndexHeuristic: number | null
+  inlinePairBaseIndexCandidate: number | null
+  inlinePairBranchIndexCandidate: number | null
+  inlinePreferredMapIndexCandidate: number | null
   confidence: string
   proofScore: number
   proofType: string

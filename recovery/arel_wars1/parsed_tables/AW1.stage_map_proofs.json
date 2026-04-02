@@ -3,7 +3,7 @@
     "stageProofCount": 111,
     "groupProfileCount": 8,
     "confidenceHistogram": {
-      "supported-heuristic": 111
+      "inline-pointer-derived": 111
     }
   },
   "globalRules": {
@@ -18,6 +18,46 @@
     "storyFlagToPairBranch": {
       "0": "primary",
       "1": "secondary"
+    }
+  },
+  "inlinePointerSignals": {
+    "pairBaseIndexSignal": {
+      "byteOffset": 15,
+      "wordIndex": 7,
+      "byteMapping": {
+        "1": 0,
+        "2": 2,
+        "3": 4,
+        "4": 6,
+        "5": 8,
+        "6": 8
+      },
+      "wordMapping": {
+        "256": 0,
+        "512": 2,
+        "768": 4,
+        "1024": 6,
+        "1280": 8,
+        "1536": 8
+      },
+      "interpretation": "XlsAi numericBlock byte[15] encodes the map-pair base index through a compact variant-to-pair lookup."
+    },
+    "pairBranchSignal": {
+      "byteOffset": 18,
+      "wordIndex": 9,
+      "byteMapping": {
+        "0": 0,
+        "1": 1
+      },
+      "wordMapping": {
+        "0": 0,
+        "1": 1
+      },
+      "interpretation": "XlsAi numericBlock byte[18] behaves like a branch bit selecting primary vs secondary map inside the pair."
+    },
+    "preferredMapFormula": {
+      "formula": "preferredMapIndex = pairBaseIndexCandidate + pairBranchIndexCandidate",
+      "exactCoverage": 111
     }
   },
   "groupProfiles": [
@@ -320,10 +360,13 @@
         1
       ],
       "preferredMapIndex": 1,
+      "inlinePairBaseIndexCandidate": 0,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 1,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v3/3L-50x20-v3",
       "candidateHeaders": [
         {
@@ -346,6 +389,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -373,10 +419,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -399,6 +448,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -426,10 +478,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -452,6 +507,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -479,10 +537,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -505,6 +566,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -532,10 +596,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -558,6 +625,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -585,10 +655,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -611,6 +684,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -638,10 +714,13 @@
         1
       ],
       "preferredMapIndex": 1,
+      "inlinePairBaseIndexCandidate": 0,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 1,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v3/3L-50x20-v3",
       "candidateHeaders": [
         {
@@ -664,6 +743,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -691,10 +773,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -717,6 +802,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -744,10 +832,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -770,6 +861,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -797,10 +891,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -823,6 +920,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -850,10 +950,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -876,6 +979,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -903,10 +1009,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -929,6 +1038,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -956,10 +1068,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -982,6 +1097,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1009,10 +1127,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1035,6 +1156,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1062,10 +1186,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -1088,6 +1215,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1115,10 +1245,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1141,6 +1274,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1168,10 +1304,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1194,6 +1333,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1221,10 +1363,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1247,6 +1392,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1274,10 +1422,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1300,6 +1451,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1327,10 +1481,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1353,6 +1510,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1380,10 +1540,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -1406,6 +1569,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1433,10 +1599,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -1459,6 +1628,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1486,10 +1658,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1512,6 +1687,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1539,10 +1717,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1565,6 +1746,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1592,10 +1776,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -1618,6 +1805,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1645,10 +1835,13 @@
         7
       ],
       "preferredMapIndex": 7,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 7,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -1671,6 +1864,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1698,10 +1894,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -1724,6 +1923,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1751,10 +1953,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -1777,6 +1982,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1804,10 +2012,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -1830,6 +2041,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1857,10 +2071,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -1883,6 +2100,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1910,10 +2130,13 @@
         7
       ],
       "preferredMapIndex": 6,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 6,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -1936,6 +2159,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -1963,10 +2189,13 @@
         7
       ],
       "preferredMapIndex": 7,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 7,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -1989,6 +2218,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2016,10 +2248,13 @@
         7
       ],
       "preferredMapIndex": 7,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 7,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -2042,6 +2277,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2069,10 +2307,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -2095,6 +2336,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2123,10 +2367,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -2149,6 +2396,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2177,10 +2427,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -2203,6 +2456,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2231,10 +2487,13 @@
         1
       ],
       "preferredMapIndex": 0,
+      "inlinePairBaseIndexCandidate": 0,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 0,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v3/3L-50x20-v3",
       "candidateHeaders": [
         {
@@ -2257,6 +2516,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2284,10 +2546,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -2310,6 +2575,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2338,10 +2606,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2364,6 +2635,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2391,10 +2665,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2417,6 +2694,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2444,10 +2724,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2470,6 +2753,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2497,10 +2783,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2523,6 +2812,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2550,10 +2842,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2576,6 +2871,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2603,10 +2901,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2629,6 +2930,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2656,10 +2960,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2682,6 +2989,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2709,10 +3019,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2735,6 +3048,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2762,10 +3078,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -2788,6 +3107,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2815,10 +3137,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -2841,6 +3166,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2868,10 +3196,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -2894,6 +3225,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2921,10 +3255,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -2947,6 +3284,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -2974,10 +3314,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3000,6 +3343,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3027,10 +3373,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3053,6 +3402,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3080,10 +3432,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3106,6 +3461,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3133,10 +3491,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3159,6 +3520,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3186,10 +3550,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3212,6 +3579,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3239,10 +3609,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3265,6 +3638,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3292,10 +3668,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3318,6 +3697,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3345,10 +3727,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3371,6 +3756,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3398,10 +3786,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3424,6 +3815,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3451,10 +3845,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3477,6 +3874,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3504,10 +3904,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3530,6 +3933,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3557,10 +3963,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3583,6 +3992,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3610,10 +4022,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3636,6 +4051,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3663,10 +4081,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3689,6 +4110,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3716,10 +4140,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3742,6 +4169,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3769,10 +4199,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3795,6 +4228,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3822,10 +4258,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3848,6 +4287,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3875,10 +4317,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -3901,6 +4346,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3928,10 +4376,13 @@
         7
       ],
       "preferredMapIndex": 7,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 7,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -3954,6 +4405,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -3981,10 +4435,13 @@
         7
       ],
       "preferredMapIndex": 6,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 6,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -4007,6 +4464,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4034,10 +4494,13 @@
         7
       ],
       "preferredMapIndex": 6,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 6,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -4060,6 +4523,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4087,10 +4553,13 @@
         1
       ],
       "preferredMapIndex": 0,
+      "inlinePairBaseIndexCandidate": 0,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 0,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v3/3L-50x20-v3",
       "candidateHeaders": [
         {
@@ -4113,6 +4582,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4140,10 +4612,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -4166,6 +4641,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4194,10 +4672,13 @@
         1
       ],
       "preferredMapIndex": 1,
+      "inlinePairBaseIndexCandidate": 0,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 1,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v3/3L-50x20-v3",
       "candidateHeaders": [
         {
@@ -4220,6 +4701,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4247,10 +4731,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -4273,6 +4760,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4300,10 +4790,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.85,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -4326,6 +4819,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4353,10 +4849,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -4379,6 +4878,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4406,10 +4908,13 @@
         1
       ],
       "preferredMapIndex": 1,
+      "inlinePairBaseIndexCandidate": 0,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 1,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v3/3L-50x20-v3",
       "candidateHeaders": [
         {
@@ -4432,6 +4937,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4459,10 +4967,13 @@
         3
       ],
       "preferredMapIndex": 2,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 2,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -4485,6 +4996,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4512,10 +5026,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -4538,6 +5055,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4565,10 +5085,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -4591,6 +5114,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4618,10 +5144,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -4644,6 +5173,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4671,10 +5203,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -4697,6 +5232,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4724,10 +5262,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -4750,6 +5291,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4777,10 +5321,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -4803,6 +5350,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4830,10 +5380,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -4856,6 +5409,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4883,10 +5439,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -4909,6 +5468,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4936,10 +5498,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -4962,6 +5527,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -4989,10 +5557,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5015,6 +5586,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5042,10 +5616,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5068,6 +5645,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5095,10 +5675,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5121,6 +5704,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5148,10 +5734,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -5174,6 +5763,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5201,10 +5793,13 @@
         3
       ],
       "preferredMapIndex": 3,
+      "inlinePairBaseIndexCandidate": 2,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 3,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v1/3L-50x20-v1",
       "candidateHeaders": [
         {
@@ -5227,6 +5822,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5254,10 +5852,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5280,6 +5881,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5307,10 +5911,13 @@
         9
       ],
       "preferredMapIndex": 9,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 9,
       "storyBranch": "secondary",
-      "proofScore": 0.85,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -5333,6 +5940,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5360,10 +5970,13 @@
         5
       ],
       "preferredMapIndex": 4,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 4,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5386,6 +5999,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5413,10 +6029,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5439,6 +6058,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5466,10 +6088,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5492,6 +6117,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5519,10 +6147,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5545,6 +6176,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5572,10 +6206,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5598,6 +6235,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5625,10 +6265,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5651,6 +6294,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5678,10 +6324,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5704,6 +6353,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5731,10 +6383,13 @@
         5
       ],
       "preferredMapIndex": 5,
+      "inlinePairBaseIndexCandidate": 4,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 5,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v2/3L-50x20-v2",
       "candidateHeaders": [
         {
@@ -5757,6 +6412,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5784,10 +6442,13 @@
         7
       ],
       "preferredMapIndex": 6,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 6,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -5810,6 +6471,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5837,10 +6501,13 @@
         7
       ],
       "preferredMapIndex": 7,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 7,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -5863,6 +6530,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5890,10 +6560,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -5916,6 +6589,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5944,10 +6620,13 @@
         7
       ],
       "preferredMapIndex": 7,
+      "inlinePairBaseIndexCandidate": 6,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 7,
       "storyBranch": "secondary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "2L-62x20-v3/2L-50x20-v3",
       "candidateHeaders": [
         {
@@ -5970,6 +6649,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -5997,10 +6679,13 @@
         9
       ],
       "preferredMapIndex": 9,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 1,
+      "inlinePreferredMapIndexCandidate": 9,
       "storyBranch": "secondary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -6023,6 +6708,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -6051,10 +6739,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -6077,6 +6768,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -6105,10 +6799,13 @@
         1
       ],
       "preferredMapIndex": 0,
+      "inlinePairBaseIndexCandidate": 0,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 0,
       "storyBranch": "primary",
-      "proofScore": 0.83,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.96,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "3L-62x20-v3/3L-50x20-v3",
       "candidateHeaders": [
         {
@@ -6131,6 +6828,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -6158,10 +6858,13 @@
         9
       ],
       "preferredMapIndex": 8,
+      "inlinePairBaseIndexCandidate": 8,
+      "inlinePairBranchIndexCandidate": 0,
+      "inlinePreferredMapIndexCandidate": 8,
       "storyBranch": "primary",
-      "proofScore": 0.88,
-      "confidence": "supported-heuristic",
-      "proofType": "variant-template-plus-story-branch",
+      "proofScore": 0.97,
+      "confidence": "inline-pointer-derived",
+      "proofType": "inline-ai-pointer-derived",
       "pairGeometrySignature": "4L-62x20-v8/4L-50x20-v9",
       "candidateHeaders": [
         {
@@ -6184,6 +6887,9 @@
         }
       ],
       "evidenceSummary": [
+        "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+        "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+        "preferredMapIndex matches pairBase + branch for this stage row.",
         "variantCandidate resolves to a stable template group under the current 1->0,2->1,3->2,4->3,5/6->4 rule",
         "candidate map pair is concrete and contains exactly two map bins",
         "paired XlsMap rows carry non-zero metrics instead of placeholder zeros",
@@ -6195,7 +6901,7 @@
   ],
   "findings": [
     "Stage-map proof export now exposes a support score and evidence list instead of only a bare preferred map index heuristic.",
-    "The strongest current rule remains variantCandidate -> templateGroup and storyFlagCandidate -> primary/secondary branch inside the pair.",
-    "This is still not a hard runtime pointer, but it is now an explicit proof-candidate layer that can be replaced as soon as a direct table reference is found."
+    "The strongest current reading is now stronger than a pure template heuristic: XlsAi numericBlock byte[15] acts like an inline pair-base pointer and byte[18] acts like an inline pair-branch bit.",
+    "This is still not a final named source-level pointer, but it is now an explicit proof-candidate layer that can be replaced as soon as a direct table reference is found."
   ]
 }

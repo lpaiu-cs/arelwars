@@ -133,6 +133,7 @@ References:
   - current cross-correlation outputs now exist for:
     - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
     - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+    - [AW1.inline_map_pointer_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json)
     - [AW1.stage_map_proofs.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json)
     - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
     - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
@@ -172,7 +173,8 @@ References:
       - `Mana Wall` / `Armageddon` -> slot-15 shared channel
       - `Smoke` regular skill and `Smoke (Special)` are now separated instead of being conflated by name
     - `AW1.opcode_action_map.json` now separates mnemonic-wide opcode labels from variant-local action hints
-    - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate instead of only a raw preferred map index
+    - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
+    - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest
 
 ### Phase 4. Build Deterministic Runtime Systems

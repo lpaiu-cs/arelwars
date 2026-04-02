@@ -12,6 +12,7 @@ Primary outputs:
 - [XlsAi.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsAi.eng.json)
 - parsed exports under [parsed_tables](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables)
 - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+- [AW1.inline_map_pointer_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json)
 - [AW1.stage_map_proofs.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json)
 - [AW1.runtime_field_reuse_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_field_reuse_scan.json)
 - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
@@ -24,6 +25,11 @@ Primary outputs:
 `AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
 It did not yet reveal a hard `stage -> map payload` pointer on its own.
 Its main value so far is that it elevates `XlsHero_Ai`, `XlsSkill_Ai`, `XlsProjectile`, and `XlsEffect` as the best next typed-schema targets.
+
+The stronger current `stage -> map` lead now comes from the stage-specific `XlsAi.numericBlock` itself:
+
+- [`AW1.inline_map_pointer_scan.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json) shows `byte[15]` behaving like a compact `pairBaseIndex` code and `byte[18]` behaving like a direct `pairBranchIndex` bit
+- coverage is exact for all `111` script-backed stage rows
 
 ## Current Header Model
 

@@ -6,6 +6,7 @@ Primary output:
 
 - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
 - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+- [AW1.inline_map_pointer_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json)
 - [AW1.stage_map_proofs.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json)
 - [AW1.runtime_blueprint.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json)
 
@@ -127,7 +128,8 @@ This is still provisional, but it is already useful enough to drive targeted ver
 ## Map Binding Candidates
 
 `AW1.map_binding_candidates.json` remains the raw scratchpad for stage-to-map work.
-`AW1.stage_map_proofs.json` is the structured layer that turns that scratchpad into runtime-facing proof candidates.
+`AW1.inline_map_pointer_scan.json` is the new proof scan that checks whether `XlsAi.numericBlock` already contains a compact inline map pointer.
+`AW1.stage_map_proofs.json` is the structured layer that turns those findings into runtime-facing proof candidates.
 
 Current strongest findings:
 
@@ -153,6 +155,34 @@ Current strongest findings:
   - `storyFlagCandidate` then chooses the preferred map inside the pair
 - This is still heuristic, not a proven hard pointer, but it now carries an explicit support score, proof type, and evidence list instead of living only as a note.
 
+## Inline Pointer Upgrade
+
+The strongest current result is no longer only `variantCandidate -> template group`.
+
+`AW1.inline_map_pointer_scan.json` now shows:
+
+- `XlsAi.numericBlock byte[15]`
+  - exact coverage `111/111`
+  - compact mapping:
+    - `1 -> 0`
+    - `2 -> 2`
+    - `3 -> 4`
+    - `4 -> 6`
+    - `5 -> 8`
+    - `6 -> 8`
+  - strongest reading: inline `pairBaseIndexCandidate`
+- `XlsAi.numericBlock byte[18]`
+  - exact coverage `111/111`
+  - mapping:
+    - `0 -> 0`
+    - `1 -> 1`
+  - strongest reading: inline `pairBranchIndexCandidate`
+- combined formula:
+  - `preferredMapIndex = pairBaseIndexCandidate + pairBranchIndexCandidate`
+  - exact coverage `111/111`
+
+This is still not a named source-level field from original code, but it is materially stronger than the earlier pure template heuristic.
+
 ## Runtime Blueprint Layer
 
 [`AW1.runtime_blueprint.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json) is now the current integration boundary between reverse-engineering outputs and the Phaser runtime.
@@ -161,7 +191,7 @@ It adds three things on top of the raw reports:
 
 1. `stageBlueprints`
    - one per script family / AI row candidate
-   - includes stage title, reward text, hint text, runtime field tuple, scored map proof candidate, opcode cues, and recommended hero archetypes
+   - includes stage title, reward text, hint text, runtime field tuple, scored map proof candidate, inline pair-base/branch pointer candidates, opcode cues, and recommended hero archetypes
 2. `opcodeHeuristics`
    - now comes from `AW1.opcode_action_map.json`
    - promotes common `cmd-XX` clusters such as `cmd-02`, `cmd-05`, `cmd-06`, `cmd-08`, `cmd-0a`, `cmd-0b`, `cmd-43` into stable runtime labels with confidence levels and variant hints

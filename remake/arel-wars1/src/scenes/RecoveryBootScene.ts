@@ -213,7 +213,7 @@ export class RecoveryBootScene extends Phaser.Scene {
     const stageTitle = snapshot.currentStoryboard.stageBlueprint?.title ?? `Stem ${previewStem.stem}`
     const mapBinding = snapshot.currentStoryboard.stageBlueprint?.mapBinding
     const mapLine = mapBinding
-      ? `Map pair ${mapBinding.mapPairIndices.join('/')} → ${mapBinding.preferredMapIndexHeuristic ?? 'n/a'} · ${mapBinding.confidence} ${mapBinding.proofScore.toFixed(2)}`
+      ? `Map pair ${mapBinding.mapPairIndices.join('/')} → ${mapBinding.preferredMapIndexHeuristic ?? 'n/a'} · ${mapBinding.proofType} ${mapBinding.proofScore.toFixed(2)}`
       : `Stem ${previewStem.stem}`
 
     this.spriteLabel.setText(`${stageTitle} / ${snapshot.currentStoryboard.locale ?? 'n/a'}`)

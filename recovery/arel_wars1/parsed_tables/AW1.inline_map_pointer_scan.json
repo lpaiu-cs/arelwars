@@ -1,0 +1,185 @@
+{
+  "summary": {
+    "stageCount": 111,
+    "pairBaseByteCoverage": 111,
+    "pairBranchByteCoverage": 111,
+    "formulaCoverage": 111
+  },
+  "pairBaseIndexSignal": {
+    "byteOffset": 15,
+    "wordIndex": 7,
+    "byteMapping": {
+      "1": 0,
+      "2": 2,
+      "3": 4,
+      "4": 6,
+      "5": 8,
+      "6": 8
+    },
+    "wordMapping": {
+      "256": 0,
+      "512": 2,
+      "768": 4,
+      "1024": 6,
+      "1280": 8,
+      "1536": 8
+    },
+    "interpretation": "XlsAi numericBlock byte[15] encodes the map-pair base index through a compact variant-to-pair lookup."
+  },
+  "pairBranchSignal": {
+    "byteOffset": 18,
+    "wordIndex": 9,
+    "byteMapping": {
+      "0": 0,
+      "1": 1
+    },
+    "wordMapping": {
+      "0": 0,
+      "1": 1
+    },
+    "interpretation": "XlsAi numericBlock byte[18] behaves like a branch bit selecting primary vs secondary map inside the pair."
+  },
+  "preferredMapFormula": {
+    "formula": "preferredMapIndex = pairBaseIndexCandidate + pairBranchIndexCandidate",
+    "exactCoverage": 111
+  },
+  "sampleRows": [
+    {
+      "aiIndex": 0,
+      "title": "First Battle",
+      "pairBaseIndex": 0,
+      "preferredMapIndex": 1,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 1,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 256,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 1,
+      "title": "Buster Hunt",
+      "pairBaseIndex": 2,
+      "preferredMapIndex": 3,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 2,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 512,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 2,
+      "title": "Seize Veril",
+      "pairBaseIndex": 2,
+      "preferredMapIndex": 2,
+      "pairBranchIndex": 0,
+      "pairBaseByte15": 2,
+      "pairBranchByte18": 0,
+      "pairBaseWord7": 512,
+      "pairBranchWord9": 0
+    },
+    {
+      "aiIndex": 3,
+      "title": "Into the Enemy Camp",
+      "pairBaseIndex": 2,
+      "preferredMapIndex": 3,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 2,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 512,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 4,
+      "title": "Arang's Challenge",
+      "pairBaseIndex": 4,
+      "preferredMapIndex": 5,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 3,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 768,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 5,
+      "title": "Seize Kaleck",
+      "pairBaseIndex": 4,
+      "preferredMapIndex": 4,
+      "pairBranchIndex": 0,
+      "pairBaseByte15": 3,
+      "pairBranchByte18": 0,
+      "pairBaseWord7": 768,
+      "pairBranchWord9": 0
+    },
+    {
+      "aiIndex": 6,
+      "title": "Bittersweet Return",
+      "pairBaseIndex": 0,
+      "preferredMapIndex": 1,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 1,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 256,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 7,
+      "title": "Buster Retaliation",
+      "pairBaseIndex": 2,
+      "preferredMapIndex": 3,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 2,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 512,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 8,
+      "title": "New Enemy",
+      "pairBaseIndex": 2,
+      "preferredMapIndex": 3,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 2,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 512,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 9,
+      "title": "Reclaim Iron",
+      "pairBaseIndex": 4,
+      "preferredMapIndex": 4,
+      "pairBranchIndex": 0,
+      "pairBaseByte15": 3,
+      "pairBranchByte18": 0,
+      "pairBaseWord7": 768,
+      "pairBranchWord9": 0
+    },
+    {
+      "aiIndex": 10,
+      "title": "Road to Lydia",
+      "pairBaseIndex": 4,
+      "preferredMapIndex": 5,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 3,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 768,
+      "pairBranchWord9": 1
+    },
+    {
+      "aiIndex": 11,
+      "title": "Surrounding Enemies",
+      "pairBaseIndex": 2,
+      "preferredMapIndex": 3,
+      "pairBranchIndex": 1,
+      "pairBaseByte15": 2,
+      "pairBranchByte18": 1,
+      "pairBaseWord7": 512,
+      "pairBranchWord9": 1
+    }
+  ],
+  "findings": [
+    "XlsAi.numericBlock byte[15] maps exactly onto map-pair base indices 0,2,4,6,8 across all currently script-backed stages.",
+    "XlsAi.numericBlock byte[18] maps exactly onto pair-branch indices 0/1 across all currently script-backed stages.",
+    "Combining those two inline signals reproduces the current preferred map index for every script-backed stage row."
+  ]
+}

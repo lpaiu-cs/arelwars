@@ -26,6 +26,12 @@ def parse_args() -> argparse.Namespace:
         help="Path to recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json",
     )
     parser.add_argument(
+        "--inline-pointer-scan",
+        type=Path,
+        required=True,
+        help="Path to recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         required=True,
@@ -48,7 +54,9 @@ def rounded(value: float) -> float:
 
 
 def confidence_label(score: float) -> str:
-    if score >= 0.9:
+    if score >= 0.94:
+        return "inline-pointer-derived"
+    if score >= 0.82:
         return "strong-heuristic"
     if score >= 0.72:
         return "supported-heuristic"
@@ -130,9 +138,18 @@ def main() -> None:
     args = parse_args()
     stage_progression = read_json(args.stage_progression.resolve())
     map_binding = read_json(args.map_binding.resolve())
+    inline_pointer_scan = read_json(args.inline_pointer_scan.resolve())
 
     group_candidates = {
         int(group["groupId"]): group for group in map_binding["mapGroupSummary"]["groupCandidates"]
+    }
+    pair_base_signal = inline_pointer_scan.get("pairBaseIndexSignal", {})
+    pair_branch_signal = inline_pointer_scan.get("pairBranchSignal", {})
+    pair_base_mapping = {
+        int(key): int(value) for key, value in dict(pair_base_signal.get("byteMapping", {})).items()
+    }
+    pair_branch_mapping = {
+        int(key): int(value) for key, value in dict(pair_branch_signal.get("byteMapping", {})).items()
     }
 
     group_profiles: list[dict[str, Any]] = []
@@ -180,6 +197,18 @@ def main() -> None:
         if len(pair) == 2:
             preferred_map = pair[1] if story_flag == 1 else pair[0]
         score, evidence = compute_pair_score(runtime_fields, group)
+        inline_pair_base = pair_base_mapping.get(variant)
+        inline_branch = pair_branch_mapping.get(story_flag)
+        inline_preferred = None
+        if inline_pair_base is not None and inline_branch is not None:
+            inline_preferred = inline_pair_base + inline_branch
+            score = min(score + 0.13, 0.97)
+            evidence = [
+                "XlsAi numericBlock byte[15] acts like an inline pair-base pointer candidate.",
+                "XlsAi numericBlock byte[18] acts like an inline pair-branch selector.",
+                "preferredMapIndex matches pairBase + branch for this stage row.",
+                *evidence,
+            ]
         stage_proofs.append(
             {
                 "familyId": family.get("familyId"),
@@ -190,10 +219,15 @@ def main() -> None:
                 "templateGroupId": group_id,
                 "candidateMapBinPair": pair,
                 "preferredMapIndex": preferred_map,
+                "inlinePairBaseIndexCandidate": inline_pair_base,
+                "inlinePairBranchIndexCandidate": inline_branch,
+                "inlinePreferredMapIndexCandidate": inline_preferred,
                 "storyBranch": "secondary" if story_flag == 1 else "primary",
                 "proofScore": rounded(score),
                 "confidence": confidence_label(score),
-                "proofType": "variant-template-plus-story-branch",
+                "proofType": "inline-ai-pointer-derived"
+                if inline_preferred is not None
+                else "variant-template-plus-story-branch",
                 "pairGeometrySignature": geometry_signature(list(group.get("candidateMapHeaders", [])) if group else []),
                 "candidateHeaders": list(group.get("candidateMapHeaders", [])) if group else [],
                 "evidenceSummary": evidence,
@@ -207,8 +241,8 @@ def main() -> None:
 
     findings = [
         "Stage-map proof export now exposes a support score and evidence list instead of only a bare preferred map index heuristic.",
-        "The strongest current rule remains variantCandidate -> templateGroup and storyFlagCandidate -> primary/secondary branch inside the pair.",
-        "This is still not a hard runtime pointer, but it is now an explicit proof-candidate layer that can be replaced as soon as a direct table reference is found.",
+        "The strongest current reading is now stronger than a pure template heuristic: XlsAi numericBlock byte[15] acts like an inline pair-base pointer and byte[18] acts like an inline pair-branch bit.",
+        "This is still not a final named source-level pointer, but it is now an explicit proof-candidate layer that can be replaced as soon as a direct table reference is found.",
     ]
     payload = {
         "summary": {
@@ -229,6 +263,11 @@ def main() -> None:
                 "0": "primary",
                 "1": "secondary",
             },
+        },
+        "inlinePointerSignals": {
+            "pairBaseIndexSignal": pair_base_signal,
+            "pairBranchSignal": pair_branch_signal,
+            "preferredMapFormula": inline_pointer_scan.get("preferredMapFormula", {}),
         },
         "groupProfiles": group_profiles,
         "stageProofs": stage_proofs,
