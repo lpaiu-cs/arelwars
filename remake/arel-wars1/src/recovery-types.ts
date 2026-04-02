@@ -375,6 +375,27 @@ export interface RecoveryHudGhostState {
   leftDispatchCueVisible: boolean
 }
 
+export interface RecoveryGameplayState {
+  mode: 'tutorial-lock' | 'guided-preview' | 'free-preview'
+  openPanel: 'tower' | 'skill' | 'item' | 'system' | null
+  heroMode: 'tower' | 'field' | 'return-cooldown'
+  objectiveMode:
+    | 'defend-own-tower'
+    | 'attack-enemy-tower'
+    | 'dispatch-lanes'
+    | 'produce-units'
+    | 'manage-tower'
+    | 'cast-skills'
+    | 'use-items'
+    | 'review-quests'
+    | 'system-navigation'
+    | 'generic-preview'
+  questState: 'hidden' | 'available' | 'reward-ready'
+  enabledInputs: string[]
+  blockedInputs: string[]
+  primaryHint: string
+}
+
 export interface RecoveryStageSnapshot {
   storyboardIndex: number
   dialogueIndex: number
@@ -387,4 +408,5 @@ export interface RecoveryStageSnapshot {
   channelStates: RecoveryBattleChannelState[]
   renderState: RecoveryStageRenderState
   hudState: RecoveryHudGhostState
+  gameplayState: RecoveryGameplayState
 }

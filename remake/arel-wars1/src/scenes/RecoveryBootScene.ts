@@ -38,6 +38,8 @@ export class RecoveryBootScene extends Phaser.Scene {
 
   private channelDetail: Phaser.GameObjects.Text | null = null
 
+  private interactionDetail: Phaser.GameObjects.Text | null = null
+
   private overlayGraphics: Phaser.GameObjects.Graphics | null = null
 
   private currentSnapshotKey = ''
@@ -208,6 +210,15 @@ export class RecoveryBootScene extends Phaser.Scene {
       })
       .setAlpha(0.88)
 
+    this.interactionDetail = this.add
+      .text(frame.x - 156, frame.y + 232, '', {
+        fontFamily: 'Trebuchet MS, sans-serif',
+        fontSize: '11px',
+        color: '#9fb1ae',
+        wordWrap: { width: 320 },
+      })
+      .setAlpha(0.84)
+
     this.overlayGraphics = this.add.graphics()
 
     this.applySnapshot(snapshot)
@@ -219,7 +230,7 @@ export class RecoveryBootScene extends Phaser.Scene {
   }
 
   private applySnapshot(snapshot: RecoveryStageSnapshot): void {
-    if (!this.previewImage || !this.spriteLabel || !this.spriteDetail || !this.spriteFooter || !this.channelDetail || !this.overlayGraphics) {
+    if (!this.previewImage || !this.spriteLabel || !this.spriteDetail || !this.spriteFooter || !this.channelDetail || !this.interactionDetail || !this.overlayGraphics) {
       return
     }
 
@@ -243,6 +254,7 @@ export class RecoveryBootScene extends Phaser.Scene {
       `${snapshot.currentStoryboard.scriptEvents.length} script beats, ${previewStem.eventFrames.length} stage frames, loop ${this.describeLoop(previewStem)} · ${snapshot.renderState.bankRuleLabel}${snapshot.activeTutorialCue ? ` · ${snapshot.activeTutorialCue.label}` : ''}`,
     )
     this.channelDetail.setText(this.describeChannels(snapshot.channelStates, snapshot))
+    this.interactionDetail.setText(this.describeGameplayState(snapshot))
     this.drawBattleOverlay(snapshot)
   }
 
@@ -305,6 +317,13 @@ export class RecoveryBootScene extends Phaser.Scene {
     const tutorialCue = snapshot.activeTutorialCue ? `${snapshot.activeTutorialCue.label}/${snapshot.activeTutorialCue.action}` : null
     const packed = snapshot.renderState.packedPixelStemRule ? '179 shade' : 'std render'
     return `${headline} · fx ${snapshot.renderState.effectPulseCount} · ${packed}${tutorialCue ? ` · ${tutorialCue}` : ''}${opcodeCue ? ` · ${opcodeCue}` : ''}`
+  }
+
+  private describeGameplayState(snapshot: RecoveryStageSnapshot): string {
+    const state = snapshot.gameplayState
+    const panel = state.openPanel ?? 'none'
+    const enabled = state.enabledInputs.slice(0, 3).join(', ') || 'observe-stage-preview'
+    return `${state.mode} · panel ${panel} · hero ${state.heroMode} · objective ${state.objectiveMode} · ${state.primaryHint} · inputs ${enabled}`
   }
 
   private drawBattleOverlay(snapshot: RecoveryStageSnapshot): void {

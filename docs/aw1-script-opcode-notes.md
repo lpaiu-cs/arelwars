@@ -36,6 +36,7 @@ This keeps the runtime-facing labels stable without pretending the binary gramma
 That proof layer uses exact raw-prefix needles mirrored across tutorial families.
 The Phaser recovery runtime now consumes those needles per dialogue event, so the active HUD/tutorial target shown on screen is no longer only a family-level guess.
 It now also drives a ghost HUD layer, which makes the currently focused tower bar, mana bar, card tray, menu, or quest panel visible in the stage preview itself.
+The runtime also derives a lightweight gameplay-state summary from the same cue, including current panel, hero mode, objective, and enabled inputs.
 
 ### Tutorial / UI Guidance Cluster
 

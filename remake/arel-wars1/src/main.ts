@@ -332,6 +332,8 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
     : stage?.opcodeCues[0]
       ? `${stage.opcodeCues[0].label} / ${stage.opcodeCues[0].action}`
       : null
+  const gameplayState = snapshot.gameplayState
+  const gameplayLine = `mode ${gameplayState.mode} · panel ${gameplayState.openPanel ?? 'none'} · hero ${gameplayState.heroMode} · objective ${gameplayState.objectiveMode} · ${gameplayState.primaryHint}`
   return `
     <article class="story-card">
       <header class="story-card-header">
@@ -357,7 +359,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         ${tutorialPills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
         ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
       </div>
-      <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${activeOpcode ? ` · ${escapeHtml(activeOpcode)}` : ''}</p>
+      <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${activeOpcode ? ` · ${escapeHtml(activeOpcode)}` : ''} · ${escapeHtml(gameplayLine)}</p>
       <div class="story-strip">
         <img src="${previewStem.timelineStrip.pngPath}" alt="Timeline strip for stem ${previewStem.stem}" loading="lazy" />
       </div>

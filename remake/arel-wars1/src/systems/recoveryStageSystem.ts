@@ -2,6 +2,7 @@ import type {
   RecoveryBattleChannelState,
   RecoveryCatalog,
   RecoveryDialogueEvent,
+  RecoveryGameplayState,
   RecoveryHudGhostState,
   RecoveryResolvedOpcodeCue,
   RecoveryPreviewFrame,
@@ -196,6 +197,7 @@ export class RecoveryStageSystem {
     const activeTutorialCue = this.resolveTutorialCue(currentStoryboard, activeDialogueEvent)
     const activeOpcodeCue = this.resolveOpcodeCue(activeDialogueEvent)
     const channelStates = this.buildChannelStates(currentStoryboard)
+    const hudState = this.buildHudState(currentStoryboard, activeTutorialCue, activeOpcodeCue, channelStates)
     return {
       storyboardIndex: this.storyboardIndex,
       dialogueIndex: this.dialogueIndex,
@@ -207,7 +209,12 @@ export class RecoveryStageSystem {
       activeOpcodeCue,
       channelStates,
       renderState: this.buildRenderState(currentStoryboard, channelStates),
-      hudState: this.buildHudState(currentStoryboard, activeTutorialCue, activeOpcodeCue, channelStates),
+      hudState,
+      gameplayState: this.buildGameplayState(
+        activeTutorialCue,
+        activeOpcodeCue,
+        hudState,
+      ),
     }
   }
 
@@ -597,6 +604,179 @@ export class RecoveryStageSystem {
       returnCooldownRatio,
       dispatchArrowsHighlighted,
       leftDispatchCueVisible,
+    }
+  }
+
+  private buildGameplayState(
+    activeTutorialCue: RecoveryTutorialChainCue | null,
+    activeOpcodeCue: RecoveryResolvedOpcodeCue | null,
+    hudState: RecoveryHudGhostState,
+  ): RecoveryGameplayState {
+    let mode: RecoveryGameplayState['mode'] = activeTutorialCue ? 'tutorial-lock' : activeOpcodeCue ? 'guided-preview' : 'free-preview'
+    let openPanel: RecoveryGameplayState['openPanel'] = hudState.activePanel
+    let heroMode: RecoveryGameplayState['heroMode'] = hudState.heroDeployed
+      ? (hudState.returnCooldownRatio > 0.05 ? 'return-cooldown' : 'field')
+      : 'tower'
+    let objectiveMode: RecoveryGameplayState['objectiveMode'] = 'generic-preview'
+    let questState: RecoveryGameplayState['questState'] = hudState.questRewardReady
+      ? 'reward-ready'
+      : hudState.questVisible
+        ? 'available'
+        : 'hidden'
+    const enabledInputs = new Set<string>()
+    const blockedInputs = new Set<string>()
+    let primaryHint = activeTutorialCue?.label ?? activeOpcodeCue?.label ?? 'free-preview'
+
+    const blockCommonBattleInputs = (): void => {
+      blockedInputs.add('open-skill-menu')
+      blockedInputs.add('open-item-menu')
+      blockedInputs.add('open-system-menu')
+    }
+
+    switch (activeTutorialCue?.chainId) {
+      case 'battle-hud-guard-hp':
+        objectiveMode = 'defend-own-tower'
+        enabledInputs.add('inspect-own-tower-hp')
+        enabledInputs.add('read-loss-condition')
+        blockCommonBattleInputs()
+        primaryHint = 'Protect your tower HP'
+        break
+      case 'battle-hud-goal-hp':
+        objectiveMode = 'attack-enemy-tower'
+        enabledInputs.add('inspect-enemy-tower-hp')
+        enabledInputs.add('read-win-condition')
+        blockCommonBattleInputs()
+        primaryHint = 'Reduce enemy tower HP to zero'
+        break
+      case 'battle-hud-dispatch-arrows':
+        objectiveMode = 'dispatch-lanes'
+        enabledInputs.add('dispatch-up-lane')
+        enabledInputs.add('dispatch-down-lane')
+        blockedInputs.add('produce-unit')
+        blockedInputs.add('toggle-hero-sortie')
+        primaryHint = 'Choose a lane for unit dispatch'
+        break
+      case 'battle-hud-unit-card':
+        objectiveMode = 'produce-units'
+        enabledInputs.add('produce-unit')
+        enabledInputs.add('inspect-unit-card')
+        blockedInputs.add('dispatch-up-lane')
+        blockedInputs.add('dispatch-down-lane')
+        primaryHint = 'Produce a unit from the left card tray'
+        break
+      case 'battle-hud-mana-bar':
+        objectiveMode = 'produce-units'
+        enabledInputs.add('inspect-mana-bar')
+        blockedInputs.add('open-skill-menu')
+        blockedInputs.add('open-item-menu')
+        primaryHint = 'Mana is spent on unit production'
+        break
+      case 'battle-hud-hero-sortie':
+        objectiveMode = 'dispatch-lanes'
+        enabledInputs.add('toggle-hero-sortie')
+        enabledInputs.add('deploy-hero')
+        blockedInputs.add('return-to-tower')
+        primaryHint = 'Deploy the hero from the portrait button'
+        break
+      case 'battle-hud-hero-return':
+        objectiveMode = 'dispatch-lanes'
+        enabledInputs.add('return-to-tower')
+        blockedInputs.add('deploy-hero')
+        primaryHint = 'Return to the tower and wait out cooldown'
+        break
+      case 'tower-menu-highlight':
+      case 'mana-upgrade-highlight':
+      case 'population-upgrade-highlight':
+        objectiveMode = 'manage-tower'
+        openPanel = 'tower'
+        enabledInputs.add('open-tower-menu')
+        enabledInputs.add('upgrade-tower-stat')
+        blockedInputs.add('cast-skill')
+        blockedInputs.add('use-item')
+        primaryHint =
+          activeTutorialCue.chainId === 'mana-upgrade-highlight'
+            ? 'Upgrade mana when the bar is full'
+            : activeTutorialCue.chainId === 'population-upgrade-highlight'
+              ? 'Increase population before unit cap blocks production'
+              : 'Open the tower panel'
+        break
+      case 'skill-menu-highlight':
+      case 'skill-slot-highlight':
+        objectiveMode = 'cast-skills'
+        openPanel = 'skill'
+        enabledInputs.add('open-skill-menu')
+        enabledInputs.add('cast-skill')
+        blockedInputs.add('use-item')
+        primaryHint =
+          activeTutorialCue.chainId === 'skill-slot-highlight'
+            ? 'Use a skill from the visible skill window'
+            : 'Open the skill panel'
+        break
+      case 'item-menu-highlight':
+        objectiveMode = 'use-items'
+        openPanel = 'item'
+        enabledInputs.add('open-item-menu')
+        enabledInputs.add('use-item')
+        blockedInputs.add('cast-skill')
+        primaryHint = 'Use an equipped item from the item panel'
+        break
+      case 'system-menu-highlight':
+        objectiveMode = 'system-navigation'
+        openPanel = 'system'
+        enabledInputs.add('open-system-menu')
+        enabledInputs.add('resume-battle')
+        enabledInputs.add('open-settings')
+        primaryHint = 'Use the system menu for pause, resume, and settings'
+        break
+      case 'quest-panel-highlight':
+        objectiveMode = 'review-quests'
+        openPanel = 'system'
+        enabledInputs.add('open-system-menu')
+        enabledInputs.add('review-quest-rewards')
+        primaryHint = 'Review quest rewards from the quest panel'
+        break
+      default:
+        if (openPanel) {
+          objectiveMode =
+            openPanel === 'tower'
+              ? 'manage-tower'
+              : openPanel === 'skill'
+                ? 'cast-skills'
+                : openPanel === 'item'
+                  ? 'use-items'
+                  : 'system-navigation'
+        } else if (hudState.highlightedUnitCardIndex !== null) {
+          objectiveMode = 'produce-units'
+        } else if (hudState.dispatchArrowsHighlighted) {
+          objectiveMode = 'dispatch-lanes'
+        } else if (questState !== 'hidden') {
+          objectiveMode = 'review-quests'
+        }
+        break
+    }
+
+    if (heroMode === 'field') {
+      enabledInputs.add('hero-combat-active')
+    }
+    if (heroMode === 'return-cooldown') {
+      blockedInputs.add('deploy-hero')
+    }
+    if (questState === 'reward-ready') {
+      enabledInputs.add('claim-quest-reward')
+    }
+    if (mode === 'free-preview' && enabledInputs.size === 0) {
+      enabledInputs.add('observe-stage-preview')
+    }
+
+    return {
+      mode,
+      openPanel,
+      heroMode,
+      objectiveMode,
+      questState,
+      enabledInputs: Array.from(enabledInputs),
+      blockedInputs: Array.from(blockedInputs),
+      primaryHint,
     }
   }
 }
