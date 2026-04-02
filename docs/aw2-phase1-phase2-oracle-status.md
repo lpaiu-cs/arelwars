@@ -4,46 +4,45 @@ Audit date: 2026-04-03
 
 ## Result
 
-- `Phase 1 = blocked`
-- `Phase 2 = blocked`
+- `Phase 1 = still blocked`
+- `Phase 2 = still blocked`
 
-## Why
+## Updated Blocker Shape
 
-The blocker is upstream from both phases:
+The reason is no longer simply “there is no candidate Android runtime on this machine.”
 
-- [aw2-phase0-installability-gate.md](/C:/vs/other/arelwars/docs/aw2-phase0-installability-gate.md) already established that the current machine has no Android runtime that can actually execute the original AW2 APK
+There is now a local candidate:
 
-Therefore:
+- `Oracle VBox`
+- `unpacked BlueStacks Nougat32`
+- best current profile: `oracle-ide-primaryslave-piix3-vga`
 
-- Phase 1 cannot launch the original package into a stable observable scene
-- Phase 2 cannot probe real oracle backends against a live original process
+That candidate reaches a stable no-reset boot window, but it still fails the actual oracle threshold:
 
-## What Was Still Completed
+- no usable `adb-online` device
+- no successful install of the original APK
+- no live original process to capture
 
-The AW2-specific oracle harness now exists:
+So Phase 1 and Phase 2 remain blocked, but by `candidate-runtime incompleteness`, not by total runtime absence.
+
+## What Was Completed Anyway
+
+The AW2 oracle tooling remains ready:
 
 - [capture_aw2_oracle_trace.py](/C:/vs/other/arelwars/tools/arel_wars2/capture_aw2_oracle_trace.py)
-
-It is a direct AW2 wrapper over the proven AW1 capture harness and preserves the same evidence classes:
-
-- package identity
-- JNI backend capability truth
-- frame hashes
-- audio cues
-- save snapshots
-- scene transitions
-- verification trace scaffold
-
-The AW2 protocol is also fixed:
-
 - [aw2-verification-protocol.md](/C:/vs/other/arelwars/docs/aw2-verification-protocol.md)
+
+The local runtime reopening work also now has a concrete probe path:
+
+- [probe_aw2_oracle_vbox_runtime.py](/C:/vs/other/arelwars/tools/arel_wars2/probe_aw2_oracle_vbox_runtime.py)
+- [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md)
 
 ## Immediate Consequence
 
-Until an external ARM-capable Android runtime exists, Phases 1 and 2 cannot be approved.
+Until the local Oracle VBox candidate yields a live original process, Phase 1 cannot approve a true oracle environment and Phase 2 cannot capture real original runtime evidence.
 
-The only productive work that remains inside the current machine is:
+So the only approved work remains:
 
+- Oracle VBox runtime bring-up
 - AW2 static bootstrap and asset-truth freezing
-- route decision documentation
 - packaging-track gate hardening

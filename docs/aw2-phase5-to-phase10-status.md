@@ -11,28 +11,52 @@ Audit date: 2026-04-03
 - `Phase 9 = blocked`
 - `Phase 10 = blocked`
 
-## Shared Reason
+## Why They Are Still Blocked
 
-Every one of these phases has the same precondition:
+These phases still require a live original-runtime oracle.
 
-- `Route A selected`
+That has not been approved yet.
 
-That precondition is false.
-[aw2-phase4-route-decision.md](/C:/vs/other/arelwars/docs/aw2-phase4-route-decision.md) fixed the track to `Route C`.
+The blocker is narrower than before:
 
-Therefore:
+- a local Oracle VBox candidate runtime now exists
+- but it still does not expose a usable `adb-online` original process
+- the original APK is therefore still not installable/observable inside a validated oracle environment
 
-- no x64 runtime bootstrap should start
-- no runtime trace schema should be implemented for equivalence
-- no representative equivalence pass should be claimed
-- no save/load equivalence work should be claimed
-- no differential suite should be treated as packaging evidence
-- no signed AW2 x64 APK should be produced or advertised
+The current best evidence is in [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md).
+
+## What Improved
+
+The machine is no longer at a pure “no runtime exists” dead end.
+
+A real local candidate now exists:
+
+- `Oracle VBox + unpacked BlueStacks Nougat32`
+- best profile: `oracle-ide-primaryslave-piix3-vga`
+- stable `180s` window without `AHCI` panic or `ACPI` reset loop
+
+But this is still below the threshold needed for Phases `5` through `10` because:
+
+- `adb` is not online
+- the original APK cannot yet be installed and traced there
+- no oracle-backed differential or packaging evidence can be produced
 
 ## Practical Meaning
 
-The current machine can continue AW2 static reverse-engineering, but it cannot progress the packaging track beyond `Phase 4`.
+From the packaging-track perspective:
+
+- do not claim x64 runtime bootstrap is approved
+- do not claim runtime trace schema equivalence is in progress
+- do not claim representative scenario equivalence
+- do not claim save/load equivalence
+- do not treat any signed APK as valid AW2 packaging evidence
 
 ## Reopen Condition
 
-The packaging track only reopens if the environment changes enough to move the decision back to `Route A`.
+Phases `5` through `10` reopen only if the local Oracle VBox candidate crosses into a true oracle environment.
+
+That requires at least:
+
+- `adb-online` guest visibility
+- successful install of the original [arel_wars_2.apk](/C:/vs/other/arelwars/arel_wars2/arel_wars_2.apk)
+- stable capture of live original runtime evidence

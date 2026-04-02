@@ -16,6 +16,10 @@ recovery/arel_wars2/native_tmp/
 recovery/arel_wars2/apk_unzip/
 recovery/arel_wars2/decoded/
 recovery/arel_wars2/pzd_previews/
+/$root/
+/$inst/
+/$out/
+/$probe/
 
 remake/arel-wars1/node_modules/
 remake/arel-wars1/dist/
