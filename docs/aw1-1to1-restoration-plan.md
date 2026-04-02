@@ -181,6 +181,7 @@ References:
     - accepted actions now leave persistent preview state behind: lane selection, queued units, tower upgrade tiers, skill/item cooldowns, quest reward claims, and pause/resume all feed the ghost HUD
     - the recovery system now owns a deterministic two-lane battle preview, so dispatch, queued units, and hero sortie affect lane frontline, momentum, and unit counts instead of only HUD chrome
     - that lane preview is now seeded from each storyboard's stage blueprint and featured archetypes, so tempo, favored lane, and hero impact vary per reconstructed stage
+    - archetype families now change the lane sim differently: Dispatch accelerates allied commits, Tower Defense hardens favored lanes, Recall pulls pressure back toward safety, Armageddon bursts enemy units, and mana-oriented channels soften skill costs
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
     - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
     - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest

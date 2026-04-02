@@ -470,6 +470,12 @@ export interface RecoveryStageBattleProfile {
   heroImpact: number
   effectIntensity: string
   archetypeLabels: string[]
+  archetypeSignals: string[]
+  dispatchBoost: number
+  towerDefenseBias: number
+  recallSwing: number
+  armageddonBurst: number
+  manaSurge: number
 }
 
 export interface RecoveryBattlePreviewState {

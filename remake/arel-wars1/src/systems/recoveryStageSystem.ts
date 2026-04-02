@@ -99,6 +99,11 @@ function archetypeCycleMs(archetypeRecord: RecoveryRuntimeBlueprint['featuredArc
   return Math.max(markers.reduce((sum, value) => sum + value, 0), 420)
 }
 
+function includesAny(value: string, needles: string[]): boolean {
+  const haystack = value.toLowerCase()
+  return needles.some((needle) => haystack.includes(needle))
+}
+
 function buildStoryboards(
   catalog: RecoveryCatalog,
   previewManifest: RecoveryPreviewManifest,
@@ -231,6 +236,12 @@ export class RecoveryStageSystem {
     heroImpact: 0.14,
     effectIntensity: 'medium',
     archetypeLabels: [],
+    archetypeSignals: [],
+    dispatchBoost: 0.12,
+    towerDefenseBias: 0.08,
+    recallSwing: 0.1,
+    armageddonBurst: 0.12,
+    manaSurge: 0.08,
   }
 
   private lastActionId: RecoveryGameplayActionId | null = null
@@ -1058,14 +1069,49 @@ export class RecoveryStageSystem {
       case 'cast-skill':
         this.panelOverride = 'skill'
         this.skillCooldownEndsAtMs = nowMs + SKILL_COOLDOWN_MS
-        this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.07, 0.08, 1)
-        this.previewManaRatio = clamp(this.previewManaRatio - 0.08, 0.06, 1)
-        this.lastActionNote = 'skill cast preview accepted'
+        this.previewEnemyTowerHpRatio = clamp(
+          this.previewEnemyTowerHpRatio - (0.07 + this.currentStageBattleProfile.armageddonBurst * 0.12),
+          0.08,
+          1,
+        )
+        this.previewManaRatio = clamp(
+          this.previewManaRatio - 0.08 + this.currentStageBattleProfile.manaSurge * 0.06,
+          0.06,
+          1,
+        )
+        if (this.currentStageBattleProfile.armageddonBurst > 0.12) {
+          ;(['upper', 'lower'] as const).forEach((laneId) => {
+            this.laneBattleState[laneId].enemyUnits = Math.max(this.laneBattleState[laneId].enemyUnits - 1, 0)
+            this.laneBattleState[laneId].enemyPressure = clamp(
+              this.laneBattleState[laneId].enemyPressure - this.currentStageBattleProfile.armageddonBurst * 0.14,
+              0.08,
+              1,
+            )
+          })
+        }
+        this.lastActionNote = `skill cast preview accepted (${this.currentStageBattleProfile.archetypeSignals.join('/') || 'generic'})`
         break
       case 'use-item':
         this.panelOverride = 'item'
         this.itemCooldownEndsAtMs = nowMs + ITEM_COOLDOWN_MS
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.08, 0.1, 1)
+        this.previewOwnTowerHpRatio = clamp(
+          this.previewOwnTowerHpRatio + 0.08 + this.currentStageBattleProfile.towerDefenseBias * 0.1,
+          0.1,
+          1,
+        )
+        if (this.currentStageBattleProfile.towerDefenseBias > 0.1) {
+          const guardLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
+          this.laneBattleState[guardLane].enemyPressure = clamp(
+            this.laneBattleState[guardLane].enemyPressure - this.currentStageBattleProfile.towerDefenseBias * 0.16,
+            0.08,
+            1,
+          )
+          this.laneBattleState[guardLane].frontline = clamp(
+            this.laneBattleState[guardLane].frontline + this.currentStageBattleProfile.towerDefenseBias * 0.08,
+            0.04,
+            0.96,
+          )
+        }
         this.lastActionNote = 'item use preview accepted'
         break
       case 'dispatch-up-lane':
@@ -1104,6 +1150,17 @@ export class RecoveryStageSystem {
         this.heroOverrideMode = 'return-cooldown'
         this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
         if (this.heroAssignedLane) {
+          if (this.currentStageBattleProfile.recallSwing > 0.1) {
+            this.laneBattleState[this.heroAssignedLane].alliedUnits = Math.min(
+              this.laneBattleState[this.heroAssignedLane].alliedUnits + 1,
+              8,
+            )
+            this.laneBattleState[this.heroAssignedLane].frontline = clamp(
+              this.laneBattleState[this.heroAssignedLane].frontline - this.currentStageBattleProfile.recallSwing * 0.18,
+              0.04,
+              0.96,
+            )
+          }
           this.laneBattleState[this.heroAssignedLane].heroPresent = false
         }
         this.heroAssignedLane = null
@@ -1213,11 +1270,14 @@ export class RecoveryStageSystem {
     this.selectedDispatchLane = lane
     if (this.queuedUnitCount > 0) {
       const queueDamage = Math.min(this.queuedUnitCount * 0.04, 0.16)
-      const commitCount = Math.min(this.queuedUnitCount, 2)
+      const commitCount = Math.min(
+        this.queuedUnitCount,
+        this.currentStageBattleProfile.dispatchBoost >= 0.16 ? 3 : 2,
+      )
       this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - queueDamage, 0.08, 1)
       this.laneBattleState[lane].alliedUnits = Math.min(this.laneBattleState[lane].alliedUnits + commitCount, 8)
       this.laneBattleState[lane].alliedPressure = clamp(
-        this.laneBattleState[lane].alliedPressure + commitCount * 0.11,
+        this.laneBattleState[lane].alliedPressure + commitCount * (0.08 + this.currentStageBattleProfile.dispatchBoost),
         0.08,
         1,
       )
@@ -1305,6 +1365,48 @@ export class RecoveryStageSystem {
       .map((archetypeId) => this.featuredArchetypesById.get(archetypeId))
       .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
 
+    const signalSet = new Set<string>()
+    let dispatchBoost = 0.08
+    let towerDefenseBias = 0.04
+    let recallSwing = 0.06
+    let armageddonBurst = 0.06
+    let manaSurge = 0.04
+
+    archetypes.forEach((archetype) => {
+      const haystacks = [
+        archetype.label,
+        archetype.archetypeKind,
+        archetype.familyType,
+        ...archetype.mechanicHints,
+      ]
+      const joined = haystacks.join(' ').toLowerCase()
+
+      if (includesAny(joined, ['dispatch', 'redeploy', 'respawn'])) {
+        signalSet.add('dispatch')
+        dispatchBoost += 0.06
+      }
+      if (includesAny(joined, ['tower defense', 'defend tower', 'barrier'])) {
+        signalSet.add('tower-defense')
+        towerDefenseBias += 0.07
+      }
+      if (includesAny(joined, ['recall', 'relocation'])) {
+        signalSet.add('recall')
+        recallSwing += 0.09
+      }
+      if (includesAny(joined, ['armageddon', 'meteor'])) {
+        signalSet.add('armageddon')
+        armageddonBurst += 0.12
+      }
+      if (includesAny(joined, ['mana', 'resource-conversion', 'mana gain', 'reactive-mana-proc'])) {
+        signalSet.add('mana-surge')
+        manaSurge += 0.08
+      }
+      if (includesAny(joined, ['heal', 'healing'])) {
+        signalSet.add('healing')
+        towerDefenseBias += 0.04
+      }
+    })
+
     const activeRowCount = archetypes.reduce((sum, entry) => sum + entry.activeRows.length, 0)
     const buffRowCount = archetypes.reduce((sum, entry) => sum + entry.buffRows.length, 0)
     const exactTailHitCount = archetypes.reduce(
@@ -1334,10 +1436,13 @@ export class RecoveryStageSystem {
       0.2,
       0.72,
     )
-    const alliedWaveCadenceBeats = Math.max(3, Math.min(7, 7 - Math.floor(Math.min(activeRowCount, 12) / 3)))
+    const alliedWaveCadenceBeats = Math.max(
+      3,
+      Math.min(7, 7 - Math.floor(Math.min(activeRowCount, 12) / 3) - (signalSet.has('dispatch') ? 1 : 0)),
+    )
     const enemyWaveCadenceBeats = Math.max(3, Math.min(7, 7 - Math.floor(stageTier / 15)))
-    const heroImpact = clamp(0.1 + exactTailHitCount * 0.028 + buffRowCount * 0.008, 0.1, 0.32)
-    const tacticalBias = `${mapBinding?.storyBranch ?? 'branch-unknown'} / ${favoredLane} initiative`
+    const heroImpact = clamp(0.1 + exactTailHitCount * 0.028 + buffRowCount * 0.008 + recallSwing * 0.12, 0.1, 0.36)
+    const tacticalBias = `${mapBinding?.storyBranch ?? 'branch-unknown'} / ${favoredLane} initiative${signalSet.size > 0 ? ` / ${Array.from(signalSet).join('+')}` : ''}`
     return {
       label: `${stage?.title ?? storyboard.scriptFamilyId} / tier ${stageTier}`,
       favoredLane,
@@ -1350,6 +1455,12 @@ export class RecoveryStageSystem {
       heroImpact,
       effectIntensity,
       archetypeLabels: archetypes.slice(0, 3).map((entry) => entry.label),
+      archetypeSignals: Array.from(signalSet),
+      dispatchBoost: clamp(dispatchBoost, 0.08, 0.24),
+      towerDefenseBias: clamp(towerDefenseBias, 0.04, 0.24),
+      recallSwing: clamp(recallSwing, 0.06, 0.24),
+      armageddonBurst: clamp(armageddonBurst, 0.06, 0.28),
+      manaSurge: clamp(manaSurge, 0.04, 0.22),
     }
   }
 
@@ -1381,9 +1492,10 @@ export class RecoveryStageSystem {
         profile.enemyPressureScale * 0.08
         + phase * profile.enemyPressureScale * 0.12
         + (profile.favoredLane === laneId ? 0.014 : 0)
+        - (profile.towerDefenseBias * (profile.favoredLane === laneId ? 0.035 : 0.015))
       const alliedReinforcement =
         profile.alliedPressureScale * 0.08
-        + (this.selectedDispatchLane === laneId ? 0.05 : 0)
+        + (this.selectedDispatchLane === laneId ? 0.03 + profile.dispatchBoost * 0.18 : 0)
         + (this.heroAssignedLane === laneId ? profile.heroImpact : 0)
         + (this.towerUpgradeLevels.attack - 1) * 0.008
 
@@ -1405,6 +1517,9 @@ export class RecoveryStageSystem {
       const heroBonus = this.heroAssignedLane === laneId ? profile.heroImpact : 0
       const netPush = lane.alliedPressure + lane.alliedUnits * 0.035 + heroBonus - (lane.enemyPressure + lane.enemyUnits * 0.03)
       lane.frontline = clamp(lane.frontline + netPush * 0.11, 0.04, 0.96)
+      if (profile.recallSwing > 0.12 && this.heroAssignedLane === laneId && beat % 9 === 0) {
+        lane.frontline = clamp(lane.frontline + profile.recallSwing * 0.04, 0.04, 0.96)
+      }
       lane.contested = clamp(1 - Math.abs(netPush) * 2.8, 0.08, 1)
 
       if (lane.frontline > 0.72) {

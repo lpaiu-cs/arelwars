@@ -40,6 +40,7 @@ The runtime also derives a lightweight gameplay-state summary from the same cue,
 That state summary now also owns persistent preview-side consequences for accepted inputs, including dispatch lane selection, queued-unit count, tower-upgrade tiers, skill/item cooldown gates, quest reward claim state, and pause/resume.
 Those persistent inputs now feed a small two-lane battle simulation in the recovery runtime, so tutorial cues can be observed against changing lane momentum rather than static overlay state alone.
 The lane simulation is now seeded from per-stage runtime fields, map-branch hints, render intensity, and featured hero archetypes, which gives each storyboard a different favored lane and wave tempo.
+Those featured archetypes now also inject concrete lane rules: Dispatch boosts allied commit size, Tower Defense reduces incoming pressure, Recall swings frontline recovery, Armageddon creates burst unit loss, and mana-linked families refund part of skill pressure.
 Keyboard actions in the recovery scene now pass through that summary layer, which lets the preview accept or reject panel, quest, dispatch, production, and hero toggles according to the current tutorial state.
 
 ### Tutorial / UI Guidance Cluster
