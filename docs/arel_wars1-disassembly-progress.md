@@ -200,6 +200,19 @@
   - `embeddedPzdTypeCounts = {7: 48, 8: 205}`
   - `embeddedPzdLayoutCounts = {row-stream-list: 48, first-stream-sheet: 205}`
   - `embeddedPzdPzfRelationCounts = {exact-max-plus-one: 244, in-range: 7, empty: 2}`
+- `origin/main` 회귀셋을 native parser와 직접 대조하는 comparator를 추가했다.
+  - tool: `tools/arel_wars1/compare_main_regression_set.py`
+  - report: `recovery/arel_wars1/native_tmp/main_regression_comparison-session.json`
+  - 우선순위 stem은 `082/084/208/209/215/226/230/240`으로 고정했다.
+  - 전 stem에 embedded `PZA`가 존재한다.
+  - native `PZA delay` 값은 회귀셋 전체에서 `1/2/3/6`뿐이다.
+  - 반면 `origin/main` heuristic timing 값은 `50/70/80/100/120/200`이고 direct overlap이 `0`이다.
+  - 즉 `main`의 `playbackDurationMs`는 native `PZA delay` 복원이라기보다, native clip 위에 overlay/effect event를 다시 펼친 higher-level sheet로 보는 쪽이 맞다.
+  - collapsed heuristic anchor sequence를 best native clip과 비교하면:
+    - in-order subsequence: `082`, `208`, `209`, `240`
+    - order mismatch: `084`, `215`, `226`, `230`
+  - 또 `8/8` stem 모두 heuristic event count가 closest native clip frame count보다 훨씬 크다.
+    - 따라서 `main` strip은 짧은 native clip을 직접 복원한 것이 아니라, clip 위의 secondary event sheet를 더 잘게 분해한 결과일 가능성이 높다.
 
 ### Open
 

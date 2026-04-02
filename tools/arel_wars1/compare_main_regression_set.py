@@ -64,6 +64,28 @@ def normalize_stem(stem: str) -> str:
     return value
 
 
+def collapse_consecutive(values: list[int]) -> list[int]:
+    collapsed: list[int] = []
+    for value in values:
+        if collapsed and collapsed[-1] == value:
+            continue
+        collapsed.append(value)
+    return collapsed
+
+
+def is_subsequence(sequence: list[int], target: list[int]) -> bool:
+    if not sequence:
+        return True
+    cursor = 0
+    for value in target:
+        if value != sequence[cursor]:
+            continue
+        cursor += 1
+        if cursor >= len(sequence):
+            return True
+    return False
+
+
 def git_show_json(repo_root: Path, git_ref: str, path: str) -> tuple[dict[str, object] | None, str | None]:
     completed = subprocess.run(
         ["git", "show", f"{git_ref}:{path}"],
@@ -116,6 +138,7 @@ def summarize_best_clip_alignment(decoded, timeline: dict[str, object] | None) -
     best_score = None
     for clip_index, clip in enumerate(decoded.clips):
         clip_frame_indices = [frame.frame_index for frame in clip.frames]
+        clip_unique_frame_indices = collapse_consecutive(clip_frame_indices)
         clip_frame_index_set = set(clip_frame_indices)
         anchor_set = set(anchor_frames)
         overlap = sorted(anchor_set & clip_frame_index_set)
@@ -136,6 +159,7 @@ def summarize_best_clip_alignment(decoded, timeline: dict[str, object] | None) -
             "clipIndex": clip_index,
             "clipFrameCount": clip.frame_count,
             "clipFrameIndices": clip_frame_indices,
+            "clipUniqueFrameIndices": clip_unique_frame_indices,
             "clipDelaySequence": [frame.delay for frame in clip.frames],
             "heuristicAnchorFrames": anchor_frames,
             "anchorOverlapFrames": overlap,
@@ -202,6 +226,9 @@ def summarize_main_timeline(timeline: dict[str, object], stem_bank_states: dict[
     link_type_counts = Counter()
     anchor_frame_indices: list[int] = []
     bank_state_counts = Counter()
+    anchor_event_counts = Counter()
+    anchor_linked_counts = Counter()
+    anchor_overlay_counts = Counter()
 
     for event in events:
         if "playbackDurationMs" in event and event["playbackDurationMs"] is not None:
@@ -221,10 +248,19 @@ def summarize_main_timeline(timeline: dict[str, object], stem_bank_states: dict[
             link_type_counts[str(link_type)] += 1
         anchor_frame_index = event.get("anchorFrameIndex")
         if anchor_frame_index is not None:
-            anchor_frame_indices.append(int(anchor_frame_index))
+            anchor_value = int(anchor_frame_index)
+            anchor_frame_indices.append(anchor_value)
+            anchor_event_counts[anchor_value] += 1
+            if event_type == "linked":
+                anchor_linked_counts[anchor_value] += 1
+            if event_type == "overlay":
+                anchor_overlay_counts[anchor_value] += 1
         bank_state_id = event.get("bankStateId")
         if bank_state_id:
             bank_state_counts[str(bank_state_id)] += 1
+
+    anchor_sequence = [int(event["anchorFrameIndex"]) for event in events if event.get("anchorFrameIndex") is not None]
+    collapsed_anchor_sequence = collapse_consecutive(anchor_sequence)
 
     return {
         "timelineKind": timeline.get("timelineKind"),
@@ -241,6 +277,11 @@ def summarize_main_timeline(timeline: dict[str, object], stem_bank_states: dict[
         "linkTypeCounts": dict(sorted(link_type_counts.items())),
         "anchorFrameIndices": sorted(set(anchor_frame_indices)),
         "anchorFrameRange": None if not anchor_frame_indices else [min(anchor_frame_indices), max(anchor_frame_indices)],
+        "anchorSequence": anchor_sequence,
+        "collapsedAnchorSequence": collapsed_anchor_sequence,
+        "anchorEventCounts": {str(key): anchor_event_counts[key] for key in sorted(anchor_event_counts)},
+        "anchorLinkedCounts": {str(key): anchor_linked_counts[key] for key in sorted(anchor_linked_counts)},
+        "anchorOverlayCounts": {str(key): anchor_overlay_counts[key] for key in sorted(anchor_overlay_counts)},
         "eventBankStateCounts": dict(sorted(bank_state_counts.items())),
         "renderSemanticsStemStateCounts": stem_bank_states,
     }
@@ -327,6 +368,20 @@ def compare_native_vs_main(
                 "Heuristic event count is much larger than the closest native clip frame count; "
                 "the strip is likely subdividing a shorter native clip with overlay/effect events."
             )
+        heuristic_anchor_sequence = main_summary.get("collapsedAnchorSequence") or []
+        native_clip_sequence = best_clip_alignment.get("clipUniqueFrameIndices") or []
+        collapsed_anchor_is_subsequence = is_subsequence(heuristic_anchor_sequence, native_clip_sequence)
+        if heuristic_anchor_sequence:
+            if collapsed_anchor_is_subsequence:
+                notes.append(
+                    "Collapsed heuristic anchor sequence is an in-order subsequence of the best native clip."
+                )
+            else:
+                notes.append(
+                    "Collapsed heuristic anchor sequence is not an in-order subsequence of the best native clip."
+                )
+    else:
+        collapsed_anchor_is_subsequence = None
 
     return {
         "nativeDelayOverlapWithHeuristicPlayback": overlap_playback,
@@ -334,6 +389,7 @@ def compare_native_vs_main(
         "anchorFramesWithinNativePzfFramePool": anchor_frames_within_native_pzf_pool,
         "heuristicUsesNonDirectSources": heuristic_uses_non_direct_sources,
         "heuristicNonDirectSources": non_direct_sources,
+        "collapsedAnchorSequenceMatchesBestClipOrder": collapsed_anchor_is_subsequence,
         "notes": notes,
     }
 
@@ -501,6 +557,16 @@ def main() -> None:
         and entry["native"]["bestClipAlignment"]["eventCountDelta"] is not None
         and int(entry["native"]["bestClipAlignment"]["eventCountDelta"]) >= 3
     ]
+    stems_with_anchor_subsequence_match = [
+        entry["stem"]
+        for entry in entries
+        if entry["comparison"]["collapsedAnchorSequenceMatchesBestClipOrder"] is True  # type: ignore[index]
+    ]
+    stems_with_anchor_order_mismatch = [
+        entry["stem"]
+        for entry in entries
+        if entry["comparison"]["collapsedAnchorSequenceMatchesBestClipOrder"] is False  # type: ignore[index]
+    ]
 
     report = {
         "mainRef": args.main_ref,
@@ -515,6 +581,8 @@ def main() -> None:
             "stemsWithAnchorsOutsideNativePzfPool": stems_with_out_of_pool_anchors,
             "stemsWithFullAnchorClipCoverage": stems_with_full_anchor_clip_coverage,
             "stemsWithLargeEventCountDelta": stems_with_large_event_count_delta,
+            "stemsWithAnchorSubsequenceMatch": stems_with_anchor_subsequence_match,
+            "stemsWithAnchorOrderMismatch": stems_with_anchor_order_mismatch,
             "nativeDelayValuesAcrossSet": aggregate_native_delay_values,
             "heuristicPlaybackValuesAcrossSet": aggregate_playback_values,
             "heuristicExplicitTimingValuesAcrossSet": aggregate_explicit_values,
