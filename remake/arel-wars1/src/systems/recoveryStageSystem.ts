@@ -28,6 +28,8 @@ const MIN_DIALOGUE_DURATION_MS = 1400
 const MAX_DIALOGUE_DURATION_MS = 4200
 const STORYBOARD_GAP_MS = 900
 const RESULT_HOLD_MS = 1800
+const WORLDMAP_HOLD_MS = 1600
+const DEPLOY_BRIEFING_MS = 1800
 const MANA_RECOVERY_PER_BEAT = 0.018
 const UPGRADE_PROGRESS_RECOVERY_PER_BEAT = 0.012
 const SKILL_COOLDOWN_MS = 2600
@@ -275,6 +277,12 @@ export class RecoveryStageSystem {
 
   private campaignSelectedNodeIndex = 0
 
+  private campaignScenePhase: RecoveryStageSnapshot['campaignState']['scenePhase'] = 'battle'
+
+  private campaignWorldmapAutoEnterAtMs = 0
+
+  private campaignDeployBriefingEndsAtMs = 0
+
   private readonly campaignClearedStoryboardIds = new Set<string>()
 
   private campaignLastResolvedStageTitle: string | null = null
@@ -337,6 +345,12 @@ export class RecoveryStageSystem {
       return false
     }
 
+    if (!this.battlePaused && this.campaignScenePhase === 'battle') {
+      this.lastActionNote = 'campaign route selection is unavailable during active battle'
+      this.version += 1
+      return false
+    }
+
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     const nextIndex = clamp(this.campaignSelectedNodeIndex + direction, 0, unlockedCount - 1)
     if (nextIndex === this.campaignSelectedNodeIndex) {
@@ -344,6 +358,9 @@ export class RecoveryStageSystem {
     }
 
     this.campaignSelectedNodeIndex = nextIndex
+    if (this.campaignScenePhase === 'worldmap') {
+      this.campaignWorldmapAutoEnterAtMs = this.lastUpdateNowMs + WORLDMAP_HOLD_MS
+    }
     const target = this.storyboards[nextIndex]
     this.lastActionNote = `campaign route selected: ${target?.stageBlueprint?.title ?? target?.scriptPath ?? `node ${nextIndex + 1}`}`
     this.version += 1
@@ -355,7 +372,7 @@ export class RecoveryStageSystem {
       return false
     }
 
-    if (!this.battlePaused && !this.battleResolutionOutcome) {
+    if (!this.battlePaused && this.campaignScenePhase === 'battle') {
       this.lastActionNote = 'campaign route launch locked until pause or result'
       this.version += 1
       return false
@@ -363,9 +380,13 @@ export class RecoveryStageSystem {
 
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     const nextIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
-    this.activateStoryboard(nextIndex, this.lastUpdateNowMs, STORYBOARD_GAP_MS)
+    if (this.campaignScenePhase === 'deploy-briefing') {
+      this.launchCampaignNodeNow(nextIndex, this.lastUpdateNowMs)
+    } else {
+      this.enterDeployBriefing(nextIndex, this.lastUpdateNowMs)
+    }
     const target = this.storyboards[nextIndex]
-    this.lastActionNote = `campaign node launched: ${target?.stageBlueprint?.title ?? target?.scriptPath ?? `node ${nextIndex + 1}`}`
+    this.lastActionNote = `campaign node queued: ${target?.stageBlueprint?.title ?? target?.scriptPath ?? `node ${nextIndex + 1}`}`
     this.version += 1
     return true
   }
@@ -459,9 +480,21 @@ export class RecoveryStageSystem {
       changed = true
     }
 
-    if (this.battleResolutionOutcome) {
+    if (this.campaignScenePhase === 'result-hold') {
       if (this.battleResolutionAutoAdvanceAtMs > 0 && nowMs >= this.battleResolutionAutoAdvanceAtMs) {
-        this.advanceCampaign(nowMs)
+        this.enterWorldmapSelection(nowMs)
+        this.version += 1
+        return true
+      }
+    } else if (this.campaignScenePhase === 'worldmap') {
+      if (this.campaignWorldmapAutoEnterAtMs > 0 && nowMs >= this.campaignWorldmapAutoEnterAtMs) {
+        this.enterDeployBriefing(this.campaignSelectedNodeIndex, nowMs)
+        this.version += 1
+        return true
+      }
+    } else if (this.campaignScenePhase === 'deploy-briefing') {
+      if (this.campaignDeployBriefingEndsAtMs > 0 && nowMs >= this.campaignDeployBriefingEndsAtMs) {
+        this.launchCampaignNodeNow(this.campaignSelectedNodeIndex, nowMs)
         this.version += 1
         return true
       }
@@ -530,6 +563,10 @@ export class RecoveryStageSystem {
 
   private activateStoryboard(index: number, nowMs: number, dialogueGapMs: number = 0): void {
     this.storyboardIndex = index
+    this.campaignSelectedNodeIndex = index
+    this.campaignScenePhase = 'battle'
+    this.campaignWorldmapAutoEnterAtMs = 0
+    this.campaignDeployBriefingEndsAtMs = 0
     this.dialogueIndex = 0
     this.frameIndex = 0
     this.storyboardStartedAtMs = nowMs
@@ -542,21 +579,46 @@ export class RecoveryStageSystem {
     this.scheduleNextFrame(storyboard.previewStem, nowMs)
   }
 
-  private advanceCampaign(nowMs: number): void {
+  private enterWorldmapSelection(nowMs: number): void {
+    const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
     if (this.battleResolutionOutcome === 'victory') {
-      const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
-      this.campaignSelectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
-      const nextIndex = this.campaignSelectedNodeIndex
-      this.activateStoryboard(nextIndex, nowMs, STORYBOARD_GAP_MS)
-      return
+      this.campaignSelectedNodeIndex = clamp(Math.min(this.storyboardIndex + 1, unlockedCount - 1), 0, unlockedCount - 1)
+    } else {
+      this.campaignSelectedNodeIndex = clamp(this.storyboardIndex, 0, unlockedCount - 1)
     }
-    this.campaignSelectedNodeIndex = this.storyboardIndex
-    this.activateStoryboard(this.storyboardIndex, nowMs, STORYBOARD_GAP_MS)
+    this.campaignScenePhase = 'worldmap'
+    this.campaignWorldmapAutoEnterAtMs = nowMs + WORLDMAP_HOLD_MS
+    this.campaignDeployBriefingEndsAtMs = 0
+    this.lastActionNote = `worldmap opened for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
+  }
+
+  private enterDeployBriefing(index: number, nowMs: number): void {
+    const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    this.battlePaused = false
+    this.pauseStartedAtMs = 0
+    this.campaignSelectedNodeIndex = clamp(index, 0, unlockedCount - 1)
+    this.campaignScenePhase = 'deploy-briefing'
+    this.campaignWorldmapAutoEnterAtMs = 0
+    this.campaignDeployBriefingEndsAtMs = nowMs + DEPLOY_BRIEFING_MS
+    this.lastActionNote = `deploy briefing ready for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
+  }
+
+  private launchCampaignNodeNow(index: number, nowMs: number): void {
+    this.activateStoryboard(index, nowMs, Math.round(STORYBOARD_GAP_MS / 5))
+    this.lastActionNote = `campaign node launched: ${this.storyboardLabel(index)}`
+  }
+
+  private storyboardLabel(index: number): string {
+    const storyboard = this.storyboards[index]
+    return storyboard?.stageBlueprint?.title ?? storyboard?.scriptPath ?? `node ${index + 1}`
   }
 
   private buildCampaignState(currentStoryboard: RecoveryStageStoryboard): RecoveryStageSnapshot['campaignState'] {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     const selectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
+    const selectedStoryboard = this.storyboards[selectedNodeIndex] ?? currentStoryboard
     const activeStageTitle = currentStoryboard.stageBlueprint?.title ?? currentStoryboard.scriptPath
     const nextUnlock = this.campaignUnlockedStageCount < this.storyboards.length
       ? this.storyboards[this.campaignUnlockedStageCount]?.stageBlueprint?.title
@@ -566,13 +628,21 @@ export class RecoveryStageSystem {
     const recommendedNodeIndex = this.battleResolutionOutcome === 'victory'
       ? Math.min(this.storyboardIndex + 1, unlockedCount - 1)
       : this.storyboardIndex
-    const selectionMode = this.battleResolutionOutcome
+    const selectionMode = this.campaignScenePhase === 'result-hold'
       ? 'result-route-selection'
-      : this.battlePaused
+      : this.campaignScenePhase === 'worldmap' || this.battlePaused
         ? 'worldmap-selection'
-        : selectedNodeIndex !== this.storyboardIndex
+      : selectedNodeIndex !== this.storyboardIndex
           ? 'queued-route-selection'
           : 'follow-active-stage'
+    const autoAdvanceInMs =
+      this.campaignScenePhase === 'result-hold' && this.battleResolutionAutoAdvanceAtMs > 0
+        ? Math.max(this.battleResolutionAutoAdvanceAtMs - this.lastUpdateNowMs, 0)
+      : this.campaignScenePhase === 'worldmap' && this.campaignWorldmapAutoEnterAtMs > 0
+        ? Math.max(this.campaignWorldmapAutoEnterAtMs - this.lastUpdateNowMs, 0)
+      : this.campaignScenePhase === 'deploy-briefing' && this.campaignDeployBriefingEndsAtMs > 0
+        ? Math.max(this.campaignDeployBriefingEndsAtMs - this.lastUpdateNowMs, 0)
+      : null
     return {
       currentNodeIndex: this.storyboardIndex + 1,
       selectedNodeIndex: selectedNodeIndex + 1,
@@ -582,11 +652,17 @@ export class RecoveryStageSystem {
       activeStageTitle,
       activeFamilyId: currentStoryboard.scriptFamilyId,
       routeLabel: currentStoryboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
+      scenePhase: this.campaignScenePhase,
       selectionMode,
-      selectionLaunchable: this.battlePaused || this.battleResolutionOutcome !== null,
+      selectionLaunchable: this.battlePaused || this.campaignScenePhase !== 'battle',
+      autoAdvanceInMs,
       nextUnlockLabel: nextUnlock,
       lastResolvedStageTitle: this.campaignLastResolvedStageTitle,
       lastOutcome: this.campaignLastOutcome,
+      selectedStageTitle: selectedStoryboard.stageBlueprint?.title ?? selectedStoryboard.scriptPath,
+      selectedRouteLabel: selectedStoryboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
+      selectedHintText: selectedStoryboard.stageBlueprint?.hintText ?? null,
+      selectedRewardText: selectedStoryboard.stageBlueprint?.rewardText ?? null,
       nodes: this.storyboards.map((storyboard, index) => ({
         nodeIndex: index + 1,
         label: storyboard.stageBlueprint?.title ?? storyboard.scriptPath.replace('assets/', ''),
@@ -966,6 +1042,7 @@ export class RecoveryStageSystem {
     const currentStoryboard = this.storyboards[this.storyboardIndex]
     this.battleResolutionOutcome = outcome
     this.battleResolutionReason = reason
+    this.campaignScenePhase = 'result-hold'
     this.battleResolutionAutoAdvanceAtMs = this.lastUpdateNowMs + RESULT_HOLD_MS
     this.campaignLastResolvedStageTitle = currentStoryboard?.stageBlueprint?.title ?? currentStoryboard?.scriptPath ?? null
     this.campaignLastOutcome = outcome
@@ -1528,8 +1605,8 @@ export class RecoveryStageSystem {
     if (this.battlePaused) {
       mode = activeTutorialCue ? 'guided-preview' : 'free-preview'
       openPanel = 'system'
-      objectiveMode = 'system-navigation'
-      primaryHint = 'Battle paused; resume or open settings'
+      objectiveMode = 'worldmap-selection'
+      primaryHint = 'Battle paused; choose an unlocked campaign node or resume the battle'
       enabledInputs.clear()
       enabledInputs.add('resume-battle')
       enabledInputs.add('open-settings')
@@ -1569,7 +1646,41 @@ export class RecoveryStageSystem {
       }
     }
 
-    if (this.battleResolutionOutcome) {
+    if (this.campaignScenePhase === 'worldmap') {
+      mode = 'guided-preview'
+      openPanel = 'system'
+      objectiveMode = 'worldmap-selection'
+      primaryHint = 'Worldmap open. Select an unlocked node, or wait for deploy briefing.'
+      enabledInputs.clear()
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('return-to-tower')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
+      enabledInputs.add('observe-stage-preview')
+      enabledInputs.add('open-system-menu')
+    } else if (this.campaignScenePhase === 'deploy-briefing') {
+      mode = 'guided-preview'
+      openPanel = 'system'
+      objectiveMode = 'deploy-briefing'
+      primaryHint = 'Deploy briefing active. Review node intel or press Enter to launch immediately.'
+      enabledInputs.clear()
+      blockedInputs.add('dispatch-up-lane')
+      blockedInputs.add('dispatch-down-lane')
+      blockedInputs.add('produce-unit')
+      blockedInputs.add('deploy-hero')
+      blockedInputs.add('toggle-hero-sortie')
+      blockedInputs.add('return-to-tower')
+      blockedInputs.add('cast-skill')
+      blockedInputs.add('use-item')
+      blockedInputs.add('upgrade-tower-stat')
+      enabledInputs.add('observe-stage-preview')
+      enabledInputs.add('open-system-menu')
+    } else if (this.battleResolutionOutcome) {
       mode = 'guided-preview'
       openPanel = 'system'
       enabledInputs.clear()
@@ -1585,7 +1696,7 @@ export class RecoveryStageSystem {
       if (this.battleResolutionOutcome === 'victory') {
         objectiveMode = 'review-quests'
         questState = this.questRewardClaimed ? 'available' : 'reward-ready'
-        primaryHint = 'Stage clear. Claim the reward or wait for auto-advance.'
+        primaryHint = 'Stage clear. Claim the reward or wait for the worldmap transition.'
         enabledInputs.add('open-system-menu')
         enabledInputs.add('review-quest-rewards')
         if (!this.questRewardClaimed) {
@@ -1594,7 +1705,7 @@ export class RecoveryStageSystem {
       } else {
         objectiveMode = 'system-navigation'
         questState = 'hidden'
-        primaryHint = 'Tower breached. Preview will roll to the next storyboard.'
+        primaryHint = 'Tower breached. Result hold will return you to the current node route.'
         enabledInputs.add('open-system-menu')
         enabledInputs.add('observe-stage-preview')
       }
@@ -1659,6 +1770,9 @@ export class RecoveryStageSystem {
     this.lastActionId = null
     this.lastActionAccepted = false
     this.lastActionNote = null
+    this.campaignScenePhase = 'battle'
+    this.campaignWorldmapAutoEnterAtMs = 0
+    this.campaignDeployBriefingEndsAtMs = 0
   }
 
   private applyAction(actionId: RecoveryGameplayActionId, snapshot: RecoveryStageSnapshot): void {

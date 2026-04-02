@@ -429,6 +429,8 @@ export interface RecoveryGameplayState {
     | 'use-items'
     | 'review-quests'
     | 'system-navigation'
+    | 'worldmap-selection'
+    | 'deploy-briefing'
     | 'generic-preview'
   questState: 'hidden' | 'available' | 'reward-ready'
   selectedDispatchLane: 'upper' | 'lower' | null
@@ -537,11 +539,17 @@ export interface RecoveryCampaignState {
   activeStageTitle: string
   activeFamilyId: string
   routeLabel: string
+  scenePhase: 'battle' | 'result-hold' | 'worldmap' | 'deploy-briefing'
   selectionMode: 'follow-active-stage' | 'queued-route-selection' | 'worldmap-selection' | 'result-route-selection'
   selectionLaunchable: boolean
+  autoAdvanceInMs: number | null
   nextUnlockLabel: string | null
   lastResolvedStageTitle: string | null
   lastOutcome: 'victory' | 'defeat' | null
+  selectedStageTitle: string
+  selectedRouteLabel: string
+  selectedHintText: string | null
+  selectedRewardText: string | null
   nodes: RecoveryCampaignNodeState[]
 }
 
