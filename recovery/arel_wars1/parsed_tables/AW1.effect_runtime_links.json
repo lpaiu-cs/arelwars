@@ -1,0 +1,1194 @@
+{
+  "summary": {
+    "particleRowCount": 12,
+    "primaryDirectPtcCount": 12,
+    "secondaryNonzeroCount": 10,
+    "secondaryDirectPtcCount": 10,
+    "dualPtcRowCount": 10,
+    "sharedPrimaryGroupCount": 1,
+    "heroActiveRowCount": 25,
+    "heroActiveRowsWithExactTailHits": 5,
+    "heroActiveExactProjectileHitCount": 2,
+    "heroActiveExactEffectHitCount": 4,
+    "heroActiveExactParticleHitCount": 0,
+    "secondaryPtcHistogram": {
+      "1": 1,
+      "4": 1,
+      "9": 1,
+      "22": 1,
+      "34": 1,
+      "37": 1,
+      "39": 1,
+      "43": 3
+    }
+  },
+  "particleRows": [
+    {
+      "index": 0,
+      "particleIdCandidate": 48,
+      "variantCandidate": 0,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        0,
+        255
+      ],
+      "relationKind": "primary-only",
+      "primaryPtc": {
+        "stem": "048",
+        "signatureHex": "0000680148010000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          0,
+          10
+        ],
+        "emissionFields": [
+          10,
+          5,
+          5,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "secondaryPtc": null
+    },
+    {
+      "index": 1,
+      "particleIdCandidate": 48,
+      "variantCandidate": 0,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        0,
+        255
+      ],
+      "relationKind": "primary-only",
+      "primaryPtc": {
+        "stem": "048",
+        "signatureHex": "0000680148010000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          0,
+          10
+        ],
+        "emissionFields": [
+          10,
+          5,
+          5,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "secondaryPtc": null
+    },
+    {
+      "index": 2,
+      "particleIdCandidate": 46,
+      "variantCandidate": 34,
+      "sentinel": 255,
+      "rawU8": [
+        46,
+        34,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "046",
+        "signatureHex": "000068017b140000",
+        "fieldCount": 26,
+        "timingFields": [
+          5,
+          0,
+          1000
+        ],
+        "emissionFields": [
+          150,
+          0,
+          10,
+          0
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "034",
+        "signatureHex": "5a003c0012030000",
+        "fieldCount": 25,
+        "timingFields": [
+          0,
+          0,
+          4
+        ],
+        "emissionFields": [
+          1,
+          0,
+          10,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.7,
+          0.2,
+          0.02,
+          0.01
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          -65,
+          -1
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "particleIdCandidate": 47,
+      "variantCandidate": 43,
+      "sentinel": 255,
+      "rawU8": [
+        47,
+        43,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "047",
+        "signatureHex": "00006801cd0c0000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          0,
+          50
+        ],
+        "emissionFields": [
+          16,
+          0,
+          6,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "043",
+        "signatureHex": "00001400cd0c0000",
+        "fieldCount": 26,
+        "timingFields": [
+          10,
+          10,
+          40
+        ],
+        "emissionFields": [
+          6,
+          4,
+          10,
+          2
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          -261,
+          -1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "particleIdCandidate": 34,
+      "variantCandidate": 22,
+      "sentinel": 255,
+      "rawU8": [
+        34,
+        22,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "034",
+        "signatureHex": "5a003c0012030000",
+        "fieldCount": 25,
+        "timingFields": [
+          0,
+          0,
+          4
+        ],
+        "emissionFields": [
+          1,
+          0,
+          10,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.7,
+          0.2,
+          0.02,
+          0.01
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          -65,
+          -1
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "022",
+        "signatureHex": "0e0100001f050000",
+        "fieldCount": 25,
+        "timingFields": [
+          96,
+          32,
+          20
+        ],
+        "emissionFields": [
+          1,
+          4,
+          10,
+          2
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          -130,
+          -1
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "particleIdCandidate": 2,
+      "variantCandidate": 1,
+      "sentinel": 255,
+      "rawU8": [
+        2,
+        1,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "002",
+        "signatureHex": "0e011400ae070000",
+        "fieldCount": 25,
+        "timingFields": [
+          1024,
+          1792,
+          32
+        ],
+        "emissionFields": [
+          1,
+          0,
+          28,
+          14
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          -130,
+          -1,
+          -130,
+          -1
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "001",
+        "signatureHex": "5a000400c5200000",
+        "fieldCount": 25,
+        "timingFields": [
+          1024,
+          2048,
+          64
+        ],
+        "emissionFields": [
+          2,
+          4,
+          8,
+          4
+        ],
+        "ratioFieldsFloat": [
+          0.5,
+          0.2,
+          0.1,
+          0.1
+        ],
+        "signedDeltaFields": [
+          262,
+          0,
+          131,
+          0
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "particleIdCandidate": 42,
+      "variantCandidate": 37,
+      "sentinel": 255,
+      "rawU8": [
+        42,
+        37,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "042",
+        "signatureHex": "5a0014009a190000",
+        "fieldCount": 26,
+        "timingFields": [
+          100,
+          100,
+          6
+        ],
+        "emissionFields": [
+          20,
+          0,
+          20,
+          2
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          -196,
+          -1
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "037",
+        "signatureHex": "0e01b400ae070000",
+        "fieldCount": 25,
+        "timingFields": [
+          10,
+          10,
+          10
+        ],
+        "emissionFields": [
+          2,
+          0,
+          20,
+          14
+        ],
+        "ratioFieldsFloat": [
+          0.05,
+          0.0,
+          0.05,
+          0.01
+        ],
+        "signedDeltaFields": [
+          -130,
+          -1,
+          -130,
+          -1
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "particleIdCandidate": 48,
+      "variantCandidate": 39,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        39,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "048",
+        "signatureHex": "0000680148010000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          0,
+          10
+        ],
+        "emissionFields": [
+          10,
+          5,
+          5,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "039",
+        "signatureHex": "0e01960062100000",
+        "fieldCount": 25,
+        "timingFields": [
+          0,
+          0,
+          96
+        ],
+        "emissionFields": [
+          24,
+          4,
+          5,
+          0
+        ],
+        "ratioFieldsFloat": [
+          0.0,
+          0.1,
+          0.2,
+          0.1
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          655,
+          0
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "particleIdCandidate": 48,
+      "variantCandidate": 9,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        9,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "048",
+        "signatureHex": "0000680148010000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          0,
+          10
+        ],
+        "emissionFields": [
+          10,
+          5,
+          5,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "009",
+        "signatureHex": "000068013d0a0000",
+        "fieldCount": 25,
+        "timingFields": [
+          0,
+          0,
+          4
+        ],
+        "emissionFields": [
+          4,
+          2,
+          8,
+          1
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.2,
+          0.01
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "index": 9,
+      "particleIdCandidate": 48,
+      "variantCandidate": 43,
+      "sentinel": 255,
+      "rawU8": [
+        48,
+        43,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "048",
+        "signatureHex": "0000680148010000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          0,
+          10
+        ],
+        "emissionFields": [
+          10,
+          5,
+          5,
+          5
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "043",
+        "signatureHex": "00001400cd0c0000",
+        "fieldCount": 26,
+        "timingFields": [
+          10,
+          10,
+          40
+        ],
+        "emissionFields": [
+          6,
+          4,
+          10,
+          2
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          -261,
+          -1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "index": 10,
+      "particleIdCandidate": 21,
+      "variantCandidate": 4,
+      "sentinel": 255,
+      "rawU8": [
+        21,
+        4,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "021",
+        "signatureHex": "0e0100001f050000",
+        "fieldCount": 26,
+        "timingFields": [
+          112,
+          32,
+          12
+        ],
+        "emissionFields": [
+          1,
+          0,
+          12,
+          2
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.1,
+          0.2
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          -130,
+          -1
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "004",
+        "signatureHex": "00006801ba090000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          0,
+          32
+        ],
+        "emissionFields": [
+          32,
+          0,
+          6,
+          0
+        ],
+        "ratioFieldsFloat": [
+          0.95,
+          0.1,
+          0.1,
+          0.1
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "index": 11,
+      "particleIdCandidate": 49,
+      "variantCandidate": 43,
+      "sentinel": 255,
+      "rawU8": [
+        49,
+        43,
+        255
+      ],
+      "relationKind": "dual-ptc",
+      "primaryPtc": {
+        "stem": "049",
+        "signatureHex": "0e0132000a170000",
+        "fieldCount": 26,
+        "timingFields": [
+          0,
+          10,
+          200
+        ],
+        "emissionFields": [
+          30,
+          4,
+          15,
+          8
+        ],
+        "ratioFieldsFloat": [
+          0.5,
+          0.2,
+          0.3,
+          0.1
+        ],
+        "signedDeltaFields": [
+          0,
+          0,
+          655,
+          0
+        ]
+      },
+      "secondaryPtc": {
+        "stem": "043",
+        "signatureHex": "00001400cd0c0000",
+        "fieldCount": 26,
+        "timingFields": [
+          10,
+          10,
+          40
+        ],
+        "emissionFields": [
+          6,
+          4,
+          10,
+          2
+        ],
+        "ratioFieldsFloat": [
+          0.9,
+          0.2,
+          0.08,
+          0.04
+        ],
+        "signedDeltaFields": [
+          -261,
+          -1,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "sharedPrimaryGroups": [
+    {
+      "primaryPtcStem": "048",
+      "rowIndices": [
+        0,
+        1,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "heroActiveTailLinks": [
+    {
+      "index": 0,
+      "headerBytes": [
+        2,
+        0,
+        0,
+        15
+      ],
+      "tailPairBE": [
+        4,
+        1,
+        6,
+        2
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            4,
+            1
+          ],
+          "projectileExactMatches": [
+            {
+              "index": 5,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 4,
+              "variantCandidate": 1,
+              "speedOrRangeCandidate": 8,
+              "motionCandidate": 0
+            }
+          ],
+          "effectExactMatches": [],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 5,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 4,
+              "variantCandidate": 1,
+              "speedOrRangeCandidate": 8,
+              "motionCandidate": 0
+            }
+          ]
+        },
+        {
+          "pair": [
+            6,
+            2
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 6,
+              "familyCandidate": 5,
+              "projectileIdCandidate": 6,
+              "variantCandidate": 1,
+              "speedOrRangeCandidate": 20,
+              "motionCandidate": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "headerBytes": [
+        0,
+        0,
+        0,
+        20
+      ],
+      "tailPairBE": [
+        3,
+        2,
+        255,
+        65535
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            3,
+            2
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [
+            {
+              "index": 26,
+              "familyCandidate": 3,
+              "effectIdCandidate": 2,
+              "variantCandidate": 0,
+              "frameOrDurationCandidate": 1,
+              "loopFlagCandidate": 1,
+              "blendFlagCandidate": 0
+            }
+          ],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 4,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 3,
+              "variantCandidate": 0,
+              "speedOrRangeCandidate": 8,
+              "motionCandidate": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "headerBytes": [
+        0,
+        3,
+        0,
+        1
+      ],
+      "tailPairBE": [
+        3,
+        0,
+        8,
+        4
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            3,
+            0
+          ],
+          "projectileExactMatches": [
+            {
+              "index": 4,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 3,
+              "variantCandidate": 0,
+              "speedOrRangeCandidate": 8,
+              "motionCandidate": 0
+            }
+          ],
+          "effectExactMatches": [
+            {
+              "index": 24,
+              "familyCandidate": 3,
+              "effectIdCandidate": 0,
+              "variantCandidate": 0,
+              "frameOrDurationCandidate": 1,
+              "loopFlagCandidate": 1,
+              "blendFlagCandidate": 0
+            }
+          ],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 4,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 3,
+              "variantCandidate": 0,
+              "speedOrRangeCandidate": 8,
+              "motionCandidate": 0
+            }
+          ]
+        },
+        {
+          "pair": [
+            8,
+            4
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 8,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 8,
+              "variantCandidate": 0,
+              "speedOrRangeCandidate": 15,
+              "motionCandidate": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "headerBytes": [
+        2,
+        3,
+        0,
+        255
+      ],
+      "tailPairBE": [
+        65285,
+        1,
+        24,
+        8
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            24,
+            8
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 24,
+              "familyCandidate": 7,
+              "projectileIdCandidate": 24,
+              "variantCandidate": 1,
+              "speedOrRangeCandidate": 1,
+              "motionCandidate": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "headerBytes": [
+        0,
+        3,
+        0,
+        100
+      ],
+      "tailPairBE": [
+        48,
+        16,
+        32,
+        16
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            32,
+            16
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 33,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 32,
+              "variantCandidate": 1,
+              "speedOrRangeCandidate": 6,
+              "motionCandidate": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "headerBytes": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "tailPairBE": [
+        65330,
+        0,
+        1,
+        1
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            1,
+            1
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [
+            {
+              "index": 11,
+              "familyCandidate": 1,
+              "effectIdCandidate": 1,
+              "variantCandidate": 0,
+              "frameOrDurationCandidate": 1,
+              "loopFlagCandidate": 1,
+              "blendFlagCandidate": 1
+            }
+          ],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 2,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 1,
+              "variantCandidate": 0,
+              "speedOrRangeCandidate": 10,
+              "motionCandidate": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "headerBytes": [
+        1,
+        3,
+        0,
+        255
+      ],
+      "tailPairBE": [
+        65344,
+        16,
+        0,
+        3
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            0,
+            3
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [
+            {
+              "index": 3,
+              "familyCandidate": 0,
+              "effectIdCandidate": 3,
+              "variantCandidate": 0,
+              "frameOrDurationCandidate": 1,
+              "loopFlagCandidate": 1,
+              "blendFlagCandidate": 0
+            }
+          ],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 0,
+              "familyCandidate": 0,
+              "projectileIdCandidate": 0,
+              "variantCandidate": 0,
+              "speedOrRangeCandidate": 10,
+              "motionCandidate": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "headerBytes": [
+        1,
+        3,
+        0,
+        255
+      ],
+      "tailPairBE": [
+        65310,
+        0,
+        30,
+        8
+      ],
+      "pairReports": [
+        {
+          "pair": [
+            30,
+            8
+          ],
+          "projectileExactMatches": [],
+          "effectExactMatches": [],
+          "particleExactMatches": [],
+          "projectileIdHints": [
+            {
+              "index": 31,
+              "familyCandidate": 6,
+              "projectileIdCandidate": 30,
+              "variantCandidate": 255,
+              "speedOrRangeCandidate": 0,
+              "motionCandidate": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "All 12/12 XlsParticle primary ids map directly to existing ptc/NNN.ptc files.",
+    "All 10/10 nonzero XlsParticle secondary ids also map directly to existing ptc/NNN.ptc files.",
+    "This makes XlsParticle the strongest current candidate for a compact PTC bridge table rather than a free-form effect-variant table.",
+    "Primary PTC 048 is reused across multiple rows with different secondary PTC ids, which looks like a shared emitter template plus alternate embellishment layers.",
+    "XlsHeroActiveSkill tailPairBE yields exact runtime-table hits in 5/25 rows, so at least part of the tail pair payload is likely a direct projectile/effect reference block."
+  ]
+}

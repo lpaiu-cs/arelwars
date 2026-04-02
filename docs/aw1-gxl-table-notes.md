@@ -14,6 +14,7 @@ Primary outputs:
 - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
 - [AW1.runtime_field_reuse_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_field_reuse_scan.json)
 - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
+- [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
 
 `AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
 It did not yet reveal a hard `stage -> map payload` pointer on its own.
@@ -263,6 +264,11 @@ Evidence:
   - `timingWindowB`
   - `tailPairBE`
 - The last `8` bytes produce small big-endian pair values such as `[4, 1, 6, 2]`, which are much more plausible as compact ids than the raw little-endian words.
+- The correlation export [`AW1.effect_runtime_links.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json) now shows exact runtime-table hits in `5/25` rows:
+  - row `0` pair `(4, 1)` exactly matches projectile row `5`
+  - row `1` pair `(3, 2)` exactly matches effect row `26`
+  - row `2` pair `(3, 0)` exactly matches both projectile row `4` and effect row `24`
+- This is still not enough to fully name the tail pair payload, but it is strong evidence that at least part of the block is a direct projectile/effect reference table.
 
 ### XlsHeroBuffSkill
 
@@ -323,6 +329,10 @@ Evidence:
   - [`XlsBalance.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsBalance.eng.parsed.json)
   - [`XlsCorrespondence.eng.parsed.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/XlsCorrespondence.eng.parsed.json)
 - `XlsParticle` is especially likely to matter for runtime reconstruction because it is a tiny id bridge table and lines up naturally with `PTC`/effect work.
+- [`AW1.effect_runtime_links.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json) now makes that linkage much stronger:
+  - all `12/12` primary `XlsParticle` ids map directly to existing `ptc/NNN.ptc` files
+  - all `10/10` nonzero secondary ids also map directly to `ptc/NNN.ptc`
+  - the repeated primary id `48` across rows `0, 1, 7, 8, 9` looks like a shared emitter template with alternate secondary embellishment layers
 - `XlsCorrespondence` currently looks like a `5 x 7` slot-mask table rather than free-form data.
 - Strongest current reading:
   - this is a compact effect playback definition table rather than a content string table
