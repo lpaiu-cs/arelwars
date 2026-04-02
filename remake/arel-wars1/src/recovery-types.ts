@@ -549,6 +549,13 @@ export interface RecoveryCampaignLoadout {
   label: string
   summary: string
   recommended: boolean
+  heroRosterLabel: string
+  heroRosterRole: 'balanced' | 'vanguard' | 'defender' | 'support' | 'raider'
+  heroRosterMembers: string[]
+  skillPresetLabel: string
+  skillPresetKind: 'balanced' | 'burst' | 'support' | 'orders' | 'utility'
+  towerPolicyLabel: string
+  towerPolicyKind: 'balanced' | 'mana-first' | 'population-first' | 'attack-first'
   heroStartMode: 'tower' | 'field'
   heroLane: 'upper' | 'lower' | null
   dispatchLane: 'upper' | 'lower' | null

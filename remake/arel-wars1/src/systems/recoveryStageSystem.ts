@@ -291,7 +291,7 @@ export class RecoveryStageSystem {
 
   private campaignLastOutcome: 'victory' | 'defeat' | null = null
 
-  private activeDeployLoadoutLabel: string | null = null
+  private activeDeployLoadout: RecoveryStageSnapshot['campaignState']['loadouts'][number] | null = null
 
   private lastActionId: RecoveryGameplayActionId | null = null
 
@@ -319,7 +319,6 @@ export class RecoveryStageSystem {
       const initialLoadout = this.resolveSelectedDeployLoadout(this.storyboards[0])
       if (initialLoadout) {
         this.applyDeployLoadout(initialLoadout)
-        this.activeDeployLoadoutLabel = initialLoadout.label
       }
     }
   }
@@ -656,11 +655,10 @@ export class RecoveryStageSystem {
     const loadout = storyboard ? this.resolveSelectedDeployLoadout(storyboard) : null
     if (loadout) {
       this.applyDeployLoadout(loadout)
-      this.activeDeployLoadoutLabel = loadout.label
       this.lastActionNote = `campaign node launched: ${this.storyboardLabel(index)} with ${loadout.label}`
       return
     }
-    this.activeDeployLoadoutLabel = null
+    this.activeDeployLoadout = null
     this.lastActionNote = `campaign node launched: ${this.storyboardLabel(index)}`
   }
 
@@ -723,7 +721,7 @@ export class RecoveryStageSystem {
       selectedHintText: selectedStoryboard.stageBlueprint?.hintText ?? null,
       selectedRewardText: selectedStoryboard.stageBlueprint?.rewardText ?? null,
       selectedLoadoutLabel: selectedLoadout?.label ?? 'Balanced Vanguard',
-      activeLoadoutLabel: this.activeDeployLoadoutLabel,
+      activeLoadoutLabel: this.activeDeployLoadout?.label ?? null,
       briefing: selectedBriefing,
       loadouts,
       nodes: this.storyboards.map((storyboard, index) => ({
@@ -1738,10 +1736,11 @@ export class RecoveryStageSystem {
     }
 
     if (this.campaignScenePhase === 'worldmap') {
+      const selectedLoadout = this.resolveSelectedDeployLoadout(this.storyboards[clamp(this.campaignSelectedNodeIndex, 0, Math.max(this.campaignUnlockedStageCount, 1) - 1)] ?? this.storyboards[0])
       mode = 'guided-preview'
       openPanel = 'system'
       objectiveMode = 'worldmap-selection'
-      primaryHint = 'Worldmap open. Select an unlocked node, or wait for deploy briefing.'
+      primaryHint = `Worldmap open. Select a node and loadout${selectedLoadout ? ` (${selectedLoadout.label})` : ''}, or wait for deploy briefing.`
       enabledInputs.clear()
       blockedInputs.add('dispatch-up-lane')
       blockedInputs.add('dispatch-down-lane')
@@ -1755,10 +1754,11 @@ export class RecoveryStageSystem {
       enabledInputs.add('observe-stage-preview')
       enabledInputs.add('open-system-menu')
     } else if (this.campaignScenePhase === 'deploy-briefing') {
+      const selectedLoadout = this.resolveSelectedDeployLoadout(this.storyboards[clamp(this.campaignSelectedNodeIndex, 0, Math.max(this.campaignUnlockedStageCount, 1) - 1)] ?? this.storyboards[0])
       mode = 'guided-preview'
       openPanel = 'system'
       objectiveMode = 'deploy-briefing'
-      primaryHint = 'Deploy briefing active. Review node intel or press Enter to launch immediately.'
+      primaryHint = `Deploy briefing active. ${selectedLoadout?.heroRosterLabel ?? 'Core Squad'} with ${selectedLoadout?.skillPresetLabel ?? 'Balanced Kit'} and ${selectedLoadout?.towerPolicyLabel ?? 'Balanced Towers'} is queued.`
       enabledInputs.clear()
       blockedInputs.add('dispatch-up-lane')
       blockedInputs.add('dispatch-down-lane')
@@ -1898,15 +1898,40 @@ export class RecoveryStageSystem {
         this.applyTowerUpgrade(snapshot)
         break
       case 'cast-skill':
+        {
+          const activeLoadout = this.activeDeployLoadout
+          const skillPresetKind = activeLoadout?.skillPresetKind ?? 'balanced'
+          const cooldownScale =
+            skillPresetKind === 'burst'
+              ? 1.12
+              : skillPresetKind === 'support'
+                ? 0.84
+                : skillPresetKind === 'orders'
+                  ? 0.9
+                  : skillPresetKind === 'utility'
+                    ? 0.88
+                    : 1
+          const burstBonus =
+            skillPresetKind === 'burst'
+              ? 0.05
+              : skillPresetKind === 'orders'
+                ? 0.02
+                : skillPresetKind === 'utility'
+                  ? 0.025
+                  : 0
         this.panelOverride = 'skill'
-        this.skillCooldownEndsAtMs = nowMs + SKILL_COOLDOWN_MS
+        this.skillCooldownEndsAtMs = nowMs + Math.round(SKILL_COOLDOWN_MS * cooldownScale)
         this.previewEnemyTowerHpRatio = clamp(
-          this.previewEnemyTowerHpRatio - (0.07 + this.currentStageBattleProfile.armageddonBurst * 0.12),
+          this.previewEnemyTowerHpRatio - (0.07 + this.currentStageBattleProfile.armageddonBurst * 0.12 + burstBonus),
           0.08,
           1,
         )
         this.previewManaRatio = clamp(
-          this.previewManaRatio - 0.08 + this.currentStageBattleProfile.manaSurge * 0.06,
+          this.previewManaRatio
+          - 0.08
+          + this.currentStageBattleProfile.manaSurge * 0.06
+          + (skillPresetKind === 'utility' ? 0.05 : 0)
+          + (skillPresetKind === 'support' ? 0.03 : 0),
           0.06,
           1,
         )
@@ -1920,9 +1945,21 @@ export class RecoveryStageSystem {
             )
           })
         }
-        this.lastActionNote = `skill cast preview accepted (${this.currentStageBattleProfile.archetypeSignals.join('/') || 'generic'})`
+          if (skillPresetKind === 'support') {
+            this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.06, 0.1, 1)
+          } else if (skillPresetKind === 'orders' && this.selectedDispatchLane) {
+            this.laneBattleState[this.selectedDispatchLane].alliedPressure = clamp(
+              this.laneBattleState[this.selectedDispatchLane].alliedPressure + 0.08,
+              0.08,
+              1,
+            )
+          }
+          this.lastActionNote = `skill cast preview accepted (${this.currentStageBattleProfile.archetypeSignals.join('/') || 'generic'} / ${activeLoadout?.skillPresetLabel ?? 'balanced'})`
+        }
         break
       case 'use-item':
+        {
+          const activeLoadout = this.activeDeployLoadout
         this.panelOverride = 'item'
         this.itemCooldownEndsAtMs = nowMs + ITEM_COOLDOWN_MS
         this.previewOwnTowerHpRatio = clamp(
@@ -1943,7 +1980,15 @@ export class RecoveryStageSystem {
             0.96,
           )
         }
-        this.lastActionNote = 'item use preview accepted'
+          if (activeLoadout?.towerPolicyKind === 'mana-first') {
+            this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
+          } else if (activeLoadout?.towerPolicyKind === 'population-first') {
+            this.queuedUnitCount = Math.min(this.queuedUnitCount + 1, 4)
+          } else if (activeLoadout?.towerPolicyKind === 'attack-first') {
+            this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.03, 0.08, 1)
+          }
+          this.lastActionNote = `item use preview accepted (${activeLoadout?.towerPolicyLabel ?? 'balanced towers'})`
+        }
         break
       case 'dispatch-up-lane':
         this.commitLaneDispatch('upper')
@@ -1959,6 +2004,8 @@ export class RecoveryStageSystem {
         break
       case 'deploy-hero':
       case 'toggle-hero-sortie':
+        {
+          const activeLoadout = this.activeDeployLoadout
         if (gameplayState.heroMode === 'field') {
           this.heroOverrideMode = 'return-cooldown'
           this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
@@ -1966,18 +2013,38 @@ export class RecoveryStageSystem {
             this.laneBattleState[this.heroAssignedLane].heroPresent = false
           }
           this.heroAssignedLane = null
-          this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
-          this.lastActionNote = 'hero returned to tower'
+          this.previewOwnTowerHpRatio = clamp(
+            this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.03 : 0),
+            0.1,
+            1,
+          )
+          this.lastActionNote = `hero returned to tower (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
         } else {
           this.heroOverrideMode = 'field'
           this.heroReturnCooldownEndsAtMs = 0
-          this.heroAssignedLane = this.selectedDispatchLane ?? 'upper'
+          this.heroAssignedLane = activeLoadout?.heroLane ?? this.selectedDispatchLane ?? 'upper'
           this.laneBattleState[this.heroAssignedLane].heroPresent = true
-          this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.04, 0.08, 1)
-          this.lastActionNote = `hero deployed to ${this.heroAssignedLane} lane`
+          this.previewEnemyTowerHpRatio = clamp(
+            this.previewEnemyTowerHpRatio
+            - 0.04
+            - (activeLoadout?.heroRosterRole === 'raider' ? 0.03 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.02 : 0),
+            0.08,
+            1,
+          )
+          if ((activeLoadout?.heroRosterRole === 'defender' || activeLoadout?.heroRosterRole === 'support') && this.heroAssignedLane) {
+            this.laneBattleState[this.heroAssignedLane].alliedPressure = clamp(
+              this.laneBattleState[this.heroAssignedLane].alliedPressure + 0.06,
+              0.08,
+              1,
+            )
+          }
+          this.lastActionNote = `hero deployed to ${this.heroAssignedLane} lane (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
+        }
         }
         break
       case 'return-to-tower':
+        {
+          const activeLoadout = this.activeDeployLoadout
         this.heroOverrideMode = 'return-cooldown'
         this.heroReturnCooldownEndsAtMs = nowMs + HERO_RETURN_COOLDOWN_MS
         if (this.heroAssignedLane) {
@@ -1995,8 +2062,13 @@ export class RecoveryStageSystem {
           this.laneBattleState[this.heroAssignedLane].heroPresent = false
         }
         this.heroAssignedLane = null
-        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.04, 0.1, 1)
-        this.lastActionNote = 'hero return cooldown started'
+        this.previewOwnTowerHpRatio = clamp(
+          this.previewOwnTowerHpRatio + 0.04 + (activeLoadout?.heroRosterRole === 'support' ? 0.04 : 0),
+          0.1,
+          1,
+        )
+        this.lastActionNote = `hero return cooldown started (${activeLoadout?.heroRosterLabel ?? 'core squad'})`
+        }
         break
       case 'review-quest-rewards':
         this.panelOverride = 'system'
@@ -2080,19 +2152,46 @@ export class RecoveryStageSystem {
   }
 
   private tickPersistentPreview(): void {
-    this.previewManaRatio = clamp(this.previewManaRatio + MANA_RECOVERY_PER_BEAT, 0.06, 1)
+    const activeLoadout = this.activeDeployLoadout
+    const manaBonus =
+      activeLoadout?.towerPolicyKind === 'mana-first'
+        ? 0.01
+        : activeLoadout?.skillPresetKind === 'utility'
+          ? 0.006
+          : 0
+    const upgradeBonus =
+      activeLoadout?.towerPolicyKind === 'population-first'
+        ? 0.01
+        : activeLoadout?.heroRosterRole === 'support'
+          ? 0.004
+          : 0
+    this.previewManaRatio = clamp(this.previewManaRatio + MANA_RECOVERY_PER_BEAT + manaBonus, 0.06, 1)
     this.previewManaUpgradeProgressRatio = clamp(
-      this.previewManaUpgradeProgressRatio + UPGRADE_PROGRESS_RECOVERY_PER_BEAT,
+      this.previewManaUpgradeProgressRatio + UPGRADE_PROGRESS_RECOVERY_PER_BEAT + upgradeBonus,
       0.04,
       1,
     )
 
     if (this.heroOverrideMode === 'field') {
-      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.004, 0.08, 1)
+      this.previewEnemyTowerHpRatio = clamp(
+        this.previewEnemyTowerHpRatio
+        - 0.004
+        - (activeLoadout?.heroRosterRole === 'raider' ? 0.002 : activeLoadout?.heroRosterRole === 'vanguard' ? 0.001 : 0),
+        0.08,
+        1,
+      )
+    }
+
+    if (activeLoadout?.heroRosterRole === 'defender' || activeLoadout?.heroRosterRole === 'support') {
+      this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.002, 0.1, 1)
     }
 
     if (this.selectedDispatchLane && this.queuedUnitCount > 0 && this.previewManaRatio > 0.18) {
-      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.006, 0.08, 1)
+      this.previewEnemyTowerHpRatio = clamp(
+        this.previewEnemyTowerHpRatio - 0.006 - (activeLoadout?.skillPresetKind === 'orders' ? 0.002 : 0),
+        0.08,
+        1,
+      )
     }
 
     this.tickLaneBattlePreview()
@@ -2101,19 +2200,30 @@ export class RecoveryStageSystem {
   private applyTowerUpgrade(snapshot: RecoveryStageSnapshot): void {
     const gameplayState = snapshot.gameplayState
     const focusedUpgrade = snapshot.hudState.highlightedTowerUpgradeId
+    const towerPolicyKind = this.activeDeployLoadout?.towerPolicyKind ?? 'balanced'
     const upgradeId =
       focusedUpgrade
       ?? (gameplayState.primaryHint.includes('population')
         ? 'population'
         : gameplayState.primaryHint.includes('mana')
           ? 'mana'
-          : gameplayState.openPanel === 'tower' && this.towerUpgradeLevels.attack < this.towerUpgradeLevels.mana
-            ? 'attack'
-            : 'mana')
+          : towerPolicyKind === 'population-first'
+            ? (this.towerUpgradeLevels.population <= this.towerUpgradeLevels.mana ? 'population' : 'mana')
+            : towerPolicyKind === 'attack-first'
+              ? (this.towerUpgradeLevels.attack <= this.towerUpgradeLevels.population ? 'attack' : 'population')
+              : towerPolicyKind === 'mana-first'
+                ? (this.towerUpgradeLevels.mana <= this.towerUpgradeLevels.population ? 'mana' : 'population')
+                : gameplayState.openPanel === 'tower' && this.towerUpgradeLevels.attack < this.towerUpgradeLevels.mana
+                  ? 'attack'
+                  : 'mana')
     this.towerUpgradeLevels[upgradeId] = Math.min(this.towerUpgradeLevels[upgradeId] + 1, 5)
-    this.previewManaRatio = clamp(this.previewManaRatio - 0.22, 0.06, 1)
+    this.previewManaRatio = clamp(
+      this.previewManaRatio - 0.22 + (towerPolicyKind === 'mana-first' ? 0.06 : 0),
+      0.06,
+      1,
+    )
     this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio - 0.3, 0.04, 1)
-    this.lastActionNote = `${upgradeId} upgrade advanced to tier ${this.towerUpgradeLevels[upgradeId]}`
+    this.lastActionNote = `${upgradeId} upgrade advanced to tier ${this.towerUpgradeLevels[upgradeId]} (${this.activeDeployLoadout?.towerPolicyLabel ?? 'balanced towers'})`
   }
 
   private commitLaneDispatch(lane: 'upper' | 'lower'): void {
@@ -2352,6 +2462,7 @@ export class RecoveryStageSystem {
     const profile = this.deriveStageBattleProfile(storyboard)
     const favoredLane = profile.favoredLane ?? 'upper'
     const supportLane = favoredLane === 'upper' ? 'lower' : 'upper'
+    const defaultRoster = ['Vincent', 'Helba', 'Juno']
     const archetypes = (storyboard.stageBlueprint?.recommendedArchetypeIds ?? [])
       .map((archetypeId) => this.featuredArchetypesById.get(archetypeId))
       .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
@@ -2363,6 +2474,13 @@ export class RecoveryStageSystem {
         label: 'Balanced Vanguard',
         summary: `${favoredLane} lane stability with one queued unit and neutral tower stance`,
         recommended: archetypes.length === 0,
+        heroRosterLabel: 'Core Squad',
+        heroRosterRole: 'balanced',
+        heroRosterMembers: defaultRoster,
+        skillPresetLabel: 'Balanced Kit',
+        skillPresetKind: 'balanced',
+        towerPolicyLabel: 'Balanced Towers',
+        towerPolicyKind: 'balanced',
         heroStartMode: 'tower',
         heroLane: null,
         dispatchLane: favoredLane,
@@ -2384,17 +2502,40 @@ export class RecoveryStageSystem {
       let startingQueue = 1
       let startingManaRatio = 0.34
       let startingManaUpgradeProgressRatio = 0.16
+      let heroRosterLabel = 'Core Squad'
+      let heroRosterRole: RecoveryStageSnapshot['campaignState']['loadouts'][number]['heroRosterRole'] = 'balanced'
+      let heroRosterMembers = defaultRoster
+      let skillPresetLabel = 'Balanced Kit'
+      let skillPresetKind: RecoveryStageSnapshot['campaignState']['loadouts'][number]['skillPresetKind'] = 'balanced'
+      let towerPolicyLabel = 'Balanced Towers'
+      let towerPolicyKind: RecoveryStageSnapshot['campaignState']['loadouts'][number]['towerPolicyKind'] = 'balanced'
       const summaryParts: string[] = []
 
       if (signals.has('dispatch')) {
         startingQueue += 2
         dispatchLane = favoredLane
+        heroRosterLabel = 'Forward Vanguard'
+        heroRosterRole = 'vanguard'
+        heroRosterMembers = ['Vincent', 'Rogan']
+        skillPresetLabel = 'Lane Orders'
+        skillPresetKind = 'orders'
+        towerPolicyLabel = 'Population First'
+        towerPolicyKind = 'population-first'
         summaryParts.push(`${favoredLane} lane opening push`)
       }
       if (signals.has('tower-defense')) {
         towerUpgrades.attack = 2
         towerUpgrades.population = 2
         openingPanel = 'tower'
+        heroRosterLabel = 'Ward Defenders'
+        heroRosterRole = 'defender'
+        heroRosterMembers = ['Helba', 'Caesar']
+        if (skillPresetKind === 'balanced') {
+          skillPresetLabel = 'Guard Pulse'
+          skillPresetKind = 'support'
+        }
+        towerPolicyLabel = 'Attack First'
+        towerPolicyKind = 'attack-first'
         summaryParts.push('reinforced tower line')
       }
       if (signals.has('mana-surge')) {
@@ -2404,22 +2545,43 @@ export class RecoveryStageSystem {
         if (!openingPanel) {
           openingPanel = 'tower'
         }
+        if (skillPresetKind === 'balanced') {
+          skillPresetLabel = 'Arcane Flux'
+          skillPresetKind = 'utility'
+        }
+        towerPolicyLabel = 'Mana First'
+        towerPolicyKind = 'mana-first'
         summaryParts.push('high mana opening')
       }
       if (signals.has('armageddon')) {
         startingManaRatio += 0.18
         openingPanel = 'skill'
+        heroRosterLabel = 'Arcane Strike Team'
+        heroRosterRole = 'raider'
+        heroRosterMembers = ['Juno', 'Manos']
+        skillPresetLabel = 'Burst Window'
+        skillPresetKind = 'burst'
         summaryParts.push('skill burst primed')
       }
       if (signals.has('recall')) {
         heroStartMode = 'field'
         heroLane = supportLane
         dispatchLane = supportLane
+        heroRosterLabel = 'Recovery Wing'
+        heroRosterRole = 'support'
+        heroRosterMembers = ['Helba', 'Juno']
+        if (skillPresetKind === 'balanced') {
+          skillPresetLabel = 'Support Recall'
+          skillPresetKind = 'support'
+        }
         summaryParts.push(`${supportLane} lane hero anchor`)
       }
       if (signals.has('healing')) {
         towerUpgrades.population = Math.max(towerUpgrades.population, 2)
         startingManaUpgradeProgressRatio += 0.08
+        if (towerPolicyKind === 'balanced') {
+          towerPolicyLabel = 'Balanced Sustain'
+        }
         summaryParts.push('healing buffer')
       }
       if (summaryParts.length === 0) {
@@ -2432,6 +2594,13 @@ export class RecoveryStageSystem {
         label: archetype.label,
         summary: summaryParts.join(' / '),
         recommended: true,
+        heroRosterLabel,
+        heroRosterRole,
+        heroRosterMembers,
+        skillPresetLabel,
+        skillPresetKind,
+        towerPolicyLabel,
+        towerPolicyKind,
         heroStartMode,
         heroLane,
         dispatchLane,
@@ -2460,6 +2629,7 @@ export class RecoveryStageSystem {
   private applyDeployLoadout(
     loadout: RecoveryStageSnapshot['campaignState']['loadouts'][number],
   ): void {
+    this.activeDeployLoadout = loadout
     this.panelOverride = loadout.openingPanel
     this.selectedDispatchLane = loadout.dispatchLane
     this.queuedUnitCount = loadout.startingQueue
@@ -2472,6 +2642,14 @@ export class RecoveryStageSystem {
     this.towerUpgradeLevels.mana = loadout.towerUpgrades.mana
     this.towerUpgradeLevels.population = loadout.towerUpgrades.population
     this.towerUpgradeLevels.attack = loadout.towerUpgrades.attack
+
+    if (loadout.towerPolicyKind === 'mana-first') {
+      this.previewManaRatio = clamp(this.previewManaRatio + 0.08, 0.06, 1)
+    } else if (loadout.towerPolicyKind === 'population-first') {
+      this.previewManaUpgradeProgressRatio = clamp(this.previewManaUpgradeProgressRatio + 0.1, 0.04, 1)
+    } else if (loadout.towerPolicyKind === 'attack-first') {
+      this.previewEnemyTowerHpRatio = clamp(this.previewEnemyTowerHpRatio - 0.03, 0.08, 1)
+    }
 
     if (loadout.dispatchLane) {
       this.laneBattleState[loadout.dispatchLane].alliedUnits = Math.min(
@@ -2500,10 +2678,16 @@ export class RecoveryStageSystem {
       this.heroAssignedLane = loadout.heroLane ?? loadout.dispatchLane ?? (this.currentStageBattleProfile.favoredLane ?? 'upper')
       this.laneBattleState[this.heroAssignedLane].heroPresent = true
       this.previewEnemyTowerHpRatio = clamp(
-        this.previewEnemyTowerHpRatio - 0.05 - this.currentStageBattleProfile.heroImpact * 0.08,
+        this.previewEnemyTowerHpRatio
+        - 0.05
+        - this.currentStageBattleProfile.heroImpact * 0.08
+        - (loadout.heroRosterRole === 'raider' ? 0.03 : loadout.heroRosterRole === 'vanguard' ? 0.02 : 0),
         0.08,
         1,
       )
+      if (loadout.heroRosterRole === 'support' || loadout.heroRosterRole === 'defender') {
+        this.previewOwnTowerHpRatio = clamp(this.previewOwnTowerHpRatio + 0.05, 0.1, 1)
+      }
     } else {
       this.heroOverrideMode = null
       this.heroAssignedLane = null
