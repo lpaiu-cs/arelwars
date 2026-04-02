@@ -111,18 +111,18 @@ python3 tools/arel_wars1/scan_aw1_inline_map_pointer.py \
   --map-binding recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json \
   --output recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json
 
-python3 tools/arel_wars1/export_aw1_stage_map_proofs.py \
+python3 tools/arel_wars1/export_aw1_stage_bindings.py \
   --stage-progression recovery/arel_wars1/parsed_tables/AW1.stage_progression.json \
   --map-binding recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json \
   --inline-pointer-scan recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json \
-  --output recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json
+  --output recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json
 
 python3 tools/arel_wars1/export_aw1_runtime_blueprint.py \
   --parsed-dir recovery/arel_wars1/parsed_tables \
   --binary-report recovery/arel_wars1/binary_asset_report.json \
   --script-root recovery/arel_wars1/decoded/zt1/assets/script_eng \
   --opcode-map recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json \
-  --stage-map-proofs recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json \
+  --stage-bindings recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json \
   --output recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json \
   --web-output remake/arel-wars1/public/recovery/analysis/aw1_runtime_blueprint.json
 
@@ -154,7 +154,7 @@ npm run ios:sync
   Local build is blocked until full Xcode is installed and selected.
   Current failure: `xcode-select: error: tool 'xcodebuild' requires Xcode`
 - Web Runtime
-  `sync:recovery` now exports `preview_manifest.json`, `AW1.opcode_action_map.json`, `AW1.inline_map_pointer_scan.json`, `AW1.stage_map_proofs.json`, and `aw1_runtime_blueprint.json` into the recovery tree, with `aw1_runtime_blueprint.json` copied into `remake/arel-wars1/public/recovery/analysis/`.
+  `sync:recovery` now exports `preview_manifest.json`, `AW1.opcode_action_map.json`, `AW1.inline_map_pointer_scan.json`, `AW1.stage_bindings.json`, and `aw1_runtime_blueprint.json` into the recovery tree, with `aw1_runtime_blueprint.json` copied into `remake/arel-wars1/public/recovery/analysis/`.
   The Vite runtime reads those files to render:
   - a Phaser-side recovered stage scene driven by a shared playback system instead of a passive strip carousel
   - stage blueprints with scored map proofs, opcode action summaries, and hero archetype channel pulses
@@ -169,7 +169,7 @@ npm run ios:sync
 4. `PTC` is no longer opaque. AW1 `assets/ptc/*.ptc` files parse as compact 25-26 word parameter blocks with stable angle, Q16 ratio, signed delta, and timing field groups.
 5. The runtime no longer consumes only raw preview strips. It now also consumes an integrated [`AW1.runtime_blueprint.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json) layer that merges:
    - `script family -> stage blueprint`
-   - scored `variant/storyFlag -> map pair` proof candidates from [`AW1.stage_map_proofs.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json)
+   - hard `script family / XlsAi / map bin` bindings from [`AW1.stage_bindings.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json)
    - inline `XlsAi.numericBlock byte[15]/byte[18]` map-pointer signals from [`AW1.inline_map_pointer_scan.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json)
    - `cmd-XX` opcode cue summaries from [`AW1.opcode_action_map.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json)
    - hero runtime archetypes such as `Dispatch`, `Tower Defense`, `Natural Healing`, `Recall`, `Mana Wall`, `Armageddon`, and `Mana Gain`

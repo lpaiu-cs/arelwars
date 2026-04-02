@@ -4844,8 +4844,8 @@ export class RecoveryStageSystem {
     const favoredLane =
       routeInfluence.preferredLane
       ?? routeBias.preferredLane
-      ?? (mapBinding?.inlinePairBranchIndexCandidate !== null && mapBinding?.inlinePairBranchIndexCandidate !== undefined
-        ? (mapBinding.inlinePairBranchIndexCandidate % 2 === 0 ? 'upper' : 'lower')
+      ?? (mapBinding?.inlinePairBranchIndex !== null && mapBinding?.inlinePairBranchIndex !== undefined
+        ? (mapBinding.inlinePairBranchIndex % 2 === 0 ? 'upper' : 'lower')
         : ((runtimeFields?.variantCandidate ?? 1) % 2 === 0 ? 'lower' : 'upper'))
     const alliedPressureScale = clamp(
       0.18

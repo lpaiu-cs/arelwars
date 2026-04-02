@@ -144,13 +144,13 @@ export interface RecoveryStageRuntimeFields {
 export interface RecoveryStageMapBinding {
   templateGroupId: number
   mapPairIndices: number[]
-  preferredMapIndexHeuristic: number | null
-  inlinePairBaseIndexCandidate: number | null
-  inlinePairBranchIndexCandidate: number | null
-  inlinePreferredMapIndexCandidate: number | null
-  confidence: string
-  proofScore: number
-  proofType: string
+  preferredMapIndex: number | null
+  inlinePairBaseIndex: number | null
+  inlinePairBranchIndex: number | null
+  bindingType: string
+  bindingConfirmed: boolean
+  scriptBindingType: string
+  mapBindingType: string
   storyBranch: string
   pairGeometrySignature: string
   evidenceSummary: string[]
@@ -184,7 +184,8 @@ export interface RecoveryResolvedOpcodeCue {
 
 export interface RecoveryStageBlueprint {
   familyId: string
-  aiIndexCandidate: number | null
+  aiIndex: number | null
+  scriptBindingType: string | null
   title: string | null
   rewardText: string | null
   hintText: string | null
@@ -225,7 +226,7 @@ export interface RecoveryRuntimeBlueprint {
     archetypeCount: number
     featuredArchetypeCount: number
     opcodeHeuristicCount: number
-    stageMapProofCount: number
+    stageMapBindingCount: number
     tutorialChainCount: number
     tutorialFamilyCueCount: number
   }

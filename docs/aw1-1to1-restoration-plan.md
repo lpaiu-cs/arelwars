@@ -134,7 +134,7 @@ References:
     - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
     - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
     - [AW1.inline_map_pointer_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.inline_map_pointer_scan.json)
-    - [AW1.stage_map_proofs.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json)
+    - [AW1.stage_bindings.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json)
     - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
     - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
     - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
@@ -214,8 +214,8 @@ References:
     - result resolution no longer keys off lane-pressure momentum thresholds; it now reads actual wave-dispatch exhaustion, on-field entity/projectile clearance, secured lane counts, queue/mana exhaustion, and tower collapse state before declaring victory or defeat
     - route/branch selection is now elevated into a shared route-bias layer, so briefing text, tactical bias, favored lane, wave plan cadence, deploy summaries, and member-specific behavior all react to `primary` vs `secondary` route semantics instead of treating branch labels as cosmetic
     - `AW1.inline_map_pointer_scan.json` now shows that `XlsAi.numericBlock byte[15]` and `byte[18]` reproduce the current pair-base and pair-branch selection with exact `111/111` coverage
-    - `AW1.stage_map_proofs.json` now gives each stage a scored map-binding proof candidate and upgrades the proof type to `inline-ai-pointer-derived`
-    - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, scored map proofs, archetypes, and render cues into one runtime-facing manifest
+    - `AW1.stage_bindings.json` now fixes every current script-backed stage as `hard-script-ai-inline-map`, with exact `script family == XlsAi row index` binding and exact `preferredMapIndex = pairBase + pairBranch`
+    - `AW1.runtime_blueprint.json` now joins stage blueprints, opcode heuristics, hard stage bindings, archetypes, and render cues into one runtime-facing manifest
 
 ### Phase 4. Build Deterministic Runtime Systems
 
@@ -248,10 +248,7 @@ References:
    - representative script samples
 2. Keep promoting `cmd-XX` groups from mnemonic-wide hints to proven engine actions as binary grammar evidence improves.
 3. Trace candidate battle/state source files and define a first canonical schema.
-4. Replace the current scored `stage_map_proofs` layer with the first hard pointer that links:
-   - `script family / XlsAi row`
-   - `tierCandidate / variantCandidate / regionCandidate`
-   - concrete `assets/map/*.zt1` payload selection
+4. Use the hard `AW1.stage_bindings.json` layer as the campaign/runtime source of truth and keep tightening the original semantic names around that exact binding path.
 5. Continue promoting compact battle tables into runtime-ready schemas:
    - hero AI
    - item/active-skill AI

@@ -20,7 +20,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--binary-report", type=Path, required=True, help="Path to recovery/arel_wars1/binary_asset_report.json")
     parser.add_argument("--script-root", type=Path, required=True, help="Path to recovery/arel_wars1/decoded/zt1/assets/script_eng")
     parser.add_argument("--opcode-map", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.opcode_action_map.json")
-    parser.add_argument("--stage-map-proofs", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.stage_map_proofs.json")
+    parser.add_argument("--stage-bindings", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.stage_bindings.json")
     parser.add_argument("--tutorial-chains", type=Path, required=True, help="Path to recovery/arel_wars1/parsed_tables/AW1.tutorial_opcode_chains.json")
     parser.add_argument("--output", type=Path, required=True, help="Path to write the local blueprint json")
     parser.add_argument("--web-output", type=Path, help="Optional path under public/ to copy the same json")
@@ -163,35 +163,35 @@ def summarize_family_opcodes(
     return cues
 
 
-def build_stage_map_binding(proof: dict[str, Any] | None) -> dict[str, Any] | None:
-    if proof is None:
+def build_stage_map_binding(binding: dict[str, Any] | None) -> dict[str, Any] | None:
+    if binding is None:
         return None
     return {
-        "templateGroupId": int(proof.get("templateGroupId", -1)),
-        "mapPairIndices": list(proof.get("candidateMapBinPair", [])),
-        "preferredMapIndexHeuristic": proof.get("preferredMapIndex"),
-        "inlinePairBaseIndexCandidate": proof.get("inlinePairBaseIndexCandidate"),
-        "inlinePairBranchIndexCandidate": proof.get("inlinePairBranchIndexCandidate"),
-        "inlinePreferredMapIndexCandidate": proof.get("inlinePreferredMapIndexCandidate"),
-        "confidence": str(proof.get("confidence", "weak-heuristic")),
-        "proofScore": float(proof.get("proofScore", 0.0)),
-        "proofType": str(proof.get("proofType", "variant-template-plus-story-branch")),
-        "storyBranch": str(proof.get("storyBranch", "primary")),
-        "pairGeometrySignature": str(proof.get("pairGeometrySignature", "missing")),
-        "evidenceSummary": list(proof.get("evidenceSummary", []))[:4],
+        "templateGroupId": int(binding.get("templateGroupId", -1)),
+        "mapPairIndices": list(binding.get("mapPairIndices", [])),
+        "preferredMapIndex": binding.get("preferredMapIndex"),
+        "inlinePairBaseIndex": binding.get("inlinePairBaseIndex"),
+        "inlinePairBranchIndex": binding.get("inlinePairBranchIndex"),
+        "bindingType": str(binding.get("bindingType", "hard-script-ai-inline-map")),
+        "bindingConfirmed": bool(binding.get("bindingConfirmed", False)),
+        "scriptBindingType": str(binding.get("scriptBindingType", "family-id-exact-row-index")),
+        "mapBindingType": str(binding.get("mapBindingType", "xlsai-inline-byte-pointer")),
+        "storyBranch": str(binding.get("storyBranch", "primary")),
+        "pairGeometrySignature": str(binding.get("pairGeometrySignature", "missing")),
+        "evidenceSummary": list(binding.get("evidenceSummary", []))[:4],
     }
 
 
 def build_stage_blueprints(
     stage_progression: dict[str, Any],
-    stage_map_proofs: dict[str, Any],
+    stage_bindings: dict[str, Any],
     tutorial_chains: dict[str, Any],
     archetypes_by_id: dict[str, dict[str, Any]],
     opcode_actions_by_mnemonic: dict[str, dict[str, Any]],
     script_root: Path,
 ) -> list[dict[str, Any]]:
-    proofs_by_family = {
-        str(item["familyId"]): item for item in stage_map_proofs.get("stageProofs", []) if isinstance(item, dict)
+    bindings_by_family = {
+        str(item["familyId"]): item for item in stage_bindings.get("stageBindings", []) if isinstance(item, dict)
     }
     tutorial_chains_by_family = {
         str(item["familyId"]): item for item in tutorial_chains.get("familyHits", []) if isinstance(item, dict)
@@ -202,9 +202,9 @@ def build_stage_blueprints(
         if not isinstance(family, dict):
             continue
         runtime_fields = family.get("runtimeFieldCandidates") if isinstance(family, dict) else None
-        proof = proofs_by_family.get(str(family["familyId"]))
+        binding = bindings_by_family.get(str(family["familyId"]))
         tutorial_family_hit = tutorial_chains_by_family.get(str(family["familyId"]))
-        map_binding_candidate = build_stage_map_binding(proof)
+        map_binding_candidate = build_stage_map_binding(binding)
         opcode_cues = summarize_family_opcodes(script_root, family, opcode_actions_by_mnemonic)
         tutorial_chain_cues = []
         if isinstance(tutorial_family_hit, dict):
@@ -240,7 +240,8 @@ def build_stage_blueprints(
         stage_blueprints.append(
             {
                 "familyId": family["familyId"],
-                "aiIndexCandidate": family.get("aiIndexCandidate"),
+                "aiIndex": family.get("aiIndexCandidate"),
+                "scriptBindingType": binding.get("scriptBindingType") if isinstance(binding, dict) else None,
                 "title": family.get("aiTitleCandidate"),
                 "rewardText": family.get("aiRewardCandidate"),
                 "hintText": family.get("aiHintCandidate"),
@@ -306,7 +307,7 @@ def main() -> None:
     effect_runtime = read_json(parsed_dir / "AW1.effect_runtime_links.json")
     binary_report = read_json(args.binary_report.resolve())
     opcode_map = read_json(args.opcode_map.resolve())
-    stage_map_proofs = read_json(args.stage_map_proofs.resolve())
+    stage_bindings = read_json(args.stage_bindings.resolve())
     tutorial_chains = read_json(args.tutorial_chains.resolve())
 
     archetypes = archetype_report.get("archetypes", [])
@@ -317,7 +318,7 @@ def main() -> None:
     }
     stage_blueprints = build_stage_blueprints(
         stage_progression,
-        stage_map_proofs,
+        stage_bindings,
         tutorial_chains,
         archetypes_by_id,
         opcode_actions_by_mnemonic,
@@ -341,15 +342,15 @@ def main() -> None:
         "archetypeCount": len(archetypes),
         "featuredArchetypeCount": len(featured_archetypes),
         "opcodeHeuristicCount": len(heuristics),
-        "stageMapProofCount": int(stage_map_proofs.get("summary", {}).get("stageProofCount", 0)),
+        "stageMapBindingCount": int(stage_bindings.get("summary", {}).get("stageBindingCount", 0)),
         "tutorialChainCount": int(tutorial_chains.get("summary", {}).get("matchedChainCount", 0)),
         "tutorialFamilyCueCount": int(tutorial_chains.get("summary", {}).get("familyHitCount", 0)),
     }
     findings = [
-        "Stage blueprints now consume an explicit stage-map proof layer instead of baking the map-pair heuristic directly into the exporter.",
+        "Stage blueprints now consume a hard script-family/XlsAi/map-bin binding layer instead of a scored map-pair heuristic.",
         "Opcode heuristics now come from AW1.opcode_action_map.json, which separates mnemonic-wide labels from variant-level action hints.",
         "Tutorial UI proofs now come from AW1.tutorial_opcode_chains.json, which records exact raw-prefix needles mirrored across the tutorial scripts.",
-        "The runtime still uses heuristic stage-map bindings, but proof scores and evidence summaries are now exported alongside the preferred map index.",
+        "The runtime now reads exact script-family/XlsAi/map-bin bindings with full current script-backed coverage.",
     ]
 
     blueprint = {
