@@ -291,6 +291,10 @@ export class RecoveryStageSystem {
 
   private campaignLastOutcome: 'victory' | 'defeat' | null = null
 
+  private campaignPreferredRouteLabel: string | null = null
+
+  private campaignRouteCommitment = 0
+
   private activeDeployLoadout: RecoveryStageSnapshot['campaignState']['loadouts'][number] | null = null
 
   private lastActionId: RecoveryGameplayActionId | null = null
@@ -315,6 +319,8 @@ export class RecoveryStageSystem {
     })
     this.storyboards = buildStoryboards(catalog, previewManifest, runtimeBlueprint)
     if (this.storyboards.length > 0) {
+      this.campaignPreferredRouteLabel = this.deriveStoryboardRouteBias(this.storyboards[0]).routeLabel
+      this.campaignRouteCommitment = 1
       this.seedBattlePreviewState(this.storyboards[0])
       const initialLoadout = this.resolveSelectedDeployLoadout(this.storyboards[0])
       if (initialLoadout) {
@@ -685,6 +691,7 @@ export class RecoveryStageSystem {
   private buildCampaignState(currentStoryboard: RecoveryStageStoryboard): RecoveryStageSnapshot['campaignState'] {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     const recommendation = this.deriveCampaignRecommendation(currentStoryboard)
+    const routeGoal = this.deriveCampaignRouteGoal(currentStoryboard)
     const selectedNodeIndex = clamp(this.campaignSelectedNodeIndex, 0, unlockedCount - 1)
     const selectedStoryboard = this.storyboards[selectedNodeIndex] ?? currentStoryboard
     const loadouts = this.buildDeployLoadouts(selectedStoryboard)
@@ -692,11 +699,12 @@ export class RecoveryStageSystem {
     const selectedLoadout = loadouts[selectedLoadoutIndex] ?? loadouts[0]
     const selectedBriefing = this.buildCampaignBriefing(selectedStoryboard)
     const activeStageTitle = currentStoryboard.stageBlueprint?.title ?? currentStoryboard.scriptPath
-    const nextUnlock = this.campaignUnlockedStageCount < this.storyboards.length
-      ? this.storyboards[this.campaignUnlockedStageCount]?.stageBlueprint?.title
-        ?? this.storyboards[this.campaignUnlockedStageCount]?.scriptPath
-        ?? null
+    const nextUnlockStoryboard = this.campaignUnlockedStageCount < this.storyboards.length
+      ? this.storyboards[this.campaignUnlockedStageCount] ?? null
       : null
+    const nextUnlock = nextUnlockStoryboard?.stageBlueprint?.title
+      ?? nextUnlockStoryboard?.scriptPath
+      ?? null
     const recommendedNodeIndex = clamp(recommendation.nodeIndex, 0, unlockedCount - 1)
     const selectionMode = this.campaignScenePhase === 'result-hold'
       ? 'result-route-selection'
@@ -729,6 +737,7 @@ export class RecoveryStageSystem {
       selectionLaunchable: this.battlePaused || this.campaignScenePhase !== 'battle',
       autoAdvanceInMs,
       nextUnlockLabel: nextUnlock,
+      nextUnlockRouteLabel: nextUnlockStoryboard?.stageBlueprint?.mapBinding?.storyBranch ?? null,
       lastResolvedStageTitle: this.campaignLastResolvedStageTitle,
       lastOutcome: this.campaignLastOutcome,
       selectedStageTitle: selectedStoryboard.stageBlueprint?.title ?? selectedStoryboard.scriptPath,
@@ -737,9 +746,15 @@ export class RecoveryStageSystem {
       selectedRewardText: selectedStoryboard.stageBlueprint?.rewardText ?? null,
       selectedLoadoutLabel: selectedLoadout?.label ?? 'Balanced Vanguard',
       activeLoadoutLabel: this.activeDeployLoadout?.label ?? null,
+      preferredRouteLabel: this.campaignPreferredRouteLabel,
+      routeCommitment: this.campaignRouteCommitment,
       recommendedRouteLabel: recommendation.routeLabel,
       recommendedLoadoutLabel: recommendation.loadoutLabel,
       recommendedReason: recommendation.reason,
+      routeGoalNodeIndex: routeGoal.nodeIndex === null ? null : routeGoal.nodeIndex + 1,
+      routeGoalLabel: routeGoal.label,
+      routeGoalRouteLabel: routeGoal.routeLabel,
+      routeGoalReason: routeGoal.reason,
       briefing: selectedBriefing,
       loadouts,
       nodes: this.storyboards.map((storyboard, index) => ({
@@ -747,6 +762,9 @@ export class RecoveryStageSystem {
         label: storyboard.stageBlueprint?.title ?? storyboard.scriptPath.replace('assets/', ''),
         familyId: storyboard.scriptFamilyId,
         routeLabel: storyboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
+        preferredRoute:
+          this.campaignPreferredRouteLabel !== null
+          && (storyboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown') === this.campaignPreferredRouteLabel,
         unlocked: index < unlockedCount,
         cleared: this.campaignClearedStoryboardIds.has(storyboard.id),
         active: index === this.storyboardIndex,
@@ -1443,6 +1461,35 @@ export class RecoveryStageSystem {
     return score
   }
 
+  private updateCampaignRouteCommitment(
+    storyboard: RecoveryStageStoryboard | null,
+    outcome: 'victory' | 'defeat',
+  ): void {
+    if (!storyboard) {
+      return
+    }
+    const routeLabel = this.deriveStoryboardRouteBias(storyboard).routeLabel
+    if (!routeLabel) {
+      return
+    }
+    if (outcome === 'victory') {
+      if (this.campaignPreferredRouteLabel === routeLabel) {
+        this.campaignRouteCommitment = clamp(this.campaignRouteCommitment + 1, 1, 5)
+      } else {
+        this.campaignPreferredRouteLabel = routeLabel
+        this.campaignRouteCommitment = Math.max(2, this.campaignRouteCommitment)
+      }
+      return
+    }
+
+    if (this.campaignPreferredRouteLabel === routeLabel) {
+      this.campaignRouteCommitment = Math.max(this.campaignRouteCommitment - 1, 0)
+      if (this.campaignRouteCommitment === 0) {
+        this.campaignPreferredRouteLabel = null
+      }
+    }
+  }
+
   private deriveRecommendedLoadoutIndexForStoryboard(
     storyboard: RecoveryStageStoryboard,
   ): {
@@ -1481,6 +1528,7 @@ export class RecoveryStageSystem {
   } {
     const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
     const currentRouteBias = this.deriveStoryboardRouteBias(currentStoryboard)
+    const preferredRouteLabel = this.campaignPreferredRouteLabel ?? currentRouteBias.routeLabel
     let bestIndex = clamp(
       this.campaignLastOutcome === 'victory' ? this.storyboardIndex + 1 : this.storyboardIndex,
       0,
@@ -1501,6 +1549,11 @@ export class RecoveryStageSystem {
       score += Math.max(0, 0.14 - Math.abs(index - this.storyboardIndex) * 0.04)
       if (candidateRouteBias.routeLabel === currentRouteBias.routeLabel) {
         score += 0.12
+      }
+      if (candidateRouteBias.routeLabel === preferredRouteLabel) {
+        score += 0.08 + this.campaignRouteCommitment * 0.04
+      } else if (preferredRouteLabel !== null && this.campaignRouteCommitment >= 2) {
+        score -= Math.min(this.campaignRouteCommitment * 0.03, 0.12)
       }
       if (candidateRouteBias.flankingRoute && currentRouteBias.flankingRoute) {
         score += 0.14
@@ -1530,6 +1583,10 @@ export class RecoveryStageSystem {
         }
       }
 
+      if (preferredRouteLabel !== null && candidateRouteBias.routeLabel === preferredRouteLabel && index >= this.storyboardIndex) {
+        score += 0.06
+      }
+
       if (score > bestScore) {
         bestScore = score
         bestIndex = index
@@ -1539,22 +1596,105 @@ export class RecoveryStageSystem {
     const recommendedStoryboard = this.storyboards[bestIndex] ?? currentStoryboard
     const recommendedRouteBias = this.deriveStoryboardRouteBias(recommendedStoryboard)
     const recommendedLoadout = this.deriveRecommendedLoadoutIndexForStoryboard(recommendedStoryboard)
-    const reason =
+    const routeReason =
       recommendedRouteBias.flankingRoute
         ? 'route-flank-dispatch'
         : recommendedRouteBias.directRoute
           ? 'route-main-siege'
           : recommendedRouteBias.sustainRoute
             ? 'route-hold-defense'
-            : recommendedRouteBias.manaRoute
+          : recommendedRouteBias.manaRoute
               ? 'route-mana-cycle'
               : 'route-continuity'
+    const commitmentReason =
+      preferredRouteLabel !== null && recommendedRouteBias.routeLabel === preferredRouteLabel
+        ? `branch-lock-${preferredRouteLabel}`
+        : `branch-shift-${recommendedRouteBias.routeLabel ?? 'route-unknown'}`
 
     return {
       nodeIndex: bestIndex,
       routeLabel: recommendedRouteBias.routeLabel,
       loadoutIndex: recommendedLoadout.loadoutIndex,
       loadoutLabel: recommendedLoadout.loadoutLabel,
+      reason: this.campaignRouteCommitment > 1 ? `${commitmentReason}/${routeReason}` : routeReason,
+    }
+  }
+
+  private deriveCampaignRouteGoal(
+    currentStoryboard: RecoveryStageStoryboard,
+  ): {
+    nodeIndex: number | null
+    label: string | null
+    routeLabel: string | null
+    reason: string | null
+  } {
+    const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+    if (unlockedCount >= this.storyboards.length) {
+      return {
+        nodeIndex: null,
+        label: null,
+        routeLabel: null,
+        reason: null,
+      }
+    }
+
+    const currentRouteBias = this.deriveStoryboardRouteBias(currentStoryboard)
+    const preferredRouteLabel = this.campaignPreferredRouteLabel ?? currentRouteBias.routeLabel
+    let bestIndex: number | null = null
+    let bestScore = Number.NEGATIVE_INFINITY
+
+    for (let index = unlockedCount; index < this.storyboards.length; index += 1) {
+      const candidate = this.storyboards[index]
+      if (!candidate) {
+        continue
+      }
+      const candidateRouteBias = this.deriveStoryboardRouteBias(candidate)
+      let score = Math.max(0, 0.22 - (index - unlockedCount) * 0.03)
+      if (preferredRouteLabel !== null && candidateRouteBias.routeLabel === preferredRouteLabel) {
+        score += 0.38 + this.campaignRouteCommitment * 0.04
+      }
+      if (candidateRouteBias.routeLabel === currentRouteBias.routeLabel) {
+        score += 0.16
+      }
+      if (candidateRouteBias.flankingRoute && currentRouteBias.flankingRoute) {
+        score += 0.1
+      }
+      if (candidateRouteBias.directRoute && currentRouteBias.directRoute) {
+        score += 0.1
+      }
+      if (candidateRouteBias.sustainRoute && currentRouteBias.sustainRoute) {
+        score += 0.08
+      }
+      if (candidateRouteBias.manaRoute && currentRouteBias.manaRoute) {
+        score += 0.08
+      }
+
+      if (score > bestScore) {
+        bestScore = score
+        bestIndex = index
+      }
+    }
+
+    if (bestIndex === null) {
+      return {
+        nodeIndex: null,
+        label: null,
+        routeLabel: null,
+        reason: null,
+      }
+    }
+
+    const target = this.storyboards[bestIndex] ?? null
+    const targetRouteLabel = target?.stageBlueprint?.mapBinding?.storyBranch ?? null
+    const reason = bestIndex === unlockedCount
+      ? 'next-unlock-aligned'
+      : targetRouteLabel === preferredRouteLabel
+        ? 'branch-hold-for-future'
+        : 'future-route-fallback'
+    return {
+      nodeIndex: bestIndex,
+      label: target?.stageBlueprint?.title ?? target?.scriptPath ?? null,
+      routeLabel: targetRouteLabel,
       reason,
     }
   }
@@ -2030,14 +2170,25 @@ export class RecoveryStageSystem {
         this.storyboards.length,
       )
     }
-    if (outcome === 'victory') {
+    this.updateCampaignRouteCommitment(currentStoryboard ?? null, outcome)
+    const recommendation = currentStoryboard ? this.deriveCampaignRecommendation(currentStoryboard) : null
+    if (recommendation) {
+      this.campaignSelectedNodeIndex = clamp(
+        recommendation.nodeIndex,
+        0,
+        Math.max(this.campaignUnlockedStageCount, 1) - 1,
+      )
+      this.campaignSelectedLoadoutIndex = recommendation.loadoutIndex
+    } else if (outcome === 'victory') {
       this.campaignSelectedNodeIndex = clamp(
         Math.min(this.storyboardIndex + 1, Math.max(this.campaignUnlockedStageCount, 1) - 1),
         0,
         Math.max(this.campaignUnlockedStageCount, 1) - 1,
       )
+      this.campaignSelectedLoadoutIndex = 0
     } else {
       this.campaignSelectedNodeIndex = this.storyboardIndex
+      this.campaignSelectedLoadoutIndex = 0
     }
     if (outcome === 'victory') {
       this.currentObjectivePhase = 'quest-resolution'

@@ -526,6 +526,7 @@ export interface RecoveryCampaignNodeState {
   label: string
   familyId: string
   routeLabel: string
+  preferredRoute: boolean
   unlocked: boolean
   cleared: boolean
   active: boolean
@@ -585,6 +586,7 @@ export interface RecoveryCampaignState {
   selectionLaunchable: boolean
   autoAdvanceInMs: number | null
   nextUnlockLabel: string | null
+  nextUnlockRouteLabel: string | null
   lastResolvedStageTitle: string | null
   lastOutcome: 'victory' | 'defeat' | null
   selectedStageTitle: string
@@ -593,9 +595,15 @@ export interface RecoveryCampaignState {
   selectedRewardText: string | null
   selectedLoadoutLabel: string
   activeLoadoutLabel: string | null
+  preferredRouteLabel: string | null
+  routeCommitment: number
   recommendedRouteLabel: string | null
   recommendedLoadoutLabel: string | null
   recommendedReason: string | null
+  routeGoalNodeIndex: number | null
+  routeGoalLabel: string | null
+  routeGoalRouteLabel: string | null
+  routeGoalReason: string | null
   briefing: RecoveryCampaignBriefing
   loadouts: RecoveryCampaignLoadout[]
   nodes: RecoveryCampaignNodeState[]

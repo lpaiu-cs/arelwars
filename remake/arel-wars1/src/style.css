@@ -423,6 +423,10 @@ h2 {
   background: rgba(17, 24, 28, 0.8);
 }
 
+.campaign-node-preferred-route {
+  box-shadow: inset 0 0 0 1px rgba(92, 170, 214, 0.22);
+}
+
 .campaign-node-cleared {
   border-color: rgba(118, 201, 137, 0.34);
   color: rgba(203, 236, 213, 0.82);
