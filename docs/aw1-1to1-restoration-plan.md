@@ -32,6 +32,8 @@ References:
 - [arel_wars1-recovery.md](/Users/lpaiu/vs/others/arelwars/docs/arel_wars1-recovery.md)
 - [arel_wars_shared-reverse-engineering-notes.md](/Users/lpaiu/vs/others/arelwars/docs/arel_wars_shared-reverse-engineering-notes.md)
 - [aw1-native-branch-alignment.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-native-branch-alignment.md)
+- [aw1-disassemble-branch-review.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-disassemble-branch-review.md)
+- [aw1-original-equivalence-certification-plan.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-original-equivalence-certification-plan.md)
 - [aw1-script-opcode-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-script-opcode-notes.md)
 - [aw1-gxl-table-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-gxl-table-notes.md)
 - [aw1-stage-progression-notes.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-stage-progression-notes.md)

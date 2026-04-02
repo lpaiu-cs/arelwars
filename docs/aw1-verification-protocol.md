@@ -2,6 +2,8 @@
 
 This document defines how to compare the reconstructed AW1 runtime against the legacy `arel_wars_1.apk`.
 
+For the stricter original-equivalence transition plan, see [aw1-original-equivalence-certification-plan.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-original-equivalence-certification-plan.md).
+
 ## Goal
 
 Produce stage-by-stage evidence that the remake matches the original in:
@@ -112,3 +114,4 @@ python3 /Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_golden_captu
 - Tempo, wave density, battle metrics, and command overlap are checked against the replay golden suite so the regression path stays reproducible even when the legacy APK cannot be executed on the current machine.
 - Battle-density checks are intentionally tolerant. Structural mismatches must be fixed before density drift is tuned.
 - The remake trace export is meant to be machine-readable, not just human-readable.
+- This protocol is still the regression-control layer. It is not, by itself, a full original-equivalence certification gate.
