@@ -15,6 +15,7 @@ Primary outputs:
 - [AW1.runtime_field_reuse_scan.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_field_reuse_scan.json)
 - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
 - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
+- [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
 
 `AW1.runtime_field_reuse_scan.json` is useful as a filter, but its best exact hits are mostly low-entropy columns such as binary flags or small id ranges.
 It did not yet reveal a hard `stage -> map payload` pointer on its own.
@@ -254,6 +255,12 @@ Evidence:
 - The linked export [`AW1.battle_catalog.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json) now cross-references:
   - `skillIdCandidate -> matchingItemsByItemCode`
   - `skillIdCandidate -> matchingHeroSkillsByAiCode`
+- The stronger current hero-skill finding lives in [`AW1.hero_skill_links.json`](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json):
+  - `slotOrPowerCandidate` is now a high-confidence direct slot index into `XlsHeroPassiveSkill` for slots `0..23`
+  - `24/24` passive rows are reachable by hero-skill slot index
+  - `21` rows match by exact normalized name
+  - slots `6`, `13`, and `23` are alias cases where `Defend Tower` in the master table maps to `Thief/Helba/Juno Tower Defense` in the passive table
+  - slots `29`, `30`, and `31` sit outside the passive table and currently host special `mode 0:2` rows: `Stun`, `Smoke`, and `Armageddon Buff`
 
 ### XlsHeroActiveSkill
 
@@ -292,6 +299,11 @@ Evidence:
   - short tail field
 - Several names overlap directly with `XlsHeroSkill` entries such as `HP Up`, `Shuriken`, and `Double Attack`.
   This strongly suggests `XlsHeroPassiveSkill` is the stat-definition side of some named hero-skill upgrades.
+- The new slot-link report strengthens that reading considerably:
+  - passive row `0` -> hero-skill slot `0` -> `HP Up`
+  - passive row `4` -> hero-skill slot `4` -> `Snatch`
+  - passive row `20/21/22` -> hero-skill slots `20/21/22` -> three `Dispatch` rows
+  - passive row `6/13/23` -> slots `6/13/23` -> the three `Defend Tower` master rows
 
 ### XlsProjectile
 

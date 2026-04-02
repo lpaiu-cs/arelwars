@@ -135,6 +135,7 @@ References:
     - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
     - [AW1.battle_catalog.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_catalog.json)
     - [AW1.effect_runtime_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.effect_runtime_links.json)
+    - [AW1.hero_skill_links.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.hero_skill_links.json)
   - current strongest runtime-field candidates in `XlsAi` are:
     - `tierCandidate = numericBlock[13]`
     - `variantCandidate = numericBlock[15]`
@@ -151,6 +152,7 @@ References:
     - `XlsParticle` is now a high-confidence `PTC bridge table`
     - `12/12` primary ids and `10/10` nonzero secondary ids resolve directly to `ptc/NNN.ptc`
     - `XlsHeroActiveSkill.tailPairBE` produces exact projectile/effect hits in `5/25` rows
+    - `XlsHeroSkill.slotOrPowerCandidate` is now a high-confidence direct slot index into `XlsHeroPassiveSkill` for slots `0..23`
 
 ### Phase 4. Build Deterministic Runtime Systems
 

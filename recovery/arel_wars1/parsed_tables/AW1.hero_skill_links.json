@@ -1,0 +1,5107 @@
+{
+  "summary": {
+    "heroSkillRowCount": 51,
+    "passiveRowCount": 24,
+    "skillAiRowCount": 24,
+    "heroActiveRowsWithEffectHits": 8,
+    "passiveRowsReachableBySlot": 24,
+    "heroSkillExactPassiveMatchCount": 21,
+    "heroSkillTowerDefenseAliasCount": 3,
+    "modeHistogram": {
+      "0:0": 2,
+      "0:1": 5,
+      "0:2": 5,
+      "1:0": 10,
+      "1:1": 16,
+      "1:2": 5,
+      "255:0": 4,
+      "255:1": 3,
+      "255:2": 1
+    },
+    "specialSlotValues": [
+      29,
+      30,
+      31
+    ]
+  },
+  "heroSkillLinks": [
+    {
+      "index": 0,
+      "name": "Snatch",
+      "skillCodeCandidate": 3,
+      "aiCodeCandidate": 12,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 4,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Use your hero to kill an enemy and steal mana. The higher the Skill Level is, the more mana stolen.",
+      "metadataU8": [
+        3,
+        12,
+        255,
+        0,
+        1,
+        4,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 4,
+        "name": "Snatch",
+        "valueA": 10,
+        "valueB": 10,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 4,
+        "headerBytes": [
+          2,
+          3,
+          0,
+          255
+        ],
+        "tailPairBE": [
+          65285,
+          1,
+          24,
+          8
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              24,
+              8
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 24,
+                "familyCandidate": 7,
+                "projectileIdCandidate": 24,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 1,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-0:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 1,
+      "name": "HP Up",
+      "skillCodeCandidate": 7,
+      "aiCodeCandidate": 14,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 0,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Max HP.",
+      "metadataU8": [
+        7,
+        14,
+        255,
+        1,
+        1,
+        0,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 0,
+        "name": "HP Up",
+        "valueA": 200,
+        "valueB": 200,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 0,
+        "headerBytes": [
+          2,
+          0,
+          0,
+          15
+        ],
+        "tailPairBE": [
+          4,
+          1,
+          6,
+          2
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              4,
+              1
+            ],
+            "projectileExactMatches": [
+              {
+                "index": 5,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 4,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 5,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 4,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          },
+          {
+            "pair": [
+              6,
+              2
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 6,
+                "familyCandidate": 5,
+                "projectileIdCandidate": 6,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 20,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 2,
+      "name": "Shuriken",
+      "skillCodeCandidate": 11,
+      "aiCodeCandidate": 10,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 2,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's  Long-ranged Attack Strength, even while defending the tower.",
+      "metadataU8": [
+        11,
+        10,
+        255,
+        0,
+        1,
+        2,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 2,
+        "name": "Shuriken",
+        "valueA": 20,
+        "valueB": 20,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 2,
+        "headerBytes": [
+          0,
+          3,
+          0,
+          1
+        ],
+        "tailPairBE": [
+          3,
+          0,
+          8,
+          4
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              3,
+              0
+            ],
+            "projectileExactMatches": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ],
+            "effectExactMatches": [
+              {
+                "index": 24,
+                "familyCandidate": 3,
+                "effectIdCandidate": 0,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          },
+          {
+            "pair": [
+              8,
+              4
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 8,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 8,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 15,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-0:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 3,
+      "name": "Defend Tower",
+      "skillCodeCandidate": 15,
+      "aiCodeCandidate": 15,
+      "flagA": 255,
+      "modeA": 255,
+      "modeB": 1,
+      "slotOrPowerCandidate": 6,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Attack with shurikens while in the tower. Increase this skill's Level to increase Attack Speed.",
+      "metadataU8": [
+        15,
+        15,
+        255,
+        255,
+        1,
+        6,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 6,
+        "name": "Thief Tower Defense",
+        "valueA": 65528,
+        "valueB": 65528,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "tower-defense-alias"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-255:1",
+        "passive-slot-linked",
+        "tower-defense-alias",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 4,
+      "name": "Dispatch",
+      "skillCodeCandidate": 19,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 20,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+      "metadataU8": [
+        19,
+        0,
+        255,
+        1,
+        1,
+        20,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 20,
+        "name": "Dispatch",
+        "valueA": 65376,
+        "valueB": 65376,
+        "tailU16": [
+          65520,
+          65520
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked"
+      ]
+    },
+    {
+      "index": 5,
+      "name": "Dodge",
+      "skillCodeCandidate": 23,
+      "aiCodeCandidate": 9,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 1,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of evading the enemy's attack.",
+      "metadataU8": [
+        23,
+        9,
+        255,
+        1,
+        1,
+        1,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 1,
+        "name": "Dodge",
+        "valueA": 25,
+        "valueB": 5,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 1,
+        "headerBytes": [
+          0,
+          0,
+          0,
+          20
+        ],
+        "tailPairBE": [
+          3,
+          2,
+          255,
+          65535
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              3,
+              2
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [
+              {
+                "index": 26,
+                "familyCandidate": 3,
+                "effectIdCandidate": 2,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 6,
+      "name": "Assassinate",
+      "skillCodeCandidate": 27,
+      "aiCodeCandidate": 11,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 3,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of finishing an enemy with one hit.",
+      "metadataU8": [
+        27,
+        11,
+        255,
+        1,
+        1,
+        3,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 3,
+        "name": "Assassinate",
+        "valueA": 10,
+        "valueB": 2,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 7,
+      "name": "Build Tower",
+      "skillCodeCandidate": 31,
+      "aiCodeCandidate": 13,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 5,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your tower's Defense.",
+      "metadataU8": [
+        31,
+        13,
+        255,
+        0,
+        1,
+        5,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 5,
+        "name": "Build Tower",
+        "valueA": 20,
+        "valueB": 5,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-0:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 8,
+      "name": "Repair",
+      "skillCodeCandidate": 1,
+      "aiCodeCandidate": 5,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 3,
+      "tailFlags": [
+        255,
+        255,
+        192,
+        3
+      ],
+      "description": "Repair your tower to restore its HP.",
+      "metadataU8": [
+        1,
+        5,
+        0,
+        255,
+        0,
+        3,
+        255,
+        255,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-255:0"
+      ]
+    },
+    {
+      "index": 9,
+      "name": "Shuriken",
+      "skillCodeCandidate": 5,
+      "aiCodeCandidate": 1,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 1,
+      "tailFlags": [
+        1,
+        0,
+        128,
+        7
+      ],
+      "description": "Throw a giant shuriken that pushes an enemy backward with a shock wave. ",
+      "metadataU8": [
+        5,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        128,
+        7
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 1,
+        "headerBytes": [
+          0,
+          0,
+          0,
+          20
+        ],
+        "tailPairBE": [
+          3,
+          2,
+          255,
+          65535
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              3,
+              2
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [
+              {
+                "index": 26,
+                "familyCandidate": 3,
+                "effectIdCandidate": 2,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:0",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 10,
+      "name": "Bomb",
+      "skillCodeCandidate": 9,
+      "aiCodeCandidate": 7,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 5,
+      "tailFlags": [
+        255,
+        255,
+        192,
+        3
+      ],
+      "description": "Throw a bomb that pushes enemies backward with damage.",
+      "metadataU8": [
+        9,
+        7,
+        0,
+        255,
+        0,
+        5,
+        255,
+        255,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-255:0",
+        "skill-ai-skill-code"
+      ]
+    },
+    {
+      "index": 11,
+      "name": "Poison Mist",
+      "skillCodeCandidate": 13,
+      "aiCodeCandidate": 2,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 0,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Create a poisonous mist that inflicts damage on all surrounding enemies.",
+      "metadataU8": [
+        13,
+        2,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 0,
+        "headerBytes": [
+          2,
+          0,
+          0,
+          15
+        ],
+        "tailPairBE": [
+          4,
+          1,
+          6,
+          2
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              4,
+              1
+            ],
+            "projectileExactMatches": [
+              {
+                "index": 5,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 4,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 5,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 4,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          },
+          {
+            "pair": [
+              6,
+              2
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 6,
+                "familyCandidate": 5,
+                "projectileIdCandidate": 6,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 20,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:0",
+        "skill-ai-skill-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 12,
+      "name": "Smoke",
+      "skillCodeCandidate": 17,
+      "aiCodeCandidate": 6,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 4,
+      "tailFlags": [
+        255,
+        255,
+        128,
+        7
+      ],
+      "description": "Create smoke in front of your tower to incapacitate the enemy.",
+      "metadataU8": [
+        17,
+        6,
+        0,
+        255,
+        0,
+        4,
+        255,
+        255,
+        128,
+        7
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 4,
+        "headerBytes": [
+          2,
+          3,
+          0,
+          255
+        ],
+        "tailPairBE": [
+          65285,
+          1,
+          24,
+          8
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              24,
+              8
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 24,
+                "familyCandidate": 7,
+                "projectileIdCandidate": 24,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 1,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-255:0",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 13,
+      "name": "Defense Stance",
+      "skillCodeCandidate": 21,
+      "aiCodeCandidate": 4,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 0,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Command your soldiers to take a defensive stance.",
+      "metadataU8": [
+        21,
+        4,
+        255,
+        0,
+        2,
+        0,
+        1,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 0,
+        "headerBytes": [
+          2,
+          0,
+          0,
+          15
+        ],
+        "tailPairBE": [
+          4,
+          1,
+          6,
+          2
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              4,
+              1
+            ],
+            "projectileExactMatches": [
+              {
+                "index": 5,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 4,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 5,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 4,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          },
+          {
+            "pair": [
+              6,
+              2
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 6,
+                "familyCandidate": 5,
+                "projectileIdCandidate": 6,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 20,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-0:2",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 14,
+      "name": "Lightning",
+      "skillCodeCandidate": 25,
+      "aiCodeCandidate": 8,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 0,
+      "slotOrPowerCandidate": 6,
+      "tailFlags": [
+        255,
+        255,
+        64,
+        11
+      ],
+      "description": "Drop lightning to inflict damage to the entire enemy.",
+      "metadataU8": [
+        25,
+        8,
+        0,
+        255,
+        0,
+        6,
+        255,
+        255,
+        64,
+        11
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-255:0",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 15,
+      "name": "Lotus Blizzard",
+      "skillCodeCandidate": 29,
+      "aiCodeCandidate": 3,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 2,
+      "tailFlags": [
+        1,
+        0,
+        64,
+        11
+      ],
+      "description": "Throw a flurry of blades.",
+      "metadataU8": [
+        29,
+        3,
+        1,
+        1,
+        0,
+        2,
+        1,
+        0,
+        64,
+        11
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 2,
+        "headerBytes": [
+          0,
+          3,
+          0,
+          1
+        ],
+        "tailPairBE": [
+          3,
+          0,
+          8,
+          4
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              3,
+              0
+            ],
+            "projectileExactMatches": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ],
+            "effectExactMatches": [
+              {
+                "index": 24,
+                "familyCandidate": 3,
+                "effectIdCandidate": 0,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          },
+          {
+            "pair": [
+              8,
+              4
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 8,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 8,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 15,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:0",
+        "skill-ai-skill-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 16,
+      "name": "HP Up",
+      "skillCodeCandidate": 3,
+      "aiCodeCandidate": 15,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 7,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Max HP.",
+      "metadataU8": [
+        3,
+        15,
+        255,
+        1,
+        1,
+        7,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 7,
+        "name": "HP Up",
+        "valueA": 300,
+        "valueB": 300,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 7,
+        "headerBytes": [
+          0,
+          3,
+          0,
+          100
+        ],
+        "tailPairBE": [
+          48,
+          16,
+          32,
+          16
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              32,
+              16
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 33,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 32,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 6,
+                "motionCandidate": 2
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 17,
+      "name": "Natural Healing",
+      "skillCodeCandidate": 7,
+      "aiCodeCandidate": 12,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 11,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Improve your natural healing power to restore HP with time.",
+      "metadataU8": [
+        7,
+        12,
+        255,
+        1,
+        1,
+        11,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 11,
+        "name": "Natural Healing",
+        "valueA": 5,
+        "valueB": 5,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 18,
+      "name": "ATK Up",
+      "skillCodeCandidate": 11,
+      "aiCodeCandidate": 10,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 9,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's basic Attack Strength.",
+      "metadataU8": [
+        11,
+        10,
+        255,
+        1,
+        1,
+        9,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 9,
+        "name": "ATK Up",
+        "valueA": 10,
+        "valueB": 10,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 19,
+      "name": "DEF Up",
+      "skillCodeCandidate": 15,
+      "aiCodeCandidate": 9,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 8,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Defense.",
+      "metadataU8": [
+        15,
+        9,
+        255,
+        1,
+        1,
+        8,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 8,
+        "name": "DEF Up",
+        "valueA": 20,
+        "valueB": 10,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 20,
+      "name": "Mane Spikes",
+      "skillCodeCandidate": 19,
+      "aiCodeCandidate": 11,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 10,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Spike your hero's mane to counter his attacker.",
+      "metadataU8": [
+        19,
+        11,
+        255,
+        1,
+        1,
+        10,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 10,
+        "name": "Mane Spikes",
+        "valueA": 10,
+        "valueB": 10,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 21,
+      "name": "Deflect",
+      "skillCodeCandidate": 23,
+      "aiCodeCandidate": 13,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 12,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Build muscle to deflect attackers.",
+      "metadataU8": [
+        23,
+        13,
+        255,
+        1,
+        1,
+        12,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 12,
+        "name": "Deflect",
+        "valueA": 2,
+        "valueB": 2,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 12,
+        "headerBytes": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "tailPairBE": [
+          65330,
+          0,
+          1,
+          1
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              1,
+              1
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [
+              {
+                "index": 11,
+                "familyCandidate": 1,
+                "effectIdCandidate": 1,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 1
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 2,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 1,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 10,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 22,
+      "name": "Defend Tower",
+      "skillCodeCandidate": 27,
+      "aiCodeCandidate": 14,
+      "flagA": 255,
+      "modeA": 255,
+      "modeB": 1,
+      "slotOrPowerCandidate": 13,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Attack the enemy while in your tower. Increase this skill's Level for improved damage.",
+      "metadataU8": [
+        27,
+        14,
+        255,
+        255,
+        1,
+        13,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 13,
+        "name": "Helba Tower Defense",
+        "valueA": 20,
+        "valueB": 10,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "tower-defense-alias"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 13,
+        "headerBytes": [
+          1,
+          3,
+          0,
+          255
+        ],
+        "tailPairBE": [
+          65344,
+          16,
+          0,
+          3
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              0,
+              3
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [
+              {
+                "index": 3,
+                "familyCandidate": 0,
+                "effectIdCandidate": 3,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 0,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 0,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 10,
+                "motionCandidate": 2
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-255:1",
+        "passive-slot-linked",
+        "tower-defense-alias",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 23,
+      "name": "Dispatch",
+      "skillCodeCandidate": 31,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 21,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+      "metadataU8": [
+        31,
+        0,
+        255,
+        1,
+        1,
+        21,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 21,
+        "name": "Dispatch",
+        "valueA": 65376,
+        "valueB": 65376,
+        "tailU16": [
+          65520,
+          65520
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code"
+      ]
+    },
+    {
+      "index": 24,
+      "name": "Charge",
+      "skillCodeCandidate": 1,
+      "aiCodeCandidate": 6,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 2,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Increase the Movement Speed of surrounding units.",
+      "metadataU8": [
+        1,
+        6,
+        1,
+        1,
+        2,
+        2,
+        2,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 2,
+        "headerBytes": [
+          0,
+          3,
+          0,
+          1
+        ],
+        "tailPairBE": [
+          3,
+          0,
+          8,
+          4
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              3,
+              0
+            ],
+            "projectileExactMatches": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ],
+            "effectExactMatches": [
+              {
+                "index": 24,
+                "familyCandidate": 3,
+                "effectIdCandidate": 0,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          },
+          {
+            "pair": [
+              8,
+              4
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 8,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 8,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 15,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:2",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 25,
+      "name": "Feast",
+      "skillCodeCandidate": 5,
+      "aiCodeCandidate": 3,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 9,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Eat meat to restore HP.",
+      "metadataU8": [
+        5,
+        3,
+        1,
+        1,
+        0,
+        9,
+        2,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:0"
+      ]
+    },
+    {
+      "index": 26,
+      "name": "Berserk",
+      "skillCodeCandidate": 9,
+      "aiCodeCandidate": 5,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 1,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Increase the Attack Speed of surrounding units.",
+      "metadataU8": [
+        9,
+        5,
+        1,
+        1,
+        2,
+        1,
+        2,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 1,
+        "headerBytes": [
+          0,
+          0,
+          0,
+          20
+        ],
+        "tailPairBE": [
+          3,
+          2,
+          255,
+          65535
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              3,
+              2
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [
+              {
+                "index": 26,
+                "familyCandidate": 3,
+                "effectIdCandidate": 2,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 4,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 3,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 8,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:2",
+        "skill-ai-skill-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 27,
+      "name": "Parry",
+      "skillCodeCandidate": 13,
+      "aiCodeCandidate": 2,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 8,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Return damage to attackers with no damage on your end.",
+      "metadataU8": [
+        13,
+        2,
+        1,
+        1,
+        0,
+        8,
+        2,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:0",
+        "skill-ai-skill-code"
+      ]
+    },
+    {
+      "index": 28,
+      "name": "Draft",
+      "skillCodeCandidate": 17,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 4,
+      "tailFlags": [
+        1,
+        0,
+        128,
+        7
+      ],
+      "description": "Draft soldiers to reduce Respawn Delay.",
+      "metadataU8": [
+        17,
+        8,
+        255,
+        0,
+        2,
+        4,
+        1,
+        0,
+        128,
+        7
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 4,
+        "headerBytes": [
+          2,
+          3,
+          0,
+          255
+        ],
+        "tailPairBE": [
+          65285,
+          1,
+          24,
+          8
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              24,
+              8
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 24,
+                "familyCandidate": 7,
+                "projectileIdCandidate": 24,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 1,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-0:2",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 29,
+      "name": "Lion Roar",
+      "skillCodeCandidate": 21,
+      "aiCodeCandidate": 1,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 7,
+      "tailFlags": [
+        2,
+        0,
+        128,
+        7
+      ],
+      "description": "Shout out loud to Stun enemies and push them backward.",
+      "metadataU8": [
+        21,
+        1,
+        1,
+        1,
+        0,
+        7,
+        2,
+        0,
+        128,
+        7
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 7,
+        "headerBytes": [
+          0,
+          3,
+          0,
+          100
+        ],
+        "tailPairBE": [
+          48,
+          16,
+          32,
+          16
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              32,
+              16
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 33,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 32,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 6,
+                "motionCandidate": 2
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:0",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 30,
+      "name": "Wave",
+      "skillCodeCandidate": 25,
+      "aiCodeCandidate": 7,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 3,
+      "tailFlags": [
+        2,
+        0,
+        128,
+        7
+      ],
+      "description": "Muster energy to attack. Increase Movement and Attack Strengths at the cost of your entire Defense.",
+      "metadataU8": [
+        25,
+        7,
+        1,
+        1,
+        2,
+        3,
+        2,
+        0,
+        128,
+        7
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:2",
+        "skill-ai-skill-code"
+      ]
+    },
+    {
+      "index": 31,
+      "name": "Rally",
+      "skillCodeCandidate": 29,
+      "aiCodeCandidate": 4,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 10,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Summon units to your hero's side.",
+      "metadataU8": [
+        29,
+        4,
+        1,
+        1,
+        0,
+        10,
+        2,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:0",
+        "skill-ai-skill-code"
+      ]
+    },
+    {
+      "index": 32,
+      "name": "HP Up",
+      "skillCodeCandidate": 5,
+      "aiCodeCandidate": 14,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 14,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your hero's Max HP.",
+      "metadataU8": [
+        5,
+        14,
+        255,
+        1,
+        1,
+        14,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 14,
+        "name": "HP Up",
+        "valueA": 100,
+        "valueB": 100,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 6,
+          "skillIdCandidate": 14,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": {
+        "index": 14,
+        "headerBytes": [
+          1,
+          3,
+          0,
+          255
+        ],
+        "tailPairBE": [
+          65310,
+          0,
+          30,
+          8
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              30,
+              8
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 31,
+                "familyCandidate": 6,
+                "projectileIdCandidate": 30,
+                "variantCandidate": 255,
+                "speedOrRangeCandidate": 0,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 33,
+      "name": "Defend Tower",
+      "skillCodeCandidate": 7,
+      "aiCodeCandidate": 15,
+      "flagA": 255,
+      "modeA": 255,
+      "modeB": 1,
+      "slotOrPowerCandidate": 23,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Enable to shoot Magic Spheres while in your tower. Increase this skill's Level for a broader Attack Range.",
+      "metadataU8": [
+        7,
+        15,
+        255,
+        255,
+        1,
+        23,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 23,
+        "name": "Juno Tower Defense",
+        "valueA": 8,
+        "valueB": 8,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "tower-defense-alias"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 2,
+          "skillIdCandidate": 15,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            254,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-255:1",
+        "passive-slot-linked",
+        "tower-defense-alias",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 34,
+      "name": "Multi Shot",
+      "skillCodeCandidate": 13,
+      "aiCodeCandidate": 10,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 16,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Increase your number of Magic Spheres.",
+      "metadataU8": [
+        13,
+        10,
+        255,
+        0,
+        1,
+        16,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 16,
+        "name": "Multi Shot",
+        "valueA": 1,
+        "valueB": 1,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 5,
+          "skillIdCandidate": 10,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-0:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 35,
+      "name": "Mana Wall",
+      "skillCodeCandidate": 16,
+      "aiCodeCandidate": 9,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 15,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a shield that neutralizes Long-ranged attacks while protecting nearby units.",
+      "metadataU8": [
+        16,
+        9,
+        255,
+        1,
+        1,
+        15,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 15,
+        "name": "Mana Wall",
+        "valueA": 20,
+        "valueB": 10,
+        "tailU16": [
+          64,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 36,
+      "name": "Vampire",
+      "skillCodeCandidate": 19,
+      "aiCodeCandidate": 12,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 18,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Restore HP while attacking.",
+      "metadataU8": [
+        19,
+        12,
+        255,
+        1,
+        1,
+        18,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 18,
+        "name": "Vampire",
+        "valueA": 5,
+        "valueB": 5,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 4,
+          "skillIdCandidate": 12,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 37,
+      "name": "Temptation",
+      "skillCodeCandidate": 23,
+      "aiCodeCandidate": 11,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 1,
+      "slotOrPowerCandidate": 17,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of convering enemy units to your side.",
+      "metadataU8": [
+        23,
+        11,
+        255,
+        0,
+        1,
+        17,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 17,
+        "name": "Temptation",
+        "valueA": 1,
+        "valueB": 1,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-0:1",
+        "passive-slot-linked",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 38,
+      "name": "Dispatch",
+      "skillCodeCandidate": 27,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 22,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Reduce your hero's Re-dispatch and Respawn Delays.",
+      "metadataU8": [
+        27,
+        0,
+        255,
+        1,
+        1,
+        22,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 22,
+        "name": "Dispatch",
+        "valueA": 65376,
+        "valueB": 65376,
+        "tailU16": [
+          65520,
+          65520
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 9,
+          "skillIdCandidate": 27,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code"
+      ]
+    },
+    {
+      "index": 39,
+      "name": "Mana Gain",
+      "skillCodeCandidate": 29,
+      "aiCodeCandidate": 13,
+      "flagA": 255,
+      "modeA": 1,
+      "modeB": 1,
+      "slotOrPowerCandidate": 19,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "Create a chance of regaining mana when attacked.",
+      "metadataU8": [
+        29,
+        13,
+        255,
+        1,
+        1,
+        19,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": {
+        "index": 19,
+        "name": "Mana Gain",
+        "valueA": 1,
+        "valueB": 1,
+        "tailU16": [
+          0,
+          0
+        ],
+        "matchKind": "exact-name"
+      },
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 8,
+          "skillIdCandidate": 29,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            0,
+            10
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 7,
+          "skillIdCandidate": 13,
+          "triggerWindowA": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "triggerWindowB": [
+            20,
+            30,
+            40,
+            50,
+            60
+          ],
+          "tailModeBytes": [
+            3,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:1",
+        "passive-slot-linked",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 40,
+      "name": "Encourage",
+      "skillCodeCandidate": 1,
+      "aiCodeCandidate": 5,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 6,
+      "tailFlags": [
+        2,
+        0,
+        64,
+        11
+      ],
+      "description": "Increase the damage and range of Long-ranged units.",
+      "metadataU8": [
+        1,
+        5,
+        1,
+        1,
+        2,
+        6,
+        2,
+        0,
+        64,
+        11
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:2"
+      ]
+    },
+    {
+      "index": 41,
+      "name": "Align",
+      "skillCodeCandidate": 3,
+      "aiCodeCandidate": 4,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 2,
+      "slotOrPowerCandidate": 5,
+      "tailFlags": [
+        2,
+        0,
+        128,
+        7
+      ],
+      "description": "Send Melee units to the front and the Long-ranged to the back.",
+      "metadataU8": [
+        3,
+        4,
+        1,
+        1,
+        2,
+        5,
+        2,
+        0,
+        128,
+        7
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:2"
+      ]
+    },
+    {
+      "index": 42,
+      "name": "Balance",
+      "skillCodeCandidate": 9,
+      "aiCodeCandidate": 3,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 13,
+      "tailFlags": [
+        2,
+        0,
+        192,
+        3
+      ],
+      "description": "Equalize the HP of surrounding units.",
+      "metadataU8": [
+        9,
+        3,
+        1,
+        1,
+        0,
+        13,
+        2,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 1,
+          "skillIdCandidate": 9,
+          "triggerWindowA": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            10,
+            10,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            0,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 13,
+        "headerBytes": [
+          1,
+          3,
+          0,
+          255
+        ],
+        "tailPairBE": [
+          65344,
+          16,
+          0,
+          3
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              0,
+              3
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [
+              {
+                "index": 3,
+                "familyCandidate": 0,
+                "effectIdCandidate": 3,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 0
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 0,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 0,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 10,
+                "motionCandidate": 2
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:0",
+        "skill-ai-skill-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 43,
+      "name": "Recharge",
+      "skillCodeCandidate": 11,
+      "aiCodeCandidate": 6,
+      "flagA": 0,
+      "modeA": 255,
+      "modeB": 2,
+      "slotOrPowerCandidate": 7,
+      "tailFlags": [
+        1,
+        0,
+        128,
+        7
+      ],
+      "description": "Increase Mana Regeneration Speed at the cost of your unit production for the skill's duration.",
+      "metadataU8": [
+        11,
+        6,
+        0,
+        255,
+        2,
+        7,
+        1,
+        0,
+        128,
+        7
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 0,
+          "skillIdCandidate": 11,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            50,
+            80
+          ],
+          "triggerWindowB": [
+            206,
+            226,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 7,
+        "headerBytes": [
+          0,
+          3,
+          0,
+          100
+        ],
+        "tailPairBE": [
+          48,
+          16,
+          32,
+          16
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              32,
+              16
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 33,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 32,
+                "variantCandidate": 1,
+                "speedOrRangeCandidate": 6,
+                "motionCandidate": 2
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-255:2",
+        "skill-ai-skill-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 44,
+      "name": "Recall",
+      "skillCodeCandidate": 17,
+      "aiCodeCandidate": 1,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 11,
+      "tailFlags": [
+        5,
+        0,
+        192,
+        3
+      ],
+      "description": "Recall your hero along with surrounding units to the front of your tower.",
+      "metadataU8": [
+        17,
+        1,
+        1,
+        1,
+        0,
+        11,
+        5,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-1:0"
+      ]
+    },
+    {
+      "index": 45,
+      "name": "Convert Spirit",
+      "skillCodeCandidate": 21,
+      "aiCodeCandidate": 2,
+      "flagA": 1,
+      "modeA": 1,
+      "modeB": 0,
+      "slotOrPowerCandidate": 12,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Convert your hero's HP to MP.",
+      "metadataU8": [
+        21,
+        2,
+        1,
+        1,
+        0,
+        12,
+        1,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 12,
+        "headerBytes": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "tailPairBE": [
+          65330,
+          0,
+          1,
+          1
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              1,
+              1
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [
+              {
+                "index": 11,
+                "familyCandidate": 1,
+                "effectIdCandidate": 1,
+                "variantCandidate": 0,
+                "frameOrDurationCandidate": 1,
+                "loopFlagCandidate": 1,
+                "blendFlagCandidate": 1
+              }
+            ],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 2,
+                "familyCandidate": 0,
+                "projectileIdCandidate": 1,
+                "variantCandidate": 0,
+                "speedOrRangeCandidate": 10,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-1:0",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 46,
+      "name": "Return to Nature",
+      "skillCodeCandidate": 25,
+      "aiCodeCandidate": 7,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 0,
+      "slotOrPowerCandidate": 14,
+      "tailFlags": [
+        1,
+        0,
+        192,
+        3
+      ],
+      "description": "Convert low-HP units into mana. Increase this skill's Level for a higher conversion rate.",
+      "metadataU8": [
+        25,
+        7,
+        255,
+        0,
+        0,
+        14,
+        1,
+        0,
+        192,
+        3
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 10,
+          "skillIdCandidate": 25,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": {
+        "index": 14,
+        "headerBytes": [
+          1,
+          3,
+          0,
+          255
+        ],
+        "tailPairBE": [
+          65310,
+          0,
+          30,
+          8
+        ],
+        "pairReports": [
+          {
+            "pair": [
+              30,
+              8
+            ],
+            "projectileExactMatches": [],
+            "effectExactMatches": [],
+            "particleExactMatches": [],
+            "projectileIdHints": [
+              {
+                "index": 31,
+                "familyCandidate": 6,
+                "projectileIdCandidate": 30,
+                "variantCandidate": 255,
+                "speedOrRangeCandidate": 0,
+                "motionCandidate": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tags": [
+        "mode-0:0",
+        "skill-ai-skill-code",
+        "active-runtime-tail-hit"
+      ]
+    },
+    {
+      "index": 47,
+      "name": "Armageddon",
+      "skillCodeCandidate": 31,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 0,
+      "slotOrPowerCandidate": 15,
+      "tailFlags": [
+        10,
+        0,
+        64,
+        11
+      ],
+      "description": "Deliver a meteor attack, and then increase your tower's Mana Regeneration.",
+      "metadataU8": [
+        31,
+        8,
+        255,
+        0,
+        0,
+        15,
+        10,
+        0,
+        64,
+        11
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [
+        {
+          "index": 11,
+          "skillIdCandidate": 31,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tailModeBytes": [
+            253,
+            5
+          ]
+        }
+      ],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-0:0",
+        "skill-ai-skill-code",
+        "skill-ai-ai-code"
+      ]
+    },
+    {
+      "index": 48,
+      "name": "Stun",
+      "skillCodeCandidate": 255,
+      "aiCodeCandidate": 0,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 29,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "None",
+      "metadataU8": [
+        255,
+        0,
+        255,
+        0,
+        2,
+        29,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-0:2",
+        "special-slot-29plus"
+      ]
+    },
+    {
+      "index": 49,
+      "name": "Smoke",
+      "skillCodeCandidate": 255,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 30,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "None",
+      "metadataU8": [
+        255,
+        8,
+        255,
+        0,
+        2,
+        30,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-0:2",
+        "skill-ai-ai-code",
+        "special-slot-29plus"
+      ]
+    },
+    {
+      "index": 50,
+      "name": "Armageddon Buff",
+      "skillCodeCandidate": 255,
+      "aiCodeCandidate": 8,
+      "flagA": 255,
+      "modeA": 0,
+      "modeB": 2,
+      "slotOrPowerCandidate": 31,
+      "tailFlags": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "description": "None",
+      "metadataU8": [
+        255,
+        8,
+        255,
+        0,
+        2,
+        31,
+        255,
+        255,
+        255,
+        255
+      ],
+      "passiveSlotMatch": null,
+      "matchingSkillAiBySkillCode": [],
+      "matchingSkillAiByAiCode": [
+        {
+          "index": 3,
+          "skillIdCandidate": 8,
+          "triggerWindowA": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "triggerWindowB": [
+            0,
+            0,
+            0,
+            30,
+            50
+          ],
+          "tailModeBytes": [
+            253,
+            3
+          ]
+        }
+      ],
+      "activeRuntimeHint": null,
+      "tags": [
+        "mode-0:2",
+        "skill-ai-ai-code",
+        "special-slot-29plus"
+      ]
+    }
+  ],
+  "slotGroups": [
+    {
+      "slot": 0,
+      "heroSkillRows": [
+        {
+          "index": 1,
+          "name": "HP Up",
+          "skillCodeCandidate": 7,
+          "aiCodeCandidate": 14,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 11,
+          "name": "Poison Mist",
+          "skillCodeCandidate": 13,
+          "aiCodeCandidate": 2,
+          "modeA": 1,
+          "modeB": 0
+        },
+        {
+          "index": 13,
+          "name": "Defense Stance",
+          "skillCodeCandidate": 21,
+          "aiCodeCandidate": 4,
+          "modeA": 0,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 0,
+        "name": "HP Up",
+        "valueA": 200,
+        "valueB": 200
+      }
+    },
+    {
+      "slot": 1,
+      "heroSkillRows": [
+        {
+          "index": 5,
+          "name": "Dodge",
+          "skillCodeCandidate": 23,
+          "aiCodeCandidate": 9,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 9,
+          "name": "Shuriken",
+          "skillCodeCandidate": 5,
+          "aiCodeCandidate": 1,
+          "modeA": 1,
+          "modeB": 0
+        },
+        {
+          "index": 26,
+          "name": "Berserk",
+          "skillCodeCandidate": 9,
+          "aiCodeCandidate": 5,
+          "modeA": 1,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 1,
+        "name": "Dodge",
+        "valueA": 25,
+        "valueB": 5
+      }
+    },
+    {
+      "slot": 2,
+      "heroSkillRows": [
+        {
+          "index": 2,
+          "name": "Shuriken",
+          "skillCodeCandidate": 11,
+          "aiCodeCandidate": 10,
+          "modeA": 0,
+          "modeB": 1
+        },
+        {
+          "index": 15,
+          "name": "Lotus Blizzard",
+          "skillCodeCandidate": 29,
+          "aiCodeCandidate": 3,
+          "modeA": 1,
+          "modeB": 0
+        },
+        {
+          "index": 24,
+          "name": "Charge",
+          "skillCodeCandidate": 1,
+          "aiCodeCandidate": 6,
+          "modeA": 1,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 2,
+        "name": "Shuriken",
+        "valueA": 20,
+        "valueB": 20
+      }
+    },
+    {
+      "slot": 3,
+      "heroSkillRows": [
+        {
+          "index": 6,
+          "name": "Assassinate",
+          "skillCodeCandidate": 27,
+          "aiCodeCandidate": 11,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 8,
+          "name": "Repair",
+          "skillCodeCandidate": 1,
+          "aiCodeCandidate": 5,
+          "modeA": 255,
+          "modeB": 0
+        },
+        {
+          "index": 30,
+          "name": "Wave",
+          "skillCodeCandidate": 25,
+          "aiCodeCandidate": 7,
+          "modeA": 1,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 3,
+        "name": "Assassinate",
+        "valueA": 10,
+        "valueB": 2
+      }
+    },
+    {
+      "slot": 4,
+      "heroSkillRows": [
+        {
+          "index": 0,
+          "name": "Snatch",
+          "skillCodeCandidate": 3,
+          "aiCodeCandidate": 12,
+          "modeA": 0,
+          "modeB": 1
+        },
+        {
+          "index": 12,
+          "name": "Smoke",
+          "skillCodeCandidate": 17,
+          "aiCodeCandidate": 6,
+          "modeA": 255,
+          "modeB": 0
+        },
+        {
+          "index": 28,
+          "name": "Draft",
+          "skillCodeCandidate": 17,
+          "aiCodeCandidate": 8,
+          "modeA": 0,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 4,
+        "name": "Snatch",
+        "valueA": 10,
+        "valueB": 10
+      }
+    },
+    {
+      "slot": 5,
+      "heroSkillRows": [
+        {
+          "index": 7,
+          "name": "Build Tower",
+          "skillCodeCandidate": 31,
+          "aiCodeCandidate": 13,
+          "modeA": 0,
+          "modeB": 1
+        },
+        {
+          "index": 10,
+          "name": "Bomb",
+          "skillCodeCandidate": 9,
+          "aiCodeCandidate": 7,
+          "modeA": 255,
+          "modeB": 0
+        },
+        {
+          "index": 41,
+          "name": "Align",
+          "skillCodeCandidate": 3,
+          "aiCodeCandidate": 4,
+          "modeA": 1,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 5,
+        "name": "Build Tower",
+        "valueA": 20,
+        "valueB": 5
+      }
+    },
+    {
+      "slot": 6,
+      "heroSkillRows": [
+        {
+          "index": 3,
+          "name": "Defend Tower",
+          "skillCodeCandidate": 15,
+          "aiCodeCandidate": 15,
+          "modeA": 255,
+          "modeB": 1
+        },
+        {
+          "index": 14,
+          "name": "Lightning",
+          "skillCodeCandidate": 25,
+          "aiCodeCandidate": 8,
+          "modeA": 255,
+          "modeB": 0
+        },
+        {
+          "index": 40,
+          "name": "Encourage",
+          "skillCodeCandidate": 1,
+          "aiCodeCandidate": 5,
+          "modeA": 1,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 6,
+        "name": "Thief Tower Defense",
+        "valueA": 65528,
+        "valueB": 65528
+      }
+    },
+    {
+      "slot": 7,
+      "heroSkillRows": [
+        {
+          "index": 16,
+          "name": "HP Up",
+          "skillCodeCandidate": 3,
+          "aiCodeCandidate": 15,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 29,
+          "name": "Lion Roar",
+          "skillCodeCandidate": 21,
+          "aiCodeCandidate": 1,
+          "modeA": 1,
+          "modeB": 0
+        },
+        {
+          "index": 43,
+          "name": "Recharge",
+          "skillCodeCandidate": 11,
+          "aiCodeCandidate": 6,
+          "modeA": 255,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": {
+        "index": 7,
+        "name": "HP Up",
+        "valueA": 300,
+        "valueB": 300
+      }
+    },
+    {
+      "slot": 8,
+      "heroSkillRows": [
+        {
+          "index": 19,
+          "name": "DEF Up",
+          "skillCodeCandidate": 15,
+          "aiCodeCandidate": 9,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 27,
+          "name": "Parry",
+          "skillCodeCandidate": 13,
+          "aiCodeCandidate": 2,
+          "modeA": 1,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 8,
+        "name": "DEF Up",
+        "valueA": 20,
+        "valueB": 10
+      }
+    },
+    {
+      "slot": 9,
+      "heroSkillRows": [
+        {
+          "index": 18,
+          "name": "ATK Up",
+          "skillCodeCandidate": 11,
+          "aiCodeCandidate": 10,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 25,
+          "name": "Feast",
+          "skillCodeCandidate": 5,
+          "aiCodeCandidate": 3,
+          "modeA": 1,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 9,
+        "name": "ATK Up",
+        "valueA": 10,
+        "valueB": 10
+      }
+    },
+    {
+      "slot": 10,
+      "heroSkillRows": [
+        {
+          "index": 20,
+          "name": "Mane Spikes",
+          "skillCodeCandidate": 19,
+          "aiCodeCandidate": 11,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 31,
+          "name": "Rally",
+          "skillCodeCandidate": 29,
+          "aiCodeCandidate": 4,
+          "modeA": 1,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 10,
+        "name": "Mane Spikes",
+        "valueA": 10,
+        "valueB": 10
+      }
+    },
+    {
+      "slot": 11,
+      "heroSkillRows": [
+        {
+          "index": 17,
+          "name": "Natural Healing",
+          "skillCodeCandidate": 7,
+          "aiCodeCandidate": 12,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 44,
+          "name": "Recall",
+          "skillCodeCandidate": 17,
+          "aiCodeCandidate": 1,
+          "modeA": 1,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 11,
+        "name": "Natural Healing",
+        "valueA": 5,
+        "valueB": 5
+      }
+    },
+    {
+      "slot": 12,
+      "heroSkillRows": [
+        {
+          "index": 21,
+          "name": "Deflect",
+          "skillCodeCandidate": 23,
+          "aiCodeCandidate": 13,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 45,
+          "name": "Convert Spirit",
+          "skillCodeCandidate": 21,
+          "aiCodeCandidate": 2,
+          "modeA": 1,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 12,
+        "name": "Deflect",
+        "valueA": 2,
+        "valueB": 2
+      }
+    },
+    {
+      "slot": 13,
+      "heroSkillRows": [
+        {
+          "index": 22,
+          "name": "Defend Tower",
+          "skillCodeCandidate": 27,
+          "aiCodeCandidate": 14,
+          "modeA": 255,
+          "modeB": 1
+        },
+        {
+          "index": 42,
+          "name": "Balance",
+          "skillCodeCandidate": 9,
+          "aiCodeCandidate": 3,
+          "modeA": 1,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 13,
+        "name": "Helba Tower Defense",
+        "valueA": 20,
+        "valueB": 10
+      }
+    },
+    {
+      "slot": 14,
+      "heroSkillRows": [
+        {
+          "index": 32,
+          "name": "HP Up",
+          "skillCodeCandidate": 5,
+          "aiCodeCandidate": 14,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 46,
+          "name": "Return to Nature",
+          "skillCodeCandidate": 25,
+          "aiCodeCandidate": 7,
+          "modeA": 0,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 14,
+        "name": "HP Up",
+        "valueA": 100,
+        "valueB": 100
+      }
+    },
+    {
+      "slot": 15,
+      "heroSkillRows": [
+        {
+          "index": 35,
+          "name": "Mana Wall",
+          "skillCodeCandidate": 16,
+          "aiCodeCandidate": 9,
+          "modeA": 1,
+          "modeB": 1
+        },
+        {
+          "index": 47,
+          "name": "Armageddon",
+          "skillCodeCandidate": 31,
+          "aiCodeCandidate": 8,
+          "modeA": 0,
+          "modeB": 0
+        }
+      ],
+      "passiveRow": {
+        "index": 15,
+        "name": "Mana Wall",
+        "valueA": 20,
+        "valueB": 10
+      }
+    },
+    {
+      "slot": 16,
+      "heroSkillRows": [
+        {
+          "index": 34,
+          "name": "Multi Shot",
+          "skillCodeCandidate": 13,
+          "aiCodeCandidate": 10,
+          "modeA": 0,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 16,
+        "name": "Multi Shot",
+        "valueA": 1,
+        "valueB": 1
+      }
+    },
+    {
+      "slot": 17,
+      "heroSkillRows": [
+        {
+          "index": 37,
+          "name": "Temptation",
+          "skillCodeCandidate": 23,
+          "aiCodeCandidate": 11,
+          "modeA": 0,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 17,
+        "name": "Temptation",
+        "valueA": 1,
+        "valueB": 1
+      }
+    },
+    {
+      "slot": 18,
+      "heroSkillRows": [
+        {
+          "index": 36,
+          "name": "Vampire",
+          "skillCodeCandidate": 19,
+          "aiCodeCandidate": 12,
+          "modeA": 1,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 18,
+        "name": "Vampire",
+        "valueA": 5,
+        "valueB": 5
+      }
+    },
+    {
+      "slot": 19,
+      "heroSkillRows": [
+        {
+          "index": 39,
+          "name": "Mana Gain",
+          "skillCodeCandidate": 29,
+          "aiCodeCandidate": 13,
+          "modeA": 1,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 19,
+        "name": "Mana Gain",
+        "valueA": 1,
+        "valueB": 1
+      }
+    },
+    {
+      "slot": 20,
+      "heroSkillRows": [
+        {
+          "index": 4,
+          "name": "Dispatch",
+          "skillCodeCandidate": 19,
+          "aiCodeCandidate": 0,
+          "modeA": 1,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 20,
+        "name": "Dispatch",
+        "valueA": 65376,
+        "valueB": 65376
+      }
+    },
+    {
+      "slot": 21,
+      "heroSkillRows": [
+        {
+          "index": 23,
+          "name": "Dispatch",
+          "skillCodeCandidate": 31,
+          "aiCodeCandidate": 0,
+          "modeA": 1,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 21,
+        "name": "Dispatch",
+        "valueA": 65376,
+        "valueB": 65376
+      }
+    },
+    {
+      "slot": 22,
+      "heroSkillRows": [
+        {
+          "index": 38,
+          "name": "Dispatch",
+          "skillCodeCandidate": 27,
+          "aiCodeCandidate": 0,
+          "modeA": 1,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 22,
+        "name": "Dispatch",
+        "valueA": 65376,
+        "valueB": 65376
+      }
+    },
+    {
+      "slot": 23,
+      "heroSkillRows": [
+        {
+          "index": 33,
+          "name": "Defend Tower",
+          "skillCodeCandidate": 7,
+          "aiCodeCandidate": 15,
+          "modeA": 255,
+          "modeB": 1
+        }
+      ],
+      "passiveRow": {
+        "index": 23,
+        "name": "Juno Tower Defense",
+        "valueA": 8,
+        "valueB": 8
+      }
+    },
+    {
+      "slot": 29,
+      "heroSkillRows": [
+        {
+          "index": 48,
+          "name": "Stun",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 0,
+          "modeA": 0,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": null
+    },
+    {
+      "slot": 30,
+      "heroSkillRows": [
+        {
+          "index": 49,
+          "name": "Smoke",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 8,
+          "modeA": 0,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": null
+    },
+    {
+      "slot": 31,
+      "heroSkillRows": [
+        {
+          "index": 50,
+          "name": "Armageddon Buff",
+          "skillCodeCandidate": 255,
+          "aiCodeCandidate": 8,
+          "modeA": 0,
+          "modeB": 2
+        }
+      ],
+      "passiveRow": null
+    }
+  ],
+  "passiveRowCoverage": {
+    "0": [
+      1
+    ],
+    "1": [
+      5
+    ],
+    "2": [
+      2
+    ],
+    "3": [
+      6
+    ],
+    "4": [
+      0
+    ],
+    "5": [
+      7
+    ],
+    "6": [
+      3
+    ],
+    "7": [
+      16
+    ],
+    "8": [
+      19
+    ],
+    "9": [
+      18
+    ],
+    "10": [
+      20
+    ],
+    "11": [
+      17
+    ],
+    "12": [
+      21
+    ],
+    "13": [
+      22
+    ],
+    "14": [
+      32
+    ],
+    "15": [
+      35
+    ],
+    "16": [
+      34
+    ],
+    "17": [
+      37
+    ],
+    "18": [
+      36
+    ],
+    "19": [
+      39
+    ],
+    "20": [
+      4
+    ],
+    "21": [
+      23
+    ],
+    "22": [
+      38
+    ],
+    "23": [
+      33
+    ]
+  },
+  "findings": [
+    "24/24 passive rows are reachable directly by hero-skill slotOrPowerCandidate indices.",
+    "21 hero-skill rows match passive rows by exact normalized name, and 3 more match as Defend Tower -> * Tower Defense aliases.",
+    "Slots 6, 13, and 23 are the clearest alias cases: three Defend Tower master rows line up with Thief/Helba/Juno Tower Defense passive rows.",
+    "Slots 29, 30, and 31 remain outside the passive-row range and currently host special mode-0:2 rows such as Stun, Smoke, and Armageddon Buff."
+  ]
+}
