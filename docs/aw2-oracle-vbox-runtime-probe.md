@@ -71,6 +71,11 @@ Observed result:
 - remains up for at least `180` seconds during the probe window
 - screen remains black
 - `adb` is still not online
+- `guestproperty enumerate` exposes only `/VirtualBox/Host*` and `/VirtualBox/VMInfo/*`
+- `debugvm osdetect` still fails with `VINF_DBGF_OS_NOT_DETCTED`
+- UART raw-file sink stays at `0` bytes
+- live storage stats show only `1024` bytes read from `fastboot.vdi`
+- no reads are observed from `Root.vhd` or `Data.vdi`
 
 This is the strongest current profile.
 
@@ -86,7 +91,9 @@ The machine is no longer blocked by total runtime absence.
 Instead, it is blocked at a narrower point:
 
 - the local Oracle VBox guest now boots into a stable candidate shape
-- but it still does not yield a live observable original-runtime process
+- but it still appears to stall before real guest kernel/userspace bring-up
+- the only observable boot progress is `BIOS: Booting from Hard Disk...`
+- the runtime never crosses into guest-detectable OS state or `adb-online`
 
 That means:
 
@@ -101,5 +108,7 @@ The next useful runtime experiment is no longer â€œfind any ARM runtime at all.â
 It is:
 
 - push the `oracle-ide-primaryslave-piix3-vga` profile from `stable black-screen boot` to `adb-online`
+- explain why `fastboot.vdi` is only read for `1024` bytes before the boot chain stalls
+- determine whether the remaining gap is `boot-disk handoff`, `missing BlueStacks custom device path`, or `pre-userspace guest crash`
 
 Until that happens, packaging claims must remain blocked.

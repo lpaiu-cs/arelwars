@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "recovery" / "arel_wars2" / "native_tmp" / "runtime-reopen-options.json"
 PROBE_DIR = ROOT / "recovery" / "arel_wars2" / "native_tmp" / "oracle_vbox_probe"
+PORTABLE_PROBE = ROOT / "recovery" / "arel_wars2" / "native_tmp" / "bluestacks_portable_probe" / "portable-launch-probe.json"
 
 
 def detect_paths() -> dict[str, bool]:
@@ -45,13 +46,43 @@ def detect_oracle_candidate() -> dict[str, object]:
         "adbOnline": "\tdevice" in adb_text or " device " in adb_text,
         "adbTcp5555Open": data.get("adbTcp5555Open"),
         "showvminfoHasPiix3": "Chipset:                     piix3" in showvminfo,
+        "guestPropertyOnlyHostInfo": "/VirtualBox/HostInfo/" in data.get("guestPropertyStdout", "")
+        and "/VirtualBox/VMInfo/" in data.get("guestPropertyStdout", "")
+        and "/VirtualBox/GuestInfo/" not in data.get("guestPropertyStdout", ""),
+        "osDetectWorked": data.get("osdetectRc") == 0,
+        "serialLogBytes": data.get("serialLog", {}).get("bytes"),
+        "storageStatsPresent": "/Public/Storage/" in data.get("debugStatisticsStdout", ""),
         "probeFile": str(probe),
+    }
+
+
+def detect_portable_client_candidate() -> dict[str, object]:
+    if not PORTABLE_PROBE.exists():
+        return {
+            "exists": False,
+        }
+    data = json.loads(PORTABLE_PROBE.read_text(encoding="utf-8"))
+    vmmgr = data.get("vmmgrListVms", {})
+    hd_player = data.get("hdPlayerProbe", {})
+    late_processes = hd_player.get("lateProcesses", [])
+    if isinstance(late_processes, dict):
+        late_processes = [late_processes]
+    return {
+        "exists": True,
+        "vmmgrComReady": vmmgr.get("returncode") == 0,
+        "vmmgrClassNotRegistered": "REGDB_E_CLASSNOTREG" in ((vmmgr.get("stdout") or "") + (vmmgr.get("stderr") or "")),
+        "hdPlayerSpawnedVBox": bool(hd_player.get("spawnedVBoxProcess")),
+        "hdPlayerTcp5555Open": hd_player.get("tcp5555Open"),
+        "hdPlayerAdbOnline": "\tdevice" in ((hd_player.get("sdkAdb") or {}).get("stdout", "")),
+        "lateProcessCount": len(late_processes),
+        "probeFile": str(PORTABLE_PROBE),
     }
 
 
 def main() -> None:
     paths = detect_paths()
     oracle_candidate = detect_oracle_candidate()
+    portable_candidate = detect_portable_client_candidate()
     has_portable_candidate = (
         paths["oracleVirtualBox"]
         and paths["portableBlueStacksVmConfig"]
@@ -61,9 +92,10 @@ def main() -> None:
         preferred = "OracleVBox-BlueStacks-N32-portable-candidate"
         note = (
             "The strongest reopen path is now the locally unpacked BlueStacks Nougat32 guest "
-            "registered under Oracle VirtualBox. The candidate runtime reaches a stable no-reset boot "
-            "shape under the oracle-ide-primaryslave-piix3-vga profile, but adb is still not online, "
-            "so Route A remains blocked."
+            "registered under Oracle VirtualBox. The Oracle VBox candidate reaches a stable no-reset boot "
+            "shape under the oracle-ide-primaryslave-piix3-vga profile, but it still stalls before guest "
+            "userspace or adb-online observability. The portable BlueStacks client path is also blocked: "
+            "BstkVMMgr still reports REGDB_E_CLASSNOTREG and HD-Player does not bring up a live guest."
         )
     else:
         preferred = "BlueStacks5-ARM32-or-ARM-instance"
@@ -75,7 +107,9 @@ def main() -> None:
         "preferredReopenPath": preferred,
         "localPresence": paths,
         "oracleVBoxPortableCandidate": oracle_candidate,
+        "portableBlueStacksClientCandidate": portable_candidate,
         "readyNow": bool(oracle_candidate.get("adbOnline"))
+        or bool(portable_candidate.get("hdPlayerAdbOnline"))
         or paths["bluestacksProgramFiles"]
         or paths["bluestacksProgramData"]
         or paths["wsaPackage"],

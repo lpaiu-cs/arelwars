@@ -22,8 +22,13 @@ The blocker is narrower than before:
 - a local Oracle VBox candidate runtime now exists
 - but it still does not expose a usable `adb-online` original process
 - the original APK is therefore still not installable/observable inside a validated oracle environment
+- the Oracle guest still stalls before OS detection, serial output, or real root/data disk activity
+- the portable BlueStacks client path is blocked separately by `REGDB_E_CLASSNOTREG` and a non-bootstrapping `HD-Player.exe`
 
-The current best evidence is in [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md).
+The current best evidence is in:
+
+- [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md)
+- [aw2-bluestacks-portable-launch-probe.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-portable-launch-probe.md)
 
 ## What Improved
 

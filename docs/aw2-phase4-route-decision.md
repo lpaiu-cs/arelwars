@@ -23,6 +23,13 @@ But that candidate is still below the Route A threshold:
 - no `adb-online` guest
 - no successful install of the original APK
 - no live original scene capture
+- no guest OS detection through `debugvm`
+- empty UART capture and only `1024` boot-disk bytes read
+
+The portable BlueStacks client path also fails independently:
+
+- `BstkVMMgr.exe` is blocked by `REGDB_E_CLASSNOTREG`
+- `HD-Player.exe` exits without creating a live guest runtime
 
 So `Route A` is not approved yet.
 

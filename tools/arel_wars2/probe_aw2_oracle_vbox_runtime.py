@@ -5,9 +5,9 @@ import json
 import socket
 import shutil
 import subprocess
-import sys
 import time
 import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -305,6 +305,50 @@ def adb_devices(adb: Path) -> str:
     return maybe_run([str(adb), "devices", "-l"], timeout=30).stdout
 
 
+def guestproperty_enumerate(vboxmanage: Path, vm_name: str) -> subprocess.CompletedProcess[str]:
+    return maybe_run([str(vboxmanage), "guestproperty", "enumerate", vm_name], timeout=60)
+
+
+def debugvm_osdetect(vboxmanage: Path, vm_name: str) -> subprocess.CompletedProcess[str]:
+    return maybe_run([str(vboxmanage), "debugvm", vm_name, "osdetect"], timeout=60)
+
+
+def debugvm_osinfo(vboxmanage: Path, vm_name: str) -> subprocess.CompletedProcess[str]:
+    return maybe_run([str(vboxmanage), "debugvm", vm_name, "osinfo"], timeout=60)
+
+
+def debugvm_statistics(vboxmanage: Path, vm_name: str) -> subprocess.CompletedProcess[str]:
+    return maybe_run(
+        [
+            str(vboxmanage),
+            "debugvm",
+            vm_name,
+            "statistics",
+            "--pattern",
+            "/Public/Storage/*|/Public/NetAdapter/*|/TM/CPU/*",
+        ],
+        timeout=60,
+    )
+
+
+def read_serial_log(serial_log: Path) -> dict[str, object]:
+    if not serial_log.exists():
+        return {
+            "path": str(serial_log),
+            "exists": False,
+            "bytes": 0,
+            "head": "",
+        }
+    data = serial_log.read_bytes()
+    return {
+        "path": str(serial_log),
+        "exists": True,
+        "bytes": len(data),
+        "head": data[:2048].decode("latin1", errors="replace"),
+        "lastWriteTimeUtc": datetime.fromtimestamp(serial_log.stat().st_mtime, timezone.utc).isoformat(),
+    }
+
+
 def test_tcp(host: str, port: int, timeout: float = 1.0) -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.settimeout(timeout)
@@ -323,6 +367,7 @@ def capture_variant(
     out_dir: Path,
     variant: str,
     wait_seconds: int,
+    serial_log: Path,
 ) -> dict:
     ensure_dir(out_dir)
     ensure_registered(vboxmanage, vm_name, vm_file)
@@ -332,6 +377,8 @@ def capture_variant(
     patch_vm_xml(vm_file, data_uuid, variant)
     apply_runtime_vm_settings(vboxmanage, vm_name, variant)
     ensure_nat_pf(vboxmanage, vm_name)
+    ensure_dir(serial_log.parent)
+    serial_log.write_bytes(b"")
     time.sleep(5)
 
     start = run_retry([str(vboxmanage), "startvm", vm_name, "--type", "headless"], timeout=60)
@@ -345,6 +392,11 @@ def capture_variant(
     info = show_vminfo(vboxmanage, vm_name)
     adb_text = adb_devices(adb)
     tcp_open = test_tcp("127.0.0.1", 5555)
+    guestproperty = guestproperty_enumerate(vboxmanage, vm_name)
+    osdetect = debugvm_osdetect(vboxmanage, vm_name)
+    osinfo = debugvm_osinfo(vboxmanage, vm_name)
+    statistics = debugvm_statistics(vboxmanage, vm_name)
+    serial_info = read_serial_log(serial_log)
     log_text = (vm_file.parent / "Logs" / "VBox.log").read_text(encoding="utf-8", errors="replace")
     log_tail = "\n".join(log_text.splitlines()[-160:])
 
@@ -359,6 +411,19 @@ def capture_variant(
         "showvminfo": info,
         "adbDevices": adb_text,
         "adbTcp5555Open": tcp_open,
+        "guestPropertyRc": guestproperty.returncode,
+        "guestPropertyStdout": guestproperty.stdout,
+        "guestPropertyStderr": guestproperty.stderr,
+        "osdetectRc": osdetect.returncode,
+        "osdetectStdout": osdetect.stdout,
+        "osdetectStderr": osdetect.stderr,
+        "osinfoRc": osinfo.returncode,
+        "osinfoStdout": osinfo.stdout,
+        "osinfoStderr": osinfo.stderr,
+        "debugStatisticsRc": statistics.returncode,
+        "debugStatisticsStdout": statistics.stdout,
+        "debugStatisticsStderr": statistics.stderr,
+        "serialLog": serial_info,
         "screenshotPath": str(screenshot),
         "screenshotExists": screenshot.exists(),
         "screenshotCommandRc": screenshot_result.returncode,
@@ -389,6 +454,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         default=r"C:\vs\other\arelwars\recovery\arel_wars2\native_tmp\oracle_vbox_probe",
+    )
+    parser.add_argument(
+        "--serial-log",
+        default=r"C:\vs\other\arelwars\recovery\arel_wars2\native_tmp\oracle_serial\nougat32-com1.log",
     )
     parser.add_argument(
         "--variant",
@@ -424,6 +493,7 @@ def main() -> int:
         out_dir=out_dir,
         variant=args.variant,
         wait_seconds=args.wait_seconds,
+        serial_log=Path(args.serial_log),
     )
     ensure_dir(out_dir)
     out_file = out_dir / f"{args.variant}.json"
