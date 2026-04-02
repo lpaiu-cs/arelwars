@@ -516,6 +516,19 @@ export interface RecoveryBattleResolutionState {
   questRewardReady: boolean
 }
 
+export interface RecoveryCampaignState {
+  currentNodeIndex: number
+  unlockedNodeCount: number
+  clearedStageCount: number
+  totalNodeCount: number
+  activeStageTitle: string
+  activeFamilyId: string
+  routeLabel: string
+  nextUnlockLabel: string | null
+  lastResolvedStageTitle: string | null
+  lastOutcome: 'victory' | 'defeat' | null
+}
+
 export interface RecoveryBattlePreviewState {
   lanes: RecoveryLaneBattleState[]
   selectedLane: 'upper' | 'lower' | null
@@ -534,6 +547,7 @@ export interface RecoveryStageSnapshot {
   frameIndex: number
   elapsedStoryboardMs: number
   currentStoryboard: RecoveryStageStoryboard
+  campaignState: RecoveryCampaignState
   activeDialogueEvent: RecoveryDialogueEvent | null
   activeTutorialCue: RecoveryTutorialChainCue | null
   activeOpcodeCue: RecoveryResolvedOpcodeCue | null

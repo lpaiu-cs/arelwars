@@ -271,6 +271,14 @@ export class RecoveryStageSystem {
 
   private battleResolutionAutoAdvanceAtMs = 0
 
+  private campaignUnlockedStageCount = 1
+
+  private readonly campaignClearedStoryboardIds = new Set<string>()
+
+  private campaignLastResolvedStageTitle: string | null = null
+
+  private campaignLastOutcome: 'victory' | 'defeat' | null = null
+
   private lastActionId: RecoveryGameplayActionId | null = null
 
   private lastActionAccepted = false
@@ -362,6 +370,7 @@ export class RecoveryStageSystem {
       frameIndex: this.frameIndex,
       elapsedStoryboardMs: Math.max(this.lastUpdateNowMs - this.storyboardStartedAtMs, 0),
       currentStoryboard,
+      campaignState: this.buildCampaignState(currentStoryboard),
       activeDialogueEvent,
       activeTutorialCue,
       activeOpcodeCue,
@@ -412,7 +421,7 @@ export class RecoveryStageSystem {
 
     if (this.battleResolutionOutcome) {
       if (this.battleResolutionAutoAdvanceAtMs > 0 && nowMs >= this.battleResolutionAutoAdvanceAtMs) {
-        this.advanceStoryboard(nowMs)
+        this.advanceCampaign(nowMs)
         this.version += 1
         return true
       }
@@ -437,16 +446,7 @@ export class RecoveryStageSystem {
   }
 
   private resetDeadlines(nowMs: number): void {
-    const storyboard = this.storyboards[this.storyboardIndex]
-    this.dialogueIndex = 0
-    this.frameIndex = 0
-    this.storyboardStartedAtMs = nowMs
-    this.lastChannelBeat = -1
-    this.resetInteractionState()
-    this.seedBattlePreviewState(storyboard)
-    this.applyDialogueBeat(storyboard, this.currentDialogueEvent(storyboard))
-    this.nextDialogueAtMs = nowMs + this.currentDialogueDuration()
-    this.scheduleNextFrame(storyboard.previewStem, nowMs)
+    this.activateStoryboard(this.storyboardIndex, nowMs)
   }
 
   private currentDialogueDuration(): number {
@@ -474,12 +474,12 @@ export class RecoveryStageSystem {
   private stepDialogue(nowMs: number): void {
     const storyboard = this.storyboards[this.storyboardIndex]
     if (storyboard.scriptEvents.length <= 1) {
-      this.advanceStoryboard(nowMs)
+      this.nextDialogueAtMs = Number.POSITIVE_INFINITY
       return
     }
 
     if (this.dialogueIndex >= storyboard.scriptEvents.length - 1) {
-      this.advanceStoryboard(nowMs)
+      this.nextDialogueAtMs = Number.POSITIVE_INFINITY
       return
     }
 
@@ -488,17 +488,49 @@ export class RecoveryStageSystem {
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration()
   }
 
-  private advanceStoryboard(nowMs: number): void {
-    this.storyboardIndex = (this.storyboardIndex + 1) % this.storyboards.length
+  private activateStoryboard(index: number, nowMs: number, dialogueGapMs: number = 0): void {
+    this.storyboardIndex = index
     this.dialogueIndex = 0
     this.frameIndex = 0
     this.storyboardStartedAtMs = nowMs
     this.lastChannelBeat = -1
     this.resetInteractionState()
-    this.seedBattlePreviewState(this.storyboards[this.storyboardIndex])
-    this.applyDialogueBeat(this.storyboards[this.storyboardIndex], this.currentDialogueEvent(this.storyboards[this.storyboardIndex]))
-    this.nextDialogueAtMs = nowMs + this.currentDialogueDuration() + STORYBOARD_GAP_MS
-    this.scheduleNextFrame(this.storyboards[this.storyboardIndex].previewStem, nowMs)
+    const storyboard = this.storyboards[this.storyboardIndex]
+    this.seedBattlePreviewState(storyboard)
+    this.applyDialogueBeat(storyboard, this.currentDialogueEvent(storyboard))
+    this.nextDialogueAtMs = nowMs + this.currentDialogueDuration() + dialogueGapMs
+    this.scheduleNextFrame(storyboard.previewStem, nowMs)
+  }
+
+  private advanceCampaign(nowMs: number): void {
+    if (this.battleResolutionOutcome === 'victory') {
+      const unlockedCount = Math.max(this.campaignUnlockedStageCount, 1)
+      const nextIndex = (this.storyboardIndex + 1) % unlockedCount
+      this.activateStoryboard(nextIndex, nowMs, STORYBOARD_GAP_MS)
+      return
+    }
+    this.activateStoryboard(this.storyboardIndex, nowMs, STORYBOARD_GAP_MS)
+  }
+
+  private buildCampaignState(currentStoryboard: RecoveryStageStoryboard) {
+    const activeStageTitle = currentStoryboard.stageBlueprint?.title ?? currentStoryboard.scriptPath
+    const nextUnlock = this.campaignUnlockedStageCount < this.storyboards.length
+      ? this.storyboards[this.campaignUnlockedStageCount]?.stageBlueprint?.title
+        ?? this.storyboards[this.campaignUnlockedStageCount]?.scriptPath
+        ?? null
+      : null
+    return {
+      currentNodeIndex: this.storyboardIndex + 1,
+      unlockedNodeCount: Math.max(this.campaignUnlockedStageCount, 1),
+      clearedStageCount: this.campaignClearedStoryboardIds.size,
+      totalNodeCount: this.storyboards.length,
+      activeStageTitle,
+      activeFamilyId: currentStoryboard.scriptFamilyId,
+      routeLabel: currentStoryboard.stageBlueprint?.mapBinding?.storyBranch ?? 'route-unknown',
+      nextUnlockLabel: nextUnlock,
+      lastResolvedStageTitle: this.campaignLastResolvedStageTitle,
+      lastOutcome: this.campaignLastOutcome,
+    }
   }
 
   private currentFrame(entry: RecoveryPreviewStem): RecoveryPreviewFrame | null {
@@ -863,9 +895,19 @@ export class RecoveryStageSystem {
     if (this.battleResolutionOutcome) {
       return
     }
+    const currentStoryboard = this.storyboards[this.storyboardIndex]
     this.battleResolutionOutcome = outcome
     this.battleResolutionReason = reason
     this.battleResolutionAutoAdvanceAtMs = this.lastUpdateNowMs + RESULT_HOLD_MS
+    this.campaignLastResolvedStageTitle = currentStoryboard?.stageBlueprint?.title ?? currentStoryboard?.scriptPath ?? null
+    this.campaignLastOutcome = outcome
+    if (outcome === 'victory' && currentStoryboard && !this.campaignClearedStoryboardIds.has(currentStoryboard.id)) {
+      this.campaignClearedStoryboardIds.add(currentStoryboard.id)
+      this.campaignUnlockedStageCount = Math.min(
+        Math.max(this.campaignUnlockedStageCount, this.campaignClearedStoryboardIds.size + 1),
+        this.storyboards.length,
+      )
+    }
     if (outcome === 'victory') {
       this.currentObjectivePhase = 'quest-resolution'
       this.currentObjectiveLabel = 'stage clear, collect rewards, advance'
