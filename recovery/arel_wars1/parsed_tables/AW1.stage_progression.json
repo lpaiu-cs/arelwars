@@ -86,6 +86,15 @@
       "aiTitleCandidate": "First Battle",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Infantryman Unit Card.",
       "aiHintCandidate": "!cffffffThe enemy Knolls have low stats, but they can be threatening in groups. !c00ffffUse your hero!cffffff to eliminate them before they gather.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000005e80300000a000105050100",
+        "stageScalarCandidate": 256005,
+        "tierCandidate": 10,
+        "variantCandidate": 1,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "battle"
       ],
@@ -170,6 +179,15 @@
       "aiTitleCandidate": "Buster Hunt",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Gold.",
       "aiHintCandidate": "!cffffffInfantrymen are incapable of fighting alone. !c00ffffAllocate at least!cffffff !c00ffff2 or more Infantrymen!cffffff at the same time for maximum results.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000005e80300000a000205050100",
+        "stageScalarCandidate": 256005,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "buster"
       ],
@@ -257,6 +275,15 @@
       "aiTitleCandidate": "Seize Veril",
       "aiRewardCandidate": "Upgrade your population for 1 or more times while in the stage to receive a bonus reward: Level  1 Panzer Unit Card.",
       "aiHintCandidate": "!cffffffTo deal with an army of enemies, !c00ffffyou must upgrade!cffffff !c00ffffyour population at the Tower menu!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000019e80300000a000205050000",
+        "stageScalarCandidate": 256025,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "unit",
@@ -333,6 +360,15 @@
       "aiTitleCandidate": "Into the Enemy Camp",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: 200 Gold.",
       "aiHintCandidate": "!cffffffThe enemy Short Hair is a fast, aggressive unit. !c00ffffUse Panzers with high Defense!cffffff !c00ffffto hold off Short Hairs!cffffff from advancing to your tower.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000fd00700000a000205050100",
+        "stageScalarCandidate": 512015,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "more"
@@ -406,6 +442,15 @@
       "aiTitleCandidate": "Arang's Challenge",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: 200 Cash. (Can be used to unlock an additional slot.)",
       "aiHintCandidate": "!cffffffArang is a threatening attacker. !c00ffffUse Panzers!cffffff !c00ffffto protect Vincent!cffffff while fighting.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000fd00700000a000305050100",
+        "stageScalarCandidate": 512015,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "can",
@@ -489,6 +534,15 @@
       "aiTitleCandidate": "Seize Kaleck",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Calvary Unit Card.",
       "aiHintCandidate": "!cffffff!c00ffffProduce Panzers quickly!cffffff before the enemy approaches your tower.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000002dd00700000a000305050000",
+        "stageScalarCandidate": 512045,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": [
@@ -554,6 +608,15 @@
       "aiTitleCandidate": "Bittersweet Return",
       "aiRewardCandidate": "Upgrade your mana for 1 or more times while in the stage to receive a bonus reward: Level  1 Hunter Unit Card.",
       "aiHintCandidate": "!cffffffYou can produce more advanced units at a higher Mana Level. !c00ffffUse the Tower menu!cffffff !c00ffffto upgrade your mana!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000fb80b00000a000105050100",
+        "stageScalarCandidate": 768015,
+        "tierCandidate": 10,
+        "variantCandidate": 1,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": [
@@ -627,6 +690,15 @@
       "aiTitleCandidate": "Buster Retaliation",
       "aiRewardCandidate": "Clear the stage without losing more than 5 units to receive a bonus reward: 1000 Gold.",
       "aiHintCandidate": "!cffffff!cff0005Minotaurs!cffffff boast !cff0005high Defense!cffffff. Deal with them using !c00ffffHunters!cffffff !c00ffffwith high Attack Strength!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": [
@@ -705,6 +777,15 @@
       "aiTitleCandidate": "New Enemy",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Spearman Unit Card.",
       "aiHintCandidate": "!cffffffTo deal with a variety of enemy units, !c00ffffdefend with Panzers!cffffff  and !c00ffffattack with Hunters!cffffff  for smooth combat.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -777,6 +858,15 @@
       "aiTitleCandidate": "Reclaim Iron",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Thief Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Arbalests!cffffff inflicts piercing damage !cff0005on multiple targets!cffffff.  Make sure to eliminate them!cffffff using !c00ffffthe area-effective Spearmen!cffffff before ",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000305050000",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "iron"
       ],
@@ -850,6 +940,15 @@
       "aiTitleCandidate": "Road to Lydia",
       "aiRewardCandidate": "Upgrade your mana for 2 or more times while in the stage to receive a bonus reward: 200 Cash.",
       "aiHintCandidate": "!cffffffAre your units too weak? Use Gold or Cash and upgrade your units for enhanced powers.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000aa00f00000a000305050100",
+        "stageScalarCandidate": 1024010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "more"
@@ -906,6 +1005,15 @@
       "aiTitleCandidate": "Surrounding Enemies",
       "aiRewardCandidate": "Upgrade your Attack/Defense for 1 or more times while in the stage to receive a bonus reward: Level  1 Rider Unit Card.",
       "aiHintCandidate": "!cffffffIt is difficult to deal with multiple enemies using only the default slots. !c00ffffExtend your slots!cffffff for smoother gameplay.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000a00f00000a000205050100",
+        "stageScalarCandidate": 1024000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "attack",
@@ -1000,6 +1108,15 @@
       "aiTitleCandidate": "Reclaim Lydia",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 200 Cash.",
       "aiHintCandidate": "!cffffffIf you have a hard time clearing a stage, use !c00ffffitems!cffffff.  You can also try to change the !c00ffffskills!cffffff of your hero.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000a00f00000a000205050000",
+        "stageScalarCandidate": 1024000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "lydia"
       ],
@@ -1091,6 +1208,15 @@
       "aiTitleCandidate": "Evacuate the Palace",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: Level  1 Artillery Unit Card.",
       "aiHintCandidate": "!cffffffUse !c00ffffPanzers!cffffff to hold off the enemy !cff0005horsemen!cffffff while attacking their !cff0005hunters!cffffff with your !c00ffffhorsemen!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000a00f00000a000205050000",
+        "stageScalarCandidate": 1024000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "palace"
       ],
@@ -1145,6 +1271,15 @@
       "aiTitleCandidate": "To the Free Trade Harbor",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "!cffffff!cff0005Cavalry and Riders!cffffff boast a !cff0005high Movement Speed!cffffff.  Beware of a possible raid.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014e80300000a000305050100",
+        "stageScalarCandidate": 256020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -1189,6 +1324,15 @@
       "aiTitleCandidate": "Persistent Pursuers",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Medic Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Thieves!cffffff can steal mana, but they are vulnerable to melee attacks.  Use them to!c00ffff eliminate the enemy units quickly!cffffff before they do.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000881300000a000206050100",
+        "stageScalarCandidate": 1280000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": [
@@ -1249,6 +1393,15 @@
       "aiTitleCandidate": "Hindsight",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: 2000 Gold.",
       "aiHintCandidate": "!cffffffPosition !c00ffffMedics!cffffff right behind !c00ffffPanzers!cffffff to keep them alive for a longer duration.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000881300000a000206050100",
+        "stageScalarCandidate": 1280000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": [
@@ -1326,6 +1479,15 @@
       "aiTitleCandidate": "Defend the Free Trade Harbor",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Glider Unit Card.",
       "aiHintCandidate": "!cffffffDeal with the enemy !cff0005pairs of Panzer and Medic!cffffff using !c00ffffArtillery!cffffff units.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000881300000a000206050000",
+        "stageScalarCandidate": 1280000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "free",
         "harbor",
@@ -1401,6 +1563,15 @@
       "aiTitleCandidate": "The Mysterious Elven",
       "aiRewardCandidate": "Clear the stage without using aerial units to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "!cffffffUse !c00ffffArtillery!cffffff units to attack the enemy while keeping !cff0005Sword Masters!cffffff at bay.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000206050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "elven"
       ],
@@ -1460,6 +1631,15 @@
       "aiTitleCandidate": "Purpose of the Elven",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Shielder Unit Card.",
       "aiHintCandidate": "!cffffffThe enemy !cff0005Casters!cffffff use magic to !cff0005attack your long-ranged/support!cffffff !cff0005units!cffffff. Make sure to guard your !c00ffffMedics and Artillery!cffffff uni",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000206050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "elven"
       ],
@@ -1524,6 +1704,15 @@
       "aiTitleCandidate": "Meeting with Juno",
       "aiRewardCandidate": "Clear the stage without using aerial units to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "units"
@@ -1603,6 +1792,15 @@
       "aiTitleCandidate": "Meaningless War",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Gun Cavalry Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "war"
       ],
@@ -1684,6 +1882,15 @@
       "aiTitleCandidate": "Strange Busters",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000a102700000a000206050100",
+        "stageScalarCandidate": 2560010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "busters"
       ],
@@ -1763,6 +1970,15 @@
       "aiTitleCandidate": "Rencounter",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Bomber Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000206050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -1837,6 +2053,15 @@
       "aiTitleCandidate": "Proxy Lab",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050000",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "lab"
       ],
@@ -1893,6 +2118,15 @@
       "aiTitleCandidate": "Remnants Subjugation",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: Level  1 Interceptor Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000003c102700000a000406050100",
+        "stageScalarCandidate": 2560060,
+        "tierCandidate": 10,
+        "variantCandidate": 4,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "remnants"
       ],
@@ -1966,6 +2200,15 @@
       "aiTitleCandidate": "Agger Again",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050000",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "agger"
       ],
@@ -2032,6 +2275,15 @@
       "aiTitleCandidate": "The Conspiring Proxies",
       "aiRewardCandidate": "Clear the stage in 4 minutes to receive a bonus reward: Level  1 Infantry Officer Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -2112,6 +2364,15 @@
       "aiTitleCandidate": "Defeat Proxies",
       "aiRewardCandidate": "Clear the stage in 6 minutes to receive a bonus reward: 3000 Gold.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e00000a000306050000",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "proxies"
       ],
@@ -2172,6 +2433,15 @@
       "aiTitleCandidate": "Allying with Juno",
       "aiRewardCandidate": "Defend your tower for 6 or longer minutes before clearing the stage to receive a bonus reward: Level  1 Battleship Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e00000a000206050000",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -2248,6 +2518,15 @@
       "aiTitleCandidate": "Unveiled Secret",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014204e00000a000406050000",
+        "stageScalarCandidate": 5120020,
+        "tierCandidate": 10,
+        "variantCandidate": 4,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -2307,6 +2586,15 @@
       "aiTitleCandidate": "To Free Gear",
       "aiRewardCandidate": "Clear the stage in 5 minutes to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014204e00000a000407050100",
+        "stageScalarCandidate": 5120020,
+        "tierCandidate": 10,
+        "variantCandidate": 4,
+        "regionCandidate": 7,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "gear"
       ],
@@ -2357,6 +2645,15 @@
       "aiTitleCandidate": "Aerial Attacks",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000409050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -2427,6 +2724,15 @@
       "aiTitleCandidate": "Showdown",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000509050000",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "tower",
@@ -2484,6 +2790,15 @@
       "aiTitleCandidate": "To the Forgotten Isle",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "0100000064000000643075000014000509050000",
+        "stageScalarCandidate": 7680100,
+        "tierCandidate": 20,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "tower"
@@ -2536,6 +2851,15 @@
       "aiTitleCandidate": "Ambusher in the Ice Land",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000307500001e000509050000",
+        "stageScalarCandidate": 7680000,
+        "tierCandidate": 30,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy",
@@ -2587,6 +2911,15 @@
       "aiTitleCandidate": "Real Elite",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000307500001e000109050000",
+        "stageScalarCandidate": 7680000,
+        "tierCandidate": 30,
+        "variantCandidate": 1,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -2649,6 +2982,15 @@
       "aiTitleCandidate": "Resurrection Tower",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 5000 Gold.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000050c3000032000609050000",
+        "stageScalarCandidate": 12800000,
+        "tierCandidate": 50,
+        "variantCandidate": 6,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -2742,6 +3084,15 @@
       "aiTitleCandidate": "Looking for the Assailants",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Knoll Unit Card.",
       "aiHintCandidate": "!cffffffNormal units are not enough to hold off the enemy. !c00ffffUse your hero!cffffff to ensure your victory.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000005e80300000a000205050100",
+        "stageScalarCandidate": 256005,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "card",
@@ -2833,6 +3184,15 @@
       "aiTitleCandidate": "Missing Denizens",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Gold.",
       "aiHintCandidate": "!cffffffKnolls are incapable of fighting alone. !c00ffffAllocate at least!cffffff !c00ffff2 or more Knolls!cffffff at the same time for maximum results.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ae80300000a000205050100",
+        "stageScalarCandidate": 256010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy",
@@ -2898,6 +3258,15 @@
       "aiTitleCandidate": "To the Enemy Camp",
       "aiRewardCandidate": "Upgrade your population for 1 or more times while in the stage to receive a bonus reward: Level  1 Short Hair Unit Card.",
       "aiHintCandidate": "!cffffffTo deal with an army of enemies, !c00ffffyou must upgrade!cffffff !c00ffffyour population at the Tower menu!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000019e80300000a000205050100",
+        "stageScalarCandidate": 256025,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -2948,6 +3317,15 @@
       "aiTitleCandidate": "Atheum Search",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: Level  1 Foxbow Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Arbalests!cffffff inflict piercing !cff0005damage!cffffff on !cff0005multiple targets!cffffff. Use !c00ffffShort Hairs!cffffff to eliminate them quickly before their number i",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ad00700000a000205050000",
+        "stageScalarCandidate": 512010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -3022,6 +3400,15 @@
       "aiTitleCandidate": "Deeper and Deeper",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: 200 Cash. (Can be used to unlock an additional slot.)",
       "aiHintCandidate": "!cffffff!cff0005Dendroids!cffffff boast !cff0005high Defense!cffffff. Deal with them using !c00ffffFoxbows!cffffff !c00ffffwith high Attack Strength!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ad00700000a000205050100",
+        "stageScalarCandidate": 512010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -3111,6 +3498,15 @@
       "aiTitleCandidate": "Theon's Warning",
       "aiRewardCandidate": "Upgrade your mana for 1 or more times while in the stage to receive a bonus reward: Level  1 Minotaur Unit Card.",
       "aiHintCandidate": "!cffffffTheon is the equal of many units. !c00ffffUpgrade your mana!cffffff !c00ffffat the Tower menu!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000019d00700000a000205050100",
+        "stageScalarCandidate": 512025,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "more",
@@ -3182,6 +3578,15 @@
       "aiTitleCandidate": "Raging Helba",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: 400 Gold.",
       "aiHintCandidate": "!cffffff!cff0005Short Hairs!cffffff boast a !cff0005high Attack Speed!cffffff.  Deal with them using !c00ffffMinotaurs!cffffff !c00ffffwith high Defense!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000205050000",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "helba"
       ],
@@ -3244,6 +3649,15 @@
       "aiTitleCandidate": "Begone",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Bunny Unit Card.",
       "aiHintCandidate": "!cffffffTo deal with a variety of enemy units, !c00ffffdefend with Minotaurs!cffffff  and !c00ffffattack with Foxbows!cffffff  for smooth combat.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000fb80b00000a000205050100",
+        "stageScalarCandidate": 768015,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -3312,6 +3726,15 @@
       "aiTitleCandidate": "Enter the Hume",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: 1000 Gold.",
       "aiHintCandidate": "!cffffff!cff0005Panzers in groups!cffffff are almost impossible to penetrate. Use !c00ffffBunny's!cffffff !c00ffffarea-effective attacks!cffffff to cut down their number.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "hume"
       ],
@@ -3369,6 +3792,15 @@
       "aiTitleCandidate": "Expel the Hume",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Pigling Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Spearmen!cffffff push !cff0005multiple units!cffffff backward with !cff0005damage!cffffff. Eliminate them quickly before their number increases.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000305050100",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "hume"
       ],
@@ -3438,6 +3870,15 @@
       "aiTitleCandidate": "Raiders",
       "aiRewardCandidate": "Upgrade your mana for 2 or more times while in the stage to receive a bonus reward: 200 Cash.",
       "aiHintCandidate": "!cffffffAre your units too weak? Use Gold or Cash and upgrade your units for enhanced powers.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000a00f00000a000305050100",
+        "stageScalarCandidate": 1024000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -3517,6 +3958,15 @@
       "aiTitleCandidate": "Reclaim Tigus",
       "aiRewardCandidate": "Upgrade your Attack/Defense for 1 or more times while in the stage to receive a bonus reward: Level  1 Goblin Unit Card.",
       "aiHintCandidate": "!cffffffIt is difficult to deal with multiple enemies using only the default slots. !c00ffffExtend your slots!cffffff for smoother gameplay.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000a00f00000a000305050000",
+        "stageScalarCandidate": 1024000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "attack"
@@ -3583,6 +4033,15 @@
       "aiTitleCandidate": "Ragna Volcano",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 200 Cash.",
       "aiHintCandidate": "!cffffffIf you have a hard time clearing a stage, use !c00ffffitems!cffffff.  You can also try to change the !c00ffffskills!cffffff of your hero.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014a00f00000a000305050100",
+        "stageScalarCandidate": 1024020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy",
@@ -3655,6 +4114,15 @@
       "aiTitleCandidate": "Revoir",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: Level  1 Big Hippo Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Thieves!cffffff can steal mana, but they are vulnerable to melee attacks.  Use them to!c00ffff eliminate the enemy units quickly!cffffff before they do.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000a00f00000a000305050100",
+        "stageScalarCandidate": 1024000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "big",
@@ -3743,6 +4211,15 @@
       "aiTitleCandidate": "New Enemy",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "!cffffff!cff0005Goblins self-destruct!cffffff to inflict substantial damage, but they move slowly. Make sure to !c00ffffkeep them at bay!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014e80300000a000305050100",
+        "stageScalarCandidate": 256020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "new"
       ],
@@ -3814,6 +4291,15 @@
       "aiTitleCandidate": "The Demi-race",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Harpy Unit Card.",
       "aiHintCandidate": "!cffffff!c00ffffBig Hippos!cffffff boast high HP and Defense, as well as a high Movement Speed.  Use them to !c00ffffquickly approach the enemy!cffffff  !c00ffffand guard them off!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000881300000a000306050100",
+        "stageScalarCandidate": 1280000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -3877,6 +4363,15 @@
       "aiTitleCandidate": "Sword of Vengeance",
       "aiRewardCandidate": "Defend your tower for 5 or longer minutes before clearing the stage to receive a bonus reward: 2000 Gold.",
       "aiHintCandidate": "!cffffff!cff0005Spearmen!cffffff push !cff0005multiple units!cffffff backward with !cff0005damage!cffffff. Eliminate them quickly before their number increases.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014881300000a000306050100",
+        "stageScalarCandidate": 1280020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": [
@@ -3936,6 +4431,15 @@
       "aiTitleCandidate": "Aerial Enemy",
       "aiRewardCandidate": "Clear the stage without using aerial units to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "!cffffffCounter the enemy !cff0005Gliders!cffffff with your !c00ffffFoxbows!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000881300000a000306050100",
+        "stageScalarCandidate": 1280000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "enemy"
       ],
@@ -4007,6 +4511,15 @@
       "aiTitleCandidate": "The Persistent Hume",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Werewolf Unit Card.",
       "aiHintCandidate": "!cffffffUse !c00ffffBig Hippos!cffffff to quickly approach the enemy and guard them off, while your other units attack them.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "hume"
       ],
@@ -4090,6 +4603,15 @@
       "aiTitleCandidate": "Rogan's Attack",
       "aiRewardCandidate": "Defend your tower for 6 or longer minutes before clearing the stage to receive a bonus reward: Level  1 Rhino Unit Card.",
       "aiHintCandidate": "!cffffff!c00ffffWerewolves!cffffff boast extremely fast Attack and Movement Speeds, which is your advantage over the enemy !c00ffffarchers!cffffff, but is also weakness to !cff0005defensive!",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": [
@@ -4179,6 +4701,15 @@
       "aiTitleCandidate": "Meeting with Vincent",
       "aiRewardCandidate": "Clear the stage without using aerial units to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "vincent"
       ],
@@ -4263,6 +4794,15 @@
       "aiTitleCandidate": "Destroy the Lab",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Salamander Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050000",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "lab"
       ],
@@ -4335,6 +4875,15 @@
       "aiTitleCandidate": "Close Encounters",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050100",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -4392,6 +4941,15 @@
       "aiTitleCandidate": "Revealed Truth",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050100",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -4463,6 +5021,15 @@
       "aiTitleCandidate": "New Busters",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Cyclops Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050100",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "busters"
       ],
@@ -4540,6 +5107,15 @@
       "aiTitleCandidate": "The 2nd Lab",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: Level  1 Queen Bee Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050000",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -4592,6 +5168,15 @@
       "aiTitleCandidate": "Land of Promise",
       "aiRewardCandidate": "Defend your tower for 6 or longer minutes before clearing the stage to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "land"
       ],
@@ -4650,6 +5235,15 @@
       "aiTitleCandidate": "The Past of the Busters",
       "aiRewardCandidate": "Clear the stage without using aerial units to receive a bonus reward: 3000 Gold.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e00000a000306050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "busters"
       ],
@@ -4734,6 +5328,15 @@
       "aiTitleCandidate": "City of the Sun",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Behemoth Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e00000a000306050000",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "city",
         "sun"
@@ -4783,6 +5386,15 @@
       "aiTitleCandidate": "Lion King in Combat",
       "aiRewardCandidate": "Clear the stage in 5 minutes to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e00000a000307050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 7,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -4841,6 +5453,15 @@
       "aiTitleCandidate": "In Search of the Proxies",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000409050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -4933,6 +5554,15 @@
       "aiTitleCandidate": "Destroy Soul Crystal",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "0100000064000000643075000014000409050000",
+        "stageScalarCandidate": 7680100,
+        "tierCandidate": 20,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "crystal"
       ],
@@ -4987,6 +5617,15 @@
       "aiTitleCandidate": "Ambusher in the Ice Land",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000307500001e000409050000",
+        "stageScalarCandidate": 7680000,
+        "tierCandidate": 30,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy"
@@ -5033,6 +5672,15 @@
       "aiTitleCandidate": "Real Elite",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000307500001e000109050000",
+        "stageScalarCandidate": 7680000,
+        "tierCandidate": 30,
+        "variantCandidate": 1,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -5087,6 +5735,15 @@
       "aiTitleCandidate": "The Busters Forever",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 5000 Gold.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000050c3000032000509050000",
+        "stageScalarCandidate": 12800000,
+        "tierCandidate": 50,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "busters"
       ],
@@ -5173,6 +5830,15 @@
       "aiTitleCandidate": "To the Battlefield",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Slinger Unit Card.",
       "aiHintCandidate": "!c00ffffUse your hero!cffffff to eliminate the enemy quickly. Make sure to !c00ffffuse the rest units!cffffff !c00ffffto protect the hero!cffffff while he/she is out on the field.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000005e80300000a000105050100",
+        "stageScalarCandidate": 256005,
+        "tierCandidate": 10,
+        "variantCandidate": 1,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "battlefield"
       ],
@@ -5256,6 +5922,15 @@
       "aiTitleCandidate": "Enter the Hume Territory",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Dendroid Unit Card.",
       "aiHintCandidate": "!cffffffSlingers are incapable of fighting alone. !c00ffffAllocate at least!cffffff !c00ffff2 or more Slingers!cffffff at the same time for maximum results.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000005e80300000a000205050100",
+        "stageScalarCandidate": 256005,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "enter",
         "hume"
@@ -5341,6 +6016,15 @@
       "aiTitleCandidate": "Siege Iron",
       "aiRewardCandidate": "Upgrade your population for 1 or more times while in the stage to receive a bonus reward: 100 Gold.",
       "aiHintCandidate": "!cffffff!cff0005Martin!cffffff is a deadly foe. Rally an army by !c00ffffincreasing your population!cffffff !c00ffffat the Tower menu!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000064e80300000a000505050000",
+        "stageScalarCandidate": 256100,
+        "tierCandidate": 10,
+        "variantCandidate": 5,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "iron"
       ],
@@ -5399,6 +6083,15 @@
       "aiTitleCandidate": "Advancement Continues",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: Level  1 Scout Unit Card.",
       "aiHintCandidate": "!cffffffHold off the enemy !cff0005scouts!cffffff with Dendroids.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000fd00700000a000205050100",
+        "stageScalarCandidate": 512015,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -5458,6 +6151,15 @@
       "aiTitleCandidate": "Sharp Arrows",
       "aiRewardCandidate": "Upgrade your mana for 1 or more times while in the stage to receive a bonus reward: 200 Cash. (Can be used to unlock an additional slot.)",
       "aiHintCandidate": "!cffffffYou can produce more advanced units at a higher Mana Level. !c00ffffUse the Tower menu!cffffff !c00ffffto upgrade your mana!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000fd00700000a000105050100",
+        "stageScalarCandidate": 512015,
+        "tierCandidate": 10,
+        "variantCandidate": 1,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "arrows"
       ],
@@ -5531,6 +6233,15 @@
       "aiTitleCandidate": "Conquer Lydia",
       "aiRewardCandidate": "Defend your tower for 3 or longer minutes before clearing the stage to receive a bonus reward: Level  1 Arbalest Unit Card.",
       "aiHintCandidate": "!cffffffDeal with the enemy !cff0005hunters!cffffff with!N!c00ffffScouts!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ad00700000a000205050000",
+        "stageScalarCandidate": 512010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "lydia"
       ],
@@ -5590,6 +6301,15 @@
       "aiTitleCandidate": "Impenetrable Armor",
       "aiRewardCandidate": "Upgrade your Attack/Defense for 1 or more times while in the stage to receive a bonus reward: 400 Gold.",
       "aiHintCandidate": "!cffffff!cff0005Panzers in groups!cffffff are almost impossible to penetrate. Use !c00ffffArbalest's!cffffff !c00ffffpiercing attacks!cffffff to cut down their number.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "attack",
@@ -5669,6 +6389,15 @@
       "aiTitleCandidate": "Sage Theon",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Phalanx Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Theon!cffffff is a deadly foe. !c00ffffProtect your archers!cffffff from his attacks.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "theon"
       ],
@@ -5741,6 +6470,15 @@
       "aiTitleCandidate": "Invasion of the Busters",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: 1000 Gold.",
       "aiHintCandidate": "!cffffff!cff0005Piglings!cffffff !cff0005push multiple units!cffffff !cff0005backward with damage!cffffff. Eliminate them quickly before their number increases.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ab80b00000a000305050100",
+        "stageScalarCandidate": 768010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "busters"
       ],
@@ -5829,6 +6567,15 @@
       "aiTitleCandidate": "Reclaim Nortium",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Witch Unit Card.",
       "aiHintCandidate": "!cffffffTo deal with a variety of enemy units, !c00ffffdefend with Dendroids!cffffff  and !c00ffffattack with Arbalests!cffffff  for smooth combat.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000019b80b00000a000305050000",
+        "stageScalarCandidate": 768025,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -5888,6 +6635,15 @@
       "aiTitleCandidate": "The Suspicious Busters",
       "aiRewardCandidate": "Upgrade your mana for 2 or more times while in the stage to receive a bonus reward: 200 Cash.",
       "aiHintCandidate": "!cffffffAre your units too weak? Use Gold or Cash and upgrade your units for enhanced powers.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014a00f00000a000305050100",
+        "stageScalarCandidate": 1024020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "busters"
       ],
@@ -5942,6 +6698,15 @@
       "aiTitleCandidate": "To Atheum",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 200 Cash.",
       "aiHintCandidate": "!cffffffIt is difficult to deal with multiple enemies using only the default slots. !c00ffffExtend your slots!cffffff for smoother gameplay.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000aa00f00000a000305050100",
+        "stageScalarCandidate": 1024010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "atheum"
       ],
@@ -6028,6 +6793,15 @@
       "aiTitleCandidate": "Atheum Battle",
       "aiRewardCandidate": "Upgrade your Attack/Defense for 1 or more times while in the stage to receive a bonus reward: Level  1 Sword Master Unit Card.",
       "aiHintCandidate": "!cffffffIf you have a hard time clearing a stage, use !c00ffffitems!cffffff.  You can also try to change the !c00ffffskills!cffffff of your hero.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000aa00f00000a000305050000",
+        "stageScalarCandidate": 1024010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "atheum",
         "battle"
@@ -6106,6 +6880,15 @@
       "aiTitleCandidate": "To the Land of Seal",
       "aiRewardCandidate": "Clear the stage without losing more than 10 units to receive a bonus reward: Level  1 Caster Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Thieves!cffffff can steal mana, but they are vulnerable to melee attacks.  Use them to!c00ffff eliminate the enemy units quickly!cffffff before they do.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000aa00f00000a000305050100",
+        "stageScalarCandidate": 1024010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "seal"
       ],
@@ -6165,6 +6948,15 @@
       "aiTitleCandidate": "Mercenaries Detected",
       "aiRewardCandidate": "Clear the stage in 3 minutes to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "!cffffff!c00ffffSword Masters!cffffff boast high HP and are specialized in quick, powerful attacks. ",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000ae80300000a000305050100",
+        "stageScalarCandidate": 256010,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 5,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -6245,6 +7037,15 @@
       "aiTitleCandidate": "Raid the Mercenaries",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Triali Unit Card.",
       "aiHintCandidate": "!cffffffIf !cff0005the enemy hero enters the battle!cffffff, counter with !c00ffffyour!cffffff !c00ffffhero!cffffff in conjunction with offensive units.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014881300000a000306050100",
+        "stageScalarCandidate": 1280020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "mercenaries"
       ],
@@ -6334,6 +7135,15 @@
       "aiTitleCandidate": "Last Stand with Vincent",
       "aiRewardCandidate": "Defend your tower for 6 or longer minutes before clearing the stage to receive a bonus reward: 2000 Gold.",
       "aiHintCandidate": "!cffffffUse !c00ffffTrialis to inflict great damage on !cffffffmultiple enemies and push them backward.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014881300000a000306050100",
+        "stageScalarCandidate": 1280020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "last",
         "vincent"
@@ -6414,6 +7224,15 @@
       "aiTitleCandidate": "Pheonix Resurrected",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Siege Golem Unit Card.",
       "aiHintCandidate": "!cffffff!cff0005Siege Golems!cffffff boast incomparable Defense, but they move very slowly.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000e80300000a000306050000",
+        "stageScalarCandidate": 256000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "siege",
@@ -6513,6 +7332,15 @@
       "aiTitleCandidate": "The Revealed Proxies",
       "aiRewardCandidate": "Clear the stage without using aerial units to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "!cffffff!c00ffffWerewolves!cffffff boast extremely fast Attack and Movement Speeds, which is your advantage over the enemy !c00ffffarchers!cffffff, but is also weakness to !cff0005defensive!",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000206050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "proxies"
       ],
@@ -6574,6 +7402,15 @@
       "aiTitleCandidate": "Clue about the Lab",
       "aiRewardCandidate": "Defend your tower for 7 or longer minutes before clearing the stage to receive a bonus reward: Level  1 Griffin Rider Unit Card.",
       "aiHintCandidate": "!cffffffCounter the enemy !cff0005Gliders!cffffff with your !c00ffffArbalests!cffffff.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000206050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "lab"
       ],
@@ -6672,6 +7509,15 @@
       "aiTitleCandidate": "Destroy the Lab",
       "aiRewardCandidate": "Clear the stage without using aerial units to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000028102700000a000306050000",
+        "stageScalarCandidate": 2560040,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "destroy",
         "lab"
@@ -6739,6 +7585,15 @@
       "aiTitleCandidate": "Meeting with Helba",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: Level  1 Templar Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000003c102700000a000506050100",
+        "stageScalarCandidate": 2560060,
+        "tierCandidate": 10,
+        "variantCandidate": 5,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy"
@@ -6794,6 +7649,15 @@
       "aiTitleCandidate": "Another Lab",
       "aiRewardCandidate": "Clear the stage in 4 minutes to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050000",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "lab"
       ],
@@ -6866,6 +7730,15 @@
       "aiTitleCandidate": "March",
       "aiRewardCandidate": "Keep your hero alive throughout the stage to receive a bonus reward: Level  1 Sagittarius Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050100",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -6941,6 +7814,15 @@
       "aiTitleCandidate": "Raging Juno",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014102700000a000306050100",
+        "stageScalarCandidate": 2560020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy",
@@ -7006,6 +7888,15 @@
       "aiTitleCandidate": "Strained Collaboration",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "!cffffff!cff0005Bombers!cffffff deal excellent air-to-ground damage, but they are incapable of aerial attacks. !c00ffffWitch!cffffff the units wisely for smooth battle.",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy",
@@ -7075,6 +7966,15 @@
       "aiTitleCandidate": "Captured Friend",
       "aiRewardCandidate": "Clear the stage without losing more than 20 units to receive a bonus reward: Level  1 Archmage Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000028102700000a000306050100",
+        "stageScalarCandidate": 2560040,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -7145,6 +8045,15 @@
       "aiTitleCandidate": "Looking for Soul Crystal",
       "aiRewardCandidate": "Clear the stage in 4 minutes to receive a bonus reward: Level  1 Wyvern Rider Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -7185,6 +8094,15 @@
       "aiTitleCandidate": "Giant Enemy",
       "aiRewardCandidate": "Clear the stage without using infantry units to receive a bonus reward: 3000 Gold.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e00000a000306050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -7259,6 +8177,15 @@
       "aiTitleCandidate": "Premonition",
       "aiRewardCandidate": "Defend your tower for 9 or longer minutes before clearing the stage to receive a bonus reward: Level  1 Bishop Unit Card.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014204e00000a000306050100",
+        "stageScalarCandidate": 5120020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -7339,6 +8266,15 @@
       "aiTitleCandidate": "Bye, Lantere",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000003c204e00000a000406050000",
+        "stageScalarCandidate": 5120060,
+        "tierCandidate": 10,
+        "variantCandidate": 4,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [
         "lantere"
       ],
@@ -7401,6 +8337,15 @@
       "aiTitleCandidate": "Back to the Elven Forest",
       "aiRewardCandidate": "Clear the stage in 6 minutes to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000001e204e00000a000407050100",
+        "stageScalarCandidate": 5120030,
+        "tierCandidate": 10,
+        "variantCandidate": 4,
+        "regionCandidate": 7,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [],
       "hintTokenOverlap": []
@@ -7454,6 +8399,15 @@
       "aiTitleCandidate": "Sanctum Attack",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000509050000",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy"
@@ -7492,6 +8446,15 @@
       "aiTitleCandidate": "The World Tree",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000409050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "tree",
         "world"
@@ -7569,6 +8532,15 @@
       "aiTitleCandidate": "Raging Juno",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 4000 Gold.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000003c3075000014000509050100",
+        "stageScalarCandidate": 7680060,
+        "tierCandidate": 20,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      },
       "titleTokenOverlap": [
         "juno"
       ],
@@ -7623,6 +8595,15 @@
       "aiTitleCandidate": "Ambusher in the Ice Land",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 100 Cash.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000050307500001e000509050000",
+        "stageScalarCandidate": 7680080,
+        "tierCandidate": 30,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "tower"
@@ -7657,6 +8638,15 @@
       "aiTitleCandidate": "Real Elite",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 1 SP.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000307500001e000109050000",
+        "stageScalarCandidate": 7680000,
+        "tierCandidate": 30,
+        "variantCandidate": 1,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "enemy",
@@ -7710,6 +8700,15 @@
       "aiTitleCandidate": "Price of Justice",
       "aiRewardCandidate": "Defend your tower perfectly against enemy attacks to receive a bonus reward: 5000 Gold.",
       "aiHintCandidate": "",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000050c3000032000509050000",
+        "stageScalarCandidate": 12800000,
+        "tierCandidate": 50,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      },
       "titleTokenOverlap": [],
       "rewardTokenOverlap": [
         "your"
@@ -7721,97 +8720,268 @@
     {
       "aiIndex": 32,
       "title": "Defeat the Guards",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000409050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 37,
       "title": "Through a Shower of Arrows",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000064307500001e000609050000",
+        "stageScalarCandidate": 7680100,
+        "tierCandidate": 30,
+        "variantCandidate": 6,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      }
     },
     {
       "aiIndex": 67,
       "title": "To the East",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000102700000a000306050100",
+        "stageScalarCandidate": 2560000,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 69,
       "title": "Clear the Remnants",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000014204e00000a000306050100",
+        "stageScalarCandidate": 5120020,
+        "tierCandidate": 10,
+        "variantCandidate": 3,
+        "regionCandidate": 6,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 72,
       "title": "Mystic Island",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000409050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 74,
       "title": "Before the Final Battle",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000000204e000014000409050100",
+        "stageScalarCandidate": 5120000,
+        "tierCandidate": 20,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 77,
       "title": "Through a Shower of Arrows",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000064307500001e000509050000",
+        "stageScalarCandidate": 7680100,
+        "tierCandidate": 30,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      }
     },
     {
       "aiIndex": 114,
       "title": "In Pursuit of Manos",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000028204e000014000509050100",
+        "stageScalarCandidate": 5120040,
+        "tierCandidate": 20,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 117,
       "title": "Through a Shower of Arrows",
-      "kindGuess": "battle-only-or-unused"
+      "kindGuess": "battle-only-or-unused",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000064307500001e000509050000",
+        "stageScalarCandidate": 7680100,
+        "tierCandidate": 30,
+        "variantCandidate": 5,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      }
     },
     {
       "aiIndex": 120,
       "title": "Very Poor - Aggressive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "010000006400000005581b00000a000109050100",
+        "stageScalarCandidate": 1792005,
+        "tierCandidate": 10,
+        "variantCandidate": 1,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 121,
       "title": "Poor - Aggressive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000f581b00000a000209050100",
+        "stageScalarCandidate": 1792015,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 122,
       "title": "Poor - Defensive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000f581b00000a000209050100",
+        "stageScalarCandidate": 1792015,
+        "tierCandidate": 10,
+        "variantCandidate": 2,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 123,
       "title": "Poor - Progressive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000000f0852000014000209050100",
+        "stageScalarCandidate": 5376015,
+        "tierCandidate": 20,
+        "variantCandidate": 2,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 124,
       "title": "Normal - Aggressive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000001e0852000014000309050100",
+        "stageScalarCandidate": 5376030,
+        "tierCandidate": 20,
+        "variantCandidate": 3,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 125,
       "title": "Normal - Defensive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "01000000640000001e0852000014000309050100",
+        "stageScalarCandidate": 5376030,
+        "tierCandidate": 20,
+        "variantCandidate": 3,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 1
+      }
     },
     {
       "aiIndex": 126,
       "title": "Normal - Progressive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "00000000640000001eb88800001e000309050000",
+        "stageScalarCandidate": 8960030,
+        "tierCandidate": 30,
+        "variantCandidate": 3,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      }
     },
     {
       "aiIndex": 127,
       "title": "Rich - Aggressive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "000000006400000032b88800001e000409050000",
+        "stageScalarCandidate": 8960050,
+        "tierCandidate": 30,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      }
     },
     {
       "aiIndex": 128,
       "title": "Rich - Defensive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "000000006400000032b88800001e000409050000",
+        "stageScalarCandidate": 8960050,
+        "tierCandidate": 30,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      }
     },
     {
       "aiIndex": 129,
       "title": "Rich - Progressive",
-      "kindGuess": "ai-preset"
+      "kindGuess": "ai-preset",
+      "runtimeFieldCandidates": {
+        "blobPrefixHex": "0000000064000000327011010032000409050000",
+        "stageScalarCandidate": 17920050,
+        "tierCandidate": 50,
+        "variantCandidate": 4,
+        "regionCandidate": 9,
+        "constantMarkerCandidate": 5,
+        "storyFlagCandidate": 0
+      }
     }
   ]
 }

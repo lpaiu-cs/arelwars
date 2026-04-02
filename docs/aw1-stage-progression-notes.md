@@ -5,6 +5,7 @@ This note tracks the current best model for how AW1 story scripts and stage-defi
 Primary output:
 
 - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
+- [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
 
 ## Current Model
 
@@ -33,6 +34,38 @@ The important conclusion is that `XlsWorldmap` is not the same index space as `X
   - the remaining `9` are currently `battle-only-or-unused` candidates.
 
 This means `XlsAi` is not only a stage-title table. It also contains non-story scenario or AI-profile records.
+
+## Runtime Field Findings
+
+`AW1.stage_progression.json` now carries a compact runtime-field prefix for every script-backed stage row:
+
+- `stageScalarCandidate`
+- `tierCandidate`
+- `variantCandidate`
+- `regionCandidate`
+- `constantMarkerCandidate`
+- `storyFlagCandidate`
+
+Current strongest reading:
+
+- `regionCandidate`
+  - high-confidence chapter or region bucket
+  - story-backed rows cluster mostly into `5`, `6`, `7`, and `9`
+- `tierCandidate`
+  - medium-confidence progression tier
+  - currently clusters into `10`, `20`, `30`, `50`
+- `variantCandidate`
+  - medium-confidence local encounter or map variant selector
+  - small bounded range `1..6`
+- `storyFlagCandidate`
+  - medium-confidence binary story or cutscene toggle
+  - alternates between adjacent rows in a way that looks like intro/outro or story-enabled variants
+
+The strongest coarse story buckets so far are:
+
+- `(tier=10, region=5)` early human-territory arc
+- `(tier=10, region=6)` Juno/proxy arc
+- `(tier=20/30/50, region=9)` late-game island/finale arc
 
 ## Provisional Correlation Rule
 
@@ -86,9 +119,31 @@ This is still provisional, but it is already useful enough to drive targeted ver
 - Script-family previews are not enough to prove a perfect one-to-one stage binding.
 - Some titles only appear as later-story context, not in the first few lines.
 - Some `XlsAi` rows are clearly not story-backed stages.
+- `script family -> AI row` is much stronger than `AI row -> concrete map bin`.
+- `XlsWorldmap` still looks like a separate overworld graph, not a direct stage table.
+
+## Map Binding Candidates
+
+`AW1.map_binding_candidates.json` is now the main scratchpad for stage-to-map work.
+
+Current strongest findings:
+
+- `assets/map/*.zt1.bin` headers read cleanly as:
+  - `version`
+  - `layerCount`
+  - `width`
+  - `height`
+  - reserved fields
+  - `variantOrGroup`
+- file sizes roughly follow:
+  - `2 * layerCount * width * height + meta`
+- `XlsMap` currently exposes `5` non-zero group pairs and `3` zeroed placeholder pairs.
+- the most practical current hypothesis is:
+  - `XlsMap` non-zero group pairs line up with map-bin pairs `000/001` through `008/009`
+  - later map bins `010..015` are either unreferenced alternates, late-game-only maps, or attached through a different table path
 
 ## Next Steps
 
-1. Use the correlation report to review candidate matches with weak token overlap but strong speaker/arc overlap.
-2. Cross-reference candidate family ids against map/mission runtime data once `XlsMap` and related tables are better named.
-3. Promote rows with strong evidence from `candidate` to `confirmed` mappings.
+1. Use the runtime-field clusters to test whether `variantCandidate` or `regionCandidate` appears again in non-localized battle tables.
+2. Cross-reference `AW1.map_binding_candidates.json` against battle/runtime payloads to prove which table actually points at concrete map bins.
+3. Promote `script family -> AI row` links from `candidate` to `confirmed` as soon as a map or stage-control reference is found.

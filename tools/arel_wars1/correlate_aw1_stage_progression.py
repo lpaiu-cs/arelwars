@@ -6,6 +6,7 @@ from collections import defaultdict
 import json
 from pathlib import Path
 import re
+import struct
 
 
 TOKEN_RE = re.compile(r"[A-Za-z']+")
@@ -84,6 +85,26 @@ def classify_ai_row(title: str, has_script_family: bool) -> str:
     if title:
         return "battle-only-or-unused"
     return "unknown"
+
+
+def runtime_field_candidates(ai_record: dict[str, object] | None) -> dict[str, object] | None:
+    if not isinstance(ai_record, dict):
+        return None
+    numeric_block_hex = ai_record.get("numericBlockHex")
+    if not isinstance(numeric_block_hex, str):
+        return None
+    blob = bytes.fromhex(numeric_block_hex)
+    if len(blob) < 20:
+        return None
+    return {
+        "blobPrefixHex": blob[:20].hex(),
+        "stageScalarCandidate": struct.unpack_from("<I", blob, 8)[0],
+        "tierCandidate": blob[13],
+        "variantCandidate": blob[15],
+        "regionCandidate": blob[16],
+        "constantMarkerCandidate": blob[17],
+        "storyFlagCandidate": blob[18],
+    }
 
 
 def main() -> None:
@@ -173,6 +194,7 @@ def main() -> None:
                 "aiTitleCandidate": title,
                 "aiRewardCandidate": reward,
                 "aiHintCandidate": hint,
+                "runtimeFieldCandidates": runtime_field_candidates(ai_record),
                 "titleTokenOverlap": title_overlap,
                 "rewardTokenOverlap": reward_overlap,
                 "hintTokenOverlap": hint_overlap,
@@ -190,6 +212,7 @@ def main() -> None:
                 "aiIndex": index,
                 "title": title,
                 "kindGuess": classify_ai_row(title, has_script_family=False),
+                "runtimeFieldCandidates": runtime_field_candidates(record),
             }
         )
 

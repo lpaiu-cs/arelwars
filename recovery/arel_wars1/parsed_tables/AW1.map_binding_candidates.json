@@ -1,0 +1,2828 @@
+{
+  "scriptBackedStageCount": 111,
+  "worldmapNodeCount": 16,
+  "mapBinCount": 16,
+  "mapHeaders": [
+    {
+      "mapIndex": 0,
+      "file": "000.zt1.bin",
+      "fileSize": 7754,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 3,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 7440,
+      "headerAndMetaGuessBytes": 314
+    },
+    {
+      "mapIndex": 1,
+      "file": "001.zt1.bin",
+      "fileSize": 6314,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 3,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 6000,
+      "headerAndMetaGuessBytes": 314
+    },
+    {
+      "mapIndex": 2,
+      "file": "002.zt1.bin",
+      "fileSize": 7754,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 7440,
+      "headerAndMetaGuessBytes": 314
+    },
+    {
+      "mapIndex": 3,
+      "file": "003.zt1.bin",
+      "fileSize": 6257,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 6000,
+      "headerAndMetaGuessBytes": 257
+    },
+    {
+      "mapIndex": 4,
+      "file": "004.zt1.bin",
+      "fileSize": 7583,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 2,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 7440,
+      "headerAndMetaGuessBytes": 143
+    },
+    {
+      "mapIndex": 5,
+      "file": "005.zt1.bin",
+      "fileSize": 6143,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 2,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 6000,
+      "headerAndMetaGuessBytes": 143
+    },
+    {
+      "mapIndex": 6,
+      "file": "006.zt1.bin",
+      "fileSize": 5057,
+      "header": {
+        "version": 1,
+        "layerCount": 2,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 3,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 4960,
+      "headerAndMetaGuessBytes": 97
+    },
+    {
+      "mapIndex": 7,
+      "file": "007.zt1.bin",
+      "fileSize": 4097,
+      "header": {
+        "version": 1,
+        "layerCount": 2,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 3,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 4000,
+      "headerAndMetaGuessBytes": 97
+    },
+    {
+      "mapIndex": 8,
+      "file": "008.zt1.bin",
+      "fileSize": 10223,
+      "header": {
+        "version": 1,
+        "layerCount": 4,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 8,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 9920,
+      "headerAndMetaGuessBytes": 303
+    },
+    {
+      "mapIndex": 9,
+      "file": "009.zt1.bin",
+      "fileSize": 8322,
+      "header": {
+        "version": 1,
+        "layerCount": 4,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 9,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 8000,
+      "headerAndMetaGuessBytes": 322
+    },
+    {
+      "mapIndex": 10,
+      "file": "010.zt1.bin",
+      "fileSize": 7868,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 7440,
+      "headerAndMetaGuessBytes": 428
+    },
+    {
+      "mapIndex": 11,
+      "file": "011.zt1.bin",
+      "fileSize": 6352,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 6000,
+      "headerAndMetaGuessBytes": 352
+    },
+    {
+      "mapIndex": 12,
+      "file": "012.zt1.bin",
+      "fileSize": 7602,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 7440,
+      "headerAndMetaGuessBytes": 162
+    },
+    {
+      "mapIndex": 13,
+      "file": "013.zt1.bin",
+      "fileSize": 6162,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 6000,
+      "headerAndMetaGuessBytes": 162
+    },
+    {
+      "mapIndex": 14,
+      "file": "014.zt1.bin",
+      "fileSize": 7887,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 62,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 7440,
+      "headerAndMetaGuessBytes": 447
+    },
+    {
+      "mapIndex": 15,
+      "file": "015.zt1.bin",
+      "fileSize": 6352,
+      "header": {
+        "version": 1,
+        "layerCount": 3,
+        "width": 50,
+        "height": 20,
+        "reserved0": 0,
+        "reserved1": 0,
+        "variantOrGroup": 1,
+        "reserved2": 0
+      },
+      "tilePayloadGuessBytes": 6000,
+      "headerAndMetaGuessBytes": 352
+    }
+  ],
+  "mapGroupSummary": {
+    "activeNonZeroRowCount": 10,
+    "activeTemplatePairCount": 5,
+    "groupCandidates": [
+      {
+        "groupId": 0,
+        "rows": [
+          {
+            "index": 0,
+            "groupId": 0,
+            "reserved": 0,
+            "valueU16": 994,
+            "tailByte": 0,
+            "rawU8": [
+              0,
+              0,
+              226,
+              3,
+              0
+            ]
+          },
+          {
+            "index": 1,
+            "groupId": 0,
+            "reserved": 0,
+            "valueU16": 738,
+            "tailByte": 0,
+            "rawU8": [
+              0,
+              0,
+              226,
+              2,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          0,
+          1
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 0,
+            "layerCount": 3,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 3,
+            "fileSize": 7754,
+            "headerAndMetaGuessBytes": 314
+          },
+          {
+            "mapIndex": 1,
+            "layerCount": 3,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 3,
+            "fileSize": 6314,
+            "headerAndMetaGuessBytes": 314
+          }
+        ],
+        "hasNonZeroMetric": true
+      },
+      {
+        "groupId": 1,
+        "rows": [
+          {
+            "index": 2,
+            "groupId": 1,
+            "reserved": 0,
+            "valueU16": 728,
+            "tailByte": 0,
+            "rawU8": [
+              1,
+              0,
+              216,
+              2,
+              0
+            ]
+          },
+          {
+            "index": 3,
+            "groupId": 1,
+            "reserved": 0,
+            "valueU16": 984,
+            "tailByte": 0,
+            "rawU8": [
+              1,
+              0,
+              216,
+              3,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          2,
+          3
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 2,
+            "layerCount": 3,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 7754,
+            "headerAndMetaGuessBytes": 314
+          },
+          {
+            "mapIndex": 3,
+            "layerCount": 3,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 6257,
+            "headerAndMetaGuessBytes": 257
+          }
+        ],
+        "hasNonZeroMetric": true
+      },
+      {
+        "groupId": 2,
+        "rows": [
+          {
+            "index": 4,
+            "groupId": 2,
+            "reserved": 0,
+            "valueU16": 994,
+            "tailByte": 0,
+            "rawU8": [
+              2,
+              0,
+              226,
+              3,
+              0
+            ]
+          },
+          {
+            "index": 5,
+            "groupId": 2,
+            "reserved": 0,
+            "valueU16": 738,
+            "tailByte": 0,
+            "rawU8": [
+              2,
+              0,
+              226,
+              2,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          4,
+          5
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 4,
+            "layerCount": 3,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 2,
+            "fileSize": 7583,
+            "headerAndMetaGuessBytes": 143
+          },
+          {
+            "mapIndex": 5,
+            "layerCount": 3,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 2,
+            "fileSize": 6143,
+            "headerAndMetaGuessBytes": 143
+          }
+        ],
+        "hasNonZeroMetric": true
+      },
+      {
+        "groupId": 3,
+        "rows": [
+          {
+            "index": 6,
+            "groupId": 3,
+            "reserved": 0,
+            "valueU16": 1250,
+            "tailByte": 0,
+            "rawU8": [
+              3,
+              0,
+              226,
+              4,
+              0
+            ]
+          },
+          {
+            "index": 7,
+            "groupId": 3,
+            "reserved": 0,
+            "valueU16": 482,
+            "tailByte": 0,
+            "rawU8": [
+              3,
+              0,
+              226,
+              1,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          6,
+          7
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 6,
+            "layerCount": 2,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 3,
+            "fileSize": 5057,
+            "headerAndMetaGuessBytes": 97
+          },
+          {
+            "mapIndex": 7,
+            "layerCount": 2,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 3,
+            "fileSize": 4097,
+            "headerAndMetaGuessBytes": 97
+          }
+        ],
+        "hasNonZeroMetric": true
+      },
+      {
+        "groupId": 4,
+        "rows": [
+          {
+            "index": 8,
+            "groupId": 4,
+            "reserved": 0,
+            "valueU16": 1526,
+            "tailByte": 0,
+            "rawU8": [
+              4,
+              0,
+              246,
+              5,
+              0
+            ]
+          },
+          {
+            "index": 9,
+            "groupId": 4,
+            "reserved": 0,
+            "valueU16": 1014,
+            "tailByte": 0,
+            "rawU8": [
+              4,
+              0,
+              246,
+              3,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          8,
+          9
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 8,
+            "layerCount": 4,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 8,
+            "fileSize": 10223,
+            "headerAndMetaGuessBytes": 303
+          },
+          {
+            "mapIndex": 9,
+            "layerCount": 4,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 9,
+            "fileSize": 8322,
+            "headerAndMetaGuessBytes": 322
+          }
+        ],
+        "hasNonZeroMetric": true
+      },
+      {
+        "groupId": 5,
+        "rows": [
+          {
+            "index": 10,
+            "groupId": 5,
+            "reserved": 0,
+            "valueU16": 0,
+            "tailByte": 0,
+            "rawU8": [
+              5,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "index": 11,
+            "groupId": 5,
+            "reserved": 0,
+            "valueU16": 0,
+            "tailByte": 0,
+            "rawU8": [
+              5,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          10,
+          11
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 10,
+            "layerCount": 3,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 7868,
+            "headerAndMetaGuessBytes": 428
+          },
+          {
+            "mapIndex": 11,
+            "layerCount": 3,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 6352,
+            "headerAndMetaGuessBytes": 352
+          }
+        ],
+        "hasNonZeroMetric": false
+      },
+      {
+        "groupId": 6,
+        "rows": [
+          {
+            "index": 12,
+            "groupId": 6,
+            "reserved": 0,
+            "valueU16": 0,
+            "tailByte": 0,
+            "rawU8": [
+              6,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "index": 13,
+            "groupId": 6,
+            "reserved": 0,
+            "valueU16": 0,
+            "tailByte": 0,
+            "rawU8": [
+              6,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          12,
+          13
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 12,
+            "layerCount": 3,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 7602,
+            "headerAndMetaGuessBytes": 162
+          },
+          {
+            "mapIndex": 13,
+            "layerCount": 3,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 6162,
+            "headerAndMetaGuessBytes": 162
+          }
+        ],
+        "hasNonZeroMetric": false
+      },
+      {
+        "groupId": 7,
+        "rows": [
+          {
+            "index": 14,
+            "groupId": 7,
+            "reserved": 0,
+            "valueU16": 0,
+            "tailByte": 0,
+            "rawU8": [
+              7,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "index": 15,
+            "groupId": 7,
+            "reserved": 0,
+            "valueU16": 0,
+            "tailByte": 0,
+            "rawU8": [
+              7,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "candidateMapBinPair": [
+          14,
+          15
+        ],
+        "candidateMapHeaders": [
+          {
+            "mapIndex": 14,
+            "layerCount": 3,
+            "width": 62,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 7887,
+            "headerAndMetaGuessBytes": 447
+          },
+          {
+            "mapIndex": 15,
+            "layerCount": 3,
+            "width": 50,
+            "height": 20,
+            "variantOrGroup": 1,
+            "fileSize": 6352,
+            "headerAndMetaGuessBytes": 352
+          }
+        ],
+        "hasNonZeroMetric": false
+      }
+    ]
+  },
+  "stageRuntimeFieldSummary": {
+    "fieldHistograms": {
+      "tierCandidate": {
+        "10": 94,
+        "20": 8,
+        "30": 6,
+        "50": 3
+      },
+      "variantCandidate": {
+        "1": 7,
+        "2": 32,
+        "3": 51,
+        "4": 10,
+        "5": 10,
+        "6": 1
+      },
+      "regionCandidate": {
+        "5": 45,
+        "6": 46,
+        "7": 3,
+        "9": 17
+      },
+      "constantMarkerCandidate": {
+        "5": 111
+      },
+      "storyFlagCandidate": {
+        "0": 38,
+        "1": 73
+      }
+    },
+    "clustersByRegionVariant": [
+      {
+        "regionCandidate": 5,
+        "variantCandidate": 1,
+        "count": 4,
+        "indexRange": [
+          0,
+          84
+        ],
+        "indices": [
+          0,
+          6,
+          80,
+          84
+        ],
+        "titlePreview": [
+          "First Battle",
+          "Bittersweet Return",
+          "To the Battlefield",
+          "Sharp Arrows"
+        ],
+        "storyFlagHistogram": {
+          "1": 4
+        },
+        "tierHistogram": {
+          "10": 4
+        },
+        "variantHistogram": {
+          "1": 4
+        }
+      },
+      {
+        "regionCandidate": 5,
+        "variantCandidate": 2,
+        "count": 22,
+        "indexRange": [
+          1,
+          87
+        ],
+        "indices": [
+          1,
+          2,
+          3,
+          7,
+          8,
+          11,
+          12,
+          13,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          81,
+          83,
+          85,
+          86,
+          87
+        ],
+        "titlePreview": [
+          "Buster Hunt",
+          "Seize Veril",
+          "Into the Enemy Camp",
+          "Buster Retaliation",
+          "New Enemy",
+          "Surrounding Enemies",
+          "Reclaim Lydia",
+          "Evacuate the Palace"
+        ],
+        "storyFlagHistogram": {
+          "0": 6,
+          "1": 16
+        },
+        "tierHistogram": {
+          "10": 22
+        },
+        "variantHistogram": {
+          "2": 22
+        }
+      },
+      {
+        "regionCandidate": 5,
+        "variantCandidate": 3,
+        "count": 18,
+        "indexRange": [
+          4,
+          94
+        ],
+        "indices": [
+          4,
+          5,
+          9,
+          10,
+          14,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94
+        ],
+        "titlePreview": [
+          "Arang's Challenge",
+          "Seize Kaleck",
+          "Reclaim Iron",
+          "Road to Lydia",
+          "To the Free Trade Harbor",
+          "Expel the Hume",
+          "Raiders",
+          "Reclaim Tigus"
+        ],
+        "storyFlagHistogram": {
+          "0": 5,
+          "1": 13
+        },
+        "tierHistogram": {
+          "10": 18
+        },
+        "variantHistogram": {
+          "3": 18
+        }
+      },
+      {
+        "regionCandidate": 5,
+        "variantCandidate": 5,
+        "count": 1,
+        "indexRange": [
+          82,
+          82
+        ],
+        "indices": [
+          82
+        ],
+        "titlePreview": [
+          "Siege Iron"
+        ],
+        "storyFlagHistogram": {
+          "0": 1
+        },
+        "tierHistogram": {
+          "10": 1
+        },
+        "variantHistogram": {
+          "5": 1
+        }
+      },
+      {
+        "regionCandidate": 6,
+        "variantCandidate": 2,
+        "count": 10,
+        "indexRange": [
+          15,
+          99
+        ],
+        "indices": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          22,
+          23,
+          29,
+          98,
+          99
+        ],
+        "titlePreview": [
+          "Persistent Pursuers",
+          "Hindsight",
+          "Defend the Free Trade Harbor",
+          "The Mysterious Elven",
+          "Purpose of the Elven",
+          "Strange Busters",
+          "Rencounter",
+          "Allying with Juno"
+        ],
+        "storyFlagHistogram": {
+          "0": 2,
+          "1": 8
+        },
+        "tierHistogram": {
+          "10": 10
+        },
+        "variantHistogram": {
+          "2": 10
+        }
+      },
+      {
+        "regionCandidate": 6,
+        "variantCandidate": 3,
+        "count": 32,
+        "indexRange": [
+          20,
+          109
+        ],
+        "indices": [
+          20,
+          21,
+          24,
+          26,
+          27,
+          28,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          68,
+          70,
+          95,
+          96,
+          97,
+          100,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109
+        ],
+        "titlePreview": [
+          "Meeting with Juno",
+          "Meaningless War",
+          "Proxy Lab",
+          "Agger Again",
+          "The Conspiring Proxies",
+          "Defeat Proxies",
+          "The Demi-race",
+          "Sword of Vengeance"
+        ],
+        "storyFlagHistogram": {
+          "0": 9,
+          "1": 23
+        },
+        "tierHistogram": {
+          "10": 32
+        },
+        "variantHistogram": {
+          "3": 32
+        }
+      },
+      {
+        "regionCandidate": 6,
+        "variantCandidate": 4,
+        "count": 3,
+        "indexRange": [
+          25,
+          110
+        ],
+        "indices": [
+          25,
+          30,
+          110
+        ],
+        "titlePreview": [
+          "Remnants Subjugation",
+          "Unveiled Secret",
+          "Bye, Lantere"
+        ],
+        "storyFlagHistogram": {
+          "0": 2,
+          "1": 1
+        },
+        "tierHistogram": {
+          "10": 3
+        },
+        "variantHistogram": {
+          "4": 3
+        }
+      },
+      {
+        "regionCandidate": 6,
+        "variantCandidate": 5,
+        "count": 1,
+        "indexRange": [
+          101,
+          101
+        ],
+        "indices": [
+          101
+        ],
+        "titlePreview": [
+          "Meeting with Helba"
+        ],
+        "storyFlagHistogram": {
+          "1": 1
+        },
+        "tierHistogram": {
+          "10": 1
+        },
+        "variantHistogram": {
+          "5": 1
+        }
+      },
+      {
+        "regionCandidate": 7,
+        "variantCandidate": 3,
+        "count": 1,
+        "indexRange": [
+          71,
+          71
+        ],
+        "indices": [
+          71
+        ],
+        "titlePreview": [
+          "Lion King in Combat"
+        ],
+        "storyFlagHistogram": {
+          "1": 1
+        },
+        "tierHistogram": {
+          "10": 1
+        },
+        "variantHistogram": {
+          "3": 1
+        }
+      },
+      {
+        "regionCandidate": 7,
+        "variantCandidate": 4,
+        "count": 2,
+        "indexRange": [
+          31,
+          111
+        ],
+        "indices": [
+          31,
+          111
+        ],
+        "titlePreview": [
+          "To Free Gear",
+          "Back to the Elven Forest"
+        ],
+        "storyFlagHistogram": {
+          "1": 2
+        },
+        "tierHistogram": {
+          "10": 2
+        },
+        "variantHistogram": {
+          "4": 2
+        }
+      },
+      {
+        "regionCandidate": 9,
+        "variantCandidate": 1,
+        "count": 3,
+        "indexRange": [
+          38,
+          118
+        ],
+        "indices": [
+          38,
+          78,
+          118
+        ],
+        "titlePreview": [
+          "Real Elite",
+          "Real Elite",
+          "Real Elite"
+        ],
+        "storyFlagHistogram": {
+          "0": 3
+        },
+        "tierHistogram": {
+          "30": 3
+        },
+        "variantHistogram": {
+          "1": 3
+        }
+      },
+      {
+        "regionCandidate": 9,
+        "variantCandidate": 4,
+        "count": 5,
+        "indexRange": [
+          33,
+          113
+        ],
+        "indices": [
+          33,
+          73,
+          75,
+          76,
+          113
+        ],
+        "titlePreview": [
+          "Aerial Attacks",
+          "In Search of the Proxies",
+          "Destroy Soul Crystal",
+          "Ambusher in the Ice Land",
+          "The World Tree"
+        ],
+        "storyFlagHistogram": {
+          "0": 2,
+          "1": 3
+        },
+        "tierHistogram": {
+          "20": 4,
+          "30": 1
+        },
+        "variantHistogram": {
+          "4": 5
+        }
+      },
+      {
+        "regionCandidate": 9,
+        "variantCandidate": 5,
+        "count": 8,
+        "indexRange": [
+          34,
+          119
+        ],
+        "indices": [
+          34,
+          35,
+          36,
+          79,
+          112,
+          115,
+          116,
+          119
+        ],
+        "titlePreview": [
+          "Showdown",
+          "To the Forgotten Isle",
+          "Ambusher in the Ice Land",
+          "The Busters Forever",
+          "Sanctum Attack",
+          "Raging Juno",
+          "Ambusher in the Ice Land",
+          "Price of Justice"
+        ],
+        "storyFlagHistogram": {
+          "0": 7,
+          "1": 1
+        },
+        "tierHistogram": {
+          "20": 4,
+          "30": 2,
+          "50": 2
+        },
+        "variantHistogram": {
+          "5": 8
+        }
+      },
+      {
+        "regionCandidate": 9,
+        "variantCandidate": 6,
+        "count": 1,
+        "indexRange": [
+          39,
+          39
+        ],
+        "indices": [
+          39
+        ],
+        "titlePreview": [
+          "Resurrection Tower"
+        ],
+        "storyFlagHistogram": {
+          "0": 1
+        },
+        "tierHistogram": {
+          "50": 1
+        },
+        "variantHistogram": {
+          "6": 1
+        }
+      }
+    ],
+    "clustersByTierRegion": [
+      {
+        "tierCandidate": 10,
+        "regionCandidate": 5,
+        "count": 45,
+        "indexRange": [
+          0,
+          94
+        ],
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94
+        ],
+        "titlePreview": [
+          "First Battle",
+          "Buster Hunt",
+          "Seize Veril",
+          "Into the Enemy Camp",
+          "Arang's Challenge",
+          "Seize Kaleck",
+          "Bittersweet Return",
+          "Buster Retaliation"
+        ],
+        "storyFlagHistogram": {
+          "0": 12,
+          "1": 33
+        },
+        "tierHistogram": {
+          "10": 45
+        },
+        "variantHistogram": {
+          "1": 4,
+          "2": 22,
+          "3": 18,
+          "5": 1
+        }
+      },
+      {
+        "tierCandidate": 10,
+        "regionCandidate": 6,
+        "count": 46,
+        "indexRange": [
+          15,
+          110
+        ],
+        "indices": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          68,
+          70,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110
+        ],
+        "titlePreview": [
+          "Persistent Pursuers",
+          "Hindsight",
+          "Defend the Free Trade Harbor",
+          "The Mysterious Elven",
+          "Purpose of the Elven",
+          "Meeting with Juno",
+          "Meaningless War",
+          "Strange Busters"
+        ],
+        "storyFlagHistogram": {
+          "0": 13,
+          "1": 33
+        },
+        "tierHistogram": {
+          "10": 46
+        },
+        "variantHistogram": {
+          "2": 10,
+          "3": 32,
+          "4": 3,
+          "5": 1
+        }
+      },
+      {
+        "tierCandidate": 10,
+        "regionCandidate": 7,
+        "count": 3,
+        "indexRange": [
+          31,
+          111
+        ],
+        "indices": [
+          31,
+          71,
+          111
+        ],
+        "titlePreview": [
+          "To Free Gear",
+          "Lion King in Combat",
+          "Back to the Elven Forest"
+        ],
+        "storyFlagHistogram": {
+          "1": 3
+        },
+        "tierHistogram": {
+          "10": 3
+        },
+        "variantHistogram": {
+          "3": 1,
+          "4": 2
+        }
+      },
+      {
+        "tierCandidate": 20,
+        "regionCandidate": 9,
+        "count": 8,
+        "indexRange": [
+          33,
+          115
+        ],
+        "indices": [
+          33,
+          34,
+          35,
+          73,
+          75,
+          112,
+          113,
+          115
+        ],
+        "titlePreview": [
+          "Aerial Attacks",
+          "Showdown",
+          "To the Forgotten Isle",
+          "In Search of the Proxies",
+          "Destroy Soul Crystal",
+          "Sanctum Attack",
+          "The World Tree",
+          "Raging Juno"
+        ],
+        "storyFlagHistogram": {
+          "0": 4,
+          "1": 4
+        },
+        "tierHistogram": {
+          "20": 8
+        },
+        "variantHistogram": {
+          "4": 4,
+          "5": 4
+        }
+      },
+      {
+        "tierCandidate": 30,
+        "regionCandidate": 9,
+        "count": 6,
+        "indexRange": [
+          36,
+          118
+        ],
+        "indices": [
+          36,
+          38,
+          76,
+          78,
+          116,
+          118
+        ],
+        "titlePreview": [
+          "Ambusher in the Ice Land",
+          "Real Elite",
+          "Ambusher in the Ice Land",
+          "Real Elite",
+          "Ambusher in the Ice Land",
+          "Real Elite"
+        ],
+        "storyFlagHistogram": {
+          "0": 6
+        },
+        "tierHistogram": {
+          "30": 6
+        },
+        "variantHistogram": {
+          "1": 3,
+          "4": 1,
+          "5": 2
+        }
+      },
+      {
+        "tierCandidate": 50,
+        "regionCandidate": 9,
+        "count": 3,
+        "indexRange": [
+          39,
+          119
+        ],
+        "indices": [
+          39,
+          79,
+          119
+        ],
+        "titlePreview": [
+          "Resurrection Tower",
+          "The Busters Forever",
+          "Price of Justice"
+        ],
+        "storyFlagHistogram": {
+          "0": 3
+        },
+        "tierHistogram": {
+          "50": 3
+        },
+        "variantHistogram": {
+          "5": 2,
+          "6": 1
+        }
+      }
+    ]
+  },
+  "stageRuntimeFieldsByAiIndex": {
+    "0": {
+      "blobPrefixHex": "010000006400000005e80300000a000105050100",
+      "stageScalarCandidate": 256005,
+      "tierCandidate": 10,
+      "variantCandidate": 1,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "1": {
+      "blobPrefixHex": "010000006400000005e80300000a000205050100",
+      "stageScalarCandidate": 256005,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "2": {
+      "blobPrefixHex": "010000006400000019e80300000a000205050000",
+      "stageScalarCandidate": 256025,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "3": {
+      "blobPrefixHex": "01000000640000000fd00700000a000205050100",
+      "stageScalarCandidate": 512015,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "4": {
+      "blobPrefixHex": "01000000640000000fd00700000a000305050100",
+      "stageScalarCandidate": 512015,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "5": {
+      "blobPrefixHex": "01000000640000002dd00700000a000305050000",
+      "stageScalarCandidate": 512045,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "6": {
+      "blobPrefixHex": "01000000640000000fb80b00000a000105050100",
+      "stageScalarCandidate": 768015,
+      "tierCandidate": 10,
+      "variantCandidate": 1,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "7": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "8": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "9": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000305050000",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "10": {
+      "blobPrefixHex": "01000000640000000aa00f00000a000305050100",
+      "stageScalarCandidate": 1024010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "11": {
+      "blobPrefixHex": "010000006400000000a00f00000a000205050100",
+      "stageScalarCandidate": 1024000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "12": {
+      "blobPrefixHex": "010000006400000000a00f00000a000205050000",
+      "stageScalarCandidate": 1024000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "13": {
+      "blobPrefixHex": "010000006400000000a00f00000a000205050000",
+      "stageScalarCandidate": 1024000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "14": {
+      "blobPrefixHex": "010000006400000014e80300000a000305050100",
+      "stageScalarCandidate": 256020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "15": {
+      "blobPrefixHex": "010000006400000000881300000a000206050100",
+      "stageScalarCandidate": 1280000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "16": {
+      "blobPrefixHex": "010000006400000000881300000a000206050100",
+      "stageScalarCandidate": 1280000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "17": {
+      "blobPrefixHex": "010000006400000000881300000a000206050000",
+      "stageScalarCandidate": 1280000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "18": {
+      "blobPrefixHex": "010000006400000000102700000a000206050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "19": {
+      "blobPrefixHex": "010000006400000000102700000a000206050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "20": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "21": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "22": {
+      "blobPrefixHex": "01000000640000000a102700000a000206050100",
+      "stageScalarCandidate": 2560010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "23": {
+      "blobPrefixHex": "010000006400000000102700000a000206050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "24": {
+      "blobPrefixHex": "010000006400000014102700000a000306050000",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "25": {
+      "blobPrefixHex": "01000000640000003c102700000a000406050100",
+      "stageScalarCandidate": 2560060,
+      "tierCandidate": 10,
+      "variantCandidate": 4,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "26": {
+      "blobPrefixHex": "010000006400000000102700000a000306050000",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "27": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "28": {
+      "blobPrefixHex": "010000006400000000204e00000a000306050000",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "29": {
+      "blobPrefixHex": "010000006400000000204e00000a000206050000",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "30": {
+      "blobPrefixHex": "010000006400000014204e00000a000406050000",
+      "stageScalarCandidate": 5120020,
+      "tierCandidate": 10,
+      "variantCandidate": 4,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "31": {
+      "blobPrefixHex": "010000006400000014204e00000a000407050100",
+      "stageScalarCandidate": 5120020,
+      "tierCandidate": 10,
+      "variantCandidate": 4,
+      "regionCandidate": 7,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "33": {
+      "blobPrefixHex": "010000006400000000204e000014000409050100",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 20,
+      "variantCandidate": 4,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "34": {
+      "blobPrefixHex": "010000006400000000204e000014000509050000",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 20,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "35": {
+      "blobPrefixHex": "0100000064000000643075000014000509050000",
+      "stageScalarCandidate": 7680100,
+      "tierCandidate": 20,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "36": {
+      "blobPrefixHex": "010000006400000000307500001e000509050000",
+      "stageScalarCandidate": 7680000,
+      "tierCandidate": 30,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "38": {
+      "blobPrefixHex": "010000006400000000307500001e000109050000",
+      "stageScalarCandidate": 7680000,
+      "tierCandidate": 30,
+      "variantCandidate": 1,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "39": {
+      "blobPrefixHex": "01000000640000000050c3000032000609050000",
+      "stageScalarCandidate": 12800000,
+      "tierCandidate": 50,
+      "variantCandidate": 6,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "40": {
+      "blobPrefixHex": "010000006400000005e80300000a000205050100",
+      "stageScalarCandidate": 256005,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "41": {
+      "blobPrefixHex": "01000000640000000ae80300000a000205050100",
+      "stageScalarCandidate": 256010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "42": {
+      "blobPrefixHex": "010000006400000019e80300000a000205050100",
+      "stageScalarCandidate": 256025,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "43": {
+      "blobPrefixHex": "01000000640000000ad00700000a000205050000",
+      "stageScalarCandidate": 512010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "44": {
+      "blobPrefixHex": "01000000640000000ad00700000a000205050100",
+      "stageScalarCandidate": 512010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "45": {
+      "blobPrefixHex": "010000006400000019d00700000a000205050100",
+      "stageScalarCandidate": 512025,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "46": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000205050000",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "47": {
+      "blobPrefixHex": "01000000640000000fb80b00000a000205050100",
+      "stageScalarCandidate": 768015,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "48": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "49": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000305050100",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "50": {
+      "blobPrefixHex": "010000006400000000a00f00000a000305050100",
+      "stageScalarCandidate": 1024000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "51": {
+      "blobPrefixHex": "010000006400000000a00f00000a000305050000",
+      "stageScalarCandidate": 1024000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "52": {
+      "blobPrefixHex": "010000006400000014a00f00000a000305050100",
+      "stageScalarCandidate": 1024020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "53": {
+      "blobPrefixHex": "010000006400000000a00f00000a000305050100",
+      "stageScalarCandidate": 1024000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "54": {
+      "blobPrefixHex": "010000006400000014e80300000a000305050100",
+      "stageScalarCandidate": 256020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "55": {
+      "blobPrefixHex": "010000006400000000881300000a000306050100",
+      "stageScalarCandidate": 1280000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "56": {
+      "blobPrefixHex": "010000006400000014881300000a000306050100",
+      "stageScalarCandidate": 1280020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "57": {
+      "blobPrefixHex": "010000006400000000881300000a000306050100",
+      "stageScalarCandidate": 1280000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "58": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "59": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "60": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "61": {
+      "blobPrefixHex": "010000006400000014102700000a000306050000",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "62": {
+      "blobPrefixHex": "010000006400000014102700000a000306050100",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "63": {
+      "blobPrefixHex": "010000006400000014102700000a000306050100",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "64": {
+      "blobPrefixHex": "010000006400000014102700000a000306050100",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "65": {
+      "blobPrefixHex": "010000006400000000102700000a000306050000",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "66": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "68": {
+      "blobPrefixHex": "010000006400000000204e00000a000306050100",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "70": {
+      "blobPrefixHex": "010000006400000000204e00000a000306050000",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "71": {
+      "blobPrefixHex": "010000006400000000204e00000a000307050100",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 7,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "73": {
+      "blobPrefixHex": "010000006400000000204e000014000409050100",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 20,
+      "variantCandidate": 4,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "75": {
+      "blobPrefixHex": "0100000064000000643075000014000409050000",
+      "stageScalarCandidate": 7680100,
+      "tierCandidate": 20,
+      "variantCandidate": 4,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "76": {
+      "blobPrefixHex": "010000006400000000307500001e000409050000",
+      "stageScalarCandidate": 7680000,
+      "tierCandidate": 30,
+      "variantCandidate": 4,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "78": {
+      "blobPrefixHex": "010000006400000000307500001e000109050000",
+      "stageScalarCandidate": 7680000,
+      "tierCandidate": 30,
+      "variantCandidate": 1,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "79": {
+      "blobPrefixHex": "01000000640000000050c3000032000509050000",
+      "stageScalarCandidate": 12800000,
+      "tierCandidate": 50,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "80": {
+      "blobPrefixHex": "010000006400000005e80300000a000105050100",
+      "stageScalarCandidate": 256005,
+      "tierCandidate": 10,
+      "variantCandidate": 1,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "81": {
+      "blobPrefixHex": "010000006400000005e80300000a000205050100",
+      "stageScalarCandidate": 256005,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "82": {
+      "blobPrefixHex": "010000006400000064e80300000a000505050000",
+      "stageScalarCandidate": 256100,
+      "tierCandidate": 10,
+      "variantCandidate": 5,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "83": {
+      "blobPrefixHex": "01000000640000000fd00700000a000205050100",
+      "stageScalarCandidate": 512015,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "84": {
+      "blobPrefixHex": "01000000640000000fd00700000a000105050100",
+      "stageScalarCandidate": 512015,
+      "tierCandidate": 10,
+      "variantCandidate": 1,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "85": {
+      "blobPrefixHex": "01000000640000000ad00700000a000205050000",
+      "stageScalarCandidate": 512010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "86": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "87": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000205050100",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "88": {
+      "blobPrefixHex": "01000000640000000ab80b00000a000305050100",
+      "stageScalarCandidate": 768010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "89": {
+      "blobPrefixHex": "010000006400000019b80b00000a000305050000",
+      "stageScalarCandidate": 768025,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "90": {
+      "blobPrefixHex": "010000006400000014a00f00000a000305050100",
+      "stageScalarCandidate": 1024020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "91": {
+      "blobPrefixHex": "01000000640000000aa00f00000a000305050100",
+      "stageScalarCandidate": 1024010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "92": {
+      "blobPrefixHex": "01000000640000000aa00f00000a000305050000",
+      "stageScalarCandidate": 1024010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "93": {
+      "blobPrefixHex": "01000000640000000aa00f00000a000305050100",
+      "stageScalarCandidate": 1024010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "94": {
+      "blobPrefixHex": "01000000640000000ae80300000a000305050100",
+      "stageScalarCandidate": 256010,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 5,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "95": {
+      "blobPrefixHex": "010000006400000014881300000a000306050100",
+      "stageScalarCandidate": 1280020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "96": {
+      "blobPrefixHex": "010000006400000014881300000a000306050100",
+      "stageScalarCandidate": 1280020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "97": {
+      "blobPrefixHex": "010000006400000000e80300000a000306050000",
+      "stageScalarCandidate": 256000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "98": {
+      "blobPrefixHex": "010000006400000000102700000a000206050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "99": {
+      "blobPrefixHex": "010000006400000000102700000a000206050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 2,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "100": {
+      "blobPrefixHex": "010000006400000028102700000a000306050000",
+      "stageScalarCandidate": 2560040,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "101": {
+      "blobPrefixHex": "01000000640000003c102700000a000506050100",
+      "stageScalarCandidate": 2560060,
+      "tierCandidate": 10,
+      "variantCandidate": 5,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "102": {
+      "blobPrefixHex": "010000006400000014102700000a000306050000",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "103": {
+      "blobPrefixHex": "010000006400000014102700000a000306050100",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "104": {
+      "blobPrefixHex": "010000006400000014102700000a000306050100",
+      "stageScalarCandidate": 2560020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "105": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "106": {
+      "blobPrefixHex": "010000006400000028102700000a000306050100",
+      "stageScalarCandidate": 2560040,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "107": {
+      "blobPrefixHex": "010000006400000000102700000a000306050100",
+      "stageScalarCandidate": 2560000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "108": {
+      "blobPrefixHex": "010000006400000000204e00000a000306050100",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "109": {
+      "blobPrefixHex": "010000006400000014204e00000a000306050100",
+      "stageScalarCandidate": 5120020,
+      "tierCandidate": 10,
+      "variantCandidate": 3,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "110": {
+      "blobPrefixHex": "01000000640000003c204e00000a000406050000",
+      "stageScalarCandidate": 5120060,
+      "tierCandidate": 10,
+      "variantCandidate": 4,
+      "regionCandidate": 6,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "111": {
+      "blobPrefixHex": "01000000640000001e204e00000a000407050100",
+      "stageScalarCandidate": 5120030,
+      "tierCandidate": 10,
+      "variantCandidate": 4,
+      "regionCandidate": 7,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "112": {
+      "blobPrefixHex": "010000006400000000204e000014000509050000",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 20,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "113": {
+      "blobPrefixHex": "010000006400000000204e000014000409050100",
+      "stageScalarCandidate": 5120000,
+      "tierCandidate": 20,
+      "variantCandidate": 4,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "115": {
+      "blobPrefixHex": "01000000640000003c3075000014000509050100",
+      "stageScalarCandidate": 7680060,
+      "tierCandidate": 20,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 1,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "116": {
+      "blobPrefixHex": "010000006400000050307500001e000509050000",
+      "stageScalarCandidate": 7680080,
+      "tierCandidate": 30,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "118": {
+      "blobPrefixHex": "010000006400000000307500001e000109050000",
+      "stageScalarCandidate": 7680000,
+      "tierCandidate": 30,
+      "variantCandidate": 1,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    },
+    "119": {
+      "blobPrefixHex": "01000000640000000050c3000032000509050000",
+      "stageScalarCandidate": 12800000,
+      "tierCandidate": 50,
+      "variantCandidate": 5,
+      "regionCandidate": 9,
+      "constantMarkerCandidate": 5,
+      "storyFlagCandidate": 0,
+      "prefixControlA": 1,
+      "prefixControlB": 100
+    }
+  },
+  "hypotheses": [
+    {
+      "field": "numericBlock[13]",
+      "nameCandidate": "tierCandidate",
+      "confidence": "medium",
+      "notes": "Clusters into 10/20/30/50 and cleanly splits late-game arcs, so it is likely a world progression tier or mission tier bucket."
+    },
+    {
+      "field": "numericBlock[15]",
+      "nameCandidate": "variantCandidate",
+      "confidence": "medium",
+      "notes": "Small bounded range 1..6 and strong reuse inside a region; likely a local scenario or map-variant selector rather than a global stage id."
+    },
+    {
+      "field": "numericBlock[16]",
+      "nameCandidate": "regionCandidate",
+      "confidence": "high",
+      "notes": "Clusters story stages into large contiguous groups 5/6/7/9, making it the strongest candidate for chapter or region bucket."
+    },
+    {
+      "field": "numericBlock[18]",
+      "nameCandidate": "storyFlagCandidate",
+      "confidence": "medium",
+      "notes": "Binary 0/1 field that flips between adjacent stage rows and likely marks intro/outro or story-enabled stage variants."
+    },
+    {
+      "field": "map/*.zt1.bin header",
+      "nameCandidate": "layeredMapHeader",
+      "confidence": "high",
+      "notes": "First 32 bytes read as version, layerCount, width, height, reserved, reserved, variantOrGroup, reserved; file sizes roughly follow 2 * layerCount * width * height + meta."
+    },
+    {
+      "field": "XlsMap rows",
+      "nameCandidate": "activeTemplatePairs",
+      "confidence": "medium",
+      "notes": "Only the first 10 rows carry non-zero metrics, which strongly suggests five active map template pairs aligned with map bin pairs 000/001 .. 008/009."
+    }
+  ]
+}

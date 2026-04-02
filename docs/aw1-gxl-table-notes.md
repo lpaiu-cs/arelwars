@@ -11,6 +11,7 @@ Primary outputs:
 - [XlsLevelDesign.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsLevelDesign.eng.json)
 - [XlsAi.eng.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/gxl_row_dumps/XlsAi.eng.json)
 - parsed exports under [parsed_tables](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables)
+- [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
 
 ## Current Header Model
 
@@ -93,6 +94,35 @@ Evidence:
   - `7 -> [0, 0]`
 - Best next step:
   - compare against `assets/map/000..015.zt1` ordering and the `XlsWorldmap` table
+- Stronger current follow-up from `AW1.map_binding_candidates.json`:
+  - only the first `10` rows are non-zero, which makes `5` active group pairs
+  - those `5` active group pairs align naturally with map-bin pairs:
+    - group `0` -> `000/001`
+    - group `1` -> `002/003`
+    - group `2` -> `004/005`
+    - group `3` -> `006/007`
+    - group `4` -> `008/009`
+  - groups `5..7` remain zero in `XlsMap`, so `010..015` are not yet explained by this table alone
+
+### assets/map/*.zt1
+
+- These are not `GXL`, but they are now stable enough to treat as a separate fixed-header family.
+- Current header reading from [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json):
+  - `u32 version`
+  - `u32 layerCount`
+  - `u32 width`
+  - `u32 height`
+  - `u32 reserved0`
+  - `u32 reserved1`
+  - `u32 variantOrGroup`
+  - `u32 reserved2`
+- Representative examples:
+  - `000.zt1.bin` -> `version=1, layerCount=3, width=62, height=20, variantOrGroup=3`
+  - `006.zt1.bin` -> `version=1, layerCount=2, width=62, height=20, variantOrGroup=3`
+  - `008.zt1.bin` -> `version=1, layerCount=4, width=62, height=20, variantOrGroup=8`
+- File sizes roughly follow:
+  - `2 * layerCount * width * height + meta`
+- This is strong evidence that `assets/map/*.zt1` are concrete layered map payloads, not high-level stage rows.
 
 ### XlsLevelDesign
 
@@ -142,6 +172,21 @@ Evidence:
   - `130` titled rows
   - `61` rows with a non-empty hint slot
   - first titles include `First Battle`, `Buster Hunt`, `Seize Veril`, `Into the Enemy Camp`, `Arang's Challenge`, `Seize Kaleck`
+- The numeric block is now strong enough to expose reusable runtime-field candidates for script-backed rows:
+  - `numericBlock[13]` -> `tierCandidate`
+  - `numericBlock[15]` -> `variantCandidate`
+  - `numericBlock[16]` -> `regionCandidate`
+  - `numericBlock[17]` -> constant `5`
+  - `numericBlock[18]` -> `storyFlagCandidate`
+- Current histograms over the `111` script-backed rows:
+  - `tierCandidate`: `10, 20, 30, 50`
+  - `variantCandidate`: `1..6`
+  - `regionCandidate`: `5, 6, 7, 9`
+  - `storyFlagCandidate`: `0, 1`
+- Strongest current interpretation:
+  - `regionCandidate` is a chapter or region bucket
+  - `variantCandidate` is a local scenario or map-variant selector
+  - `storyFlagCandidate` toggles a story-enabled or alternate stage form
 
 ### XlsWorldmap
 
@@ -184,5 +229,5 @@ Evidence:
 
 1. Compare `XlsAi` English/Korean rows to isolate localized byte spans from numeric byte spans.
 2. Correlate `XlsAi` row order with story/stage order from script files.
-3. Cross-reference `XlsMap`, `XlsLevelDesign`, and `XlsWorldmap` to recover stage-to-map binding.
+3. Use the new `tier/variant/region/storyFlag` candidates to search the remaining battle/runtime payloads for the first hard stage-to-map pointer.
 4. Promote the current parsed exports into stronger typed schemas instead of `candidate` / `unknown` fields.

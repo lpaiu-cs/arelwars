@@ -117,6 +117,21 @@ References:
     - `XlsMap.eng`
     - `XlsLevelDesign.eng`
     - `XlsHero.eng`
+  - current cross-correlation outputs now exist for:
+    - [AW1.stage_progression.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_progression.json)
+    - [AW1.map_binding_candidates.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.map_binding_candidates.json)
+  - current strongest runtime-field candidates in `XlsAi` are:
+    - `tierCandidate = numericBlock[13]`
+    - `variantCandidate = numericBlock[15]`
+    - `regionCandidate = numericBlock[16]`
+    - `storyFlagCandidate = numericBlock[18]`
+  - current strongest `assets/map/*.zt1` header model is:
+    - `version`
+    - `layerCount`
+    - `width`
+    - `height`
+    - reserved fields
+    - `variantOrGroup`
 
 ### Phase 4. Build Deterministic Runtime Systems
 
@@ -149,6 +164,10 @@ References:
    - representative script samples
 2. Use those outputs to start renaming the most common `cmd-XX` groups.
 3. Trace candidate battle/state source files and define a first canonical schema.
+4. Find the first hard pointer that links:
+   - `script family / XlsAi row`
+   - `tierCandidate / variantCandidate / regionCandidate`
+   - concrete `assets/map/*.zt1` payload selection
 
 ## First Opcode Findings
 
