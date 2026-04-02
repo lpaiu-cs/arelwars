@@ -42,6 +42,9 @@ Produce stage-by-stage evidence that the remake matches the original in:
 - full stage-flow certification layer:
   - [export_aw1_stage_flow_certification.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_stage_flow_certification.py)
   - [AW1.stage_flow_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_flow_certification.json)
+- representative battle/render certification layer:
+  - [export_aw1_battle_render_certification.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_battle_render_certification.py)
+  - [AW1.battle_render_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_render_certification.json)
 
 ## Required Exact Checks
 
@@ -130,6 +133,21 @@ python3 /Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_golden_captu
   --runtime-blueprint /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json \
   --candidate-suite /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.candidate_replay_suite.json \
   --output /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.golden_capture_suite.json
+```
+
+Export the representative battle/render certification layer:
+
+```bash
+python3 /Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_battle_render_certification.py \
+  --side-by-side /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.side_by_side_report.json \
+  --stage-flow-certification /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.stage_flow_certification.json \
+  --regression-certification /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.regression_stem_certification.json \
+  --runtime-blueprint /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json \
+  --render-pack /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.render_pack.json \
+  --render-semantics /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.render_semantics.json \
+  --candidate-suite /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.candidate_replay_suite.json \
+  --reference-suite /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.golden_capture_suite.json \
+  --output /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_render_certification.json
 ```
 
 ## Notes

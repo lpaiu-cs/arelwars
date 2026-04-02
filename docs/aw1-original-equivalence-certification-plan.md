@@ -184,6 +184,8 @@ For selected representative stages per route/profile:
 Exit condition:
 
 - representative battle set passes exact/tolerant thresholds agreed in the protocol
+- representative battle/render certification report:
+  - [AW1.battle_render_certification.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.battle_render_certification.json)
 
 ### Stage 6. Certify Render/Event Equivalence
 
@@ -200,6 +202,8 @@ For the same representative set:
 Exit condition:
 
 - no unresolved native-confirmed render mismatch remains
+- battle/render certification note:
+  - [aw1-battle-render-certification.md](/Users/lpaiu/vs/others/arelwars/docs/aw1-battle-render-certification.md)
 
 ### Stage 7. Final Certification Gate
 

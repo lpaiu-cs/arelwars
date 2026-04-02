@@ -1,0 +1,1936 @@
+{
+  "specVersion": "aw1-battle-render-certification-v1",
+  "generatedAtIso": "2026-04-02T13:35:28+00:00",
+  "summary": {
+    "representativeBattleStageCount": 3,
+    "battleCertifiedCount": 3,
+    "battleBlockedCount": 0,
+    "representativeRenderStemCount": 8,
+    "renderCertifiedStemCount": 8,
+    "renderBlockedStemCount": 0,
+    "exactBattleMismatchCount": 0,
+    "tolerantBattleMismatchCount": 0,
+    "nativeRenderMismatchCount": 0,
+    "heuristicRenderWaiverCount": 16,
+    "routeCoverage": [
+      "primary",
+      "secondary"
+    ],
+    "effectIntensityCoverage": [
+      "high",
+      "low",
+      "medium"
+    ],
+    "archetypeCoverage": [
+      "armageddon",
+      "dispatch",
+      "managain",
+      "manawall",
+      "naturalhealing",
+      "recall",
+      "special-stun",
+      "tower-defense"
+    ]
+  },
+  "representativeSelectionRule": {
+    "type": "greedy-coverage",
+    "targetRoutes": [
+      "primary",
+      "secondary"
+    ],
+    "targetEffectIntensities": [
+      "high",
+      "low",
+      "medium"
+    ],
+    "targetArchetypes": [
+      "dispatch",
+      "tower-defense",
+      "naturalhealing",
+      "recall",
+      "manawall",
+      "armageddon",
+      "managain",
+      "special-stun"
+    ],
+    "notes": [
+      "Pick the smallest representative stage set that covers both campaign routes, all three effect-intensity bands, and the core combat archetype set.",
+      "The render representative set reuses the certified regression stems because those are the known render-divergence hotspots."
+    ]
+  },
+  "battleCertificationRule": {
+    "blockingMismatchClasses": [
+      "exact",
+      "tolerant"
+    ],
+    "exactFields": [
+      "result",
+      "preferredMapIndex",
+      "tempoBand"
+    ],
+    "tolerantFields": {
+      "waveCounts": "<= 1 absolute drift",
+      "spawnProjectileEffectHero": "<= 35% density drift",
+      "towerHpRatios": "<= 0.15 absolute drift",
+      "elapsedMs": "<= max(5000 ms, 5%)"
+    }
+  },
+  "renderCertificationRule": {
+    "blockingConditions": [
+      "regression stem render certification blocked",
+      "native-confirmed bank switching missing",
+      "packed pixel 179 special missing"
+    ],
+    "heuristicWitnesses": [
+      "PTC emitter semantics remain runtime-consistent heuristic and are visible as waivers, not blockers."
+    ]
+  },
+  "representativeBattleStages": [
+    {
+      "familyId": "033",
+      "title": "Aerial Attacks",
+      "routeLabel": "secondary",
+      "effectIntensity": "high",
+      "recommendedArchetypeIds": [
+        "dispatch",
+        "naturalhealing",
+        "recall",
+        "returntonature",
+        "manawall",
+        "armageddon",
+        "managain"
+      ],
+      "featuresCovered": [
+        "archetype:armageddon",
+        "archetype:dispatch",
+        "archetype:managain",
+        "archetype:manawall",
+        "archetype:naturalhealing",
+        "archetype:recall",
+        "effect:high",
+        "route:secondary"
+      ],
+      "certificationVerdict": "certified",
+      "metricCount": 12,
+      "exactMismatchCount": 0,
+      "tolerantMismatchCount": 0,
+      "battleMetrics": [
+        {
+          "field": "result",
+          "candidate": "victory",
+          "reference": "victory",
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Battle outcome must match exactly for representative certification."
+        },
+        {
+          "field": "preferredMapIndex",
+          "candidate": 7,
+          "reference": 7,
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Representative battle stages inherit exact stage/map binding from certified flow."
+        },
+        {
+          "field": "tempoBand",
+          "candidate": "fast",
+          "reference": "fast",
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Tempo band should remain identical for the same route and stage script."
+        },
+        {
+          "field": "alliedWavesDispatched",
+          "candidate": 4,
+          "reference": 4,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 1.0,
+          "note": "Wave counts may drift by at most one dispatch."
+        },
+        {
+          "field": "enemyWavesDispatched",
+          "candidate": 4,
+          "reference": 4,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 1.0,
+          "note": "Wave counts may drift by at most one dispatch."
+        },
+        {
+          "field": "spawnCount",
+          "candidate": 104,
+          "reference": 104,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 36.4,
+          "note": "Spawn density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "projectileCount",
+          "candidate": 13,
+          "reference": 13,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 4.55,
+          "note": "Projectile density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "effectCount",
+          "candidate": 385,
+          "reference": 385,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 134.75,
+          "note": "Effect density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "heroDeployCount",
+          "candidate": 56,
+          "reference": 56,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 19.599999999999998,
+          "note": "Hero deployment density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "alliedTowerMinHpRatio",
+          "candidate": 0.08,
+          "reference": 0.08,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 0.15,
+          "note": "Tower HP trend may drift slightly while preserving battle equivalence."
+        },
+        {
+          "field": "enemyTowerMinHpRatio",
+          "candidate": 0.08,
+          "reference": 0.08,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 0.15,
+          "note": "Tower HP trend may drift slightly while preserving battle equivalence."
+        },
+        {
+          "field": "elapsedMs",
+          "candidate": 33240,
+          "reference": 33240,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 5000.0,
+          "note": "Battle tempo may drift within a 5% or 5s window, whichever is larger."
+        }
+      ],
+      "structuralFlowVerdict": "certified",
+      "sideBySideSummary": {
+        "status": null,
+        "mismatchCount": 0,
+        "categoryBuckets": {
+          "binding": 3,
+          "dialogue": 6,
+          "scene-command": 2,
+          "timing": 2,
+          "battle": 8,
+          "result": 1,
+          "render": 3,
+          "unlock": 1
+        }
+      }
+    },
+    {
+      "familyId": "009",
+      "title": "Reclaim Iron",
+      "routeLabel": "primary",
+      "effectIntensity": "low",
+      "recommendedArchetypeIds": [
+        "dispatch",
+        "tower-defense",
+        "special-stun"
+      ],
+      "featuresCovered": [
+        "archetype:special-stun",
+        "archetype:tower-defense",
+        "effect:low",
+        "route:primary"
+      ],
+      "certificationVerdict": "certified",
+      "metricCount": 12,
+      "exactMismatchCount": 0,
+      "tolerantMismatchCount": 0,
+      "battleMetrics": [
+        {
+          "field": "result",
+          "candidate": "victory",
+          "reference": "victory",
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Battle outcome must match exactly for representative certification."
+        },
+        {
+          "field": "preferredMapIndex",
+          "candidate": 4,
+          "reference": 4,
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Representative battle stages inherit exact stage/map binding from certified flow."
+        },
+        {
+          "field": "tempoBand",
+          "candidate": "steady",
+          "reference": "steady",
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Tempo band should remain identical for the same route and stage script."
+        },
+        {
+          "field": "alliedWavesDispatched",
+          "candidate": 6,
+          "reference": 6,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 1.0,
+          "note": "Wave counts may drift by at most one dispatch."
+        },
+        {
+          "field": "enemyWavesDispatched",
+          "candidate": 6,
+          "reference": 6,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 1.0,
+          "note": "Wave counts may drift by at most one dispatch."
+        },
+        {
+          "field": "spawnCount",
+          "candidate": 201,
+          "reference": 201,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 70.35,
+          "note": "Spawn density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "projectileCount",
+          "candidate": 162,
+          "reference": 162,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 56.699999999999996,
+          "note": "Projectile density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "effectCount",
+          "candidate": 1728,
+          "reference": 1728,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 604.8,
+          "note": "Effect density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "heroDeployCount",
+          "candidate": 14,
+          "reference": 14,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 4.8999999999999995,
+          "note": "Hero deployment density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "alliedTowerMinHpRatio",
+          "candidate": 0.19219850355759954,
+          "reference": 0.19219850355759954,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 0.15,
+          "note": "Tower HP trend may drift slightly while preserving battle equivalence."
+        },
+        {
+          "field": "enemyTowerMinHpRatio",
+          "candidate": 0.08,
+          "reference": 0.08,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 0.15,
+          "note": "Tower HP trend may drift slightly while preserving battle equivalence."
+        },
+        {
+          "field": "elapsedMs",
+          "candidate": 164520,
+          "reference": 164520,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 8226.0,
+          "note": "Battle tempo may drift within a 5% or 5s window, whichever is larger."
+        }
+      ],
+      "structuralFlowVerdict": "certified",
+      "sideBySideSummary": {
+        "status": null,
+        "mismatchCount": 0,
+        "categoryBuckets": {
+          "binding": 3,
+          "dialogue": 6,
+          "scene-command": 2,
+          "timing": 2,
+          "battle": 8,
+          "result": 1,
+          "render": 3,
+          "unlock": 1
+        }
+      }
+    },
+    {
+      "familyId": "000",
+      "title": "First Battle",
+      "routeLabel": "secondary",
+      "effectIntensity": "medium",
+      "recommendedArchetypeIds": [
+        "dispatch",
+        "tower-defense",
+        "hpup",
+        "naturalhealing",
+        "special-stun"
+      ],
+      "featuresCovered": [
+        "effect:medium"
+      ],
+      "certificationVerdict": "certified",
+      "metricCount": 12,
+      "exactMismatchCount": 0,
+      "tolerantMismatchCount": 0,
+      "battleMetrics": [
+        {
+          "field": "result",
+          "candidate": "victory",
+          "reference": "victory",
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Battle outcome must match exactly for representative certification."
+        },
+        {
+          "field": "preferredMapIndex",
+          "candidate": 1,
+          "reference": 1,
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Representative battle stages inherit exact stage/map binding from certified flow."
+        },
+        {
+          "field": "tempoBand",
+          "candidate": "steady",
+          "reference": "steady",
+          "status": "match",
+          "mismatchClass": "exact",
+          "tolerance": null,
+          "note": "Tempo band should remain identical for the same route and stage script."
+        },
+        {
+          "field": "alliedWavesDispatched",
+          "candidate": 8,
+          "reference": 8,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 1.0,
+          "note": "Wave counts may drift by at most one dispatch."
+        },
+        {
+          "field": "enemyWavesDispatched",
+          "candidate": 8,
+          "reference": 8,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 1.0,
+          "note": "Wave counts may drift by at most one dispatch."
+        },
+        {
+          "field": "spawnCount",
+          "candidate": 579,
+          "reference": 579,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 202.64999999999998,
+          "note": "Spawn density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "projectileCount",
+          "candidate": 89,
+          "reference": 89,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 31.15,
+          "note": "Projectile density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "effectCount",
+          "candidate": 2745,
+          "reference": 2745,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 960.7499999999999,
+          "note": "Effect density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "heroDeployCount",
+          "candidate": 369,
+          "reference": 369,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 129.15,
+          "note": "Hero deployment density may drift within the verification protocol 35% window."
+        },
+        {
+          "field": "alliedTowerMinHpRatio",
+          "candidate": 0.08,
+          "reference": 0.08,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 0.15,
+          "note": "Tower HP trend may drift slightly while preserving battle equivalence."
+        },
+        {
+          "field": "enemyTowerMinHpRatio",
+          "candidate": 0.08,
+          "reference": 0.08,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 0.15,
+          "note": "Tower HP trend may drift slightly while preserving battle equivalence."
+        },
+        {
+          "field": "elapsedMs",
+          "candidate": 265080,
+          "reference": 265080,
+          "status": "match",
+          "mismatchClass": "tolerant",
+          "tolerance": 13254.0,
+          "note": "Battle tempo may drift within a 5% or 5s window, whichever is larger."
+        }
+      ],
+      "structuralFlowVerdict": "certified",
+      "sideBySideSummary": {
+        "status": null,
+        "mismatchCount": 0,
+        "categoryBuckets": {
+          "binding": 3,
+          "dialogue": 6,
+          "scene-command": 2,
+          "timing": 2,
+          "battle": 8,
+          "result": 1,
+          "render": 3,
+          "unlock": 1
+        }
+      }
+    }
+  ],
+  "representativeRenderCoverage": {
+    "representativeStageRenderWitnesses": [
+      {
+        "familyId": "033",
+        "title": "Aerial Attacks",
+        "routeLabel": null,
+        "effectIntensity": "high",
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail.",
+        "recommendedArchetypeIds": [
+          "dispatch",
+          "naturalhealing",
+          "recall",
+          "returntonature",
+          "manawall",
+          "armageddon",
+          "managain"
+        ]
+      },
+      {
+        "familyId": "009",
+        "title": "Reclaim Iron",
+        "routeLabel": null,
+        "effectIntensity": "low",
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail.",
+        "recommendedArchetypeIds": [
+          "dispatch",
+          "tower-defense",
+          "special-stun"
+        ]
+      },
+      {
+        "familyId": "000",
+        "title": "First Battle",
+        "routeLabel": null,
+        "effectIntensity": "medium",
+        "bankRule": "flag-driven-bank-switch",
+        "packedPixelHint": "Use the special 179 offset-normalized 47-value shade bands with a 189..199 additive highlight tail.",
+        "recommendedArchetypeIds": [
+          "dispatch",
+          "tower-defense",
+          "hpup",
+          "naturalhealing",
+          "special-stun"
+        ]
+      }
+    ],
+    "nativeConfirmedBankSwitching": {
+      "certaintyLevel": "native-confirmed",
+      "label": "flag-driven-bank-switch",
+      "selectorRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+      "exactStateCount": 224,
+      "stateHistogram": {
+        "bank-a-only": 9,
+        "bank-b-base-a-anchor-accent": 5,
+        "bank-b-base-a-anchor-tail": 112,
+        "bank-b-base-a-tail-overlay": 67,
+        "bank-b-only": 8,
+        "bank-b-tail-a-overlay": 23
+      },
+      "stemStateCounts": {
+        "082": {
+          "bank-b-base-a-tail-overlay": 18
+        },
+        "083": {
+          "bank-a-only": 7,
+          "bank-b-base-a-tail-overlay": 27
+        },
+        "084": {
+          "bank-b-base-a-anchor-tail": 24
+        },
+        "187": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 1
+        },
+        "188": {
+          "bank-b-base-a-anchor-accent": 1
+        },
+        "189": {
+          "bank-b-base-a-anchor-accent": 1,
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "191": {
+          "bank-b-base-a-anchor-accent": 1
+        },
+        "193": {
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "194": {
+          "bank-b-base-a-anchor-tail": 5
+        },
+        "195": {
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "198": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 2
+        },
+        "199": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 2
+        },
+        "200": {
+          "bank-b-tail-a-overlay": 3
+        },
+        "201": {
+          "bank-b-only": 1,
+          "bank-b-tail-a-overlay": 2
+        },
+        "203": {
+          "bank-b-base-a-anchor-tail": 2
+        },
+        "205": {
+          "bank-b-base-a-tail-overlay": 1
+        },
+        "206": {
+          "bank-b-base-a-anchor-tail": 5
+        },
+        "207": {
+          "bank-b-base-a-tail-overlay": 2
+        },
+        "208": {
+          "bank-b-base-a-anchor-tail": 2
+        },
+        "209": {
+          "bank-b-base-a-tail-overlay": 3
+        },
+        "211": {
+          "bank-b-base-a-anchor-accent": 1,
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "214": {
+          "bank-b-base-a-tail-overlay": 2
+        },
+        "215": {
+          "bank-b-base-a-anchor-tail": 21
+        },
+        "216": {
+          "bank-b-tail-a-overlay": 5
+        },
+        "218": {
+          "bank-b-base-a-anchor-tail": 1,
+          "bank-b-base-a-tail-overlay": 1
+        },
+        "219": {
+          "bank-b-base-a-tail-overlay": 7,
+          "bank-b-only": 1
+        },
+        "221": {
+          "bank-b-base-a-anchor-tail": 1
+        },
+        "222": {
+          "bank-b-only": 1
+        },
+        "223": {
+          "bank-b-tail-a-overlay": 1
+        },
+        "225": {
+          "bank-b-base-a-anchor-tail": 13
+        },
+        "226": {
+          "bank-b-base-a-anchor-tail": 22
+        },
+        "227": {
+          "bank-b-base-a-anchor-accent": 1,
+          "bank-b-base-a-anchor-tail": 4
+        },
+        "228": {
+          "bank-a-only": 1,
+          "bank-b-tail-a-overlay": 3
+        },
+        "230": {
+          "bank-b-base-a-anchor-tail": 8
+        },
+        "231": {
+          "bank-a-only": 1
+        },
+        "233": {
+          "bank-b-tail-a-overlay": 2
+        },
+        "235": {
+          "bank-b-tail-a-overlay": 2
+        },
+        "236": {
+          "bank-b-only": 1
+        },
+        "238": {
+          "bank-b-only": 1
+        },
+        "239": {
+          "bank-b-base-a-tail-overlay": 3
+        },
+        "240": {
+          "bank-b-base-a-tail-overlay": 3
+        }
+      },
+      "notes": [
+        "Anchor and tail item flags are now exported per preview frame instead of inferred from overlay-only event labels.",
+        "Runtime bank overlays now read exact flagged-item counts and bank transitions from preview frames."
+      ]
+    },
+    "packedPixel179": {
+      "certaintyLevel": "asset-structural",
+      "stem": "179",
+      "sharedMplStem": "180",
+      "transparentValue": 0,
+      "valueOffset": 1,
+      "paletteSize": 47,
+      "coreBandSize": 47,
+      "coreBandCount": 4,
+      "coreBands": [
+        {
+          "band": 0,
+          "range": [
+            1,
+            47
+          ],
+          "bank": "bank-b",
+          "shadeFactor": 0.74
+        },
+        {
+          "band": 1,
+          "range": [
+            48,
+            94
+          ],
+          "bank": "bank-a",
+          "shadeFactor": 0.9
+        },
+        {
+          "band": 2,
+          "range": [
+            95,
+            141
+          ],
+          "bank": "bank-b",
+          "shadeFactor": 1.0
+        },
+        {
+          "band": 3,
+          "range": [
+            142,
+            188
+          ],
+          "bank": "bank-a",
+          "shadeFactor": 1.14
+        }
+      ],
+      "highlightRange": [
+        189,
+        199
+      ],
+      "highlightBank": "bank-a",
+      "highlightBlendMode": "additive-tail",
+      "formula": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+      "notes": [
+        "This packed-pixel rule is treated as a special 179-only mapping.",
+        "It is stronger than a generic preview heuristic, but it should not be generalized onto normal PZX/MPL stems."
+      ],
+      "boundaryHistogram": {
+        "47": 31,
+        "94": 75,
+        "141": 9,
+        "188": 122,
+        "189": 22,
+        "199": 3
+      },
+      "compositePath": "/recovery/analysis/render/special/179-composite-final.png",
+      "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes-final.png"
+    },
+    "ptcEmitterSemantics": {
+      "certaintyLevel": "runtime-consistent heuristic",
+      "familyRepresentativeEmitters": {
+        "support": "ptc-row-00-support-pulse",
+        "burst": "ptc-row-02-burst-flare",
+        "impact": "ptc-row-03-impact-spark",
+        "utility": "ptc-row-04-utility-trail"
+      },
+      "emitters": [
+        {
+          "id": "ptc-row-00-support-pulse",
+          "semanticKey": "support-pulse",
+          "label": "Support pulse",
+          "family": "support",
+          "relationKind": "primary-only",
+          "blendMode": "additive-soft",
+          "particleRowIndex": 0,
+          "primaryStem": "048",
+          "secondaryStem": null,
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 10,
+          "burstCount": 10,
+          "sustainCount": 5,
+          "spreadUnits": 5,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            10
+          ],
+          "rawEmissionFields": [
+            10,
+            5,
+            5,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-01-support-pulse",
+          "semanticKey": "support-pulse",
+          "label": "Support pulse",
+          "family": "support",
+          "relationKind": "primary-only",
+          "blendMode": "additive-soft",
+          "particleRowIndex": 1,
+          "primaryStem": "048",
+          "secondaryStem": null,
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 10,
+          "burstCount": 10,
+          "sustainCount": 5,
+          "spreadUnits": 5,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            10
+          ],
+          "rawEmissionFields": [
+            10,
+            5,
+            5,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-02-burst-flare",
+          "semanticKey": "burst-flare",
+          "label": "Burst flare",
+          "family": "burst",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-hot",
+          "particleRowIndex": 2,
+          "primaryStem": "046",
+          "secondaryStem": "034",
+          "warmupTicks": 5,
+          "releaseTicks": 0,
+          "lifeTicks": 1000,
+          "burstCount": 150,
+          "sustainCount": 0,
+          "spreadUnits": 10,
+          "cadenceTicks": 0,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.2,
+          "jitterScale": 0.2,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            5,
+            0,
+            1000
+          ],
+          "rawEmissionFields": [
+            150,
+            0,
+            10,
+            0
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.2,
+            0.2
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-03-impact-spark",
+          "semanticKey": "impact-spark",
+          "label": "Impact spark",
+          "family": "impact",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-hot",
+          "particleRowIndex": 3,
+          "primaryStem": "047",
+          "secondaryStem": "043",
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 50,
+          "burstCount": 16,
+          "sustainCount": 0,
+          "spreadUnits": 6,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.2,
+          "jitterScale": 0.2,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            50
+          ],
+          "rawEmissionFields": [
+            16,
+            0,
+            6,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.2,
+            0.2
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-04-utility-trail",
+          "semanticKey": "utility-trail",
+          "label": "Utility trail",
+          "family": "utility",
+          "relationKind": "dual-ptc",
+          "blendMode": "alpha-trail",
+          "particleRowIndex": 4,
+          "primaryStem": "034",
+          "secondaryStem": "022",
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 4,
+          "burstCount": 1,
+          "sustainCount": 0,
+          "spreadUnits": 10,
+          "cadenceTicks": 5,
+          "radiusScale": 0.7,
+          "alphaScale": 0.2,
+          "sizeScale": 0.02,
+          "jitterScale": 0.01,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": -65,
+          "accelY": -1,
+          "rawTimingFields": [
+            0,
+            0,
+            4
+          ],
+          "rawEmissionFields": [
+            1,
+            0,
+            10,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.7,
+            0.2,
+            0.02,
+            0.01
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            -65,
+            -1
+          ]
+        },
+        {
+          "id": "ptc-row-05-smoke-plume",
+          "semanticKey": "smoke-plume",
+          "label": "Smoke plume",
+          "family": "utility",
+          "relationKind": "dual-ptc",
+          "blendMode": "alpha-smoke",
+          "particleRowIndex": 5,
+          "primaryStem": "002",
+          "secondaryStem": "001",
+          "warmupTicks": 1024,
+          "releaseTicks": 1792,
+          "lifeTicks": 32,
+          "burstCount": 1,
+          "sustainCount": 0,
+          "spreadUnits": 28,
+          "cadenceTicks": 14,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": -130,
+          "driftY": -1,
+          "accelX": -130,
+          "accelY": -1,
+          "rawTimingFields": [
+            1024,
+            1792,
+            32
+          ],
+          "rawEmissionFields": [
+            1,
+            0,
+            28,
+            14
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            -130,
+            -1,
+            -130,
+            -1
+          ]
+        },
+        {
+          "id": "ptc-row-06-guard-ward",
+          "semanticKey": "guard-ward",
+          "label": "Guard ward",
+          "family": "support",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-ward",
+          "particleRowIndex": 6,
+          "primaryStem": "042",
+          "secondaryStem": "037",
+          "warmupTicks": 100,
+          "releaseTicks": 100,
+          "lifeTicks": 6,
+          "burstCount": 20,
+          "sustainCount": 0,
+          "spreadUnits": 20,
+          "cadenceTicks": 2,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": -196,
+          "accelY": -1,
+          "rawTimingFields": [
+            100,
+            100,
+            6
+          ],
+          "rawEmissionFields": [
+            20,
+            0,
+            20,
+            2
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            -196,
+            -1
+          ]
+        },
+        {
+          "id": "ptc-row-07-support-ring",
+          "semanticKey": "support-ring",
+          "label": "Support ring",
+          "family": "support",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-soft",
+          "particleRowIndex": 7,
+          "primaryStem": "048",
+          "secondaryStem": "039",
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 10,
+          "burstCount": 10,
+          "sustainCount": 5,
+          "spreadUnits": 5,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            10
+          ],
+          "rawEmissionFields": [
+            10,
+            5,
+            5,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-08-support-shimmer",
+          "semanticKey": "support-shimmer",
+          "label": "Support shimmer",
+          "family": "support",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-soft",
+          "particleRowIndex": 8,
+          "primaryStem": "048",
+          "secondaryStem": "009",
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 10,
+          "burstCount": 10,
+          "sustainCount": 5,
+          "spreadUnits": 5,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            10
+          ],
+          "rawEmissionFields": [
+            10,
+            5,
+            5,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-09-support-impact",
+          "semanticKey": "support-impact",
+          "label": "Support impact",
+          "family": "support",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-soft",
+          "particleRowIndex": 9,
+          "primaryStem": "048",
+          "secondaryStem": "043",
+          "warmupTicks": 0,
+          "releaseTicks": 0,
+          "lifeTicks": 10,
+          "burstCount": 10,
+          "sustainCount": 5,
+          "spreadUnits": 5,
+          "cadenceTicks": 5,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.08,
+          "jitterScale": 0.04,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 0,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            0,
+            10
+          ],
+          "rawEmissionFields": [
+            10,
+            5,
+            5,
+            5
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.08,
+            0.04
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "ptc-row-10-mana-drift",
+          "semanticKey": "mana-drift",
+          "label": "Mana drift",
+          "family": "utility",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-mana",
+          "particleRowIndex": 10,
+          "primaryStem": "021",
+          "secondaryStem": "004",
+          "warmupTicks": 112,
+          "releaseTicks": 32,
+          "lifeTicks": 12,
+          "burstCount": 1,
+          "sustainCount": 0,
+          "spreadUnits": 12,
+          "cadenceTicks": 2,
+          "radiusScale": 0.9,
+          "alphaScale": 0.2,
+          "sizeScale": 0.1,
+          "jitterScale": 0.2,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": -130,
+          "accelY": -1,
+          "rawTimingFields": [
+            112,
+            32,
+            12
+          ],
+          "rawEmissionFields": [
+            1,
+            0,
+            12,
+            2
+          ],
+          "rawRatioFieldsFloat": [
+            0.9,
+            0.2,
+            0.1,
+            0.2
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            -130,
+            -1
+          ]
+        },
+        {
+          "id": "ptc-row-11-armageddon-burst",
+          "semanticKey": "armageddon-burst",
+          "label": "Armageddon burst",
+          "family": "burst",
+          "relationKind": "dual-ptc",
+          "blendMode": "additive-hot",
+          "particleRowIndex": 11,
+          "primaryStem": "049",
+          "secondaryStem": "043",
+          "warmupTicks": 0,
+          "releaseTicks": 10,
+          "lifeTicks": 200,
+          "burstCount": 30,
+          "sustainCount": 4,
+          "spreadUnits": 15,
+          "cadenceTicks": 8,
+          "radiusScale": 0.5,
+          "alphaScale": 0.2,
+          "sizeScale": 0.3,
+          "jitterScale": 0.1,
+          "driftX": 0,
+          "driftY": 0,
+          "accelX": 655,
+          "accelY": 0,
+          "rawTimingFields": [
+            0,
+            10,
+            200
+          ],
+          "rawEmissionFields": [
+            30,
+            4,
+            15,
+            8
+          ],
+          "rawRatioFieldsFloat": [
+            0.5,
+            0.2,
+            0.3,
+            0.1
+          ],
+          "rawSignedDeltaFields": [
+            0,
+            0,
+            655,
+            0
+          ]
+        }
+      ]
+    },
+    "effectEmitterAssignments": {
+      "support": "ptc-row-00-support-pulse",
+      "impact": "ptc-row-03-impact-spark",
+      "burst": "ptc-row-02-burst-flare",
+      "utility": "ptc-row-04-utility-trail"
+    },
+    "packedPixelSpecials": [
+      {
+        "stem": "179",
+        "heuristic": "if value == 0: transparent; else normalized = value - 1; band = normalized // 47; paletteIndex = normalized % 47; bands 0..3 alternate bank-b/bank-a/bank-b/bank-a; values 189..199 use bank-a with additive highlight tail",
+        "certaintyLevel": "asset-structural",
+        "transparentValue": 0,
+        "valueOffset": 1,
+        "paletteSize": 47,
+        "coreBandSize": 47,
+        "coreBandCount": 4,
+        "highlightRange": [
+          189,
+          199
+        ],
+        "highlightBlendMode": "additive-tail",
+        "compositePath": "/recovery/analysis/render/special/179-composite-final.png",
+        "probeSheetPath": "/recovery/analysis/render/special/179-packed-pixel-probes-final.png"
+      }
+    ],
+    "regressionStemRenderProofs": [
+      {
+        "stem": "082",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 15,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 2,
+              "2": 7
+            },
+            {
+              "1": 8
+            },
+            {
+              "1": 4
+            },
+            {
+              "1": 4
+            },
+            {
+              "1": 1,
+              "2": 5,
+              "6": 1
+            },
+            {
+              "1": 4,
+              "2": 5
+            },
+            {
+              "1": 2,
+              "2": 1,
+              "3": 1
+            },
+            {
+              "1": 2,
+              "2": 1,
+              "3": 1
+            },
+            {
+              "1": 5,
+              "2": 2,
+              "3": 1
+            },
+            {
+              "1": 3,
+              "2": 2
+            },
+            {
+              "1": 8,
+              "2": 3
+            },
+            {
+              "1": 4
+            },
+            {
+              "1": 4,
+              "2": 1
+            },
+            {
+              "1": 4,
+              "2": 1
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 86,
+          "remakeFrameCount": 86
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 98
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 98
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-tail-overlay"
+          ],
+          "bankTransitions": [
+            "bank-b->bank-a",
+            "bank-b->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      {
+        "stem": "084",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 6,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 2,
+              "2": 2,
+              "3": 4
+            },
+            {
+              "1": 2,
+              "2": 2,
+              "3": 4
+            },
+            {
+              "1": 3,
+              "2": 1
+            },
+            {
+              "1": 3,
+              "2": 1
+            },
+            {
+              "1": 2,
+              "2": 12
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 35,
+          "remakeFrameCount": 35
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 74
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 74
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a",
+            "bank-b+a->bank-a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      {
+        "stem": "208",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 4,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 12
+            },
+            {
+              "1": 12
+            },
+            {
+              "1": 6,
+              "2": 1
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 21,
+          "remakeFrameCount": 21
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 38
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 38
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      {
+        "stem": "209",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 1,
+              "2": 1,
+              "3": 5
+            },
+            {
+              "2": 2,
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 26,
+          "remakeFrameCount": 26
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 36
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 36
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-tail-overlay"
+          ],
+          "bankTransitions": [
+            "bank-b->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      {
+        "stem": "215",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "2": 6
+            },
+            {
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 21,
+          "remakeFrameCount": 21
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 28
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 28
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a",
+            "bank-b+a->bank-a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      {
+        "stem": "226",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "2": 2,
+              "3": 4
+            },
+            {
+              "2": 2,
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 26,
+          "remakeFrameCount": 26
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 32
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 32
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 2,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a",
+            "bank-b+a->bank-a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      {
+        "stem": "230",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "2": 2,
+              "3": 4
+            },
+            {
+              "2": 2,
+              "3": 4
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 24,
+          "remakeFrameCount": 24
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 35
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 35
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-anchor-tail"
+          ],
+          "bankTransitions": [
+            "bank-b+a->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      },
+      {
+        "stem": "240",
+        "verdict": "certified",
+        "structuralMismatchCount": 0,
+        "heuristicWaiverCount": 2,
+        "pzaTimingProof": {
+          "truthLayerId": "pza-base-clip-timing",
+          "nativeConfirmed": true,
+          "originalClipCount": 3,
+          "originalClipDelayHistograms": [
+            null,
+            {
+              "1": 4,
+              "2": 6
+            },
+            {
+              "2": 6
+            }
+          ],
+          "remakeTimingSource": "native-confirmed PZA delay ticks",
+          "remakeTimingConfidence": "native-confirmed"
+        },
+        "pzfFrameCompositionProof": {
+          "truthLayerId": "pzf-frame-composition",
+          "nativeConfirmed": true,
+          "originalFrameCount": 26,
+          "remakeFrameCount": 26
+        },
+        "pzdImagePoolProof": {
+          "truthLayerId": "pzd-image-pool-layout",
+          "nativeConfirmed": true,
+          "original": {
+            "typeId": 8,
+            "imageCount": 52
+          },
+          "remake": {
+            "typeId": 8,
+            "imageCount": 52
+          }
+        },
+        "renderTransitionProof": {
+          "defaultBankRule": "frame and tail items with flag == 0 select MPL bank B; items with flag > 0 select MPL bank A",
+          "bankStateCount": 1,
+          "bankTransitionCount": 1,
+          "bankStates": [
+            "bank-b-base-a-tail-overlay"
+          ],
+          "bankTransitions": [
+            "bank-b->bank-b+a"
+          ],
+          "packedPixelSpecial": null
+        }
+      }
+    ]
+  },
+  "findings": [
+    "Representative battle certification widens equivalence beyond stage flow to density, timing, and tower-trend metrics on a coverage-driven stage set.",
+    "Representative render certification combines the native-confirmed regression stems with route/effect-intensity stage witnesses.",
+    "PTC emitter semantics remain visible as heuristic witnesses but do not block certification while native-confirmed render structure remains clean."
+  ]
+}
