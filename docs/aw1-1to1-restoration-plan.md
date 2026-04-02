@@ -292,6 +292,10 @@ References:
    - web `catalog.json` now carries full `zt1Entries`, and all required English stage scripts export `webEventsPath`
    - the campaign flow is assembled from all `111` hard-bound stage blueprints in `AW1.runtime_blueprint.json`
    - current coverage check is `111` stage blueprints, `312` required script files, `312` available English script event exports, `0` missing stage script files
+11. Phase14 baseline is now in place:
+   - `AW1.verification_spec.json` now defines exact and tolerant comparison gates for all `111` stages
+   - the runtime exports machine-readable verification traces with scene phases, objective phases, wave counts, dialogue anchors, and result/unlock checkpoints
+   - comparison tooling now exists for `spec + remake trace + legacy trace` workflows instead of relying on ad-hoc screenshot inspection
 
 ## First Opcode Findings
 

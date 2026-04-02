@@ -12,6 +12,7 @@ import type {
   RecoveryRuntimeBlueprint,
   RecoveryScriptEntry,
   RecoveryStageSnapshot,
+  RecoveryVerificationSpec,
 } from './recovery-types'
 import { RecoveryStageSystem } from './systems/recoveryStageSystem'
 
@@ -107,13 +108,14 @@ async function bootstrap(): Promise<void> {
     return
   }
 
-  const [catalogResult, previewResult, blueprintResult, battleModelResult, engineSchemaResult, renderPackResult] = await Promise.allSettled([
+  const [catalogResult, previewResult, blueprintResult, battleModelResult, engineSchemaResult, renderPackResult, verificationSpecResult] = await Promise.allSettled([
     fetchJson<RecoveryCatalog>('/recovery/catalog.json'),
     fetchJson<RecoveryPreviewManifest>('/recovery/analysis/preview_manifest.json'),
     fetchJson<RecoveryRuntimeBlueprint>('/recovery/analysis/aw1_runtime_blueprint.json'),
     fetchJson<RecoveryBattleModel>('/recovery/analysis/aw1_battle_model.json'),
     fetchJson<RecoveryEngineSchema>('/recovery/analysis/aw1_engine_schema.json'),
     fetchJson<RecoveryRenderPack>('/recovery/analysis/aw1_render_pack.json'),
+    fetchJson<RecoveryVerificationSpec>('/recovery/analysis/aw1_verification_spec.json'),
   ])
 
   const previewManifest = previewResult.status === 'fulfilled' ? previewResult.value : null
@@ -121,6 +123,7 @@ async function bootstrap(): Promise<void> {
   const battleModel = battleModelResult.status === 'fulfilled' ? battleModelResult.value : null
   const engineSchema = engineSchemaResult.status === 'fulfilled' ? engineSchemaResult.value : null
   const renderPack = renderPackResult.status === 'fulfilled' ? renderPackResult.value : null
+  const verificationSpec = verificationSpecResult.status === 'fulfilled' ? verificationSpecResult.value : null
   let stageSystem: RecoveryStageSystem | null = null
 
   if (catalogResult.status === 'fulfilled') {
@@ -132,7 +135,7 @@ async function bootstrap(): Promise<void> {
     stage.textContent = previewManifest
       ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapBindingCount ?? 0} stage bindings / ${battleModel?.summary.unitTemplateCount ?? 0} unit templates / ${engineSchema?.summary.unitCount ?? 0} schema units / ${renderPack?.summary.stemCount ?? 0} render stems)`
       : 'ZT1 decoded, Android APK verified'
-    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapBindingCount} hard stage bindings, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics, ${runtimeBlueprint.summary.tutorialChainCount} mirrored tutorial chains.` : ''}${engineSchema ? ` Engine schema: ${engineSchema.summary.unitCount} units, ${engineSchema.summary.heroCount} heroes, ${engineSchema.summary.heroAiProfileCount} hero AI rows, ${engineSchema.summary.skillAiProfileCount} skill AI rows, ${engineSchema.summary.projectileCount} projectiles, ${engineSchema.summary.effectCount} effects, ${engineSchema.summary.particleCount} particles, ${engineSchema.summary.balanceRowCount} balance rows.` : ''}${battleModel ? ` Battle model: ${battleModel.summary.unitTemplateCount} unit templates, ${battleModel.summary.projectileTemplateCount} projectiles, ${battleModel.summary.effectTemplateCount} effects, ${battleModel.summary.heroTemplateCount} hero AI profiles.` : ''}${renderPack ? ` Render pack: ${renderPack.summary.stemCount} sprite stems, ${renderPack.summary.bankProbeCount} MPL bank probes, ${renderPack.summary.packedSpecialCount} packed-pixel specials, ${renderPack.summary.emitterPresetCount} PTC emitter presets.` : ''} Android packaging has been verified on a modern emulator.`
+    summary.textContent = `${catalog.inventory.zt1Total} decoded ZT1 files, ${catalog.inventory.webSafeAssetCount} web-safe assets, blockers on ${catalog.blockedFormats.map((item) => item.suffix).join(', ')}.${previewManifest ? ` Active timeline stems: ${previewManifest.activeStemCount}.` : ''}${runtimeBlueprint ? ` Runtime blueprint: ${runtimeBlueprint.summary.stageBlueprintCount} stages, ${runtimeBlueprint.summary.stageMapBindingCount} hard stage bindings, ${runtimeBlueprint.summary.archetypeCount} archetypes, ${runtimeBlueprint.summary.opcodeHeuristicCount} opcode heuristics, ${runtimeBlueprint.summary.tutorialChainCount} mirrored tutorial chains.` : ''}${engineSchema ? ` Engine schema: ${engineSchema.summary.unitCount} units, ${engineSchema.summary.heroCount} heroes, ${engineSchema.summary.heroAiProfileCount} hero AI rows, ${engineSchema.summary.skillAiProfileCount} skill AI rows, ${engineSchema.summary.projectileCount} projectiles, ${engineSchema.summary.effectCount} effects, ${engineSchema.summary.particleCount} particles, ${engineSchema.summary.balanceRowCount} balance rows.` : ''}${battleModel ? ` Battle model: ${battleModel.summary.unitTemplateCount} unit templates, ${battleModel.summary.projectileTemplateCount} projectiles, ${battleModel.summary.effectTemplateCount} effects, ${battleModel.summary.heroTemplateCount} hero AI profiles.` : ''}${renderPack ? ` Render pack: ${renderPack.summary.stemCount} sprite stems, ${renderPack.summary.bankProbeCount} MPL bank probes, ${renderPack.summary.packedSpecialCount} packed-pixel specials, ${renderPack.summary.emitterPresetCount} PTC emitter presets.` : ''}${verificationSpec ? ` Verification spec: ${verificationSpec.summary.stageCount} stages, ${verificationSpec.summary.globalCriterionCount} criteria, ${verificationSpec.summary.dialogueAnchorCount} dialogue anchors.` : ''} Android packaging has been verified on a modern emulator.`
 
     inventory.innerHTML = [
       statCard('Scripts', `${catalog.featuredScripts.length} featured`),
@@ -148,6 +151,8 @@ async function bootstrap(): Promise<void> {
       statCard('Render Stems', String(renderPack?.summary.stemCount ?? 0)),
       statCard('Bank Probes', String(renderPack?.summary.bankProbeCount ?? 0)),
       statCard('Emitters', String(renderPack?.summary.emitterPresetCount ?? 0)),
+      statCard('Verif Stages', String(verificationSpec?.summary.stageCount ?? 0)),
+      statCard('Verif Criteria', String(verificationSpec?.summary.globalCriterionCount ?? 0)),
       statCard('Stage Plans', String(runtimeBlueprint?.summary.stageBlueprintCount ?? 0)),
       statCard('Opcode Hints', String(runtimeBlueprint?.summary.opcodeHeuristicCount ?? 0)),
       statCard('Tutorial Chains', String(runtimeBlueprint?.summary.tutorialChainCount ?? 0)),
@@ -246,6 +251,8 @@ function renderStoryboard(system: RecoveryStageSystem | null, summary: HTMLEleme
 
 function invokeRuntimeControl(system: RecoveryStageSystem, action: string): boolean {
   switch (action) {
+    case 'export-verification':
+      return downloadVerificationExport(system)
     case 'save-session':
       return system.quickSave()
     case 'load-session':
@@ -269,6 +276,22 @@ function invokeRuntimeControl(system: RecoveryStageSystem, action: string): bool
     default:
       return false
   }
+}
+
+function downloadVerificationExport(system: RecoveryStageSystem): boolean {
+  const payload = system.buildVerificationExport()
+  if (!payload) {
+    return false
+  }
+  const familyId = payload.currentTrace?.familyId ?? 'campaign'
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = `aw1-verification-${familyId}.json`
+  anchor.click()
+  URL.revokeObjectURL(url)
+  return true
 }
 
 function renderTimelinePreview(
@@ -467,6 +490,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const settings = snapshot.settingsState
   const persistence = snapshot.persistenceState
   const audio = snapshot.audioState
+  const verification = snapshot.verificationState
   const briefing = campaign.briefing
   const selectedLoadout = campaign.loadouts[Math.max(campaign.selectedLoadoutIndex - 1, 0)] ?? null
   const profile = snapshot.battlePreviewState.stageProfile
@@ -476,6 +500,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
   const entityCount = snapshot.battlePreviewState.entities.length
   const projectileCount = snapshot.battlePreviewState.projectiles.length
   const effectCount = snapshot.battlePreviewState.effects.length
+  const currentTrace = verification.currentTrace
   const battleLine = snapshot.battlePreviewState.lanes
     .map((lane) => `${lane.laneId} ${lane.alliedUnits}-${lane.enemyUnits} ${lane.momentum} @ ${lane.frontline.toFixed(2)}`)
     .join(' · ')
@@ -606,6 +631,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         <p><strong>Audio Bus:</strong> ${escapeHtml(audio.ambientLayer)} / ${escapeHtml(audio.cueCategory)}${audio.cueLabel ? ` / ${escapeHtml(audio.cueLabel)}` : ''} / ${audio.cueSequence}</p>
       </div>
       <div class="story-control-strip">
+        <button type="button" data-runtime-control="export-verification">Export Verification</button>
         <button type="button" data-runtime-control="save-session">Quick Save</button>
         <button type="button" data-runtime-control="load-session">Quick Load</button>
         <button type="button" data-runtime-control="retry-stage">Retry Stage</button>
@@ -627,6 +653,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         ${tutorialPills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
         ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
       </div>
+      <p class="story-runtime-copy">Verification spec ${verification.expectedStageCount} stages / completed traces ${verification.completedTraceCount}${currentTrace ? ` / active ${escapeHtml(`${currentTrace.familyId} ${currentTrace.scenePhaseSequence.join('→')} / waves a${currentTrace.alliedWavesDispatched} e${currentTrace.enemyWavesDispatched} / anchors ${currentTrace.dialogueAnchorsSeen.length} / checkpoints ${currentTrace.checkpoints.length}`)}` : ' / no active trace'}</p>
       <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${activeOpcode ? ` · ${escapeHtml(activeOpcode)}` : ''} · ${escapeHtml(gameplayLine)}</p>
       <p class="story-runtime-copy">${escapeHtml(controlCopy)}</p>
       <div class="story-strip">

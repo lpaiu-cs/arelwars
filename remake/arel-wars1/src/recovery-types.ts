@@ -1035,6 +1035,71 @@ export interface RecoveryCampaignState {
   nodes: RecoveryCampaignNodeState[]
 }
 
+export interface RecoveryVerificationCriterion {
+  criterionId: string
+  label: string
+  category: 'binding' | 'story' | 'battle' | 'campaign' | 'render'
+  matchMode: 'exact' | 'sequence-exact' | 'token-overlap' | 'tolerance'
+  threshold: number | null
+  candidateSource: string
+  referenceSource: string
+  notes: string[]
+}
+
+export interface RecoveryVerificationDialogueAnchor {
+  anchorId: string
+  dialogueIndex: number
+  speaker: string | null
+  text: string
+  normalizedText: string
+  tokenCount: number
+}
+
+export interface RecoveryVerificationStageCheck {
+  stageIndex: number
+  familyId: string
+  title: string | null
+  aiIndex: number | null
+  routeLabel: string
+  preferredMapIndex: number | null
+  templateGroupId: number | null
+  scriptFiles: string[]
+  scriptEventCount: number
+  rewardText: string | null
+  hintText: string | null
+  topSpeakers: string[]
+  recommendedArchetypes: string[]
+  effectIntensity: string | null
+  bankRule: string | null
+  tutorialCueCount: number
+  opcodeCueCount: number
+  dialogueAnchors: RecoveryVerificationDialogueAnchor[]
+  expectedVictoryPhaseSequence: RecoveryCampaignState['scenePhase'][]
+  expectedDefeatPhaseSequence: RecoveryCampaignState['scenePhase'][]
+  comparisonChecks: Array<{
+    criterionId: string
+    expectedValue: string | number | boolean | null | Record<string, unknown> | Array<string | number>
+    notes?: string[]
+  }>
+}
+
+export interface RecoveryVerificationSpec {
+  summary: {
+    stageCount: number
+    globalCriterionCount: number
+    exactCriterionCount: number
+    tolerantCriterionCount: number
+    dialogueAnchorCount: number
+  }
+  globalCriteria: RecoveryVerificationCriterion[]
+  stageChecks: RecoveryVerificationStageCheck[]
+  captureProtocol: {
+    referenceTraceShape: string[]
+    checklist: string[]
+  }
+  findings: string[]
+}
+
 export interface RecoverySettingsState {
   audioEnabled: boolean
   masterVolume: number
@@ -1082,6 +1147,76 @@ export interface RecoveryBattlePreviewState {
   resolution: RecoveryBattleResolutionState
 }
 
+export interface RecoveryVerificationCheckpoint {
+  sequence: number
+  kind:
+    | 'deploy-briefing'
+    | 'battle-start'
+    | 'dialogue-anchor'
+    | 'objective-phase'
+    | 'wave-dispatch'
+    | 'result'
+    | 'reward-review'
+    | 'unlock-reveal'
+    | 'worldmap'
+    | 'save-load'
+  label: string
+  elapsedMs: number
+  scenePhase: RecoveryCampaignState['scenePhase'] | null
+  objectivePhase: RecoveryBattleObjectiveState['phase'] | null
+  data: Record<string, string | number | boolean | null>
+}
+
+export interface RecoveryVerificationStageTrace {
+  traceId: string
+  familyId: string
+  stageTitle: string
+  storyboardIndex: number
+  routeLabel: string | null
+  preferredMapIndex: number | null
+  scriptEventCountExpected: number
+  dialogueEventsSeen: number
+  dialogueAnchorsSeen: RecoveryVerificationDialogueAnchor[]
+  scenePhaseSequence: RecoveryCampaignState['scenePhase'][]
+  objectivePhaseSequence: RecoveryBattleObjectiveState['phase'][]
+  enemyWavesDispatched: number
+  alliedWavesDispatched: number
+  spawnCount: number
+  projectileCount: number
+  effectCount: number
+  heroDeployCount: number
+  alliedTowerMinHpRatio: number
+  enemyTowerMinHpRatio: number
+  result: RecoveryBattleResolutionState['status']
+  resultReason: string | null
+  rewardClaimed: boolean
+  unlockRevealLabel: string | null
+  startedAtMs: number
+  finishedAtMs: number | null
+  elapsedMs: number
+  checkpoints: RecoveryVerificationCheckpoint[]
+}
+
+export interface RecoveryVerificationState {
+  specVersion: string
+  expectedStageCount: number
+  completedTraceCount: number
+  currentTrace: RecoveryVerificationStageTrace | null
+  recentCompletedTraces: RecoveryVerificationStageTrace[]
+}
+
+export interface RecoveryVerificationExport {
+  specVersion: string
+  generatedAtIso: string
+  currentTrace: RecoveryVerificationStageTrace | null
+  completedTraces: RecoveryVerificationStageTrace[]
+  summary: {
+    expectedStageCount: number
+    completedTraceCount: number
+    currentTraceActive: boolean
+  }
+}
+
 export interface RecoveryStageSnapshot {
   storyboardIndex: number
   dialogueIndex: number
@@ -1101,4 +1236,5 @@ export interface RecoveryStageSnapshot {
   persistenceState: RecoveryPersistenceState
   audioState: RecoveryAudioState
   battlePreviewState: RecoveryBattlePreviewState
+  verificationState: RecoveryVerificationState
 }

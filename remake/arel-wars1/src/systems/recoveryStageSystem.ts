@@ -38,6 +38,11 @@ import type {
   RecoveryStageStoryboard,
   RecoveryTowerUpgradeLevels,
   RecoveryTutorialChainCue,
+  RecoveryVerificationCheckpoint,
+  RecoveryVerificationDialogueAnchor,
+  RecoveryVerificationExport,
+  RecoveryVerificationStageTrace,
+  RecoveryVerificationState,
 } from '../recovery-types'
 
 const MIN_DIALOGUE_DURATION_MS = 1400
@@ -116,6 +121,29 @@ function archetypeCycleMs(archetypeRecord: RecoveryRuntimeBlueprint['featuredArc
 function includesAny(value: string, needles: string[]): boolean {
   const haystack = value.toLowerCase()
   return needles.some((needle) => haystack.includes(needle))
+}
+
+function verificationAnchorPoints(eventCount: number): Array<{ anchorId: string; dialogueIndex: number }> {
+  if (eventCount <= 0) {
+    return []
+  }
+  const candidates = [
+    { anchorId: 'opening-1', dialogueIndex: 0 },
+    { anchorId: 'opening-2', dialogueIndex: 1 },
+    { anchorId: 'midpoint', dialogueIndex: Math.floor(eventCount / 2) },
+    { anchorId: 'closing-1', dialogueIndex: Math.max(eventCount - 2, 0) },
+    { anchorId: 'closing-2', dialogueIndex: eventCount - 1 },
+  ]
+  const anchors: Array<{ anchorId: string; dialogueIndex: number }> = []
+  const seen = new Set<number>()
+  for (const candidate of candidates) {
+    if (candidate.dialogueIndex < 0 || candidate.dialogueIndex >= eventCount || seen.has(candidate.dialogueIndex)) {
+      continue
+    }
+    seen.add(candidate.dialogueIndex)
+    anchors.push(candidate)
+  }
+  return anchors
 }
 
 interface ResolvedSceneCommandSignals {
@@ -647,6 +675,14 @@ export class RecoveryStageSystem {
 
   private audioCueIntensity = 0
 
+  private verificationTraceCounter = 0
+
+  private verificationCheckpointCounter = 0
+
+  private currentVerificationTrace: RecoveryVerificationStageTrace | null = null
+
+  private readonly completedVerificationTraces: RecoveryVerificationStageTrace[] = []
+
   constructor(
     catalog: RecoveryCatalog,
     previewManifest: RecoveryPreviewManifest,
@@ -726,11 +762,236 @@ export class RecoveryStageSystem {
     return this.storyboards
   }
 
+  buildVerificationExport(): RecoveryVerificationExport | null {
+    if (!this.isReady()) {
+      return null
+    }
+    this.syncCurrentVerificationTrace(this.lastUpdateNowMs)
+    return {
+      specVersion: 'aw1-verification-v1',
+      generatedAtIso: new Date().toISOString(),
+      currentTrace: this.currentVerificationTrace ? this.cloneVerificationTrace(this.currentVerificationTrace) : null,
+      completedTraces: this.completedVerificationTraces.map((trace) => this.cloneVerificationTrace(trace)),
+      summary: {
+        expectedStageCount: this.runtimeBlueprint?.summary.stageBlueprintCount ?? this.storyboards.length,
+        completedTraceCount: this.completedVerificationTraces.length,
+        currentTraceActive: this.currentVerificationTrace !== null && this.currentVerificationTrace.finishedAtMs === null,
+      },
+    }
+  }
+
+  private cloneVerificationTrace(trace: RecoveryVerificationStageTrace): RecoveryVerificationStageTrace {
+    return {
+      ...trace,
+      dialogueAnchorsSeen: trace.dialogueAnchorsSeen.map((anchor) => ({ ...anchor })),
+      scenePhaseSequence: [...trace.scenePhaseSequence],
+      objectivePhaseSequence: [...trace.objectivePhaseSequence],
+      checkpoints: trace.checkpoints.map((checkpoint) => ({
+        ...checkpoint,
+        data: { ...checkpoint.data },
+      })),
+    }
+  }
+
+  private buildVerificationState(): RecoveryVerificationState {
+    this.syncCurrentVerificationTrace(this.lastUpdateNowMs)
+    return {
+      specVersion: 'aw1-verification-v1',
+      expectedStageCount: this.runtimeBlueprint?.summary.stageBlueprintCount ?? this.storyboards.length,
+      completedTraceCount: this.completedVerificationTraces.length,
+      currentTrace: this.currentVerificationTrace ? this.cloneVerificationTrace(this.currentVerificationTrace) : null,
+      recentCompletedTraces: this.completedVerificationTraces
+        .slice(-3)
+        .map((trace) => this.cloneVerificationTrace(trace)),
+    }
+  }
+
+  private appendScenePhaseToTrace(trace: RecoveryVerificationStageTrace, phase: RecoveryStageSnapshot['campaignState']['scenePhase']): void {
+    if (trace.scenePhaseSequence[trace.scenePhaseSequence.length - 1] !== phase) {
+      trace.scenePhaseSequence.push(phase)
+    }
+  }
+
+  private appendObjectivePhaseToTrace(trace: RecoveryVerificationStageTrace, phase: RecoveryBattleObjectiveState['phase']): void {
+    if (trace.objectivePhaseSequence[trace.objectivePhaseSequence.length - 1] !== phase) {
+      trace.objectivePhaseSequence.push(phase)
+    }
+  }
+
+  private syncCurrentVerificationTrace(nowMs: number): void {
+    const trace = this.currentVerificationTrace
+    if (!trace) {
+      return
+    }
+    trace.elapsedMs = Math.max(nowMs - trace.startedAtMs, 0)
+    trace.dialogueEventsSeen = Math.max(trace.dialogueEventsSeen, Math.min(this.dialogueIndex + 1, trace.scriptEventCountExpected))
+    trace.enemyWavesDispatched = Math.max(trace.enemyWavesDispatched, this.enemyWavesDispatched)
+    trace.alliedWavesDispatched = Math.max(trace.alliedWavesDispatched, this.alliedWavesDispatched)
+    trace.alliedTowerMinHpRatio = Math.min(trace.alliedTowerMinHpRatio, this.previewOwnTowerHpRatio)
+    trace.enemyTowerMinHpRatio = Math.min(trace.enemyTowerMinHpRatio, this.previewEnemyTowerHpRatio)
+    trace.result = this.battleResolutionOutcome ?? 'active'
+    trace.resultReason = this.battleResolutionReason
+    trace.rewardClaimed = this.questRewardClaimed
+    trace.unlockRevealLabel = this.currentUnlockRevealLabel()
+    this.appendScenePhaseToTrace(trace, this.campaignScenePhase)
+    this.appendObjectivePhaseToTrace(trace, this.currentObjectivePhase)
+  }
+
+  private recordVerificationCheckpoint(
+    kind: RecoveryVerificationCheckpoint['kind'],
+    label: string,
+    data: Record<string, string | number | boolean | null> = {},
+    nowMs: number = this.lastUpdateNowMs,
+  ): void {
+    const trace = this.currentVerificationTrace
+    if (!trace) {
+      return
+    }
+    this.syncCurrentVerificationTrace(nowMs)
+    trace.checkpoints.push({
+      sequence: ++this.verificationCheckpointCounter,
+      kind,
+      label,
+      elapsedMs: Math.max(nowMs - trace.startedAtMs, 0),
+      scenePhase: this.campaignScenePhase,
+      objectivePhase: this.currentObjectivePhase,
+      data,
+    })
+  }
+
+  private beginVerificationTrace(
+    storyboard: RecoveryStageStoryboard,
+    storyboardIndex: number,
+    nowMs: number,
+    scenePhase: RecoveryStageSnapshot['campaignState']['scenePhase'],
+    checkpointKind: RecoveryVerificationCheckpoint['kind'],
+    checkpointLabel: string,
+  ): void {
+    if (
+      this.currentVerificationTrace
+      && this.currentVerificationTrace.finishedAtMs === null
+      && this.currentVerificationTrace.familyId === storyboard.scriptFamilyId
+    ) {
+      this.appendScenePhaseToTrace(this.currentVerificationTrace, scenePhase)
+      this.recordVerificationCheckpoint(checkpointKind, checkpointLabel, {
+        familyId: storyboard.scriptFamilyId,
+        storyboardIndex: storyboardIndex + 1,
+      }, nowMs)
+      return
+    }
+
+    if (this.currentVerificationTrace && this.currentVerificationTrace.finishedAtMs === null) {
+      this.finalizeVerificationTrace(nowMs)
+    }
+
+    this.currentVerificationTrace = {
+      traceId: `${storyboard.scriptFamilyId}-run-${++this.verificationTraceCounter}`,
+      familyId: storyboard.scriptFamilyId,
+      stageTitle: storyboard.stageBlueprint?.title ?? storyboard.scriptPath,
+      storyboardIndex: storyboardIndex + 1,
+      routeLabel: storyboard.stageBlueprint?.mapBinding?.storyBranch ?? null,
+      preferredMapIndex: storyboard.stageBlueprint?.mapBinding?.preferredMapIndex ?? null,
+      scriptEventCountExpected: storyboard.scriptEventCount,
+      dialogueEventsSeen: 0,
+      dialogueAnchorsSeen: [],
+      scenePhaseSequence: [scenePhase],
+      objectivePhaseSequence: [],
+      enemyWavesDispatched: 0,
+      alliedWavesDispatched: 0,
+      spawnCount: 0,
+      projectileCount: 0,
+      effectCount: 0,
+      heroDeployCount: 0,
+      alliedTowerMinHpRatio: this.previewOwnTowerHpRatio,
+      enemyTowerMinHpRatio: this.previewEnemyTowerHpRatio,
+      result: 'active',
+      resultReason: null,
+      rewardClaimed: false,
+      unlockRevealLabel: null,
+      startedAtMs: nowMs,
+      finishedAtMs: null,
+      elapsedMs: 0,
+      checkpoints: [],
+    }
+    this.recordVerificationCheckpoint(checkpointKind, checkpointLabel, {
+      familyId: storyboard.scriptFamilyId,
+      storyboardIndex: storyboardIndex + 1,
+      routeLabel: storyboard.stageBlueprint?.mapBinding?.storyBranch ?? null,
+      preferredMapIndex: storyboard.stageBlueprint?.mapBinding?.preferredMapIndex ?? null,
+    }, nowMs)
+  }
+
+  private finalizeVerificationTrace(nowMs: number): void {
+    const trace = this.currentVerificationTrace
+    if (!trace) {
+      return
+    }
+    this.syncCurrentVerificationTrace(nowMs)
+    trace.finishedAtMs = nowMs
+    trace.elapsedMs = Math.max(nowMs - trace.startedAtMs, 0)
+    this.completedVerificationTraces.push(this.cloneVerificationTrace(trace))
+    this.currentVerificationTrace = null
+  }
+
+  private maybeCaptureDialogueAnchor(
+    storyboard: RecoveryStageStoryboard,
+    event: RecoveryDialogueEvent | null,
+    nowMs: number,
+  ): void {
+    if (!this.currentVerificationTrace || !event) {
+      return
+    }
+    const anchor = verificationAnchorPoints(storyboard.scriptEvents.length)
+      .find((item) => item.dialogueIndex === this.dialogueIndex)
+    if (!anchor) {
+      return
+    }
+    if (this.currentVerificationTrace.dialogueAnchorsSeen.some((item) => item.anchorId === anchor.anchorId)) {
+      return
+    }
+    const text = event.text.trim()
+    const normalizedText = text.toLowerCase().replace(/[^a-z0-9]+/gu, ' ').trim().replace(/\s+/gu, ' ')
+    const payload: RecoveryVerificationDialogueAnchor = {
+      anchorId: anchor.anchorId,
+      dialogueIndex: anchor.dialogueIndex,
+      speaker: event.speaker,
+      text,
+      normalizedText,
+      tokenCount: normalizedText ? normalizedText.split(' ').length : 0,
+    }
+    this.currentVerificationTrace.dialogueAnchorsSeen.push(payload)
+    this.recordVerificationCheckpoint('dialogue-anchor', `${anchor.anchorId}: ${event.speaker ?? 'Narration'}`, {
+      anchorId: anchor.anchorId,
+      dialogueIndex: anchor.dialogueIndex,
+      speaker: event.speaker,
+    }, nowMs)
+  }
+
+  private recordObjectivePhaseTransitionIfNeeded(nowMs: number = this.lastUpdateNowMs): void {
+    const trace = this.currentVerificationTrace
+    if (!trace) {
+      return
+    }
+    const lastPhase = trace.objectivePhaseSequence[trace.objectivePhaseSequence.length - 1]
+    if (lastPhase === this.currentObjectivePhase) {
+      return
+    }
+    this.appendObjectivePhaseToTrace(trace, this.currentObjectivePhase)
+    this.recordVerificationCheckpoint('objective-phase', this.currentObjectiveLabel, {
+      phase: this.currentObjectivePhase,
+      label: this.currentObjectiveLabel,
+    }, nowMs)
+  }
+
   quickSave(): boolean {
     const saved = this.persistSessionToKey(QUICKSAVE_STORAGE_KEY, 'quick-save')
     if (!saved) {
       return false
     }
+    this.recordVerificationCheckpoint('save-load', 'quick save written', {
+      slot: 'quick-save',
+      revision: this.sessionRevision,
+    })
     this.lastActionNote = 'quick save written'
     this.emitAudioCue('system', 'save-session', 0.3)
     this.version += 1
@@ -744,6 +1005,10 @@ export class RecoveryStageSystem {
       this.version += 1
       return false
     }
+    this.recordVerificationCheckpoint('save-load', 'quick save restored', {
+      slot: 'quick-save',
+      revision: this.sessionRevision,
+    })
     this.lastActionNote = 'quick save restored'
     this.emitAudioCue('system', 'load-session', 0.34)
     this.version += 1
@@ -1540,6 +1805,7 @@ export class RecoveryStageSystem {
       persistenceState: this.buildPersistenceState(),
       audioState: this.buildAudioState(),
       battlePreviewState,
+      verificationState: this.buildVerificationState(),
     }
   }
 
@@ -1677,6 +1943,7 @@ export class RecoveryStageSystem {
 
     this.dialogueIndex += 1
     this.applyDialogueBeat(storyboard, this.currentDialogueEvent(storyboard))
+    this.maybeCaptureDialogueAnchor(storyboard, this.currentDialogueEvent(storyboard), nowMs)
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration()
   }
 
@@ -1695,8 +1962,17 @@ export class RecoveryStageSystem {
     this.lastChannelBeat = -1
     this.resetInteractionState()
     const storyboard = this.storyboards[this.storyboardIndex]
+    this.beginVerificationTrace(
+      storyboard,
+      this.storyboardIndex,
+      nowMs,
+      'battle',
+      'battle-start',
+      'battle started',
+    )
     this.seedBattlePreviewState(storyboard)
     this.applyDialogueBeat(storyboard, this.currentDialogueEvent(storyboard))
+    this.maybeCaptureDialogueAnchor(storyboard, this.currentDialogueEvent(storyboard), nowMs)
     this.nextDialogueAtMs = nowMs + this.currentDialogueDuration() + dialogueGapMs
     this.scheduleNextFrame(storyboard.previewStem, nowMs)
     this.emitAudioCue('battle', 'battle-start', 0.42)
@@ -1729,6 +2005,14 @@ export class RecoveryStageSystem {
     this.campaignUnlockRevealEndsAtMs = 0
     this.campaignLastUnlockedNodeIndex = null
     this.lastActionNote = `worldmap opened for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
+    this.recordVerificationCheckpoint('worldmap', 'worldmap selection opened', {
+      selectedNodeIndex: this.campaignSelectedNodeIndex + 1,
+      unlockedNodeCount: unlockedCount,
+      outcome: this.battleResolutionOutcome,
+    }, nowMs)
+    if (this.currentVerificationTrace && this.currentVerificationTrace.result !== 'active') {
+      this.finalizeVerificationTrace(nowMs)
+    }
     this.emitAudioCue('ui', 'worldmap-open', 0.26)
   }
 
@@ -1751,6 +2035,14 @@ export class RecoveryStageSystem {
     this.campaignDeployBriefingEndsAtMs = nowMs + DEPLOY_BRIEFING_MS
     this.campaignRewardReviewEndsAtMs = 0
     this.campaignUnlockRevealEndsAtMs = 0
+    this.beginVerificationTrace(
+      targetStoryboard ?? this.storyboards[0],
+      this.campaignSelectedNodeIndex,
+      nowMs,
+      'deploy-briefing',
+      'deploy-briefing',
+      'deploy briefing opened',
+    )
     this.lastActionNote = `deploy briefing ready for ${this.storyboardLabel(this.campaignSelectedNodeIndex)}`
     this.emitAudioCue('ui', 'deploy-briefing', 0.24)
   }
@@ -1792,6 +2084,9 @@ export class RecoveryStageSystem {
     this.campaignUnlockRevealEndsAtMs = 0
     this.battlePaused = false
     this.pauseStartedAtMs = 0
+    this.recordVerificationCheckpoint('reward-review', 'reward review opened', {
+      rewardClaimed: this.questRewardClaimed,
+    }, nowMs)
     this.lastActionNote = 'reward review opened'
     this.emitAudioCue('result', 'reward-review', 0.3)
   }
@@ -1805,6 +2100,10 @@ export class RecoveryStageSystem {
     this.campaignUnlockRevealEndsAtMs = nowMs + UNLOCK_REVEAL_MS
     this.battlePaused = false
     this.pauseStartedAtMs = 0
+    this.recordVerificationCheckpoint('unlock-reveal', this.currentUnlockRevealLabel() ?? 'unlock reveal opened', {
+      unlockLabel: this.currentUnlockRevealLabel(),
+      unlockedNodeIndex: this.campaignLastUnlockedNodeIndex !== null ? this.campaignLastUnlockedNodeIndex + 1 : null,
+    }, nowMs)
     this.lastActionNote = this.currentUnlockRevealLabel() ?? 'unlock reveal opened'
     this.emitAudioCue('result', 'unlock-reveal', 0.34)
   }
@@ -2567,6 +2866,7 @@ export class RecoveryStageSystem {
         1,
       )
     }
+    this.recordObjectivePhaseTransitionIfNeeded()
   }
 
   private resolveObjectiveProgressDelta(
@@ -2610,6 +2910,8 @@ export class RecoveryStageSystem {
   }
 
   private markWaveDispatched(side: 'enemy' | 'allied', advanceCycle = true): void {
+    const plan = side === 'enemy' ? this.enemyWavePlan : this.alliedWavePlan
+    const directive = this.currentWaveDirective(plan, side)
     if (side === 'enemy') {
       this.enemyWavesDispatched = Math.min(Math.max(this.enemyWavesDispatched, this.enemyWaveCursor), this.totalWaveCount)
       if (advanceCycle && this.enemyWaveCursor < this.totalWaveCount) {
@@ -2622,6 +2924,15 @@ export class RecoveryStageSystem {
       }
     }
     this.syncCurrentWaveIndex()
+    this.syncCurrentVerificationTrace(this.lastUpdateNowMs)
+    this.recordVerificationCheckpoint('wave-dispatch', directive?.label ?? `${side} wave dispatched`, {
+      side,
+      laneId: directive?.laneId ?? null,
+      role: directive?.role ?? null,
+      waveNumber: directive?.waveNumber ?? (side === 'enemy' ? this.enemyWavesDispatched : this.alliedWavesDispatched),
+      unitBurst: directive?.unitBurst ?? null,
+      pressureBias: directive?.pressureBias ?? null,
+    })
   }
 
   private currentWaveDirective(plan: RecoveryBattleWaveDirective[], side: 'enemy' | 'allied'): RecoveryBattleWaveDirective | null {
@@ -4045,6 +4356,12 @@ export class RecoveryStageSystem {
       this.panelOverride = 'system'
     }
     this.lastScriptedBeatNote = `${outcome === 'victory' ? 'stage clear' : 'stage failed'}: ${reason}`
+    this.syncCurrentVerificationTrace(this.lastUpdateNowMs)
+    this.recordVerificationCheckpoint('result', `${outcome}: ${reason}`, {
+      outcome,
+      reason,
+      unlockedNodeIndex: this.campaignLastUnlockedNodeIndex !== null ? this.campaignLastUnlockedNodeIndex + 1 : null,
+    })
     this.emitAudioCue(outcome === 'victory' ? 'result' : 'battle', outcome === 'victory' ? 'stage-victory' : 'stage-defeat', outcome === 'victory' ? 0.48 : 0.4)
   }
 
@@ -5395,6 +5712,9 @@ export class RecoveryStageSystem {
     }
     this.questRewardClaimed = true
     this.questRewardClaims += 1
+    this.recordVerificationCheckpoint('reward-review', 'reward claimed', {
+      rewardClaims: this.questRewardClaims,
+    })
     this.restoreMana('allied', this.manaCapacityValue * 0.18)
     this.applyUpgradeProgressDelta(0.16)
   }
@@ -5885,6 +6205,7 @@ export class RecoveryStageSystem {
     this.alliedWavePlan = seed.alliedWavePlan
     this.currentObjectivePhase = seed.phase
     this.currentObjectiveLabel = seed.label
+    this.recordObjectivePhaseTransitionIfNeeded()
   }
 
   private deriveObjectiveSeed(
@@ -6538,6 +6859,9 @@ export class RecoveryStageSystem {
       intensity: clamp((template?.intensity ?? 0.8) * intensityScale, 0.25, 2.2),
     }
     this.battleEffects.push(effect)
+    if (this.currentVerificationTrace) {
+      this.currentVerificationTrace.effectCount += 1
+    }
     this.promoteEffectToRenderPulse(effect.renderFamily, Math.min(effect.intensity, 1.3), effect.blendMode)
   }
 
@@ -6821,6 +7145,12 @@ export class RecoveryStageSystem {
               : 'melee',
     }
     sideUnits.push(unit)
+    if (this.currentVerificationTrace) {
+      this.currentVerificationTrace.spawnCount += 1
+      if (hero) {
+        this.currentVerificationTrace.heroDeployCount += 1
+      }
+    }
     this.setEntityVisualState(
       unit.id,
       hero ? 'heroic' : 'spawn',
@@ -6904,6 +7234,9 @@ export class RecoveryStageSystem {
       ttlBeats: projectileTemplate?.ttlBeats ?? 6,
       effectTemplateId: attacker.effectTemplateId,
     })
+    if (this.currentVerificationTrace) {
+      this.currentVerificationTrace.projectileCount += 1
+    }
   }
 
   private strikeLaneUnits(
@@ -7439,6 +7772,7 @@ export class RecoveryStageSystem {
       this.currentObjectiveLabel = 'convert wave tempo into lane control'
     }
 
+    this.recordObjectivePhaseTransitionIfNeeded()
     this.evaluateBattleResolution()
   }
 }
