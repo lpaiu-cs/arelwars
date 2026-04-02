@@ -296,6 +296,11 @@ References:
    - `AW1.verification_spec.json` now defines exact and tolerant comparison gates for all `111` stages
    - the runtime exports machine-readable verification traces with scene phases, objective phases, wave counts, dialogue anchors, and result/unlock checkpoints
    - comparison tooling now exists for `spec + remake trace + legacy trace` workflows instead of relying on ad-hoc screenshot inspection
+12. Phase15 baseline is now in place:
+   - the web export no longer aliases English and Korean `events.json` files to the same path; verification replay now hydrates the intended English stage scripts
+   - the runtime can export a full `111`-stage replay suite, not just the currently active stage trace
+   - `AW1.candidate_replay_suite.json`, `AW1.golden_capture_suite.json`, and `AW1.phase15_report.json` now provide a reproducible golden-baseline workflow
+   - the current phase15 report is `111/111 pass`, `0` warnings, using exact spec checks plus replay-baseline comparison
 
 ## First Opcode Findings
 

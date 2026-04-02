@@ -300,6 +300,10 @@ interface RecoveryStoredSettings {
   reducedEffects: boolean
 }
 
+interface RecoveryStageSystemOptions {
+  skipRestore?: boolean
+}
+
 interface RecoverySerializedSession {
   version: 1
   savedAtIso: string
@@ -394,6 +398,10 @@ interface RecoverySerializedSession {
 }
 
 export class RecoveryStageSystem {
+  private readonly catalog: RecoveryCatalog
+
+  private readonly previewManifest: RecoveryPreviewManifest
+
   private readonly storyboards: RecoveryStageStoryboard[]
 
   private readonly runtimeBlueprint: RecoveryRuntimeBlueprint | null
@@ -683,12 +691,17 @@ export class RecoveryStageSystem {
 
   private readonly completedVerificationTraces: RecoveryVerificationStageTrace[] = []
 
+  private verificationReplayMode = false
+
   constructor(
     catalog: RecoveryCatalog,
     previewManifest: RecoveryPreviewManifest,
     runtimeBlueprint: RecoveryRuntimeBlueprint | null = null,
     battleModel: RecoveryBattleModel | null = null,
+    options: RecoveryStageSystemOptions = {},
   ) {
+    this.catalog = catalog
+    this.previewManifest = previewManifest
     this.runtimeBlueprint = runtimeBlueprint
     this.battleModel = battleModel
     this.loadStoredSettings()
@@ -721,7 +734,9 @@ export class RecoveryStageSystem {
       storyboard.sceneScriptSteps = this.buildSceneScript(storyboard)
     })
     if (this.storyboards.length > 0) {
-      const restored = this.settingsState.resumeOnLaunch ? this.restoreStoredSession(RESUME_STORAGE_KEY, 'resume-session') : false
+      const restored = !options.skipRestore && this.settingsState.resumeOnLaunch
+        ? this.restoreStoredSession(RESUME_STORAGE_KEY, 'resume-session')
+        : false
       if (!restored) {
         this.campaignPreferredRouteLabel = this.deriveStoryboardRouteBias(this.storyboards[0]).routeLabel
         this.campaignRouteCommitment = 1
@@ -780,10 +795,36 @@ export class RecoveryStageSystem {
     }
   }
 
+  buildVerificationReplaySuite(): RecoveryVerificationExport | null {
+    if (!this.isReady()) {
+      return null
+    }
+    const runner = new RecoveryStageSystem(
+      this.catalog,
+      this.previewManifest,
+      this.runtimeBlueprint,
+      this.battleModel,
+      { skipRestore: true },
+    )
+    runner.prepareVerificationReplayRunner()
+    let nowMs = 180
+    for (let index = 0; index < runner.storyboards.length; index += 1) {
+      nowMs = runner.runVerificationReplayStage(index, nowMs)
+      nowMs += 240
+    }
+    runner.syncCurrentVerificationTrace(nowMs)
+    if (runner.currentVerificationTrace && runner.currentVerificationTrace.finishedAtMs === null) {
+      runner.finalizeVerificationTrace(nowMs)
+    }
+    return runner.buildVerificationExport()
+  }
+
   private cloneVerificationTrace(trace: RecoveryVerificationStageTrace): RecoveryVerificationStageTrace {
     return {
       ...trace,
       dialogueAnchorsSeen: trace.dialogueAnchorsSeen.map((anchor) => ({ ...anchor })),
+      sceneCommandIdsSeen: [...trace.sceneCommandIdsSeen],
+      sceneDirectiveKindsSeen: [...trace.sceneDirectiveKindsSeen],
       scenePhaseSequence: [...trace.scenePhaseSequence],
       objectivePhaseSequence: [...trace.objectivePhaseSequence],
       checkpoints: trace.checkpoints.map((checkpoint) => ({
@@ -791,6 +832,61 @@ export class RecoveryStageSystem {
         data: { ...checkpoint.data },
       })),
     }
+  }
+
+  private prepareVerificationReplayRunner(): void {
+    this.verificationReplayMode = true
+    this.completedVerificationTraces.splice(0, this.completedVerificationTraces.length)
+    this.currentVerificationTrace = null
+    this.verificationTraceCounter = 0
+    this.verificationCheckpointCounter = 0
+    this.settingsState.audioEnabled = false
+    this.settingsState.autoAdvanceEnabled = true
+    this.settingsState.autoSaveEnabled = false
+    this.settingsState.resumeOnLaunch = false
+    this.campaignUnlockedStageCount = 1
+    this.campaignLastUnlockedNodeIndex = null
+    this.campaignSelectedNodeIndex = 0
+    this.campaignSelectedLoadoutIndex = 0
+    this.campaignClearedStoryboardIds.clear()
+    this.campaignLastResolvedStageTitle = null
+    this.campaignLastOutcome = null
+    this.campaignPreferredRouteLabel = this.storyboards[0]
+      ? this.deriveStoryboardRouteBias(this.storyboards[0]).routeLabel
+      : null
+    this.campaignRouteCommitment = this.campaignPreferredRouteLabel ? 1 : 0
+    this.enterTitle(0)
+    this.enterMainMenu(90)
+  }
+
+  private runVerificationReplayStage(index: number, startMs: number): number {
+    const storyboard = this.storyboards[index]
+    if (!storyboard) {
+      return startMs
+    }
+    this.campaignUnlockedStageCount = Math.max(this.campaignUnlockedStageCount, index + 1)
+    this.campaignSelectedNodeIndex = index
+    this.campaignSelectedLoadoutIndex = this.deriveRecommendedLoadoutIndexForStoryboard(storyboard).loadoutIndex
+    this.enterWorldmapSelection(startMs)
+    this.campaignSelectedNodeIndex = index
+    this.campaignSelectedLoadoutIndex = this.deriveRecommendedLoadoutIndexForStoryboard(storyboard).loadoutIndex
+    this.enterDeployBriefing(index, startMs + 120)
+    this.campaignSelectedLoadoutIndex = this.deriveRecommendedLoadoutIndexForStoryboard(storyboard).loadoutIndex
+    this.launchCampaignNodeNow(index, startMs + 240)
+    const completedBefore = this.completedVerificationTraces.length
+    let nowMs = startMs + 240
+    let guard = 0
+    while (this.completedVerificationTraces.length === completedBefore && guard < 12000) {
+      nowMs += 240
+      this.advance(nowMs)
+      guard += 1
+    }
+    if (this.completedVerificationTraces.length === completedBefore && this.currentVerificationTrace) {
+      this.currentVerificationTrace.result = this.currentVerificationTrace.result === 'active' ? 'defeat' : this.currentVerificationTrace.result
+      this.currentVerificationTrace.resultReason = this.currentVerificationTrace.resultReason ?? 'verification-replay-timeout'
+      this.finalizeVerificationTrace(nowMs)
+    }
+    return nowMs
   }
 
   private buildVerificationState(): RecoveryVerificationState {
@@ -832,9 +928,53 @@ export class RecoveryStageSystem {
     trace.result = this.battleResolutionOutcome ?? 'active'
     trace.resultReason = this.battleResolutionReason
     trace.rewardClaimed = this.questRewardClaimed
-    trace.unlockRevealLabel = this.currentUnlockRevealLabel()
+    const currentUnlockLabel = this.currentUnlockRevealLabel()
+    trace.unlockRevealLabel = currentUnlockLabel ?? trace.unlockRevealLabel
+    trace.tempoBand = this.deriveVerificationTempoBand(trace)
     this.appendScenePhaseToTrace(trace, this.campaignScenePhase)
     this.appendObjectivePhaseToTrace(trace, this.currentObjectivePhase)
+  }
+
+  private deriveVerificationTempoBand(trace: RecoveryVerificationStageTrace): RecoveryVerificationStageTrace['tempoBand'] {
+    const pacingUnits = Math.max(
+      trace.dialogueEventsSeen + (trace.enemyWavesDispatched + trace.alliedWavesDispatched) * 6,
+      1,
+    )
+    const msPerUnit = trace.elapsedMs / pacingUnits
+    if (msPerUnit < 850) {
+      return 'fast'
+    }
+    if (msPerUnit < 1450) {
+      return 'steady'
+    }
+    if (msPerUnit < 2300) {
+      return 'measured'
+    }
+    return 'extended'
+  }
+
+  private recordVerificationSceneCommands(commands: RecoveryResolvedOpcodeCue[]): void {
+    const trace = this.currentVerificationTrace
+    if (!trace) {
+      return
+    }
+    commands.forEach((command) => {
+      if (!trace.sceneCommandIdsSeen.includes(command.commandId)) {
+        trace.sceneCommandIdsSeen.push(command.commandId)
+      }
+    })
+  }
+
+  private recordVerificationSceneStep(step: RecoverySceneScriptStep | null): void {
+    const trace = this.currentVerificationTrace
+    if (!trace || !step) {
+      return
+    }
+    step.directives.forEach((directive) => {
+      if (!trace.sceneDirectiveKindsSeen.includes(directive.kind)) {
+        trace.sceneDirectiveKindsSeen.push(directive.kind)
+      }
+    })
   }
 
   private recordVerificationCheckpoint(
@@ -857,6 +997,9 @@ export class RecoveryStageSystem {
       objectivePhase: this.currentObjectivePhase,
       data,
     })
+    if (kind === 'unlock-reveal' && label !== 'unlock reveal opened') {
+      trace.unlockRevealLabel = label
+    }
   }
 
   private beginVerificationTrace(
@@ -894,6 +1037,8 @@ export class RecoveryStageSystem {
       scriptEventCountExpected: storyboard.scriptEventCount,
       dialogueEventsSeen: 0,
       dialogueAnchorsSeen: [],
+      sceneCommandIdsSeen: [],
+      sceneDirectiveKindsSeen: [],
       scenePhaseSequence: [scenePhase],
       objectivePhaseSequence: [],
       enemyWavesDispatched: 0,
@@ -908,6 +1053,7 @@ export class RecoveryStageSystem {
       resultReason: null,
       rewardClaimed: false,
       unlockRevealLabel: null,
+      tempoBand: 'steady',
       startedAtMs: nowMs,
       finishedAtMs: null,
       elapsedMs: 0,
@@ -2845,6 +2991,8 @@ export class RecoveryStageSystem {
     }
     const favoredLane = this.currentStageBattleProfile.favoredLane ?? 'upper'
     const step = storyboard.sceneScriptSteps[Math.min(this.dialogueIndex, Math.max(storyboard.sceneScriptSteps.length - 1, 0))] ?? null
+    this.recordVerificationSceneCommands(this.resolveSceneCommands(event))
+    this.recordVerificationSceneStep(step)
     const executedBaseStep = this.executeSceneScriptStep(step, favoredLane)
     const executedLoadoutStep = this.applyLoadoutCuePattern(step, favoredLane)
     if (executedBaseStep || executedLoadoutStep) {
@@ -4398,6 +4546,14 @@ export class RecoveryStageSystem {
     }
 
     const storyboard = this.storyboards[this.storyboardIndex] ?? null
+    if (
+      this.verificationReplayMode
+      && storyboard
+      && storyboard.scriptEvents.length > 0
+      && this.dialogueIndex < storyboard.scriptEvents.length - 1
+    ) {
+      return
+    }
     const routeBias = this.deriveStoryboardRouteBias(storyboard)
     const routeInfluence = this.deriveCampaignRouteInfluence(storyboard)
     const alliedUnits = this.totalUnits('allied')

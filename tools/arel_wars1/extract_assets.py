@@ -203,10 +203,11 @@ def main() -> None:
             src = output_root / events_path
             if not src.exists():
                 continue
-            dst = events_web_root / Path(events_path).name
+            locale = str(entry.get("locale") or "unknown")
+            dst = events_web_root / locale / Path(events_path).name
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
-            entry["webEventsPath"] = f"/recovery/analysis/zt1_events/{dst.name}"
+            entry["webEventsPath"] = f"/recovery/analysis/zt1_events/{locale}/{dst.name}"
 
     blocked_formats = [
         {

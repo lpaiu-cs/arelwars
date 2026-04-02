@@ -1177,6 +1177,8 @@ export interface RecoveryVerificationStageTrace {
   scriptEventCountExpected: number
   dialogueEventsSeen: number
   dialogueAnchorsSeen: RecoveryVerificationDialogueAnchor[]
+  sceneCommandIdsSeen: string[]
+  sceneDirectiveKindsSeen: string[]
   scenePhaseSequence: RecoveryCampaignState['scenePhase'][]
   objectivePhaseSequence: RecoveryBattleObjectiveState['phase'][]
   enemyWavesDispatched: number
@@ -1191,6 +1193,7 @@ export interface RecoveryVerificationStageTrace {
   resultReason: string | null
   rewardClaimed: boolean
   unlockRevealLabel: string | null
+  tempoBand: 'fast' | 'steady' | 'measured' | 'extended'
   startedAtMs: number
   finishedAtMs: number | null
   elapsedMs: number

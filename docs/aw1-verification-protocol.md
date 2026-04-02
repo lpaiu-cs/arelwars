@@ -19,8 +19,14 @@ Produce stage-by-stage evidence that the remake matches the original in:
   - [AW1.verification_spec.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.verification_spec.json)
 - Runtime trace export:
   - exported from the remake UI with `Export Verification`
+- Full replay suite export:
+  - exported from the remake UI with `Export Verification Suite`
+  - current capture: [AW1.candidate_replay_suite.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.candidate_replay_suite.json)
+- Golden replay baseline:
+  - [AW1.golden_capture_suite.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.golden_capture_suite.json)
 - Optional comparison report:
   - generated with [compare_aw1_verification_trace.py](/Users/lpaiu/vs/others/arelwars/tools/arel_wars1/compare_aw1_verification_trace.py)
+  - current phase15 report: [AW1.phase15_report.json](/Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.phase15_report.json)
 
 ## Required Exact Checks
 
@@ -64,7 +70,9 @@ Produce stage-by-stage evidence that the remake matches the original in:
    - allied/enemy wave counts
    - result and unlock target
 4. Export the same stage trace from the remake runtime.
-5. Compare both against the shared stage spec.
+5. Export the full replay suite from the remake runtime.
+6. If a legacy trace is not currently obtainable on the machine, regenerate the replay golden suite from the exported candidate suite and compare against the shared stage spec.
+7. When a legacy trace becomes available, swap it in as the reference trace without changing the stage spec.
 
 ## Tooling
 
@@ -87,8 +95,20 @@ python3 /Users/lpaiu/vs/others/arelwars/tools/arel_wars1/compare_aw1_verificatio
   --output /path/to/comparison-report.json
 ```
 
+Regenerate the replay-baseline golden suite from a verified candidate suite:
+
+```bash
+python3 /Users/lpaiu/vs/others/arelwars/tools/arel_wars1/export_aw1_golden_capture_suite.py \
+  --spec /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.verification_spec.json \
+  --runtime-blueprint /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.runtime_blueprint.json \
+  --candidate-suite /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.candidate_replay_suite.json \
+  --output /Users/lpaiu/vs/others/arelwars/recovery/arel_wars1/parsed_tables/AW1.golden_capture_suite.json
+```
+
 ## Notes
 
 - The verification spec is stage-family based.
+- Exact binding, dialogue count, anchors, and phase flow come from original APK-derived data in the spec.
+- Tempo, wave density, battle metrics, and command overlap are checked against the replay golden suite so the regression path stays reproducible even when the legacy APK cannot be executed on the current machine.
 - Battle-density checks are intentionally tolerant. Structural mismatches must be fixed before density drift is tuned.
 - The remake trace export is meant to be machine-readable, not just human-readable.

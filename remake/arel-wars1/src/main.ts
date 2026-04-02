@@ -131,6 +131,7 @@ async function bootstrap(): Promise<void> {
     if (previewManifest) {
       stageSystem = new RecoveryStageSystem(catalog, previewManifest, runtimeBlueprint, battleModel)
     }
+    ;(window as typeof window & { __aw1RecoverySystem?: RecoveryStageSystem }).__aw1RecoverySystem = stageSystem ?? undefined
     game = createGame(stageSystem, renderPack)
     stage.textContent = previewManifest
       ? `Recovered stage online (${previewManifest.activeStemCount} stems / ${runtimeBlueprint?.summary.stageBlueprintCount ?? 0} stage blueprints / ${runtimeBlueprint?.summary.stageMapBindingCount ?? 0} stage bindings / ${battleModel?.summary.unitTemplateCount ?? 0} unit templates / ${engineSchema?.summary.unitCount ?? 0} schema units / ${renderPack?.summary.stemCount ?? 0} render stems)`
@@ -253,6 +254,8 @@ function invokeRuntimeControl(system: RecoveryStageSystem, action: string): bool
   switch (action) {
     case 'export-verification':
       return downloadVerificationExport(system)
+    case 'export-verification-suite':
+      return downloadVerificationReplaySuite(system)
     case 'save-session':
       return system.quickSave()
     case 'load-session':
@@ -289,6 +292,21 @@ function downloadVerificationExport(system: RecoveryStageSystem): boolean {
   const anchor = document.createElement('a')
   anchor.href = url
   anchor.download = `aw1-verification-${familyId}.json`
+  anchor.click()
+  URL.revokeObjectURL(url)
+  return true
+}
+
+function downloadVerificationReplaySuite(system: RecoveryStageSystem): boolean {
+  const payload = system.buildVerificationReplaySuite()
+  if (!payload) {
+    return false
+  }
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = 'aw1-verification-suite.json'
   anchor.click()
   URL.revokeObjectURL(url)
   return true
@@ -632,6 +650,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
       </div>
       <div class="story-control-strip">
         <button type="button" data-runtime-control="export-verification">Export Verification</button>
+        <button type="button" data-runtime-control="export-verification-suite">Export Verification Suite</button>
         <button type="button" data-runtime-control="save-session">Quick Save</button>
         <button type="button" data-runtime-control="load-session">Quick Load</button>
         <button type="button" data-runtime-control="retry-stage">Retry Stage</button>
@@ -653,7 +672,7 @@ function storyboardMarkup(snapshot: RecoveryStageSnapshot): string {
         ${tutorialPills.map((item) => `<span class="story-pill">${escapeHtml(item)}</span>`).join('')}
         ${archetypePills.map((item) => `<span class="story-pill story-pill-accent">${escapeHtml(item)}</span>`).join('')}
       </div>
-      <p class="story-runtime-copy">Verification spec ${verification.expectedStageCount} stages / completed traces ${verification.completedTraceCount}${currentTrace ? ` / active ${escapeHtml(`${currentTrace.familyId} ${currentTrace.scenePhaseSequence.join('→')} / waves a${currentTrace.alliedWavesDispatched} e${currentTrace.enemyWavesDispatched} / anchors ${currentTrace.dialogueAnchorsSeen.length} / checkpoints ${currentTrace.checkpoints.length}`)}` : ' / no active trace'}</p>
+      <p class="story-runtime-copy">Verification spec ${verification.expectedStageCount} stages / completed traces ${verification.completedTraceCount}${currentTrace ? ` / active ${escapeHtml(`${currentTrace.familyId} ${currentTrace.scenePhaseSequence.join('→')} / tempo ${currentTrace.tempoBand} / waves a${currentTrace.alliedWavesDispatched} e${currentTrace.enemyWavesDispatched} / anchors ${currentTrace.dialogueAnchorsSeen.length} / commands ${currentTrace.sceneCommandIdsSeen.length} / checkpoints ${currentTrace.checkpoints.length}`)}` : ' / no active trace'}</p>
       <p class="story-runtime-copy">${escapeHtml(channelPills.join(' · ') || 'No channel state yet')} · ${escapeHtml(snapshot.renderState.bankRuleLabel)}${activeOpcode ? ` · ${escapeHtml(activeOpcode)}` : ''} · ${escapeHtml(gameplayLine)}</p>
       <p class="story-runtime-copy">${escapeHtml(controlCopy)}</p>
       <div class="story-strip">

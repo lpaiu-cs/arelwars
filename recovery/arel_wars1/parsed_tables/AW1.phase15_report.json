@@ -1,0 +1,791 @@
+{
+  "summary": {
+    "comparedStageCount": 111,
+    "passCount": 111,
+    "failCount": 0,
+    "warningStageCount": 0
+  },
+  "stages": [
+    {
+      "familyId": "000",
+      "title": "First Battle",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "001",
+      "title": "Buster Hunt",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "002",
+      "title": "Seize Veril",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "003",
+      "title": "Into the Enemy Camp",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "004",
+      "title": "Arang's Challenge",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "005",
+      "title": "Seize Kaleck",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "006",
+      "title": "Bittersweet Return",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "007",
+      "title": "Buster Retaliation",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "008",
+      "title": "New Enemy",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "009",
+      "title": "Reclaim Iron",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "010",
+      "title": "Road to Lydia",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "011",
+      "title": "Surrounding Enemies",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "012",
+      "title": "Reclaim Lydia",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "013",
+      "title": "Evacuate the Palace",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "014",
+      "title": "To the Free Trade Harbor",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "015",
+      "title": "Persistent Pursuers",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "016",
+      "title": "Hindsight",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "017",
+      "title": "Defend the Free Trade Harbor",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "018",
+      "title": "The Mysterious Elven",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "019",
+      "title": "Purpose of the Elven",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "020",
+      "title": "Meeting with Juno",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "021",
+      "title": "Meaningless War",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "022",
+      "title": "Strange Busters",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "023",
+      "title": "Rencounter",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "024",
+      "title": "Proxy Lab",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "025",
+      "title": "Remnants Subjugation",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "026",
+      "title": "Agger Again",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "027",
+      "title": "The Conspiring Proxies",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "028",
+      "title": "Defeat Proxies",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "029",
+      "title": "Allying with Juno",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "030",
+      "title": "Unveiled Secret",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "031",
+      "title": "To Free Gear",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "033",
+      "title": "Aerial Attacks",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "034",
+      "title": "Showdown",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "035",
+      "title": "To the Forgotten Isle",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "036",
+      "title": "Ambusher in the Ice Land",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "038",
+      "title": "Real Elite",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "039",
+      "title": "Resurrection Tower",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "040",
+      "title": "Looking for the Assailants",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "041",
+      "title": "Missing Denizens",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "042",
+      "title": "To the Enemy Camp",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "043",
+      "title": "Atheum Search",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "044",
+      "title": "Deeper and Deeper",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "045",
+      "title": "Theon's Warning",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "046",
+      "title": "Raging Helba",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "047",
+      "title": "Begone",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "048",
+      "title": "Enter the Hume",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "049",
+      "title": "Expel the Hume",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "050",
+      "title": "Raiders",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "051",
+      "title": "Reclaim Tigus",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "052",
+      "title": "Ragna Volcano",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "053",
+      "title": "Revoir",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "054",
+      "title": "New Enemy",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "055",
+      "title": "The Demi-race",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "056",
+      "title": "Sword of Vengeance",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "057",
+      "title": "Aerial Enemy",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "058",
+      "title": "The Persistent Hume",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "059",
+      "title": "Rogan's Attack",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "060",
+      "title": "Meeting with Vincent",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "061",
+      "title": "Destroy the Lab",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "062",
+      "title": "Close Encounters",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "063",
+      "title": "Revealed Truth",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "064",
+      "title": "New Busters",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "065",
+      "title": "The 2nd Lab",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "066",
+      "title": "Land of Promise",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "068",
+      "title": "The Past of the Busters",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "070",
+      "title": "City of the Sun",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "071",
+      "title": "Lion King in Combat",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "073",
+      "title": "In Search of the Proxies",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "075",
+      "title": "Destroy Soul Crystal",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "076",
+      "title": "Ambusher in the Ice Land",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "078",
+      "title": "Real Elite",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "079",
+      "title": "The Busters Forever",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "080",
+      "title": "To the Battlefield",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "081",
+      "title": "Enter the Hume Territory",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "082",
+      "title": "Siege Iron",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "083",
+      "title": "Advancement Continues",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "084",
+      "title": "Sharp Arrows",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "085",
+      "title": "Conquer Lydia",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "086",
+      "title": "Impenetrable Armor",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "087",
+      "title": "Sage Theon",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "088",
+      "title": "Invasion of the Busters",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "089",
+      "title": "Reclaim Nortium",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "090",
+      "title": "The Suspicious Busters",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "091",
+      "title": "To Atheum",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "092",
+      "title": "Atheum Battle",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "093",
+      "title": "To the Land of Seal",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "094",
+      "title": "Mercenaries Detected",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "095",
+      "title": "Raid the Mercenaries",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "096",
+      "title": "Last Stand with Vincent",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "097",
+      "title": "Pheonix Resurrected",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "098",
+      "title": "The Revealed Proxies",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "099",
+      "title": "Clue about the Lab",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "100",
+      "title": "Destroy the Lab",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "101",
+      "title": "Meeting with Helba",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "102",
+      "title": "Another Lab",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "103",
+      "title": "March",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "104",
+      "title": "Raging Juno",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "105",
+      "title": "Strained Collaboration",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "106",
+      "title": "Captured Friend",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "107",
+      "title": "Looking for Soul Crystal",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "108",
+      "title": "Giant Enemy",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "109",
+      "title": "Premonition",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "110",
+      "title": "Bye, Lantere",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "111",
+      "title": "Back to the Elven Forest",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "112",
+      "title": "Sanctum Attack",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "113",
+      "title": "The World Tree",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "115",
+      "title": "Raging Juno",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "116",
+      "title": "Ambusher in the Ice Land",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "118",
+      "title": "Real Elite",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    },
+    {
+      "familyId": "119",
+      "title": "Price of Justice",
+      "verdict": "pass",
+      "findingCount": 0,
+      "findings": []
+    }
+  ],
+  "findings": [
+    "This report is only as strong as the supplied legacy reference trace.",
+    "Exact failures should be handled before tuning tolerant battle-density metrics."
+  ]
+}

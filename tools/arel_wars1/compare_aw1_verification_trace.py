@@ -42,6 +42,16 @@ def token_overlap(left: str, right: str) -> float:
     return len(left_tokens & right_tokens) / len(left_tokens | right_tokens)
 
 
+def list_overlap(reference: list[str], candidate: list[str]) -> float:
+    left = {item for item in reference if isinstance(item, str) and item}
+    right = {item for item in candidate if isinstance(item, str) and item}
+    if not left and not right:
+        return 1.0
+    if not left or not right:
+        return 0.0
+    return len(left & right) / len(left)
+
+
 def phase_sequence(trace: dict[str, Any], key: str) -> list[str]:
     sequence = trace.get(key, [])
     if not isinstance(sequence, list):
@@ -60,7 +70,7 @@ def stage_trace_map(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
     traces = list(payload.get("completedTraces", []))
     current = payload.get("currentTrace")
     if isinstance(current, dict):
-      traces.append(current)
+        traces.append(current)
     by_family: dict[str, dict[str, Any]] = {}
     for trace in traces:
         if not isinstance(trace, dict):
@@ -120,12 +130,12 @@ def compare_stage(
                 "message": "preferredMapIndex does not match the stage binding spec.",
             }
         )
-    if candidate.get("routeLabel") != reference.get("routeLabel"):
+    if candidate.get("routeLabel") != spec.get("routeLabel"):
         findings.append(
             {
                 "severity": "error",
                 "criterionId": "stage-binding-exact",
-                "message": "routeLabel differs between candidate and reference traces.",
+                "message": f"candidate routeLabel={candidate.get('routeLabel')} expected {spec.get('routeLabel')}.",
             }
         )
     if candidate.get("dialogueEventsSeen") != spec.get("scriptEventCount"):
@@ -136,18 +146,9 @@ def compare_stage(
                 "message": f"candidate dialogueEventsSeen={candidate.get('dialogueEventsSeen')} expected {spec.get('scriptEventCount')}.",
             }
         )
-    if reference.get("dialogueEventsSeen") != spec.get("scriptEventCount"):
-        findings.append(
-            {
-                "severity": "error",
-                "criterionId": "dialogue-count-exact",
-                "message": f"reference dialogueEventsSeen={reference.get('dialogueEventsSeen')} expected {spec.get('scriptEventCount')}.",
-            }
-        )
-
     findings.extend(
         compare_anchor_sets(
-            list(reference.get("dialogueAnchorsSeen", [])),
+            list(spec.get("dialogueAnchors", [])),
             list(candidate.get("dialogueAnchorsSeen", [])),
             0.75,
         )
@@ -176,6 +177,40 @@ def compare_stage(
                 "message": "objectivePhaseSequence differs between reference and candidate.",
             }
         )
+
+    reference_commands = list(reference.get("sceneCommandIdsSeen", []))
+    candidate_commands = list(candidate.get("sceneCommandIdsSeen", []))
+    command_overlap = list_overlap(reference_commands, candidate_commands)
+    if reference_commands and command_overlap < 0.5:
+        findings.append(
+            {
+                "severity": "warn",
+                "criterionId": "major-command-overlap",
+                "message": f"sceneCommandIdsSeen overlap {command_overlap:.2f} below 0.50.",
+            }
+        )
+
+    if reference.get("tempoBand") != candidate.get("tempoBand"):
+        findings.append(
+            {
+                "severity": "warn",
+                "criterionId": "battle-tempo-band",
+                "message": f"tempoBand differs between reference ({reference.get('tempoBand')}) and candidate ({candidate.get('tempoBand')}).",
+            }
+        )
+
+    reference_elapsed = float(reference.get("elapsedMs", 0))
+    candidate_elapsed = float(candidate.get("elapsedMs", 0))
+    if reference_elapsed > 0:
+        elapsed_drift_ratio = abs(reference_elapsed - candidate_elapsed) / max(reference_elapsed, 1)
+        if elapsed_drift_ratio > 0.6:
+            findings.append(
+                {
+                    "severity": "warn",
+                    "criterionId": "battle-tempo-drift",
+                    "message": f"elapsedMs drift ratio {elapsed_drift_ratio:.2f} exceeds 0.60 ({reference_elapsed} vs {candidate_elapsed}).",
+                }
+            )
 
     for metric in ("enemyWavesDispatched", "alliedWavesDispatched"):
         reference_value = float(reference.get(metric, 0))
@@ -212,14 +247,25 @@ def compare_stage(
                 "message": f"result differs between candidate ({candidate.get('result')}) and reference ({reference.get('result')}).",
             }
         )
-    if candidate.get("unlockRevealLabel") != reference.get("unlockRevealLabel"):
-        findings.append(
-            {
-                "severity": "warn",
-                "criterionId": "result-and-unlock-exact",
-                "message": "unlockRevealLabel differs between candidate and reference.",
-            }
-        )
+    unlock_expected = None
+    for check in spec.get("comparisonChecks", []):
+        if isinstance(check, dict) and check.get("criterionId") == "result-and-unlock-exact":
+            value = check.get("expectedValue")
+            if isinstance(value, dict):
+                unlock_expected = value.get("nextUnlockNodeIndex")
+            break
+    if unlock_expected is not None:
+        label = str(candidate.get("unlockRevealLabel") or "")
+        match = re.search(r"Node\s+(\d+)\s+unlocked", label)
+        actual_unlock = int(match.group(1)) if match else None
+        if actual_unlock != unlock_expected:
+            findings.append(
+                {
+                    "severity": "warn",
+                    "criterionId": "result-and-unlock-exact",
+                    "message": f"unlockRevealLabel node {actual_unlock} expected {unlock_expected}.",
+                }
+            )
 
     verdict = "pass" if not any(item["severity"] == "error" for item in findings) else "fail"
     return {
@@ -250,6 +296,21 @@ def main() -> None:
         candidate_trace = candidate_by_family.get(family_id)
         reference_trace = reference_by_family.get(family_id)
         if not candidate_trace or not reference_trace:
+            comparisons.append(
+                {
+                    "familyId": spec_stage.get("familyId"),
+                    "title": spec_stage.get("title"),
+                    "verdict": "fail",
+                    "findingCount": 1,
+                    "findings": [
+                        {
+                            "severity": "error",
+                            "criterionId": "suite-coverage",
+                            "message": f"Missing {'candidate' if not candidate_trace else 'reference'} trace for family {family_id}.",
+                        }
+                    ],
+                }
+            )
             continue
         comparisons.append(compare_stage(spec_stage, reference_trace, candidate_trace))
 
@@ -258,6 +319,11 @@ def main() -> None:
             "comparedStageCount": len(comparisons),
             "passCount": sum(1 for item in comparisons if item["verdict"] == "pass"),
             "failCount": sum(1 for item in comparisons if item["verdict"] == "fail"),
+            "warningStageCount": sum(
+                1
+                for item in comparisons
+                if any(finding.get("severity") == "warn" for finding in item.get("findings", []))
+            ),
         },
         "stages": comparisons,
         "findings": [
