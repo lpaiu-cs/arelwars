@@ -4,8 +4,8 @@ Audit date: 2026-04-03
 
 ## Result
 
-- `Phase 5 = reopened, not yet completed`
-- `Phase 6 = reopened, not yet completed`
+- `Phase 5 = baseline implemented, not yet fully closed`
+- `Phase 6 = schema scaffold implemented, not yet fully closed`
 - `Phase 7 = reopened, not yet completed`
 - `Phase 8 = reopened, not yet completed`
 - `Phase 9 = reopened, not yet completed`
@@ -36,8 +36,8 @@ Reopened does not mean completed.
 
 The remaining work is still substantial:
 
-- Phase 5: x64 runtime bootstrap for AW2 does not exist yet
-- Phase 6: x64 trace schema parity does not exist yet
+- Phase 5: repo-contained bootstrap exists, but live proof is still on `x86`, not `x86_64`
+- Phase 6: trace keys now exist, but semantic stage-bootstrap values are still unresolved
 - Phase 7: no representative original-vs-x64 equivalence pass has been run
 - Phase 8: no save/load or lifecycle equivalence report exists yet
 - Phase 9: no AW2 differential suite has been passed yet
@@ -52,8 +52,16 @@ From the packaging-track perspective:
 - do not claim equivalence or final packaging yet
 - do not treat any provisional APK as a certified final artifact
 
+Phase 5 evidence now also includes:
+
+- [aw2-phase5-bootstrap-implementation.md](/C:/vs/other/arelwars/docs/aw2-phase5-bootstrap-implementation.md)
+
+Phase 6 evidence now also includes:
+
+- [aw2-phase6-trace-schema-status.md](/C:/vs/other/arelwars/docs/aw2-phase6-trace-schema-status.md)
+
 ## Immediate Next Phase
 
 The next approved implementation step is:
 
-- `Phase 5` AW2 x64 runtime bootstrap
+- `Phase 6` semantic stage bootstrap fields

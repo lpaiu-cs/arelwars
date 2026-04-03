@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Arel Wars2</string>
+    <string name="drm_title">Arel Wars2 DRM Bootstrap</string>
+    <string name="drm_subtitle">원본 asset HTML과 ARM payload를 그대로 싣고 x86/x64 bootstrap shell을 올리는 단계입니다.</string>
+    <string name="drm_continue">동의 후 시작</string>
+</resources>
+
