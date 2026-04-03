@@ -37,7 +37,7 @@ Reopened does not mean completed.
 The remaining work is still substantial:
 
 - Phase 5: repo-contained bootstrap exists, but live proof is still on `x86`, not `x86_64`
-- Phase 6: trace keys now exist, but semantic stage-bootstrap values are still unresolved
+- Phase 6: trace keys now exist and initial offline stage-bootstrap values are populated, but original-runtime values beyond the launcher gate are still unresolved
 - Phase 7: no representative original-vs-x64 equivalence pass has been run
 - Phase 8: no save/load or lifecycle equivalence report exists yet
 - Phase 9: no AW2 differential suite has been passed yet
@@ -49,6 +49,7 @@ From the packaging-track perspective:
 
 - do start x64 bootstrap work
 - do use the live original runtime as the oracle
+- do treat the launcher `Network Error` as an external service dependency, not as the core asset/runtime decode blocker
 - do not claim equivalence or final packaging yet
 - do not treat any provisional APK as a certified final artifact
 
@@ -59,6 +60,7 @@ Phase 5 evidence now also includes:
 Phase 6 evidence now also includes:
 
 - [aw2-phase6-trace-schema-status.md](/C:/vs/other/arelwars/docs/aw2-phase6-trace-schema-status.md)
+- [aw2-network-dependency-scope.md](/C:/vs/other/arelwars/docs/aw2-network-dependency-scope.md)
 
 ## Immediate Next Phase
 

@@ -38,12 +38,17 @@ Observed runtime facts:
 - UI dump contains the DRM terms WebView and `V9-IDC-v2.1.3`
 - the process is visible in `dumpsys activity`
 - BlueStacks logs show the guest reaches `Player state: ready`
+- the original app can now be driven through DRM into `com.gamevil.ArelWars2.global/.ArelWars2Launcher`
+- the first post-DRM observable scene is a `Network Error` modal owned by the launcher
 
 Artifacts:
 
 - [aw2-current.xml](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/aw2-current.xml)
 - [live-drm-smoke-v4/session.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/live-drm-smoke-v4/session.json)
 - [live-drm-smoke-v4/logcat.txt](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/live-drm-smoke-v4/logcat.txt)
+- [first-scene-v1/session.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/first-scene-v1/session.json)
+- [05_post_start.xml](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/first-scene-v1/05_post_start.xml)
+- [05_post_start.png](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/first-scene-v1/05_post_start.png)
 
 So `Phase 1` is no longer “candidate runtime only.” It is a live original-runtime oracle.
 
@@ -78,7 +83,8 @@ Current limitations are now secondary, not blocking:
 - `run-as = unavailable`
 - `su = unavailable`
 - external save roots have not appeared yet on the DRM screen
-- the current captured scene is still early bootstrap (`DRMLicensing`), not battle/menu
+- the current oracle boundary is launcher/bootstrap and first-scene network failure, not battle/menu
+- the remote service behind the launcher `Network Error` dialog is outside the current packaged runtime graph
 
 Those do not block Phase 2 approval because the required oracle schema can already be emitted by the live original runtime.
 
@@ -91,3 +97,4 @@ From this point:
 - `Route A` is reopened
 - phase work may continue into x64 runtime bootstrap and trace alignment
 - `Phase 5` through `Phase 10` are no longer globally blocked by environment absence
+- the live oracle may be treated as valid through the launcher/network-error boundary while network dependency is handled as an external scope item

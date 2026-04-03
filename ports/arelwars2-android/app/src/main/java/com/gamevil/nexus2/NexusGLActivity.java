@@ -12,6 +12,8 @@ import com.gamevil.ArelWars2.global.Aw2TraceWriter;
 import com.gamevil.ArelWars2.global.R;
 import com.gamevil.lib.GvActivity;
 
+import org.json.JSONObject;
+
 public class NexusGLActivity extends GvActivity {
     private static final int TIMER_CALLBACK = 77;
 
@@ -35,7 +37,13 @@ public class NexusGLActivity extends GvActivity {
                                 + " | package=" + (packageNameForNative.isEmpty() ? getPackageName() : packageNameForNative)
                                 + " | publicKey=" + publicKey
                 );
-                Aw2TraceWriter.write(NexusGLActivity.this, NexusGLActivity.this.getClass().getSimpleName(), publicKey, null);
+                Aw2TraceWriter.write(
+                        NexusGLActivity.this,
+                        NexusGLActivity.this.getClass().getSimpleName(),
+                        publicKey,
+                        buildSceneTraceExtra(),
+                        buildSceneVerificationPatch()
+                );
             }
             loopHandler.postDelayed(this, 250L);
         }
@@ -110,13 +118,21 @@ public class NexusGLActivity extends GvActivity {
                         + " | package=" + (packageNameForNative.isEmpty() ? getPackageName() : packageNameForNative)
                         + " | publicKey=" + publicKey
         );
-        Aw2TraceWriter.write(this, getClass().getSimpleName(), publicKey, null);
+        Aw2TraceWriter.write(this, getClass().getSimpleName(), publicKey, buildSceneTraceExtra(), buildSceneVerificationPatch());
     }
 
     protected final void updateRuntimeStatus(String detail) {
         if (runtimeStatusView != null) {
             runtimeStatusView.setText(detail);
         }
+    }
+
+    protected JSONObject buildSceneTraceExtra() {
+        return null;
+    }
+
+    protected JSONObject buildSceneVerificationPatch() {
+        return null;
     }
 
     private void scheduleTimer() {

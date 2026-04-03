@@ -12,7 +12,9 @@ plugins {
 val originalAssetsDir = file("C:/vs/other/arelwars/recovery/arel_wars2/apk_unzip/assets")
 val originalApk = file("C:/vs/other/arelwars/arel_wars2/arel_wars_2.apk")
 val armLibDir = file("C:/vs/other/arelwars/recovery/arel_wars2/apk_unzip/lib/armeabi")
+val bootstrapStageCandidates = file("C:/vs/other/arelwars/recovery/arel_wars2/aw2_bootstrap_stage_candidates.json")
 val armRunnerAssetDir = layout.buildDirectory.dir("generated/armRunnerAssets/main")
+val bootstrapMetadataAssetDir = layout.buildDirectory.dir("generated/bootstrapMetadataAssets/main")
 
 val releaseAssetEntriesToStrip = setOf(
     "assets/dexopt/baseline.prof",
@@ -63,6 +65,13 @@ val prepareArmRunnerAssets by tasks.registering(Copy::class) {
     }
     from(armLibDir) {
         include("libgameDSO.so", "libcocos2d.so", "libcocosdenshion.so", "libopenslaudio.so")
+    }
+}
+
+val prepareBootstrapMetadataAssets by tasks.registering(Copy::class) {
+    into(bootstrapMetadataAssetDir.map { it.dir("bootstrap") })
+    from(bootstrapStageCandidates) {
+        rename { "aw2_bootstrap_stage_candidates.json" }
     }
 }
 
@@ -132,12 +141,14 @@ android {
                 assets.srcDir(originalAssetsDir)
             }
             assets.srcDir(armRunnerAssetDir.get().asFile)
+            assets.srcDir(bootstrapMetadataAssetDir.get().asFile)
         }
     }
 }
 
 tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
     dependsOn(prepareArmRunnerAssets)
+    dependsOn(prepareBootstrapMetadataAssets)
 }
 
 tasks.matching { it.name == "packageRelease" || it.name == "assembleRelease" }.configureEach {

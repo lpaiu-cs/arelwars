@@ -20,6 +20,16 @@ public final class Aw2TraceWriter {
     }
 
     public static void write(Activity activity, String sceneLabel, String publicKey, JSONObject extra) {
+        write(activity, sceneLabel, publicKey, extra, null);
+    }
+
+    public static void write(
+            Activity activity,
+            String sceneLabel,
+            String publicKey,
+            JSONObject extra,
+            JSONObject verificationPatch
+    ) {
         try {
             JSONObject root = new JSONObject();
             root.put("specVersion", SPEC_VERSION);
@@ -60,6 +70,18 @@ public final class Aw2TraceWriter {
             verificationTrace.put("saveSlotIdentity", JSONObject.NULL);
             verificationTrace.put("resumeTargetScene", sceneLabel);
             verificationTrace.put("resumeTargetStageBinding", JSONObject.NULL);
+            if (verificationPatch != null) {
+                JSONArray names = verificationPatch.names();
+                if (names != null) {
+                    for (int index = 0; index < names.length(); index++) {
+                        String key = names.optString(index, null);
+                        if (key == null) {
+                            continue;
+                        }
+                        verificationTrace.put(key, verificationPatch.opt(key));
+                    }
+                }
+            }
             root.put("verificationTrace", verificationTrace);
 
             File externalRoot = activity.getExternalFilesDir(null);
@@ -78,4 +100,3 @@ public final class Aw2TraceWriter {
         }
     }
 }
-
