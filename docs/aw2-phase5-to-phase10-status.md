@@ -61,6 +61,7 @@ Phase 6 evidence now also includes:
 
 - [aw2-phase6-trace-schema-status.md](/C:/vs/other/arelwars/docs/aw2-phase6-trace-schema-status.md)
 - [aw2-network-dependency-scope.md](/C:/vs/other/arelwars/docs/aw2-network-dependency-scope.md)
+- [aw2-launcher-boundary-alignment.md](/C:/vs/other/arelwars/docs/aw2-launcher-boundary-alignment.md)
 
 ## Immediate Next Phase
 
