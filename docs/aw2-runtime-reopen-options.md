@@ -172,3 +172,80 @@ That makes the next privileged reopen step concrete:
 - rerun [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1) after its new driver-service registration step
 - confirm `BlueStacksDrv_nxt` exists and starts
 - retry the patched `HD-Player` launch and inspect whether the BlueStacks VBox stack finally comes online
+
+## 2026-04-03 Late Night Update
+
+The reopen priority shifted again.
+
+What is now proven:
+
+- the current Oracle candidate can keep the VM alive for minutes
+- the strongest persisted shape is `PIIX3 + VBoxVGA + fastboot.vdi + Root.vhd + Data.vdi`
+- `127.0.0.1:5555` stays open
+- BlueStacks-side adb sees `emulator-5554`
+- but the guest still never becomes `adb-online`
+
+The bridge side is also clearer:
+
+- raw [HD-Player.exe](/C:/vs/other/arelwars/$root/PF/HD-Player.exe) launch now exits cleanly, not by AV
+- it fails at `bridgeOnInstanceStateUpdatedRpc ... opcode = 3011`
+- `coreSvcErr` remains `0`
+
+The biggest new negative result is this:
+
+- adding only `VBoxInternal/PDM/Devices/bstdevices/Path`
+- without any custom PCI assignment items
+
+still crashes immediately inside [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll).
+
+That eliminates the idea that the remaining blocker is a specific `bstaudio` / `bstcamera` / `bstvmsg` device subset.
+
+It points instead to a runtime ABI mismatch:
+
+- BlueStacks control binaries are `6.1.36.156792`
+- the usable Oracle frontend route is `7.2.6`
+- the extracted official Oracle `6.1.36` frontend is not a drop-in replacement because hardening rejects it before launch
+
+So the best reopen path is now:
+
+1. find or reconstruct a BlueStacks-compatible headless frontend for the `6.1.36.156792` stack
+2. only if that fails, keep the Oracle stripped profile as a limited black-screen / offline-adb probe path
+
+## 2026-04-03 Midnight Update
+
+The portable-client route has now crossed one more threshold.
+
+What is newly proven:
+
+- the `VBoxHeadless.exe - Application Error` popup seen during manual testing belongs to the Oracle `bstdevices` branch, not the valid portable-client launcher path
+- the valid launcher path is:
+  - [HD-MultiInstanceManager.exe](/C:/vs/other/arelwars/$root/PF/HD-MultiInstanceManager.exe)
+  - visible `Start` button
+  - child [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) with `--instance Nougat32`
+- the stale `AddRedirect failed` branch was caused by a duplicate baked-in `adb` NAT forward inside [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk)
+- removing that persistent forwarding entry clears the `configureMachine()` failure
+
+Current strongest portable profile:
+
+- `MIM Start` launches a live player process
+- the player remains alive for `60+` seconds
+- window tree shows `BlueStacks -> Optimizing before launch`
+- named pipes include both:
+  - `launcher_bridge`
+  - `bst_plr_Nougat32_nxt`
+
+But the route is still not reopened yet because:
+
+- no `adb` device becomes visible
+- no listener appears on `127.0.0.1:5555`
+- no `VBoxHeadless` child is observed on that path
+- the player stalls at `Optimizing before launch`
+
+This changes the next-step priority.
+
+The portable-client route is now ahead of the raw Oracle route for active debugging value.
+
+Immediate next step:
+
+- treat `MIM Start + no baked-in adb NAT rule` as the canonical reopen path
+- debug the `Optimizing before launch` plateau instead of raw `HD-Player.exe` command-line launch

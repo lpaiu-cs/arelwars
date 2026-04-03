@@ -58,6 +58,88 @@ Current portable-client state:
 
 So Phase 1 and Phase 2 remain blocked, but by `candidate-runtime incompleteness`, not by total runtime absence.
 
+## 2026-04-03 Midnight Update
+
+Phase 1 and Phase 2 are still blocked, but the reopen stack is more mature than the earlier late-night status.
+
+New positive result:
+
+- the correct BlueStacks launcher path is now known and reproducible
+- [HD-MultiInstanceManager.exe](/C:/vs/other/arelwars/$root/PF/HD-MultiInstanceManager.exe) can launch [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) for `Nougat32`
+- that player survives for `60+` seconds and exposes a live `BlueStacks` window with nested `Optimizing before launch`
+- a per-instance pipe `bst_plr_Nougat32_nxt` appears
+
+Another concrete blocker was also removed:
+
+- [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) contained a persistent `adb` NAT forwarding rule
+- BlueStacks attempted to add the same redirect dynamically and failed at `AddRedirect failed`
+- removing the baked-in rule clears that specific `configureMachine()` failure
+
+What remains insufficient for Phase 1 / Phase 2 approval:
+
+- no original APK process is running
+- no `adb-online` device exists
+- SDK `adb devices` is still empty on the valid launcher path
+- no installable oracle session can yet be captured
+- the player is stuck at `Optimizing before launch`
+
+So the practical blocker is no longer “can the player launch at all.”
+
+It is now:
+
+- `can the valid MIM-driven player launch transition past Optimizing-before-launch into actual guest bring-up`
+
+## 2026-04-03 Late Night Update
+
+The Oracle candidate improved again, but not enough to approve Phase 1 or Phase 2.
+
+Current strongest runtime facts:
+
+- the persisted VM shape is now `PIIX3 + VBoxVGA + IDE(primary/master fastboot, primary/slave Root, secondary/master Data.vdi)`
+- the VM can stay alive for `5+` minutes under [BstkServer.log](/C:/ProgramData/BlueStacks_nxt/Manager/BstkServer.log)
+- the NAT forward on `127.0.0.1:5555` stays open
+- BlueStacks-side adb can see `emulator-5554`
+
+But the oracle threshold is still not crossed:
+
+- `emulator-5554` remains `offline`
+- the guest still never becomes `adb-online`
+- Oracle `debugvm osdetect` still fails
+- no live original APK install or capture session can start
+
+The player/bridge failure is also more specific now.
+
+Launching raw [HD-Player.exe](/C:/vs/other/arelwars/$root/PF/HD-Player.exe) no longer AVs, but it exits with:
+
+- `bridgeOnInstanceStateUpdatedRpc: ipcSendToServer command failed, opcode = 3011`
+- `coreSvcErr: 0`
+
+That means the remaining gap is no longer “can the player process start at all.”
+
+It is:
+
+- `can the running VM and BlueStacks bridge agree on instance state well enough to attach the player and complete guest bring-up`
+
+Another sub-experiment also closed out one false lead.
+
+Restoring only:
+
+- `VBoxInternal/PDM/Devices/bstdevices/Path = ...HD-Vdes-Service.dll`
+
+while keeping all BlueStacks PCI assignment items removed still crashes immediately inside [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll).
+
+So the blocker is not specific to `bstaudio` or another single custom device.
+
+It is broader:
+
+- Oracle `7.2.6` cannot safely load the BlueStacks custom device runtime
+
+The extracted official Oracle `6.1.36` frontend also does not reopen the route, because it fails its own hardening / build-certificate checks before the VM launches.
+
+So Phase 1 and Phase 2 remain blocked by a now very narrow condition:
+
+- no BlueStacks-compatible headless frontend is available on this machine
+
 ## What Was Completed Anyway
 
 The AW2 oracle tooling remains ready:

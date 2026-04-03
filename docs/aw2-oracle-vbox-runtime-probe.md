@@ -198,3 +198,68 @@ It fails even earlier with hardening / build-certificate mismatch:
 - `Signature #1/2: Not signed with the build certificate`
 
 So the direct official-Oracle-6.1 frontend path is now ruled out as a primary reopen fix.
+
+## 2026-04-03 Late Night Update
+
+The strongest locally reproducible Oracle profile is now more precise.
+
+What is stable:
+
+- the live machine can be held on the `oracle-ide-primaryslave-piix3-vga` shape for more than `5` minutes
+- the current persisted runtime shape is:
+  - `PIIX3`
+  - `VBoxVGA`
+  - `IDE 0:0 = fastboot.vdi`
+  - `IDE 0:1 = Root.vhd`
+  - `IDE 1:0 = Data.vdi`
+- the NAT forward on `127.0.0.1:5555` stays open
+- BlueStacks-side adb can see the guest as `emulator-5554`
+
+What is still missing:
+
+- the guest never reaches `adb-online`
+- the best current observation is still `emulator-5554 offline`
+- Oracle `debugvm osdetect` still does not detect a guest OS
+- the serial raw-file remains empty
+- boot statistics still show only the initial boot-disk reads
+
+The BlueStacks player path is now also better defined.
+
+- launching raw [HD-Player.exe](/C:/vs/other/arelwars/$root/PF/HD-Player.exe) no longer crashes
+- it exits cleanly with:
+  - `bridgeOnInstanceStateUpdatedRpc: ipcSendToServer command failed, opcode = 3011`
+  - `Player state : Exiting err: 0, coreSvcErr: 0`
+- [BstkServer.log](/C:/ProgramData/BlueStacks_nxt/Manager/BstkServer.log) shows the VM is launched and kept alive
+- the failure is therefore no longer a generic process crash but a bridge / instance-state update failure
+
+One narrower sub-experiment is now decisively closed:
+
+- restoring only `VBoxInternal/PDM/Devices/bstdevices/Path`
+- without restoring any `bstaudio/bstcamera/bstpgaipc/bstserial/bstvmsg` PCI assignments
+
+still causes an immediate Oracle VBox crash inside:
+
+- [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll)
+
+with the faulting PC:
+
+- `Xcpt PC = ... +0x27be into HD-Vdes-Service.dll`
+
+That means the blocker is not “which BlueStacks custom device should be re-enabled first.”
+
+It is:
+
+- Oracle `7.2.6` cannot safely load the BlueStacks custom device runtime at all
+
+So the remaining reopen problem is now narrowed to a frontend / runtime ABI gap:
+
+- `BstkSVC/BstkVMMgr` are `6.1.36.156792`
+- the currently usable Oracle frontend path is `7.2.6`
+- the direct official Oracle `6.1.36` frontend path is separately blocked by hardening / build-certificate mismatch
+
+The next useful path is therefore not more `bstdevice` subset probing.
+
+It is one of:
+
+- obtain a BlueStacks-compatible `6.1.36.156792` headless frontend path
+- or replace the missing frontend with a custom BlueStacks-compatible headless bridge

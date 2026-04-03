@@ -76,3 +76,52 @@ Prepared next-step material:
 
 - [aw2-bluestacks-admin-bootstrap.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-admin-bootstrap.md)
 - [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1)
+
+## 2026-04-03 Late Update
+
+The portable-client route is no longer a single failure bucket.
+
+New concrete findings:
+
+- the `VBoxHeadless.exe - Application Error` popup seen during testing belongs to the Oracle `bstdevices` path and [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll), not the current portable-client blocker
+- direct PowerShell launch of [HD-Player.exe](/C:/vs/other/arelwars/$root/PF/HD-Player.exe) is still not a valid path
+  - it either exits with `3011`
+  - or corrupts the heap when parent spoofing is attempted
+- the actual launcher path is [HD-MultiInstanceManager.exe](/C:/vs/other/arelwars/$root/PF/HD-MultiInstanceManager.exe)
+  - it creates the `launcher_bridge` pipe
+  - it can launch [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) with `--instance Nougat32`
+
+Another blocker was removed from the VM config side:
+
+- [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) contained a baked-in NAT forwarding rule for `adb`
+- BlueStacks tried to add the same redirect again and failed with `AddRedirect failed`
+- removing the baked-in `adb` forwarding entry clears that `configureMachine()` failure
+
+Current best portable-launch shape:
+
+- start [HD-MultiInstanceManager.exe](/C:/vs/other/arelwars/$root/PF/HD-MultiInstanceManager.exe)
+- press the visible `Start` button for `Nougat32`
+- [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) stays alive for at least `60+` seconds
+- top-level UI shows:
+  - `BlueStacks`
+  - nested `Optimizing before launch`
+- named pipes include:
+  - `launcher_bridge`
+  - `bst_plr_Nougat32_nxt`
+
+What is still missing:
+
+- no `adb` device becomes visible yet
+- no `127.0.0.1:5555` listener appears on this path
+- no `VBoxHeadless` child is observed yet
+- the UI remains stalled at `Optimizing before launch`
+
+This makes the blocker much tighter:
+
+- the correct launcher path is now known
+- the duplicate NAT redirect bug is now known and removable
+- the remaining portable-client gap is the `Optimizing before launch` plateau after a valid player attach
+
+Automation helper:
+
+- [start_aw2_via_mim.py](/C:/vs/other/arelwars/tools/arel_wars2/start_aw2_via_mim.py)

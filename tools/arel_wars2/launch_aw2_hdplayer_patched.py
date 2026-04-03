@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 CREATE_SUSPENDED = 0x00000004
+EXTENDED_STARTUPINFO_PRESENT = 0x00080000
 MEM_COMMIT = 0x1000
 MEM_RESERVE = 0x2000
 PAGE_READWRITE = 0x04
@@ -23,7 +24,9 @@ INFINITE = 0xFFFFFFFF
 PROCESS_VM_OPERATION = 0x0008
 PROCESS_VM_READ = 0x0010
 PROCESS_VM_WRITE = 0x0020
+PROCESS_CREATE_PROCESS = 0x0080
 PROCESS_QUERY_INFORMATION = 0x0400
+PROC_THREAD_ATTRIBUTE_PARENT_PROCESS = 0x00020000
 
 
 class STARTUPINFOW(ctypes.Structure):
@@ -58,6 +61,13 @@ class PROCESS_INFORMATION(ctypes.Structure):
     ]
 
 
+class STARTUPINFOEXW(ctypes.Structure):
+    _fields_ = [
+        ("StartupInfo", STARTUPINFOW),
+        ("lpAttributeList", wintypes.LPVOID),
+    ]
+
+
 class MODULEENTRY32W(ctypes.Structure):
     _fields_ = [
         ("dwSize", wintypes.DWORD),
@@ -86,7 +96,7 @@ CreateProcessW.argtypes = [
     wintypes.DWORD,
     wintypes.LPVOID,
     wintypes.LPCWSTR,
-    ctypes.POINTER(STARTUPINFOW),
+    wintypes.LPVOID,
     ctypes.POINTER(PROCESS_INFORMATION),
 ]
 CreateProcessW.restype = wintypes.BOOL
@@ -163,6 +173,31 @@ Module32NextW = kernel32.Module32NextW
 Module32NextW.argtypes = [wintypes.HANDLE, ctypes.POINTER(MODULEENTRY32W)]
 Module32NextW.restype = wintypes.BOOL
 
+InitializeProcThreadAttributeList = kernel32.InitializeProcThreadAttributeList
+InitializeProcThreadAttributeList.argtypes = [
+    wintypes.LPVOID,
+    wintypes.DWORD,
+    wintypes.DWORD,
+    ctypes.POINTER(ctypes.c_size_t),
+]
+InitializeProcThreadAttributeList.restype = wintypes.BOOL
+
+UpdateProcThreadAttribute = kernel32.UpdateProcThreadAttribute
+UpdateProcThreadAttribute.argtypes = [
+    wintypes.LPVOID,
+    wintypes.DWORD,
+    ctypes.c_size_t,
+    wintypes.LPVOID,
+    ctypes.c_size_t,
+    wintypes.LPVOID,
+    wintypes.LPVOID,
+]
+UpdateProcThreadAttribute.restype = wintypes.BOOL
+
+DeleteProcThreadAttributeList = kernel32.DeleteProcThreadAttributeList
+DeleteProcThreadAttributeList.argtypes = [wintypes.LPVOID]
+DeleteProcThreadAttributeList.restype = None
+
 
 class PROCESS_BASIC_INFORMATION(ctypes.Structure):
     _fields_ = [
@@ -190,26 +225,65 @@ def fail(message: str) -> None:
     raise RuntimeError(f"{message} (winerr={ctypes.get_last_error()})")
 
 
-def create_process_suspended(exe_path: str, argv: list[str], cwd: str) -> PROCESS_INFORMATION:
-    startup = STARTUPINFOW()
-    startup.cb = ctypes.sizeof(startup)
+def create_process_suspended(exe_path: str, argv: list[str], cwd: str, parent_pid: int | None = None) -> PROCESS_INFORMATION:
     procinfo = PROCESS_INFORMATION()
     cmdline = " ".join([quote_arg(exe_path), *(quote_arg(arg) for arg in argv)])
     cmd_buf = ctypes.create_unicode_buffer(cmdline)
-    ok = CreateProcessW(
-        exe_path,
-        cmd_buf,
-        None,
-        None,
-        False,
-        CREATE_SUSPENDED,
-        None,
-        cwd,
-        ctypes.byref(startup),
-        ctypes.byref(procinfo),
-    )
-    if not ok:
-        fail("CreateProcessW failed")
+    flags = CREATE_SUSPENDED
+    startup_ptr = None
+    parent_handle = None
+    attr_buf = None
+    startup_ex = None
+    try:
+        if parent_pid is None:
+            startup = STARTUPINFOW()
+            startup.cb = ctypes.sizeof(startup)
+            startup_ptr = ctypes.byref(startup)
+        else:
+            parent_handle = OpenProcess(PROCESS_CREATE_PROCESS | PROCESS_QUERY_INFORMATION, False, parent_pid)
+            if not parent_handle:
+                fail(f"OpenProcess failed for parent pid {parent_pid}")
+            attr_size = ctypes.c_size_t()
+            InitializeProcThreadAttributeList(None, 1, 0, ctypes.byref(attr_size))
+            attr_buf = ctypes.create_string_buffer(attr_size.value)
+            startup_ex = STARTUPINFOEXW()
+            startup_ex.StartupInfo.cb = ctypes.sizeof(startup_ex)
+            startup_ex.lpAttributeList = ctypes.cast(attr_buf, wintypes.LPVOID)
+            if not InitializeProcThreadAttributeList(startup_ex.lpAttributeList, 1, 0, ctypes.byref(attr_size)):
+                fail("InitializeProcThreadAttributeList failed")
+            parent_handle_box = wintypes.HANDLE(parent_handle)
+            if not UpdateProcThreadAttribute(
+                startup_ex.lpAttributeList,
+                0,
+                PROC_THREAD_ATTRIBUTE_PARENT_PROCESS,
+                ctypes.byref(parent_handle_box),
+                ctypes.sizeof(parent_handle_box),
+                None,
+                None,
+            ):
+                fail("UpdateProcThreadAttribute failed")
+            startup_ptr = ctypes.byref(startup_ex)
+            flags |= EXTENDED_STARTUPINFO_PRESENT
+
+        ok = CreateProcessW(
+            exe_path,
+            cmd_buf,
+            None,
+            None,
+            False,
+            flags,
+            None,
+            cwd,
+            startup_ptr,
+            ctypes.byref(procinfo),
+        )
+        if not ok:
+            fail("CreateProcessW failed")
+    finally:
+        if startup_ex and startup_ex.lpAttributeList:
+            DeleteProcThreadAttributeList(startup_ex.lpAttributeList)
+        if parent_handle:
+            CloseHandle(parent_handle)
     return procinfo
 
 
@@ -348,8 +422,7 @@ def patch_globals(process: wintypes.HANDLE, base: int, values: dict[int, str]) -
         write_memory(process, base + offset, blob, change_protection=False)
 
 
-def patch_bootstrap_state(process: wintypes.HANDLE, base: int) -> None:
-    write_memory(process, base + 0x1A02540, (0).to_bytes(4, "little"), change_protection=False)
+def patch_datadir_state(process: wintypes.HANDLE, base: int) -> None:
     write_memory(process, base + 0x1A02568, (0).to_bytes(4, "little"), change_protection=False)
 
 
@@ -380,7 +453,7 @@ def run(args: argparse.Namespace) -> int:
     os.environ["TEMP"] = args.temp_dir
     os.environ["TMP"] = args.temp_dir
 
-    procinfo = create_process_suspended(args.exe, args.arg, args.cwd)
+    procinfo = create_process_suspended(args.exe, args.arg, args.cwd, parent_pid=args.parent_pid)
     patch_process = None
     try:
         try:
@@ -394,7 +467,7 @@ def run(args: argparse.Namespace) -> int:
             0x1A025F8: args.common_app_data,
         }
         patch_globals(patch_process, base, values)
-        patch_bootstrap_state(patch_process, base)
+        patch_datadir_state(patch_process, base)
         if args.patch_datadir_skip_init:
             patch_datadir_skip_init(patch_process, base)
 
@@ -410,7 +483,7 @@ def run(args: argparse.Namespace) -> int:
                 print(f"exe={exe_path}")
                 return code
             patch_globals(patch_process, base, values)
-            patch_bootstrap_state(patch_process, base)
+            patch_datadir_state(patch_process, base)
             if args.patch_datadir_skip_init:
                 patch_datadir_skip_init(patch_process, base)
             if args.repump_interval_ms > 0:
@@ -475,7 +548,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--vbox-app-home",
-        default=r"C:\ProgramData\BlueStacks_nxt",
+        default=r"C:\Program Files\BlueStacks_nxt",
     )
     parser.add_argument(
         "--temp-dir",
@@ -499,6 +572,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--patch-datadir-skip-init",
         action="store_true",
+    )
+    parser.add_argument(
+        "--parent-pid",
+        type=int,
     )
     return parser
 

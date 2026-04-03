@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import socket
 import shutil
 import subprocess
@@ -122,6 +123,8 @@ def ensure_data_vdi(vboxmanage: Path, vm_dir: Path) -> tuple[Path, str]:
 
 
 def patch_vm_xml(vm_file: Path, data_uuid: str, variant: str) -> None:
+    if vm_file.exists():
+        os.chmod(vm_file, 0o666)
     backup = vm_file.with_name(f"{vm_file.name}.{variant}.bak")
     if not backup.exists():
         shutil.copy2(vm_file, backup)
@@ -265,7 +268,7 @@ def ensure_nat_pf(vboxmanage: Path, vm_name: str, host_port: int = 5555, guest_p
     )
 
 
-def apply_runtime_vm_settings(vboxmanage: Path, vm_name: str, variant: str) -> None:
+def apply_runtime_vm_settings(vboxmanage: Path, vm_name: str, vm_dir: Path, data_vdi: Path, variant: str) -> None:
     chipset = "piix3" if "piix3" in variant else "ich9"
     if "pcnet" in variant:
         nictype = "Am79C973"
@@ -299,6 +302,166 @@ def apply_runtime_vm_settings(vboxmanage: Path, vm_name: str, variant: str) -> N
         ],
         timeout=60,
     )
+    fastboot = vm_dir / "fastboot.vdi"
+    root_vhd = vm_dir / "Root.vhd"
+    ide_like = variant.startswith("oracle-ide-")
+    if ide_like:
+        maybe_run([str(vboxmanage), "storagectl", vm_name, "--name", "SATA", "--remove"], timeout=60)
+        maybe_run(
+            [
+                str(vboxmanage),
+                "storagectl",
+                vm_name,
+                "--name",
+                "IDE",
+                "--add",
+                "ide",
+                "--controller",
+                "PIIX3",
+                "--portcount",
+                "2",
+                "--bootable",
+                "on",
+            ],
+            timeout=60,
+        )
+        for port, device in [("0", "1"), ("1", "0"), ("1", "1")]:
+            maybe_run(
+                [
+                    str(vboxmanage),
+                    "storageattach",
+                    vm_name,
+                    "--storagectl",
+                    "IDE",
+                    "--port",
+                    port,
+                    "--device",
+                    device,
+                    "--type",
+                    "hdd",
+                    "--medium",
+                    "none",
+                ],
+                timeout=60,
+            )
+        run_retry(
+            [
+                str(vboxmanage),
+                "storageattach",
+                vm_name,
+                "--storagectl",
+                "IDE",
+                "--port",
+                "0",
+                "--device",
+                "0",
+                "--type",
+                "hdd",
+                "--medium",
+                str(fastboot),
+            ],
+            timeout=60,
+        )
+        if "primaryslave" in variant:
+            layout = [("0", "1", root_vhd)]
+            if "rootonly" not in variant:
+                layout.append(("1", "0", data_vdi))
+        elif "rootonly" in variant:
+            layout = [("0", "1", root_vhd)]
+        else:
+            layout = [("1", "0", root_vhd)]
+            if "rootonly" not in variant:
+                layout.append(("1", "1", data_vdi))
+        for port, device, medium in layout:
+            run_retry(
+                [
+                    str(vboxmanage),
+                    "storageattach",
+                    vm_name,
+                    "--storagectl",
+                    "IDE",
+                    "--port",
+                    port,
+                    "--device",
+                    device,
+                    "--type",
+                    "hdd",
+                    "--medium",
+                    str(medium),
+                ],
+                timeout=60,
+            )
+    else:
+        maybe_run(
+            [
+                str(vboxmanage),
+                "storagectl",
+                vm_name,
+                "--name",
+                "SATA",
+                "--add",
+                "sata",
+                "--controller",
+                "IntelAHCI",
+                "--portcount",
+                "2",
+            ],
+            timeout=60,
+        )
+        run_retry(
+            [
+                str(vboxmanage),
+                "storageattach",
+                vm_name,
+                "--storagectl",
+                "IDE",
+                "--port",
+                "0",
+                "--device",
+                "0",
+                "--type",
+                "hdd",
+                "--medium",
+                str(fastboot),
+            ],
+            timeout=60,
+        )
+        run_retry(
+            [
+                str(vboxmanage),
+                "storageattach",
+                vm_name,
+                "--storagectl",
+                "SATA",
+                "--port",
+                "0",
+                "--device",
+                "0",
+                "--type",
+                "hdd",
+                "--medium",
+                str(root_vhd),
+            ],
+            timeout=60,
+        )
+        run_retry(
+            [
+                str(vboxmanage),
+                "storageattach",
+                vm_name,
+                "--storagectl",
+                "SATA",
+                "--port",
+                "1",
+                "--device",
+                "0",
+                "--type",
+                "hdd",
+                "--medium",
+                str(data_vdi),
+            ],
+            timeout=60,
+        )
 
 
 def adb_devices(adb: Path) -> str:
@@ -375,7 +538,7 @@ def capture_variant(
 
     data_vdi, data_uuid = ensure_data_vdi(vboxmanage, vm_file.parent)
     patch_vm_xml(vm_file, data_uuid, variant)
-    apply_runtime_vm_settings(vboxmanage, vm_name, variant)
+    apply_runtime_vm_settings(vboxmanage, vm_name, vm_file.parent, data_vdi, variant)
     ensure_nat_pf(vboxmanage, vm_name)
     ensure_dir(serial_log.parent)
     serial_log.write_bytes(b"")
