@@ -203,39 +203,144 @@ def detect_su(serial: str | None) -> dict[str, Any]:
 
 
 def detect_jni_trace_backend(serial: str | None, package: str) -> dict[str, Any]:
-    command = [
+    remote_path = "/sdcard/aw1_profile_probe.prof"
+    adb_shell(serial, f'rm -f "{remote_path}"', check=False, timeout=10)
+
+    activity_help = adb(serial, "shell", "cmd", "activity", "help", check=False, timeout=10)
+    activity_help_text = "\n".join([activity_help.stdout.strip(), activity_help.stderr.strip()]).strip()
+    activity_supports_profile = bool(re.search(r"^\s*profile(\s|$)", activity_help_text, re.MULTILINE))
+
+    backend = None
+    proc = None
+    if activity_supports_profile:
+        backend = "cmd-activity-profile"
+        proc = adb(
+            serial,
+            "shell",
+            "cmd",
+            "activity",
+            "profile",
+            "start",
+            "--sampling",
+            "1000",
+            package,
+            remote_path,
+            check=False,
+            timeout=10,
+        )
+        combined = "\n".join(part for part in [proc.stdout.strip(), proc.stderr.strip()] if part)
+        if "Unknown command" in combined:
+            backend = None
+            proc = None
+
+    if proc is None:
+        backend = "am-profile"
+        proc = adb(
+            serial,
+            "shell",
+            "am",
+            "profile",
+            "start",
+            "--sampling",
+            "1000",
+            package,
+            remote_path,
+            check=False,
+            timeout=10,
+        )
+
+    stdout = proc.stdout.strip()
+    stderr = proc.stderr.strip()
+    time.sleep(5.0)
+    if backend == "cmd-activity-profile":
+        adb(serial, "shell", "cmd", "activity", "profile", "stop", package, check=False, timeout=10)
+    else:
+        adb(serial, "shell", "am", "profile", "stop", package, check=False, timeout=10)
+
+    profile_size = wait_for_remote_file_size(serial, remote_path)
+
+    combined = "\n".join(part for part in [stdout, stderr] if part)
+    available = proc.returncode == 0 and profile_size > 0
+    reason = ""
+    if not available:
+        if "not debuggable, and not profileable by shell" in combined:
+            reason = "package-is-not-debuggable-or-profileable-by-shell"
+        elif profile_size == 0 and proc.returncode == 0:
+            reason = "profile-artifact-empty"
+        elif combined:
+            reason = combined
+        else:
+            reason = "unknown-profile-backend-failure"
+
+    return {
+        "backend": backend,
+        "available": available,
+        "reason": reason or None,
+        "stdout": stdout,
+        "stderr": stderr,
+        "artifactRemotePath": remote_path,
+        "artifactSize": profile_size,
+    }
+
+
+def start_profile_capture(
+    serial: str | None,
+    package: str,
+    artifact_dir: pathlib.Path,
+) -> dict[str, Any]:
+    ensure_dir(artifact_dir)
+    remote_path = "/sdcard/aw1_capture_profile.prof"
+    adb_shell(serial, f'rm -f "{remote_path}"', check=False, timeout=10)
+    proc = adb(
+        serial,
         "shell",
-        "cmd",
-        "activity",
+        "am",
         "profile",
         "start",
         "--sampling",
         "1000",
         package,
-        "/data/local/tmp/aw1_profile_probe.prof",
-    ]
-    proc = adb(serial, *command, check=False, timeout=10)
-    stdout = proc.stdout.strip()
-    stderr = proc.stderr.strip()
-    available = proc.returncode == 0
-    reason = ""
-    if not available:
-        combined = "\n".join(part for part in [stdout, stderr] if part)
-        if "not debuggable, and not profileable by shell" in combined:
-            reason = "package-is-not-debuggable-or-profileable-by-shell"
-        elif combined:
-            reason = combined
-        else:
-            reason = "unknown-profile-backend-failure"
-    else:
-        adb(serial, "shell", "cmd", "activity", "profile", "stop", package, check=False, timeout=10)
+        remote_path,
+        check=False,
+        timeout=10,
+    )
     return {
-        "backend": "shell-profile",
-        "available": available,
-        "reason": reason or None,
-        "stdout": stdout,
-        "stderr": stderr,
+        "backend": "am-profile",
+        "remotePath": remote_path,
+        "artifactPath": str(artifact_dir / "jni_profile.prof"),
+        "startReturnCode": proc.returncode,
+        "startStdout": proc.stdout.strip(),
+        "startStderr": proc.stderr.strip(),
+        "started": proc.returncode == 0,
     }
+
+
+def finish_profile_capture(
+    serial: str | None,
+    package: str,
+    capture: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if not capture:
+        return None
+    adb(serial, "shell", "am", "profile", "stop", package, check=False, timeout=10)
+    remote_path = capture["remotePath"]
+    artifact_size = wait_for_remote_file_size(serial, remote_path)
+    local_path = pathlib.Path(capture["artifactPath"])
+    if artifact_size > 0:
+        adb(serial, "pull", remote_path, str(local_path), timeout=60)
+        capture["artifactSha256"] = sha256_file(local_path)
+    else:
+        capture["artifactSha256"] = None
+    capture["artifactSize"] = artifact_size
+    capture["available"] = capture.get("started", False) and artifact_size > 0
+    if not capture["available"]:
+        combined = "\n".join(
+            part for part in [capture.get("startStdout", ""), capture.get("startStderr", "")] if part
+        )
+        capture["reason"] = combined or "capture-profile-artifact-empty"
+    else:
+        capture["reason"] = None
+    return capture
 
 
 def candidate_save_roots(package: str) -> list[str]:
@@ -262,6 +367,34 @@ def list_remote_files(serial: str | None, paths: list[str]) -> list[str]:
             if line:
                 files.append(line)
     return sorted(set(files))
+
+
+def read_remote_file_size(serial: str | None, remote_path: str) -> int:
+    proc = adb(serial, "shell", "ls", "-l", remote_path, check=False, timeout=10)
+    if proc.returncode != 0:
+        return 0
+    first_line = proc.stdout.splitlines()[0].strip() if proc.stdout.strip() else ""
+    match = re.match(r"^\S+\s+\d+\s+\S+\s+\S+\s+(\d+)\s", first_line)
+    if not match:
+        return 0
+    return int(match.group(1))
+
+
+def wait_for_remote_file_size(
+    serial: str | None,
+    remote_path: str,
+    *,
+    min_size: int = 1,
+    attempts: int = 10,
+    delay_seconds: float = 0.5,
+) -> int:
+    last_size = 0
+    for _ in range(attempts):
+        last_size = read_remote_file_size(serial, remote_path)
+        if last_size >= min_size:
+            return last_size
+        time.sleep(delay_seconds)
+    return last_size
 
 
 def pull_remote_file(serial: str | None, remote_path: str, local_path: pathlib.Path) -> None:
@@ -388,7 +521,12 @@ def capture_audio_snapshot(serial: str | None, package: str, output_path: pathli
     }
 
 
-def launch_package(serial: str | None, package: str) -> dict[str, Any]:
+def launch_package(
+    serial: str | None,
+    package: str,
+    *,
+    profiler_path: str | None = None,
+) -> dict[str, Any]:
     component_proc = adb(serial, "shell", "cmd", "package", "resolve-activity", "--brief", package, check=False, timeout=20)
     component = None
     for line in component_proc.stdout.splitlines():
@@ -396,12 +534,17 @@ def launch_package(serial: str | None, package: str) -> dict[str, Any]:
         if line and "/" in line and not line.startswith("priority="):
             component = line
     if component:
-        launch_proc = adb(serial, "shell", "am", "start", "-n", component, check=False, timeout=20)
+        launch_command = ["shell", "am", "start"]
+        if profiler_path:
+            launch_command.extend(["-W", "--start-profiler", profiler_path, "--sampling", "1000"])
+        launch_command.extend(["-n", component])
+        launch_proc = adb(serial, *launch_command, check=False, timeout=20)
         return {
             "component": component,
             "stdout": launch_proc.stdout.strip(),
             "stderr": launch_proc.stderr.strip(),
             "returncode": launch_proc.returncode,
+            "profilerPath": profiler_path,
         }
     monkey_proc = adb(
         serial,
@@ -566,14 +709,30 @@ def command_capture(args: argparse.Namespace) -> int:
 
     if args.clear_logcat:
         adb(serial, "logcat", "-c", timeout=10)
-    if args.launch:
-        launch_info = launch_package(serial, args.package)
-    else:
-        launch_info = None
-
     capture_started_at = now_iso()
     logcat_path = output_dir / "logcat.txt"
     logcat_process = start_logcat(serial, logcat_path)
+    profile_capture = None
+    launch_info = None
+    if args.launch:
+        profile_capture = {
+            "backend": "am-start-profiler",
+            "remotePath": "/sdcard/aw1_capture_profile.prof",
+            "artifactPath": str(artifact_dir / "jni_profile.prof"),
+            "started": False,
+        }
+        adb_shell(serial, f'rm -f "{profile_capture["remotePath"]}"', check=False, timeout=10)
+        launch_info = launch_package(
+            serial,
+            args.package,
+            profiler_path=profile_capture["remotePath"],
+        )
+        profile_capture["startReturnCode"] = launch_info["returncode"]
+        profile_capture["startStdout"] = launch_info["stdout"]
+        profile_capture["startStderr"] = launch_info["stderr"]
+        profile_capture["started"] = launch_info["returncode"] == 0
+    else:
+        profile_capture = start_profile_capture(serial, args.package, artifact_dir)
 
     screenshots_dir = ensure_dir(output_dir / "screenshots")
     ui_dir = ensure_dir(output_dir / "ui")
@@ -641,6 +800,7 @@ def command_capture(args: argparse.Namespace) -> int:
             time.sleep(0.1)
     finally:
         stop_logcat(logcat_process)
+        profile_capture = finish_profile_capture(serial, args.package, profile_capture)
 
     final_save = snapshot_save_files(serial, args.package, saves_dir / "final")
     save_snapshots.append(final_save)
@@ -668,10 +828,14 @@ def command_capture(args: argparse.Namespace) -> int:
             "saveSnapshotCount": len(save_snapshots),
         },
         "jniCallTrace": {
-            "backend": probe["capabilities"]["jniCallTrace"]["backend"],
-            "available": probe["capabilities"]["jniCallTrace"]["available"],
-            "reason": probe["capabilities"]["jniCallTrace"]["reason"],
-            "artifactPath": args.manual_jni_trace,
+            "backend": (profile_capture or probe["capabilities"]["jniCallTrace"]).get("backend"),
+            "available": (profile_capture or probe["capabilities"]["jniCallTrace"]).get("available"),
+            "reason": (profile_capture or probe["capabilities"]["jniCallTrace"]).get("reason"),
+            "artifactPath": args.manual_jni_trace or (profile_capture or {}).get("artifactPath"),
+            "artifactRemotePath": (profile_capture or probe["capabilities"]["jniCallTrace"]).get("artifactRemotePath")
+            or (profile_capture or {}).get("remotePath"),
+            "artifactSize": (profile_capture or probe["capabilities"]["jniCallTrace"]).get("artifactSize"),
+            "artifactSha256": (profile_capture or {}).get("artifactSha256"),
             "events": [],
         },
         "frameHashes": frame_hashes,

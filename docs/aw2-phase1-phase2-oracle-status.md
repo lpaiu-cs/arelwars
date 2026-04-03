@@ -4,211 +4,90 @@ Audit date: 2026-04-03
 
 ## Result
 
-- `Phase 1 = still blocked`
-- `Phase 2 = still blocked`
+- `Phase 1 = approved`
+- `Phase 2 = approved`
 
-## Updated Blocker Shape
+## What Changed
 
-The reason is no longer simply “there is no candidate Android runtime on this machine.”
+The reopened `BlueStacks Nougat32` runtime crossed the earlier blocker line:
 
-There is now a local candidate:
+- guest is now `adb device`, not `offline`
+- the original [arel_wars_2.apk](/C:/vs/other/arelwars/arel_wars2/arel_wars_2.apk) installs successfully
+- the original process launches successfully
+- the oracle harness now captures package identity, screenshots, UI, scene focus, audio snapshots, save roots, and profiler artifacts
 
-- `Oracle VBox`
-- `unpacked BlueStacks Nougat32`
-- best current profile: `oracle-ide-primaryslave-piix3-vga`
+The approved live device is:
 
-That candidate reaches a stable no-reset boot window, but it still fails the actual oracle threshold:
+- `serial = emulator-5554`
+- `abiList = x86, armeabi-v7a, armeabi`
+- `nativeBridge = libnb.so`
 
-- no usable `adb-online` device
-- official `adb` sees only `emulator-5554 offline`
-- no successful install of the original APK
-- no live original process to capture
-- only host/VM guestproperties are visible
-- `debugvm osdetect` still cannot identify a guest OS
-- serial capture is empty
-- boot-disk reads stop at `1024` bytes
+## Phase 1 Evidence
 
-The remaining Oracle VBox blocker is now sharper.
+The original app now launches into a stable observable scene.
 
-When the BlueStacks custom device path is restored, startup does not improve.
+Explicit launch:
 
-It fails earlier because Oracle VBox hardening rejects [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll):
+```powershell
+adb -s emulator-5554 shell am start -W -n com.gamevil.ArelWars2.global/com.gamevil.ArelWars2.global.DRMLicensing
+```
 
-- `TrustedInstaller is not the owner`
-- `Unable to load R3 module ... HD-Vdes-Service.dll (bstdevices)`
-- `VERR_UNRESOLVED_ERROR`
+Observed runtime facts:
 
-So the Oracle candidate is currently boxed in between:
+- focused component: `com.gamevil.ArelWars2.global/.DRMLicensing`
+- UI dump contains the DRM terms WebView and `V9-IDC-v2.1.3`
+- the process is visible in `dumpsys activity`
+- BlueStacks logs show the guest reaches `Player state: ready`
 
-- `no bstdevices` -> stable black screen
-- `with bstdevices` -> hardening failure before guest startup
+Artifacts:
 
-The alternative portable-client path is also still blocked, but not for the old reason.
+- [aw2-current.xml](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/aw2-current.xml)
+- [live-drm-smoke-v4/session.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/live-drm-smoke-v4/session.json)
+- [live-drm-smoke-v4/logcat.txt](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/live-drm-smoke-v4/logcat.txt)
 
-Current portable-client state:
+So `Phase 1` is no longer “candidate runtime only.” It is a live original-runtime oracle.
 
-- COM registration is repaired
-- `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
-- creation fails at `Could not create the VirtualBox home directory ''`
-- direct `BstkSVC.exe --registervbox` produces the same empty-home error in its own release log
-- a patched `HD-Player.exe` launch no longer crashes with `0xc0000005`
-- the patched player can stay resident without reaching `adb-online`
-- the current strongest portable-path blocker is the missing kernel service `BlueStacksDrv_nxt`
-- no client-side launch path yields a live guest
+## Phase 2 Evidence
 
-So Phase 1 and Phase 2 remain blocked, but by `candidate-runtime incompleteness`, not by total runtime absence.
+The capture backend is now strong enough to drive equivalence work.
 
-## 2026-04-03 Midnight Update
+Current oracle session:
 
-Phase 1 and Phase 2 are still blocked, but the reopen stack is more mature than the earlier late-night status.
+- [live-drm-smoke-v4/session.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/live-drm-smoke-v4/session.json)
 
-New positive result:
+That session proves:
 
-- the correct BlueStacks launcher path is now known and reproducible
-- [HD-MultiInstanceManager.exe](/C:/vs/other/arelwars/$root/PF/HD-MultiInstanceManager.exe) can launch [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) for `Nougat32`
-- that player survives for `60+` seconds and exposes a live `BlueStacks` window with nested `Optimizing before launch`
-- a per-instance pipe `bst_plr_Nougat32_nxt` appears
+- `installedMatchesExpectedApk = true`
+- screenshot/frame hash capture works
+- UI XML capture works
+- scene transition capture works
+- profiler artifact capture works
+- package launch info is recorded
 
-Another concrete blocker was also removed:
+Most important profiler artifacts:
 
-- [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) contained a persistent `adb` NAT forwarding rule
-- BlueStacks attempted to add the same redirect dynamically and failed at `AddRedirect failed`
-- removing the baked-in rule clears that specific `configureMachine()` failure
+- [probe-live-rerun.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/probe-live-rerun.json)
+  - `jniTraceBackendSatisfied = true`
+  - probe artifact size `3529`
+- [jni_profile.prof](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/live-drm-smoke-v4/artifacts/jni_profile.prof)
+  - size `36217`
+  - SHA-256 `e13e1df3db98d99cabbf31668547bcd543779a54b1f4b16e8785f5ad1b64ce14`
 
-What remains insufficient for Phase 1 / Phase 2 approval:
+Current limitations are now secondary, not blocking:
 
-- no original APK process is running
-- no `adb-online` device exists
-- SDK `adb devices` is still empty on the valid launcher path
-- no installable oracle session can yet be captured
-- the player is stuck at `Optimizing before launch`
+- `run-as = unavailable`
+- `su = unavailable`
+- external save roots have not appeared yet on the DRM screen
+- the current captured scene is still early bootstrap (`DRMLicensing`), not battle/menu
 
-So the practical blocker is no longer “can the player launch at all.”
-
-It is now:
-
-- `can the valid MIM-driven player launch transition past Optimizing-before-launch into actual guest bring-up`
-
-## 2026-04-03 Late Night Update
-
-The Oracle candidate improved again, but not enough to approve Phase 1 or Phase 2.
-
-Current strongest runtime facts:
-
-- the persisted VM shape is now `PIIX3 + VBoxVGA + IDE(primary/master fastboot, primary/slave Root, secondary/master Data.vdi)`
-- the VM can stay alive for `5+` minutes under [BstkServer.log](/C:/ProgramData/BlueStacks_nxt/Manager/BstkServer.log)
-- the NAT forward on `127.0.0.1:5555` stays open
-- BlueStacks-side adb can see `emulator-5554`
-
-But the oracle threshold is still not crossed:
-
-- `emulator-5554` remains `offline`
-- the guest still never becomes `adb-online`
-- Oracle `debugvm osdetect` still fails
-- no live original APK install or capture session can start
-
-The player/bridge failure is also more specific now.
-
-Launching raw [HD-Player.exe](/C:/vs/other/arelwars/$root/PF/HD-Player.exe) no longer AVs, but it exits with:
-
-- `bridgeOnInstanceStateUpdatedRpc: ipcSendToServer command failed, opcode = 3011`
-- `coreSvcErr: 0`
-
-That means the remaining gap is no longer “can the player process start at all.”
-
-It is:
-
-- `can the running VM and BlueStacks bridge agree on instance state well enough to attach the player and complete guest bring-up`
-
-Another sub-experiment also closed out one false lead.
-
-Restoring only:
-
-- `VBoxInternal/PDM/Devices/bstdevices/Path = ...HD-Vdes-Service.dll`
-
-while keeping all BlueStacks PCI assignment items removed still crashes immediately inside [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll).
-
-So the blocker is not specific to `bstaudio` or another single custom device.
-
-It is broader:
-
-- Oracle `7.2.6` cannot safely load the BlueStacks custom device runtime
-
-The extracted official Oracle `6.1.36` frontend also does not reopen the route, because it fails its own hardening / build-certificate checks before the VM launches.
-
-So Phase 1 and Phase 2 remain blocked by a now very narrow condition:
-
-- no BlueStacks-compatible headless frontend is available on this machine
-
-## 2026-04-03 Deep Night Update
-
-Phase 1 and Phase 2 are still blocked, but the runtime gap is now specifically a boot-handoff failure, not a total bring-up failure.
-
-New proven facts:
-
-- the valid launcher path is the installed [HD-MultiInstanceManager.exe](/C:/vs/other/arelwars/$root/PF/HD-MultiInstanceManager.exe) -> [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) chain
-- the live VM settings source is [BstkGlobal.xml](/C:/ProgramData/BlueStacks_nxt/Manager/BstkGlobal.xml) -> [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk)
-- that settings file is auto-regenerated on launch
-- the regenerated runtime shape also creates a local [Data.vdi](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Data.vdi)
-
-What this runtime can currently do:
-
-- keep `HD-Player` alive
-- keep `127.0.0.1:5555` open
-- expose `emulator-5554 offline`
-- stay CPU-active for minutes
-
-What it still cannot do:
-
-- bring the guest to `adb-online`
-- boot the original APK
-- expose a live original process for oracle capture
-
-The decisive evidence is now in the core guest logs:
-
-- [BstkCore.log](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log) reaches `Boot : bseqnr=1, bootseq=0002`
-- it stalls at `Booting from ...`
-- [BstkCore.log.1](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log.1) shows the previous session eventually `PoweredOff`
-- the powered-off guest CPU state remains in very early boot execution, not Android kernel/userspace
-- disk statistics show only `1024` bytes read from `fastboot.vdi`, with no meaningful boot progression into the real BlueStacks guest payload
-
-So the current blocker for Phase 1 / Phase 2 is now:
-
-- `stripped regenerated VM config boots only into a BlueStacks fastboot stub and never reaches full guest bring-up`
-
-The next approved reopen candidate is therefore:
-
-- restore [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) from [Android.bstk.in](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk.in)
-- point `bstdevices` at the installed [HD-Vdes-Service.dll](/C:/Program Files/BlueStacks_nxt/HD-Vdes-Service.dll)
-- retry the valid `MIM -> Start -> Continue` launch path
-
-Prepared helper:
-
-- [restore_aw2_bluestacks_template_config.ps1](/C:/vs/other/arelwars/tools/arel_wars2/restore_aw2_bluestacks_template_config.ps1)
-
-## What Was Completed Anyway
-
-The AW2 oracle tooling remains ready:
-
-- [capture_aw2_oracle_trace.py](/C:/vs/other/arelwars/tools/arel_wars2/capture_aw2_oracle_trace.py)
-- [aw2-verification-protocol.md](/C:/vs/other/arelwars/docs/aw2-verification-protocol.md)
-
-The local runtime reopening work also now has a concrete probe path:
-
-- [probe_aw2_oracle_vbox_runtime.py](/C:/vs/other/arelwars/tools/arel_wars2/probe_aw2_oracle_vbox_runtime.py)
-- [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md)
-- [probe_aw2_bluestacks_portable_launch.py](/C:/vs/other/arelwars/tools/arel_wars2/probe_aw2_bluestacks_portable_launch.py)
-- [aw2-bluestacks-portable-launch-probe.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-portable-launch-probe.md)
-- [aw2-bluestacks-admin-bootstrap.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-admin-bootstrap.md)
-- [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1)
+Those do not block Phase 2 approval because the required oracle schema can already be emitted by the live original runtime.
 
 ## Immediate Consequence
 
-Until the local Oracle VBox candidate yields a live original process, Phase 1 cannot approve a true oracle environment and Phase 2 cannot capture real original runtime evidence.
+The AW2 packaging track is no longer blocked by missing original-runtime oracle support.
 
-So the only approved work remains:
+From this point:
 
-- Oracle VBox runtime bring-up
-- elevated BlueStacks bootstrap
-- AW2 static bootstrap and asset-truth freezing
-- packaging-track gate hardening
+- `Route A` is reopened
+- phase work may continue into x64 runtime bootstrap and trace alignment
+- `Phase 5` through `Phase 10` are no longer globally blocked by environment absence

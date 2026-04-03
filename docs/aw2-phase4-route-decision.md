@@ -4,80 +4,72 @@ Audit date: 2026-04-03
 
 ## Decision
 
-- `Route C` remains selected
-- label: `static reverse-engineering + local runtime reopening`
+- `Route A` is now selected
+- label: `live-original oracle enabled -> original-equivalence / packaging track`
 
-## Why Route A Is Still Rejected
+## Why Route A Now Applies
 
-`Route A` requires the original AW2 APK to run inside the current environment as a live oracle.
+The earlier blocker was “the original AW2 APK cannot run as a live oracle on this machine.”
 
-That is still not true.
+That is no longer true.
 
-The machine now has a serious candidate runtime:
+The current environment now provides:
 
-- `Oracle VBox`
-- plus a patched `BlueStacks Nougat32` guest
+- a live `BlueStacks Nougat32` guest
+- `adb` visibility as `emulator-5554`
+- original APK install success
+- original process launch success
+- oracle probe and capture artifacts with package identity, screenshots, UI, scene focus, and profiler output
 
-But that candidate is still below the Route A threshold:
+Primary evidence:
 
-- no `adb-online` guest
-- official `adb` sees only `emulator-5554 offline`
-- no successful install of the original APK
-- no live original scene capture
-- no guest OS detection through `debugvm`
-- empty UART capture and only `1024` boot-disk bytes read
+- [aw2-phase0-installability-gate.md](/C:/vs/other/arelwars/docs/aw2-phase0-installability-gate.md)
+- [aw2-phase1-phase2-oracle-status.md](/C:/vs/other/arelwars/docs/aw2-phase1-phase2-oracle-status.md)
+- [probe-live-rerun.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/probe-live-rerun.json)
+- [live-drm-smoke-v4/session.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle/live-drm-smoke-v4/session.json)
 
-And the remaining Oracle VBox blocker is no longer vague:
+## Why Route B Is No Longer The Best Fit
 
-- `no bstdevices` yields the current stable black-screen candidate
-- restoring `bstdevices` makes Oracle VBox reject [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll)
-- the hardening failure is `TrustedInstaller is not the owner`
-- startup aborts with `VERR_UNRESOLVED_ERROR`
+`Route B` was the fallback for “the original package runs, but oracle evidence is too weak.”
 
-The portable BlueStacks client path also fails independently:
+That is now too pessimistic.
 
-- `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
-- but still fails at `Could not create the VirtualBox home directory ''`
-- `HD-Player.exe` exits without creating a live guest runtime
+The environment already captures:
 
-So `Route A` is not approved yet.
+- package identity
+- focused component / scene focus
+- frame hashes
+- UI dumps
+- profiler artifacts
+- logcat
 
-## Why Route B Is Still Rejected
+This is enough to proceed with oracle-driven equivalence work.
 
-`Route B` would mean the original package runs but evidence quality is weak.
+## Why Route C Is No Longer Correct
 
-That also is not the current state.
+`Route C` assumed the original package could not install or boot.
 
-The blocker is still earlier:
+That is now false.
 
-- the local candidate runtime has not crossed into a usable original process
+The original package is both:
 
-So Route B would still understate the problem.
+- installable
+- observable
 
-## Why Route C Is Still Correct
-
-`Route C` still best matches the observed state:
-
-- packaging work is blocked
-- original-equivalence work is blocked
-- static reverse-engineering remains productive
-- local runtime reopening work is now also productive and should continue
+So Route C must be retired.
 
 ## Consequence
 
 From this point:
 
-- do not start `Phase 5` through `Phase 10` as approved packaging work
-- do not claim AW2 x64 packaging is in progress
-- keep packaging-track work limited to runtime reopening and oracle enablement
-- continue static extraction, format recovery, and cross-branch integration in parallel
-- prepare privileged bootstrap steps that can be executed later without redesigning the track
+- AW2 packaging work is no longer environment-blocked
+- the next approved step is x64/runtime bootstrap against the live oracle
+- static reverse-engineering stays useful, but it is no longer the only productive track
 
-## What Would Reopen Route A
+## Next Approved Work
 
-Any one of these is enough:
+The track may now advance to:
 
-- the local Oracle VBox candidate becomes `adb-online` and accepts the original APK
-- a third-party Android runtime on this host executes `armeabi-v7a` apps reliably
-- a real ARM Android device becomes available
-- a different emulator stack with working ARM guest support appears
+- `Phase 5` AW2 x64 runtime bootstrap
+- `Phase 6` runtime trace schema alignment
+- representative equivalence work after that
