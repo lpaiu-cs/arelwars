@@ -348,6 +348,11 @@ def patch_globals(process: wintypes.HANDLE, base: int, values: dict[int, str]) -
         write_memory(process, base + offset, blob, change_protection=False)
 
 
+def patch_bootstrap_state(process: wintypes.HANDLE, base: int) -> None:
+    write_memory(process, base + 0x1A02540, (0).to_bytes(4, "little"), change_protection=False)
+    write_memory(process, base + 0x1A02568, (0).to_bytes(4, "little"), change_protection=False)
+
+
 def patch_datadir_skip_init(process: wintypes.HANDLE, base: int) -> None:
     src = base + 0x4FA398
     dst = base + 0x4FA29F
@@ -389,6 +394,7 @@ def run(args: argparse.Namespace) -> int:
             0x1A025F8: args.common_app_data,
         }
         patch_globals(patch_process, base, values)
+        patch_bootstrap_state(patch_process, base)
         if args.patch_datadir_skip_init:
             patch_datadir_skip_init(patch_process, base)
 
@@ -404,6 +410,7 @@ def run(args: argparse.Namespace) -> int:
                 print(f"exe={exe_path}")
                 return code
             patch_globals(patch_process, base, values)
+            patch_bootstrap_state(patch_process, base)
             if args.patch_datadir_skip_init:
                 patch_datadir_skip_init(patch_process, base)
             if args.repump_interval_ms > 0:

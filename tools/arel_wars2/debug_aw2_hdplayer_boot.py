@@ -278,6 +278,22 @@ def patch_datadir_skip_init(patch_module, process: wintypes.HANDLE, base: int) -
     patch_module.write_memory(process, src, payload, change_protection=True)
 
 
+def dump_bootstrap_state(process: wintypes.HANDLE, base: int) -> None:
+    for offset, name in (
+        (0x1A02520, "installDir"),
+        (0x1A02548, "dataDir"),
+        (0x1A025F8, "commonAppData"),
+    ):
+        raw = read_bytes(process, base + offset, 32)
+        print(f"{name}@0x{base + offset:x}={raw.hex()}")
+    for offset, name in (
+        (0x1A02540, "installDirState"),
+        (0x1A02568, "dataDirState"),
+    ):
+        raw = read_bytes(process, base + offset, 4)
+        print(f"{name}@0x{base + offset:x}={raw.hex()}")
+
+
 def run(args: argparse.Namespace) -> int:
     patch = load_patch_module()
     startup = STARTUPINFOW()
@@ -318,6 +334,8 @@ def run(args: argparse.Namespace) -> int:
                     print(f"TIMEOUT_EXIT code={exit_code}")
                     return exit_code
                 print(f"TIMEOUT_NO_EVENT winerr={last_error}")
+                if patch_handle and base:
+                    dump_bootstrap_state(patch_handle, base)
                 return 2
 
             status = DBG_CONTINUE
@@ -347,6 +365,20 @@ def run(args: argparse.Namespace) -> int:
                             if args.patch_datadir_skip_init:
                                 patch_datadir_skip_init(patch, patch_handle, base)
                         print(f"INITIAL_BREAKPOINT addr=0x{address:x}")
+                    elif code == EXCEPTION_BREAKPOINT:
+                        print(f"BREAKPOINT addr=0x{address:x}")
+                        module = find_module_for_address(event.dwProcessId, address)
+                        if module is None:
+                            print("breakpointModule=<unknown>")
+                        else:
+                            module_name, module_base, module_size = module
+                            print(
+                                f"breakpointModule={module_name} base=0x{module_base:x} "
+                                f"offset=0x{address - module_base:x} size=0x{module_size:x}"
+                            )
+                        if patch_handle and base:
+                            dump_bootstrap_state(patch_handle, base)
+                        return 3
                     elif code == STATUS_ACCESS_VIOLATION:
                         print(f"ACCESS_VIOLATION addr=0x{address:x}")
                         module = find_module_for_address(event.dwProcessId, address)
@@ -365,19 +397,7 @@ def run(args: argparse.Namespace) -> int:
                             f"{int(info[2])},{int(info[3])}"
                         )
                         if patch_handle and base:
-                            for offset, name in (
-                                (0x1A02520, "installDir"),
-                                (0x1A02548, "dataDir"),
-                                (0x1A025F8, "commonAppData"),
-                            ):
-                                raw = read_bytes(patch_handle, base + offset, 32)
-                                print(f"{name}@0x{base + offset:x}={raw.hex()}")
-                            for offset, name in (
-                                (0x1A02540, "installDirState"),
-                                (0x1A02568, "dataDirState"),
-                            ):
-                                raw = read_bytes(patch_handle, base + offset, 4)
-                                print(f"{name}@0x{base + offset:x}={raw.hex()}")
+                            dump_bootstrap_state(patch_handle, base)
                         return 1
                 elif event.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT:
                     if patch_handle and base and args.repatch_on_load_dll:

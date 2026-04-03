@@ -14,6 +14,12 @@ It is now blocked by missing `machine-level install context`:
 - object creation fails at `Could not create the VirtualBox home directory '' (VERR_NO_TMP_MEMORY)`
 - `HD-Player.exe` still crashes before a guest comes online
 
+The current follow-up blocker is narrower:
+
+- `BstkVMMgr startvm Nougat32 --type headless` now reaches actual VM launch
+- the guest then dies at `Unable to load R3 module ... HD-Vdes-Service.dll (bstdevices)`
+- `VBox.log` shows VirtualBox hardening rejecting the module because it is not owned by `NT SERVICE\TrustedInstaller`
+
 So the next useful action is not another non-admin probe.
 
 It is an elevated bootstrap that recreates the minimum `BlueStacks 5` install footprint expected by the portable payload.
@@ -44,6 +50,7 @@ powershell -ExecutionPolicy Bypass -File C:\vs\other\arelwars\tools\arel_wars2\e
   - binary: [BstkDrv_nxt.sys](/C:/vs/other/arelwars/$root/PF/BstkDrv_nxt.sys)
 - re-registers the Oracle VBox COM service
 - re-registers `BstkProxyStub.dll`
+- sets [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll) owner to `NT SERVICE\TrustedInstaller`
 - prints a compact verification summary at the end
 
 ## Why Admin Is Required
@@ -56,6 +63,7 @@ The remaining blocked writes are all privileged:
 - `C:\Program Files\BlueStacks_nxt`
 - machine-level environment variables
 - `SCM` kernel-driver registration for `BlueStacksDrv_nxt`
+- file ownership change for `HD-Vdes-Service.dll` so Oracle/VirtualBox hardening accepts the custom `bstdevices` module
 
 Those are exactly the pieces the current portable payload still lacks.
 
