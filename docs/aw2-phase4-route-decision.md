@@ -28,7 +28,8 @@ But that candidate is still below the Route A threshold:
 
 The portable BlueStacks client path also fails independently:
 
-- `BstkVMMgr.exe` is blocked by `REGDB_E_CLASSNOTREG`
+- `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
+- but still fails at `Could not create the VirtualBox home directory ''`
 - `HD-Player.exe` exits without creating a live guest runtime
 
 So `Route A` is not approved yet.
@@ -62,6 +63,7 @@ From this point:
 - do not claim AW2 x64 packaging is in progress
 - keep packaging-track work limited to runtime reopening and oracle enablement
 - continue static extraction, format recovery, and cross-branch integration in parallel
+- prepare privileged bootstrap steps that can be executed later without redesigning the track
 
 ## What Would Reopen Route A
 

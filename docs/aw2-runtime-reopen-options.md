@@ -14,13 +14,17 @@ That part has not changed.
 
 ## Leading Reopen Path
 
-The strongest local reopen path is no longer a hypothetical `BlueStacks 5` desktop install.
+The strongest reopen path is now a two-step BlueStacks route:
 
-It is now:
+- local unpacked `BlueStacks Nougat32` payload
+- plus an elevated bootstrap that recreates the missing machine-level install context
 
-- `Oracle VirtualBox`
-- plus a locally unpacked `BlueStacks Nougat32` payload
-- with the guest config patched into an Oracle-compatible shape
+Prepared bootstrap materials:
+
+- [aw2-bluestacks-admin-bootstrap.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-admin-bootstrap.md)
+- [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1)
+
+The Oracle VBox path remains valuable, but it is no longer the clearest immediate reopen path.
 
 The concrete probe path is documented in [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md).
 
@@ -58,16 +62,18 @@ That points to a stall before meaningful guest userspace startup.
 
 ## Portable Client Path
 
-The unpacked BlueStacks client binaries are present locally, but this path is also blocked.
+The unpacked BlueStacks client binaries are present locally and the diagnosis is now sharper.
 
 Current facts:
 
-- `BstkVMMgr.exe` fails with `REGDB_E_CLASSNOTREG`
-- `HD-Player.exe --instance Nougat32 --hidden` exits without opening `127.0.0.1:5555`
+- COM registration is no longer the primary failure
+- `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
+- object creation still fails at `Could not create the VirtualBox home directory ''`
+- direct `BstkSVC.exe --registervbox` reproduces the same empty-home failure in `BstkServer.log`
+- `HD-Player.exe --instance Nougat32 --hidden` still crashes with `0xc0000005`
 - no `adb-online` guest appears
-- `HD-ComRegistrar.exe` requires interactive UAC and is not usable in this non-interactive session
 
-So the portable client path is not yet a practical reopen path either.
+So the portable path is close enough to justify one elevated bootstrap attempt, but not close enough to approve `Phase 1`.
 
 ## What This Means
 
@@ -76,13 +82,13 @@ The packaging track is no longer blocked by “no possible reopen path exists”
 It is now blocked by a narrower problem:
 
 - the local Oracle VBox runtime has not yet reached `live original APK installability / adb-online observability`
-- and the portable BlueStacks client path is still blocked by missing COM registration and non-bootstrapping player startup
+- and the portable BlueStacks client path is still blocked by missing machine-level install context and non-bootstrapping player startup
 
 That keeps `Route A` closed for now, even though the machine is much closer than before.
 
 ## Secondary Fallback
 
-`BlueStacks 5` full install remains a fallback reopen path if a privileged or UI-assisted install becomes available later.
+`BlueStacks 5` full install remains a fallback reopen path if the prepared elevated bootstrap script is not sufficient.
 
 It is no longer the primary path because the Oracle VBox route is already partially working and locally reproducible.
 
@@ -98,4 +104,10 @@ Refresh the strongest current Oracle probe with:
 
 ```powershell
 python tools/arel_wars2/probe_aw2_oracle_vbox_runtime.py --variant oracle-ide-primaryslave-piix3-vga --wait-seconds 180
+```
+
+Run the prepared privileged BlueStacks bootstrap with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File C:\vs\other\arelwars\tools\arel_wars2\enable_aw2_bluestacks_admin_bootstrap.ps1
 ```

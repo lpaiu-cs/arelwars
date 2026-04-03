@@ -20,32 +20,59 @@ The portable client path is still blocked.
 
 ## Concrete Findings
 
-- `BstkVMMgr.exe list vms` fails with `REGDB_E_CLASSNOTREG`
-- that means the BlueStacks-flavored VirtualBox COM server is not registered in this session
-- `HD-Player.exe --instance Nougat32 --hidden` exits by the end of the probe window
-- latest probe exit code is `3221225477`
+- the original `REGDB_E_CLASSNOTREG` blocker is gone after manual COM repair
+- `HKCR\VirtualBox.VirtualBox` now resolves to `BstkSVC.exe`
+- `HKCR\VirtualBox.VirtualBoxClient` now resolves to `BstkC.dll`
+- `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
+- but object creation still fails with:
+  - `Could not create the VirtualBox home directory '' (VERR_NO_TMP_MEMORY)`
+- direct `BstkSVC.exe --logfile ... --registervbox` reproduces the same failure in `BstkServer.log`
+- `HD-Player.exe --instance Nougat32 --hidden` still exits with `3221225477`
+- Windows Error Reporting records `APPCRASH`
+  - app: `HD-Player.exe`
+  - exception: `0xc0000005`
+  - fault offset: `0x00000000004fa32c`
 - no `adb` device comes online through either `HD-Adb.exe` or SDK `adb`
 - `127.0.0.1:5555` stays closed
-- no real guest runtime process appears; only baseline `VBoxSDS.exe` is present
 
 ## Additional Manual Observation
 
-`HD-ComRegistrar.exe` is not a practical non-interactive fix in this environment.
+The `missing COM registration` diagnosis is obsolete now.
 
-Manual probe showed:
+Manual repair already moved the state forward:
 
-- it triggers `consent.exe`
-- that implies an interactive UAC path
-- the current automation session cannot complete that registration step
+- `VBoxSVC.exe /reregserver`
+- `regsvr32 /s BstkProxyStub.dll`
+
+After that:
+
+- `BstkVMMgr` no longer fails immediately with `REGDB_E_CLASSNOTREG`
+- the failure moved deeper into BlueStacks / VBox home resolution
+
+Additional non-admin experiments were attempted:
+
+- `HKCU\Software\BlueStacks*` skeleton keys
+- `HKCU\Environment` values for `HOME`, `VBOX_USER_HOME`, `VBOX_APP_HOME`
+- a per-user `HKCU\Software\Classes\CLSID\{b584...}\LocalServer32` wrapper
+  - helper file: [run_bstksvc_with_env.cmd](/C:/vs/other/arelwars/tools/arel_wars2/run_bstksvc_with_env.cmd)
+
+Those do not clear the blocker.
 
 ## Interpretation
 
-The portable client route is not a hidden shortcut around the Oracle VBox blocker.
+The portable client route is still blocked, but the reason is now narrower and more useful.
 
-It is blocked independently:
+This is no longer a generic “portable BlueStacks cannot launch” failure.
 
-- `BstkVMMgr` cannot initialize its COM backend
-- `HD-Player` does not bootstrap a live guest by itself
-- `HD-ComRegistrar` needs interactive elevation
+The current blocker is:
 
-So this route does not reopen `Phase 1` or `Phase 2` yet.
+- the BlueStacks-flavored VirtualBox stack still lacks a valid `machine-level install context`
+- `BstkSVC` cannot resolve a usable VirtualBox home directory
+- `HD-Player` still crashes before guest bootstrap
+
+That means the next meaningful step is an elevated bootstrap, not another non-admin launch retry.
+
+Prepared next-step material:
+
+- [aw2-bluestacks-admin-bootstrap.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-admin-bootstrap.md)
+- [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1)

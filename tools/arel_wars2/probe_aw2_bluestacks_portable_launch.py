@@ -24,6 +24,32 @@ def maybe_run(cmd: list[str], timeout: int = 60, cwd: Path | None = None) -> sub
     )
 
 
+def maybe_run_or_timeout(cmd: list[str], timeout: int = 60, cwd: Path | None = None) -> dict[str, object]:
+    try:
+        completed = subprocess.run(
+            cmd,
+            check=False,
+            text=True,
+            capture_output=True,
+            timeout=timeout,
+            cwd=str(cwd) if cwd else None,
+        )
+        return {
+            "returncode": completed.returncode,
+            "stdout": completed.stdout,
+            "stderr": completed.stderr,
+            "timedOut": False,
+        }
+    except subprocess.TimeoutExpired as exc:
+        return {
+            "returncode": None,
+            "stdout": exc.stdout or "",
+            "stderr": exc.stderr or "",
+            "timedOut": True,
+            "timeoutSeconds": timeout,
+        }
+
+
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
@@ -55,6 +81,18 @@ def powershell_json(script: str) -> object:
     return json.loads(text)
 
 
+def maybe_powershell(script: str, timeout: int = 60) -> subprocess.CompletedProcess[str]:
+    return maybe_run(
+        [
+            "powershell",
+            "-NoProfile",
+            "-Command",
+            script,
+        ],
+        timeout=timeout,
+    )
+
+
 def matching_processes() -> object:
     return powershell_json(
         r"""
@@ -69,6 +107,46 @@ def matching_processes() -> object:
           ConvertTo-Json -Depth 4
         """
     )
+
+
+def stop_processes() -> None:
+    maybe_powershell(
+        r"""
+        Stop-Process -Name BstkSVC -Force -ErrorAction SilentlyContinue
+        Stop-Process -Name VBoxSVC -Force -ErrorAction SilentlyContinue
+        Stop-Process -Name BstkVMMgr -Force -ErrorAction SilentlyContinue
+        Stop-Process -Name HD-Player -Force -ErrorAction SilentlyContinue
+        Stop-Process -Name VBoxHeadless -Force -ErrorAction SilentlyContinue
+        """,
+        timeout=30,
+    )
+
+
+def registry_default_value(path: str) -> dict[str, object]:
+    completed = maybe_run(["reg", "query", path, "/ve"], timeout=20)
+    return {
+        "path": path,
+        "returncode": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+    }
+
+
+def registry_key_dump(path: str) -> dict[str, object]:
+    completed = maybe_run(["reg", "query", path, "/s"], timeout=20)
+    return {
+        "path": path,
+        "returncode": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+    }
+
+
+def tail_text(path: Path, max_lines: int = 80) -> list[str]:
+    if not path.exists():
+        return []
+    lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    return lines[-max_lines:]
 
 
 def latest_vm_logs(vm_dir: Path) -> list[dict[str, object]]:
@@ -112,12 +190,10 @@ def tcp_5555() -> bool:
 
 
 def list_vms(vmmgr: Path) -> dict[str, object]:
-    completed = maybe_run([str(vmmgr), "list", "vms"], timeout=30, cwd=vmmgr.parent)
+    completed = maybe_run_or_timeout([str(vmmgr), "list", "vms"], timeout=30, cwd=vmmgr.parent)
     return {
         "path": str(vmmgr),
-        "returncode": completed.returncode,
-        "stdout": completed.stdout,
-        "stderr": completed.stderr,
+        **completed,
     }
 
 
@@ -163,6 +239,31 @@ def probe_hd_player(player: Path, instance_name: str, wait_seconds: int, vm_dir:
                 proc.wait(timeout=10)
 
 
+def probe_bstksvc(pf_dir: Path, output_dir: Path) -> dict[str, object]:
+    svc = pf_dir / "BstkSVC.exe"
+    log_path = output_dir / "BstkServer-direct-probe.log"
+    if log_path.exists():
+        log_path.unlink()
+    stop_processes()
+    time.sleep(1)
+    started_at = now_iso()
+    completed = maybe_run_or_timeout(
+        [str(svc), "--logfile", str(log_path), "--registervbox"],
+        timeout=8,
+        cwd=pf_dir,
+    )
+    time.sleep(2)
+    processes = matching_processes()
+    return {
+        "startedAtUtc": started_at,
+        "path": str(svc),
+        "logPath": str(log_path),
+        **completed,
+        "logTail": tail_text(log_path),
+        "postProcesses": processes,
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--instance-name", default="Nougat32")
@@ -193,6 +294,7 @@ def main() -> int:
     sdk_adb = Path(args.sdk_adb)
     output = Path(args.output)
     ensure_dir(output.parent)
+    stop_processes()
 
     report = {
         "generatedAtUtc": now_iso(),
@@ -213,9 +315,17 @@ def main() -> int:
             "vmDir": vm_dir.exists(),
         },
         "initialProcesses": matching_processes(),
+        "effectiveComServer": registry_default_value(
+            r"HKCR\CLSID\{b584bac7-d01f-49cf-a766-eb4c90cd3134}\LocalServer32"
+        ),
+        "userBlueStacksKey": registry_key_dump(r"HKCU\Software\BlueStacks"),
+        "userBlueStacksServicesKey": registry_key_dump(r"HKCU\Software\BlueStacksServices"),
+        "userEnvironmentKey": registry_key_dump(r"HKCU\Environment"),
     }
     if vmmgr.exists():
         report["vmmgrListVms"] = list_vms(vmmgr)
+    if (pf_dir / "BstkSVC.exe").exists():
+        report["bstkSvcDirectProbe"] = probe_bstksvc(pf_dir=pf_dir, output_dir=output.parent)
     if player.exists() and vm_dir.exists():
         report["hdPlayerProbe"] = probe_hd_player(
             player=player,

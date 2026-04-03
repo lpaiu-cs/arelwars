@@ -27,10 +27,15 @@ That candidate reaches a stable no-reset boot window, but it still fails the act
 - serial capture is empty
 - boot-disk reads stop at `1024` bytes
 
-The alternative portable-client path is also blocked:
+The alternative portable-client path is also still blocked, but not for the old reason.
 
-- `BstkVMMgr.exe` still fails with `REGDB_E_CLASSNOTREG`
-- `HD-Player.exe` exits without opening `127.0.0.1:5555`
+Current portable-client state:
+
+- COM registration is repaired
+- `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
+- creation fails at `Could not create the VirtualBox home directory ''`
+- direct `BstkSVC.exe --registervbox` produces the same empty-home error in its own release log
+- `HD-Player.exe` still crashes before guest bootstrap
 - no client-side launch path yields a live guest
 
 So Phase 1 and Phase 2 remain blocked, but by `candidate-runtime incompleteness`, not by total runtime absence.
@@ -48,6 +53,8 @@ The local runtime reopening work also now has a concrete probe path:
 - [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md)
 - [probe_aw2_bluestacks_portable_launch.py](/C:/vs/other/arelwars/tools/arel_wars2/probe_aw2_bluestacks_portable_launch.py)
 - [aw2-bluestacks-portable-launch-probe.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-portable-launch-probe.md)
+- [aw2-bluestacks-admin-bootstrap.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-admin-bootstrap.md)
+- [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1)
 
 ## Immediate Consequence
 
@@ -56,5 +63,6 @@ Until the local Oracle VBox candidate yields a live original process, Phase 1 ca
 So the only approved work remains:
 
 - Oracle VBox runtime bring-up
+- elevated BlueStacks bootstrap
 - AW2 static bootstrap and asset-truth freezing
 - packaging-track gate hardening
