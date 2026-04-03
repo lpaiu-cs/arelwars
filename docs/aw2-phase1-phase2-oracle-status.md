@@ -140,6 +140,52 @@ So Phase 1 and Phase 2 remain blocked by a now very narrow condition:
 
 - no BlueStacks-compatible headless frontend is available on this machine
 
+## 2026-04-03 Deep Night Update
+
+Phase 1 and Phase 2 are still blocked, but the runtime gap is now specifically a boot-handoff failure, not a total bring-up failure.
+
+New proven facts:
+
+- the valid launcher path is the installed [HD-MultiInstanceManager.exe](/C:/vs/other/arelwars/$root/PF/HD-MultiInstanceManager.exe) -> [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) chain
+- the live VM settings source is [BstkGlobal.xml](/C:/ProgramData/BlueStacks_nxt/Manager/BstkGlobal.xml) -> [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk)
+- that settings file is auto-regenerated on launch
+- the regenerated runtime shape also creates a local [Data.vdi](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Data.vdi)
+
+What this runtime can currently do:
+
+- keep `HD-Player` alive
+- keep `127.0.0.1:5555` open
+- expose `emulator-5554 offline`
+- stay CPU-active for minutes
+
+What it still cannot do:
+
+- bring the guest to `adb-online`
+- boot the original APK
+- expose a live original process for oracle capture
+
+The decisive evidence is now in the core guest logs:
+
+- [BstkCore.log](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log) reaches `Boot : bseqnr=1, bootseq=0002`
+- it stalls at `Booting from ...`
+- [BstkCore.log.1](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log.1) shows the previous session eventually `PoweredOff`
+- the powered-off guest CPU state remains in very early boot execution, not Android kernel/userspace
+- disk statistics show only `1024` bytes read from `fastboot.vdi`, with no meaningful boot progression into the real BlueStacks guest payload
+
+So the current blocker for Phase 1 / Phase 2 is now:
+
+- `stripped regenerated VM config boots only into a BlueStacks fastboot stub and never reaches full guest bring-up`
+
+The next approved reopen candidate is therefore:
+
+- restore [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) from [Android.bstk.in](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk.in)
+- point `bstdevices` at the installed [HD-Vdes-Service.dll](/C:/Program Files/BlueStacks_nxt/HD-Vdes-Service.dll)
+- retry the valid `MIM -> Start -> Continue` launch path
+
+Prepared helper:
+
+- [restore_aw2_bluestacks_template_config.ps1](/C:/vs/other/arelwars/tools/arel_wars2/restore_aw2_bluestacks_template_config.ps1)
+
 ## What Was Completed Anyway
 
 The AW2 oracle tooling remains ready:

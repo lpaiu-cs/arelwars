@@ -125,3 +125,50 @@ This makes the blocker much tighter:
 Automation helper:
 
 - [start_aw2_via_mim.py](/C:/vs/other/arelwars/tools/arel_wars2/start_aw2_via_mim.py)
+
+## 2026-04-03 Deep Night Update
+
+The portable path now has a stricter diagnosis than the earlier `Optimizing before launch` note.
+
+New facts:
+
+- the live VM definition used by the portable path is [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk)
+- [BstkGlobal.xml](/C:/ProgramData/BlueStacks_nxt/Manager/BstkGlobal.xml) points to that repo path directly
+- BlueStacks rewrites that file on launch and regenerates [Data.vdi](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Data.vdi)
+
+The regenerated file is not the original BlueStacks template shape.
+
+It is a stripped runtime shape:
+
+- `PIIX3`
+- `fastboot.vdi + Root.vhd + Data.vdi`
+- no `bstdevices`
+- no extra BlueStacks PCI device declarations
+
+That shape is enough for:
+
+- `HD-Player` survival
+- `127.0.0.1:5555` listener
+- `emulator-5554 offline`
+
+But it is not enough for guest handoff:
+
+- [BstkCore.log](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log) stalls at `Booting from ...`
+- [BstkCore.log.1](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log.1) shows the previous session eventually powering off from early boot
+- boot statistics show only `1024` bytes read from `fastboot.vdi`
+
+So the current portable blocker is no longer just a UI plateau.
+
+It is:
+
+- `BlueStacks rewrites the VM into a reduced bootable-but-not-boot-complete shape`
+
+That makes the next experiment concrete:
+
+- regenerate [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) from [Android.bstk.in](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk.in)
+- use installed [HD-Vdes-Service.dll](/C:/Program Files/BlueStacks_nxt/HD-Vdes-Service.dll)
+- relaunch through MIM
+
+Prepared helper:
+
+- [restore_aw2_bluestacks_template_config.ps1](/C:/vs/other/arelwars/tools/arel_wars2/restore_aw2_bluestacks_template_config.ps1)

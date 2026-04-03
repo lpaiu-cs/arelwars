@@ -249,3 +249,52 @@ Immediate next step:
 
 - treat `MIM Start + no baked-in adb NAT rule` as the canonical reopen path
 - debug the `Optimizing before launch` plateau instead of raw `HD-Player.exe` command-line launch
+
+## 2026-04-03 Deep Night Update
+
+The strongest current path is no longer the visible `Optimizing before launch` UI by itself.
+
+A more precise runtime split is now confirmed:
+
+- the live VM settings file is [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) under the repo payload
+- [BstkGlobal.xml](/C:/ProgramData/BlueStacks_nxt/Manager/BstkGlobal.xml) points directly at that repo path
+- each launch rewrites that file again and regenerates [Data.vdi](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Data.vdi)
+
+The current regenerated shape is a stripped Oracle-safe VM:
+
+- `PIIX3`
+- `fastboot.vdi`
+- `Root.vhd`
+- regenerated `Data.vdi`
+- no `bstdevices`
+- no `bstaudio/bstcamera/bstvmsg/bstpgaipc`
+
+That stripped shape is enough to:
+
+- keep [HD-Player.exe](/C:/Program Files/BlueStacks_nxt/HD-Player.exe) alive
+- open `127.0.0.1:5555`
+- expose `emulator-5554 offline`
+- keep the player CPU-active for minutes
+
+But the core guest log now shows the real limit:
+
+- [BstkCore.log](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log) reaches `Boot : bseqnr=1, bootseq=0002`
+- it then stalls at `Booting from ...`
+- the previous completed session in [BstkCore.log.1](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/BstkCore.log.1) powers off after about `8m19s`
+- that powered-off guest state is still at early boot / BIOS-stage execution
+- disk statistics show only `1024` bytes read from `fastboot.vdi` and effectively no real boot progress into `Root.vhd` / `Data`
+
+So the blocker is narrower again:
+
+- the current stripped VM is not enough to hand off from BlueStacks fastboot into Android guest boot
+
+That makes the next candidate concrete:
+
+- rehydrate [Android.bstk](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk) from [Android.bstk.in](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Android.bstk.in)
+- use the installed [HD-Vdes-Service.dll](/C:/Program Files/BlueStacks_nxt/HD-Vdes-Service.dll)
+- restore the BlueStacks custom device declarations
+- keep the no-duplicate-ADB-forwarding fix
+
+Prepared helper:
+
+- [restore_aw2_bluestacks_template_config.ps1](/C:/vs/other/arelwars/tools/arel_wars2/restore_aw2_bluestacks_template_config.ps1)
