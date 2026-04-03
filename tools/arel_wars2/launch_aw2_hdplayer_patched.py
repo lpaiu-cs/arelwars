@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import ctypes
 import os
+import struct
 import sys
 import time
 from ctypes import wintypes
@@ -342,6 +343,14 @@ def patch_globals(process: wintypes.HANDLE, base: int, values: dict[int, str]) -
         write_memory(process, base + offset, blob, change_protection=False)
 
 
+def patch_datadir_skip_init(process: wintypes.HANDLE, base: int) -> None:
+    src = base + 0x4FA398
+    dst = base + 0x4FA29F
+    rel = dst - (src + 5)
+    payload = b"\xE9" + struct.pack("<i", rel) + b"\x90" * 4
+    write_memory(process, src, payload, change_protection=True)
+
+
 def wait_exit_code(process: wintypes.HANDLE, timeout_ms: int) -> int | None:
     state = WaitForSingleObject(process, timeout_ms)
     if state == WAIT_TIMEOUT:
@@ -375,6 +384,8 @@ def run(args: argparse.Namespace) -> int:
             0x1A025F8: args.common_app_data,
         }
         patch_globals(patch_process, base, values)
+        if args.patch_datadir_skip_init:
+            patch_datadir_skip_init(patch_process, base)
 
         if ResumeThread(procinfo.hThread) == 0xFFFFFFFF:
             fail("ResumeThread failed")
@@ -388,6 +399,8 @@ def run(args: argparse.Namespace) -> int:
                 print(f"exe={exe_path}")
                 return code
             patch_globals(patch_process, base, values)
+            if args.patch_datadir_skip_init:
+                patch_datadir_skip_init(patch_process, base)
             if args.repump_interval_ms > 0:
                 time.sleep(args.repump_interval_ms / 1000.0)
 
@@ -446,7 +459,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--vbox-user-home",
-        default=r"C:\ProgramData\BlueStacks_nxt\Engine\Manager",
+        default=r"C:\ProgramData\BlueStacks_nxt\Manager",
     )
     parser.add_argument(
         "--vbox-app-home",
@@ -470,6 +483,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--repump-interval-ms",
         type=float,
         default=100.0,
+    )
+    parser.add_argument(
+        "--patch-datadir-skip-init",
+        action="store_true",
     )
     return parser
 

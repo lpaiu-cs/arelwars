@@ -128,3 +128,51 @@ It is:
 - or else move from stock Oracle VBox to a runtime that can legally load the BlueStacks custom device DLLs
 
 Until that happens, packaging claims must remain blocked.
+
+## 2026-04-03 Late Update
+
+Two additional reopen steps now work locally:
+
+- `BstkVMMgr.exe list vms` succeeds once `HKLM/HKCU` bootstrap keys are corrected and `C:\ProgramData\BlueStacks_nxt\Manager\BstkGlobal.xml` is seeded.
+- `BstkVMMgr.exe startvm Nougat32 --type headless` no longer fails with `VERR_FILE_NOT_FOUND` after supplying a local [VBoxHeadless.exe](/C:/vs/other/arelwars/$root/PF/VBoxHeadless.exe) proxy and copying `BstkGlobal.xml -> VirtualBox.xml` in `C:\ProgramData\BlueStacks_nxt\Manager`.
+
+That pushes the Oracle route one step farther than before:
+
+- the `VBoxHeadless` frontend is now actually launched
+- [VBoxManage.exe](/C:/Program Files/Oracle/VirtualBox/VBoxManage.exe) can see `Nougat32` as `running`
+- `screenshotpng` succeeds
+- but the screenshot is still a full black frame:
+  - ![aw2-vm-screen](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2-vm-screen.png)
+
+The branch now has two clearly separated VM-config outcomes:
+
+1. `stripped Oracle-safe config`
+- reaches `BIOS: Booting from Hard Disk...`
+- enters `VBoxHeadless: starting event loop`
+- remains `running`
+- still never reaches `adb-online`
+- still produces an all-black frame
+
+2. `candidate config restored from prev-with-bstitems`
+- restores `ICH9 + SATA + Data.vhdx + BlueStacks-specific ExtraData`
+- fails deterministically with:
+  - `Configuration error: device 'bstaudio' not found!`
+  - `VERR_PDM_DEVICE_NOT_FOUND`
+
+That means the current reopen blocker is no longer “frontend missing.”
+
+It is now:
+
+- `Oracle VBox route without BlueStacks devices` -> stable black-screen hang
+- `Oracle VBox route with BlueStacks items` -> missing custom PDM device implementations
+
+The concrete evidence is:
+
+- [VBoxHeadless-proxy.log](/C:/ProgramData/BlueStacks_nxt/Logs/VBoxHeadless-proxy.log)
+- [VBoxSVC.log](/C:/ProgramData/BlueStacks_nxt/Manager/VBoxSVC.log)
+- [VBox.log](/C:/vs/other/arelwars/$root/PD/Engine/Nougat32/Logs/VBox.log)
+
+The next useful experiment is therefore narrower:
+
+- obtain or reconstruct a `6.1.36`-compatible `VBoxHeadless` path that can load the BlueStacks custom device stack
+- or make the portable BlueStacks client path launch the same device stack without Oracle hardening

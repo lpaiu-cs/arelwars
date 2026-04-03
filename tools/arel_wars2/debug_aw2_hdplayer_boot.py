@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import ctypes
 import importlib.util
+import struct
 from ctypes import wintypes
 from pathlib import Path
 
@@ -161,6 +162,14 @@ ReadProcessMemory.argtypes = [
 ]
 ReadProcessMemory.restype = wintypes.BOOL
 
+WaitForSingleObject = kernel32.WaitForSingleObject
+WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+WaitForSingleObject.restype = wintypes.DWORD
+
+GetExitCodeProcess = kernel32.GetExitCodeProcess
+GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+GetExitCodeProcess.restype = wintypes.BOOL
+
 CloseHandle = kernel32.CloseHandle
 CloseHandle.argtypes = [wintypes.HANDLE]
 CloseHandle.restype = wintypes.BOOL
@@ -190,9 +199,35 @@ def read_bytes(process: wintypes.HANDLE, address: int, size: int) -> bytes:
     return bytes(buf[: read.value])
 
 
+def query_process_exit(process: wintypes.HANDLE) -> int | None:
+    state = WaitForSingleObject(process, 0)
+    if state != 0:
+        return None
+    code = wintypes.DWORD()
+    if not GetExitCodeProcess(process, ctypes.byref(code)):
+        return None
+    return ctypes.c_int32(code.value).value
+
+
 def patch_bootstrap_state(patch_module, process: wintypes.HANDLE, base: int) -> None:
     patch_module.write_memory(process, base + 0x1A02540, (0).to_bytes(4, "little"), change_protection=False)
     patch_module.write_memory(process, base + 0x1A02568, (0).to_bytes(4, "little"), change_protection=False)
+
+
+def patch_datadir_to_installdir(patch_module, process: wintypes.HANDLE, base: int) -> None:
+    src = base + 0x4FA240
+    dst = base + 0x4FFDA0
+    rel = dst - (src + 5)
+    payload = b"\xE9" + struct.pack("<i", rel)
+    patch_module.write_memory(process, src, payload, change_protection=True)
+
+
+def patch_datadir_skip_init(patch_module, process: wintypes.HANDLE, base: int) -> None:
+    src = base + 0x4FA398
+    dst = base + 0x4FA29F
+    rel = dst - (src + 5)
+    payload = b"\xE9" + struct.pack("<i", rel) + b"\x90" * 4
+    patch_module.write_memory(process, src, payload, change_protection=True)
 
 
 def run(args: argparse.Namespace) -> int:
@@ -229,7 +264,13 @@ def run(args: argparse.Namespace) -> int:
         while True:
             event = DEBUG_EVENT()
             if not WaitForDebugEvent(ctypes.byref(event), args.timeout_ms):
-                raise OSError(ctypes.get_last_error(), "WaitForDebugEvent failed")
+                last_error = ctypes.get_last_error()
+                exit_code = query_process_exit(procinfo.hProcess)
+                if exit_code is not None:
+                    print(f"TIMEOUT_EXIT code={exit_code}")
+                    return exit_code
+                print(f"TIMEOUT_NO_EVENT winerr={last_error}")
+                return 2
 
             status = DBG_CONTINUE
             try:
@@ -238,6 +279,10 @@ def run(args: argparse.Namespace) -> int:
                     patch_handle = patch.open_patch_process(event.dwProcessId)
                     patch.patch_globals(patch_handle, base, values)
                     patch_bootstrap_state(patch, patch_handle, base)
+                    if args.patch_datadir_to_installdir:
+                        patch_datadir_to_installdir(patch, patch_handle, base)
+                    if args.patch_datadir_skip_init:
+                        patch_datadir_skip_init(patch, patch_handle, base)
                     print(f"CREATE_PROCESS pid={event.dwProcessId} base=0x{base:x}")
                     if event.u.CreateProcessInfo.hFile:
                         CloseHandle(event.u.CreateProcessInfo.hFile)
@@ -249,6 +294,10 @@ def run(args: argparse.Namespace) -> int:
                         if patch_handle and base:
                             patch.patch_globals(patch_handle, base, values)
                             patch_bootstrap_state(patch, patch_handle, base)
+                            if args.patch_datadir_to_installdir:
+                                patch_datadir_to_installdir(patch, patch_handle, base)
+                            if args.patch_datadir_skip_init:
+                                patch_datadir_skip_init(patch, patch_handle, base)
                         print(f"INITIAL_BREAKPOINT addr=0x{address:x}")
                     elif code == STATUS_ACCESS_VIOLATION:
                         print(f"ACCESS_VIOLATION addr=0x{address:x}")
@@ -271,6 +320,10 @@ def run(args: argparse.Namespace) -> int:
                     if patch_handle and base and args.repatch_on_load_dll:
                         patch.patch_globals(patch_handle, base, values)
                         patch_bootstrap_state(patch, patch_handle, base)
+                        if args.patch_datadir_to_installdir:
+                            patch_datadir_to_installdir(patch, patch_handle, base)
+                        if args.patch_datadir_skip_init:
+                            patch_datadir_skip_init(patch, patch_handle, base)
                     if event.u.LoadDll.hFile:
                         CloseHandle(event.u.LoadDll.hFile)
                 elif event.dwDebugEventCode == EXIT_PROCESS_DEBUG_EVENT:
@@ -279,6 +332,10 @@ def run(args: argparse.Namespace) -> int:
                 elif patch_handle and base and args.repatch_each_event:
                     patch.patch_globals(patch_handle, base, values)
                     patch_bootstrap_state(patch, patch_handle, base)
+                    if args.patch_datadir_to_installdir:
+                        patch_datadir_to_installdir(patch, patch_handle, base)
+                    if args.patch_datadir_skip_init:
+                        patch_datadir_skip_init(patch, patch_handle, base)
             finally:
                 if not ContinueDebugEvent(event.dwProcessId, event.dwThreadId, status):
                     raise OSError(ctypes.get_last_error(), "ContinueDebugEvent failed")
@@ -296,12 +353,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--exe", default=r"C:\vs\other\arelwars\$root\PF\HD-Player.exe")
     parser.add_argument("--cwd", default=r"C:\vs\other\arelwars\$root\PF")
     parser.add_argument("--arg", action="append", default=["--instance", "Nougat32", "--hidden"])
-    parser.add_argument("--install-dir", default="B:\\")
-    parser.add_argument("--data-dir", default="P:\\")
-    parser.add_argument("--common-app-data", default="Q:\\")
+    parser.add_argument("--install-dir", default=r"C:\vs\other\arelwars\$root\PF")
+    parser.add_argument("--data-dir", default=r"C:\ProgramData\BlueStacks_nxt")
+    parser.add_argument("--common-app-data", default=r"C:\ProgramData")
     parser.add_argument("--timeout-ms", type=int, default=15000)
     parser.add_argument("--repatch-each-event", action="store_true")
     parser.add_argument("--repatch-on-load-dll", action="store_true")
+    parser.add_argument("--patch-datadir-to-installdir", action="store_true")
+    parser.add_argument("--patch-datadir-skip-init", action="store_true")
     return parser
 
 

@@ -101,6 +101,35 @@ That keeps `Route A` closed for now, even though the machine is much closer than
 
 It is no longer the primary path because the Oracle VBox route is already partially working and locally reproducible.
 
+## 2026-04-03 Late Update
+
+The Oracle VBox route has improved further since the earlier black-screen note.
+
+New facts:
+
+- `BstkVMMgr list vms` is now stable
+- `BstkVMMgr startvm Nougat32 --type headless` no longer dies at `VERR_FILE_NOT_FOUND`
+- this works by providing a local `VBoxHeadless.exe` proxy and a `VirtualBox.xml` copy beside `BstkGlobal.xml`
+- Oracle `VBoxManage` can now see `Nougat32` as `running`
+
+But the runtime is still not approved because the route splits again at the VM config layer:
+
+- `stripped Oracle-safe config` -> black screen, no `adb`, no guest OS detection
+- `candidate config with BlueStacks items restored` -> startup fails with `device 'bstaudio' not found` / `VERR_PDM_DEVICE_NOT_FOUND`
+
+This is a better blocker than before because it proves:
+
+- the missing piece is no longer generic runtime absence
+- the remaining gap is specifically the BlueStacks custom device implementation layer
+
+So the reopen priority has shifted again.
+
+New leading task:
+
+- find a `6.1.36`-compatible frontend path that can load the BlueStacks custom PDM devices
+
+This is now a higher-value next step than general `adb` polling on the black-screen profile.
+
 ## Local Regeneration
 
 Refresh the reopen summary with:
