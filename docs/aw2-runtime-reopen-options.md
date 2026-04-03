@@ -14,19 +14,17 @@ That part has not changed.
 
 ## Leading Reopen Path
 
-The strongest reopen path is now a two-step BlueStacks route:
+The strongest reopen path is now still the local `BlueStacks Nougat32` payload, but the route split is clearer:
 
-- local unpacked `BlueStacks Nougat32` payload
-- plus an elevated bootstrap that recreates the missing machine-level install context
+- `Oracle VBox` can boot the guest into a stable black-screen state
+- `BlueStacks portable client` is still the only path that could load BlueStacks custom device DLLs without Oracle VBox hardening
 
 Prepared bootstrap materials:
 
 - [aw2-bluestacks-admin-bootstrap.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-admin-bootstrap.md)
 - [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1)
 
-The Oracle VBox path remains valuable, but it is no longer the clearest immediate reopen path.
-
-The concrete probe path is documented in [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md).
+The concrete Oracle VBox probe path is documented in [aw2-oracle-vbox-runtime-probe.md](/C:/vs/other/arelwars/docs/aw2-oracle-vbox-runtime-probe.md).
 
 The companion portable-client probe is documented in [aw2-bluestacks-portable-launch-probe.md](/C:/vs/other/arelwars/docs/aw2-bluestacks-portable-launch-probe.md).
 
@@ -57,8 +55,20 @@ More precise current state:
 - `debugvm osdetect` still cannot detect a guest OS
 - UART raw-file capture remains empty
 - live storage statistics show only `1024` bytes read from the boot disk
+- official `adb` now sees `emulator-5554` but it remains `offline`
 
-That points to a stall before meaningful guest userspace startup.
+The new critical finding is that restoring the BlueStacks custom device path does not fix this under stock Oracle VBox.
+
+It fails earlier:
+
+- `HD-Vdes-Service.dll` is rejected by VirtualBox hardening
+- the specific message is `TrustedInstaller is not the owner`
+- startup aborts with `VERR_UNRESOLVED_ERROR`
+
+That means the Oracle VBox route is currently trapped between two failure modes:
+
+- `no bstdevices` -> stable black-screen boot candidate
+- `with bstdevices` -> hardening rejection before guest startup
 
 ## Portable Client Path
 
@@ -68,12 +78,11 @@ Current facts:
 
 - COM registration is no longer the primary failure
 - `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
-- object creation still fails at `Could not create the VirtualBox home directory ''`
-- direct `BstkSVC.exe --registervbox` reproduces the same empty-home failure in `BstkServer.log`
+- direct `BstkSVC.exe --registervbox` still fails at `Could not create the VirtualBox home directory ''`
 - `HD-Player.exe --instance Nougat32 --hidden` still crashes with `0xc0000005`
 - no `adb-online` guest appears
 
-So the portable path is close enough to justify one elevated bootstrap attempt, but not close enough to approve `Phase 1`.
+So the portable path is now the only reopening route that might bypass the Oracle hardening block, but it is still not close enough to approve `Phase 1`.
 
 ## What This Means
 

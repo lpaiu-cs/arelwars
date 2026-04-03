@@ -20,12 +20,28 @@ There is now a local candidate:
 That candidate reaches a stable no-reset boot window, but it still fails the actual oracle threshold:
 
 - no usable `adb-online` device
+- official `adb` sees only `emulator-5554 offline`
 - no successful install of the original APK
 - no live original process to capture
 - only host/VM guestproperties are visible
 - `debugvm osdetect` still cannot identify a guest OS
 - serial capture is empty
 - boot-disk reads stop at `1024` bytes
+
+The remaining Oracle VBox blocker is now sharper.
+
+When the BlueStacks custom device path is restored, startup does not improve.
+
+It fails earlier because Oracle VBox hardening rejects [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll):
+
+- `TrustedInstaller is not the owner`
+- `Unable to load R3 module ... HD-Vdes-Service.dll (bstdevices)`
+- `VERR_UNRESOLVED_ERROR`
+
+So the Oracle candidate is currently boxed in between:
+
+- `no bstdevices` -> stable black screen
+- `with bstdevices` -> hardening failure before guest startup
 
 The alternative portable-client path is also still blocked, but not for the old reason.
 

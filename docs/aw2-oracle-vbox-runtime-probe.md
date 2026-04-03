@@ -84,16 +84,31 @@ Evidence:
 - [oracle-ide-primaryslave-piix3-vga.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle_vbox_probe/oracle-ide-primaryslave-piix3-vga.json)
 - ![oracle-ide-primaryslave-piix3-vga](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle_vbox_probe/oracle-ide-primaryslave-piix3-vga.png)
 
+### `oracle-ide-primaryslave-piix3-vga + bstdevices`
+
+Observed result:
+
+- the missing BlueStacks custom device path can be restored
+- Oracle VBox then fails before guest startup
+- `HD-Vdes-Service.dll` is rejected by VirtualBox hardening
+- the exact blocker is `TrustedInstaller is not the owner`
+- startup ends with `VERR_UNRESOLVED_ERROR`
+
+Evidence:
+
+- [oracle-ide-primaryslave-piix3-vga-bstdevices-hardening.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle_vbox_probe/oracle-ide-primaryslave-piix3-vga-bstdevices-hardening.json)
+- [oracle-ide-primaryslave-piix3-vga-bstdevices-hardening.log](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle_vbox_probe/oracle-ide-primaryslave-piix3-vga-bstdevices-hardening.log)
+
 ## Interpretation
 
 The machine is no longer blocked by total runtime absence.
 
-Instead, it is blocked at a narrower point:
+Instead, it is blocked at a narrower fork:
 
-- the local Oracle VBox guest now boots into a stable candidate shape
-- but it still appears to stall before real guest kernel/userspace bring-up
-- the only observable boot progress is `BIOS: Booting from Hard Disk...`
-- the runtime never crosses into guest-detectable OS state or `adb-online`
+- without `bstdevices`, the Oracle VBox guest reaches a stable black-screen candidate shape
+- with `bstdevices`, Oracle VBox fails earlier because hardening rejects [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll)
+- the only observable boot progress in the stable profile is still `BIOS: Booting from Hard Disk...`
+- the stable profile still never crosses into guest-detectable OS state or `adb-online`
 
 That means:
 
@@ -109,6 +124,7 @@ It is:
 
 - push the `oracle-ide-primaryslave-piix3-vga` profile from `stable black-screen boot` to `adb-online`
 - explain why `fastboot.vdi` is only read for `1024` bytes before the boot chain stalls
-- determine whether the remaining gap is `boot-disk handoff`, `missing BlueStacks custom device path`, or `pre-userspace guest crash`
+- determine whether the remaining gap can be solved without `bstdevices`
+- or else move from stock Oracle VBox to a runtime that can legally load the BlueStacks custom device DLLs
 
 Until that happens, packaging claims must remain blocked.

@@ -30,6 +30,7 @@ def detect_paths() -> dict[str, bool]:
 
 def detect_oracle_candidate() -> dict[str, object]:
     probe = PROBE_DIR / "oracle-ide-primaryslave-piix3-vga.json"
+    bst_probe = PROBE_DIR / "oracle-ide-primaryslave-piix3-vga-bstdevices-hardening.json"
     if not probe.exists():
         return {
             "exists": False,
@@ -40,10 +41,15 @@ def detect_oracle_candidate() -> dict[str, object]:
     log_tail = data.get("vboxLogTail", "")
     adb_text = data.get("adbDevices", "")
     showvminfo = data.get("showvminfo", "")
+    adb_lines = [line.strip() for line in adb_text.splitlines() if line.strip()]
+    adb_device_lines = [line for line in adb_lines if "\t" in line or " transport_id:" in line]
+    has_online = any("\tdevice" in line or " device " in line for line in adb_device_lines)
+    has_offline = any("offline" in line.lower() for line in adb_device_lines)
     return {
         "exists": True,
         "stableNoReset": "ACPI: Reset initiated by ACPI" not in log_tail and "AHCI#0:" not in log_tail,
-        "adbOnline": "\tdevice" in adb_text or " device " in adb_text,
+        "adbOnline": has_online,
+        "adbOfflineOnly": has_offline and not has_online,
         "adbTcp5555Open": data.get("adbTcp5555Open"),
         "showvminfoHasPiix3": "Chipset:                     piix3" in showvminfo,
         "guestPropertyOnlyHostInfo": "/VirtualBox/HostInfo/" in data.get("guestPropertyStdout", "")
@@ -52,6 +58,8 @@ def detect_oracle_candidate() -> dict[str, object]:
         "osDetectWorked": data.get("osdetectRc") == 0,
         "serialLogBytes": data.get("serialLog", {}).get("bytes"),
         "storageStatsPresent": "/Public/Storage/" in data.get("debugStatisticsStdout", ""),
+        "bstdevicesHardeningBlocked": bst_probe.exists(),
+        "bstdevicesProbeFile": str(bst_probe) if bst_probe.exists() else "",
         "probeFile": str(probe),
     }
 
@@ -67,13 +75,18 @@ def detect_portable_client_candidate() -> dict[str, object]:
     late_processes = hd_player.get("lateProcesses", [])
     if isinstance(late_processes, dict):
         late_processes = [late_processes]
+    sdk_adb_text = ((hd_player.get("sdkAdb") or {}).get("stdout", "")) + "\n" + ((hd_player.get("sdkAdb") or {}).get("stderr", ""))
+    sdk_adb_lines = [line.strip() for line in sdk_adb_text.splitlines() if line.strip()]
+    sdk_adb_device_lines = [line for line in sdk_adb_lines if "\t" in line or " transport_id:" in line]
+    hdplayer_online = any("\tdevice" in line or " device " in line for line in sdk_adb_device_lines)
     return {
         "exists": True,
         "vmmgrComReady": vmmgr.get("returncode") == 0,
+        "vmmgrHitsVirtualBoxWrap": "VirtualBox home directory" in ((vmmgr.get("stdout") or "") + (vmmgr.get("stderr") or "")),
         "vmmgrClassNotRegistered": "REGDB_E_CLASSNOTREG" in ((vmmgr.get("stdout") or "") + (vmmgr.get("stderr") or "")),
         "hdPlayerSpawnedVBox": bool(hd_player.get("spawnedVBoxProcess")),
         "hdPlayerTcp5555Open": hd_player.get("tcp5555Open"),
-        "hdPlayerAdbOnline": "\tdevice" in ((hd_player.get("sdkAdb") or {}).get("stdout", "")),
+        "hdPlayerAdbOnline": hdplayer_online,
         "lateProcessCount": len(late_processes),
         "probeFile": str(PORTABLE_PROBE),
     }
@@ -93,9 +106,11 @@ def main() -> None:
         note = (
             "The strongest reopen path is now the locally unpacked BlueStacks Nougat32 guest "
             "registered under Oracle VirtualBox. The Oracle VBox candidate reaches a stable no-reset boot "
-            "shape under the oracle-ide-primaryslave-piix3-vga profile, but it still stalls before guest "
-            "userspace or adb-online observability. The portable BlueStacks client path is also blocked: "
-            "BstkVMMgr still reports REGDB_E_CLASSNOTREG and HD-Player does not bring up a live guest."
+            "shape under the oracle-ide-primaryslave-piix3-vga profile and exposes only an offline adb target, "
+            "but it still stalls before guest userspace or adb-online observability. Restoring bstdevices under "
+            "stock Oracle VBox fails earlier because HD-Vdes-Service.dll is rejected by hardening. The portable "
+            "BlueStacks client path is also blocked: BstkVMMgr reaches VirtualBoxWrap but still fails at VirtualBox "
+            "home resolution, and HD-Player does not bring up a live guest."
         )
     else:
         preferred = "BlueStacks5-ARM32-or-ARM-instance"
@@ -109,10 +124,7 @@ def main() -> None:
         "oracleVBoxPortableCandidate": oracle_candidate,
         "portableBlueStacksClientCandidate": portable_candidate,
         "readyNow": bool(oracle_candidate.get("adbOnline"))
-        or bool(portable_candidate.get("hdPlayerAdbOnline"))
-        or paths["bluestacksProgramFiles"]
-        or paths["bluestacksProgramData"]
-        or paths["wsaPackage"],
+        or bool(portable_candidate.get("hdPlayerAdbOnline")),
         "note": note,
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

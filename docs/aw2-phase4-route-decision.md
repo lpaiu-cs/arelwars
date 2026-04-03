@@ -21,10 +21,18 @@ The machine now has a serious candidate runtime:
 But that candidate is still below the Route A threshold:
 
 - no `adb-online` guest
+- official `adb` sees only `emulator-5554 offline`
 - no successful install of the original APK
 - no live original scene capture
 - no guest OS detection through `debugvm`
 - empty UART capture and only `1024` boot-disk bytes read
+
+And the remaining Oracle VBox blocker is no longer vague:
+
+- `no bstdevices` yields the current stable black-screen candidate
+- restoring `bstdevices` makes Oracle VBox reject [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll)
+- the hardening failure is `TrustedInstaller is not the owner`
+- startup aborts with `VERR_UNRESOLVED_ERROR`
 
 The portable BlueStacks client path also fails independently:
 

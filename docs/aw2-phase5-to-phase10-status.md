@@ -21,9 +21,11 @@ The blocker is narrower than before:
 
 - a local Oracle VBox candidate runtime now exists
 - but it still does not expose a usable `adb-online` original process
+- official `adb` reaches only `emulator-5554 offline`
 - the original APK is therefore still not installable/observable inside a validated oracle environment
 - the Oracle guest still stalls before OS detection, serial output, or real root/data disk activity
-- the portable BlueStacks client path is blocked separately by `REGDB_E_CLASSNOTREG` and a non-bootstrapping `HD-Player.exe`
+- restoring the BlueStacks custom device path under Oracle VBox fails earlier because hardening rejects [HD-Vdes-Service.dll](/C:/vs/other/arelwars/$root/PF/HD-Vdes-Service.dll)
+- the portable BlueStacks client path is blocked separately by `Could not create the VirtualBox home directory ''` and a crashing `HD-Player.exe`
 
 The current best evidence is in:
 
