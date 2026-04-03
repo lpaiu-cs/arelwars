@@ -176,3 +176,25 @@ The next useful experiment is therefore narrower:
 
 - obtain or reconstruct a `6.1.36`-compatible `VBoxHeadless` path that can load the BlueStacks custom device stack
 - or make the portable BlueStacks client path launch the same device stack without Oracle hardening
+
+## 2026-04-03 Night Update
+
+One concrete sub-experiment is now closed out.
+
+An official Oracle `6.1.36` Windows frontend was extracted side-by-side from:
+
+- [VirtualBox-6.1.36-152435-Win.exe](https://download.virtualbox.org/virtualbox/6.1.36/VirtualBox-6.1.36-152435-Win.exe)
+
+and administrative extraction produced a local frontend set under:
+
+- [oracle_vbox_6_1\extracted\PFiles\Oracle\VirtualBox](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/oracle_vbox_6_1/extracted/PFiles/Oracle/VirtualBox)
+
+That experiment does **not** solve the BlueStacks-device gap.
+
+It fails even earlier with hardening / build-certificate mismatch:
+
+- `Error -5657 in supR3HardenedWinReSpawn!`
+- `NtCreateFile(\Device\VBoxDrvStub) failed`
+- `Signature #1/2: Not signed with the build certificate`
+
+So the direct official-Oracle-6.1 frontend path is now ruled out as a primary reopen fix.

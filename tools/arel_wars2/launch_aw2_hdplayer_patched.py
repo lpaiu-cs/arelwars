@@ -315,11 +315,16 @@ def write_memory(process: wintypes.HANDLE, address: int, payload: bytes, *, chan
 
 def alloc_remote_string(process: wintypes.HANDLE, value: str) -> int:
     raw = value.encode("utf-16le") + b"\x00\x00"
-    remote = VirtualAllocEx(process, None, len(raw), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+    lead_padding = 0x100
+    tail_padding = 0x100
+    total = lead_padding + len(raw) + tail_padding
+    remote = VirtualAllocEx(process, None, total, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     if not remote:
         fail("VirtualAllocEx failed")
-    write_memory(process, ctypes.cast(remote, ctypes.c_void_p).value, raw, change_protection=False)
-    return ctypes.cast(remote, ctypes.c_void_p).value
+    base = ctypes.cast(remote, ctypes.c_void_p).value
+    target = base + lead_padding
+    write_memory(process, target, raw, change_protection=False)
+    return target
 
 
 def make_wstring_blob(process: wintypes.HANDLE, value: str) -> bytes:

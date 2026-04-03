@@ -149,3 +149,26 @@ Run the prepared privileged BlueStacks bootstrap with:
 ```powershell
 powershell -ExecutionPolicy Bypass -File C:\vs\other\arelwars\tools\arel_wars2\enable_aw2_bluestacks_admin_bootstrap.ps1
 ```
+
+## 2026-04-03 Night Update
+
+The portable-client route also moved forward after the Oracle `bstaudio` split.
+
+New facts:
+
+- the patched [HD-Player.exe](/C:/vs/other/arelwars/$root/PF/HD-Player.exe) launch no longer dies with the earlier `0xc0000005`
+- the immediate AV was caused by page-edge remote string placement in the patch helper
+- the patched launcher can now keep `HD-Player` resident
+- but that resident process still does not bring up `BstkVMMgr`, `VBoxHeadless`, guest logs, or `adb-online`
+
+The strongest portable-path blocker is now more specific:
+
+- `BlueStacksDrv_nxt` is not installed as a kernel service
+- [BstkDrv_nxt.sys](/C:/vs/other/arelwars/$root/PF/BstkDrv_nxt.sys) is present and validly signed
+- `sc.exe query BlueStacksDrv_nxt` returns `1060`
+
+That makes the next privileged reopen step concrete:
+
+- rerun [enable_aw2_bluestacks_admin_bootstrap.ps1](/C:/vs/other/arelwars/tools/arel_wars2/enable_aw2_bluestacks_admin_bootstrap.ps1) after its new driver-service registration step
+- confirm `BlueStacksDrv_nxt` exists and starts
+- retry the patched `HD-Player` launch and inspect whether the BlueStacks VBox stack finally comes online

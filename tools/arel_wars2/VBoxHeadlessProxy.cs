@@ -8,11 +8,12 @@ internal static class Program
 {
     private static int Main(string[] args)
     {
-        const string OracleVBoxDir = @"C:\Program Files\Oracle\VirtualBox";
-        const string OracleVBoxHeadless = @"C:\Program Files\Oracle\VirtualBox\VBoxHeadless.exe";
         const string DataDir = @"C:\ProgramData\BlueStacks_nxt";
         const string ManagerDir = @"C:\ProgramData\BlueStacks_nxt\Manager";
         const string LogPath = @"C:\ProgramData\BlueStacks_nxt\Logs\VBoxHeadless-proxy.log";
+
+        var vboxRoot = GetEnvOrDefault("AW2_VBOX_ROOT", @"C:\Program Files\Oracle\VirtualBox");
+        var vboxHeadless = GetEnvOrDefault("AW2_VBOX_HEADLESS", Path.Combine(vboxRoot, "VBoxHeadless.exe"));
 
         Directory.CreateDirectory(Path.GetDirectoryName(LogPath) ?? DataDir);
         var quotedArgs = string.Join(" ", args.Select(QuoteArg));
@@ -20,15 +21,16 @@ internal static class Program
         log.Append('[').Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")).Append("] ");
         log.Append("proxy=v1").AppendLine();
         log.Append("  exe=").Append(System.Reflection.Assembly.GetExecutingAssembly().Location).AppendLine();
-        log.Append("  target=").Append(OracleVBoxHeadless).AppendLine();
+        log.Append("  root=").Append(vboxRoot).AppendLine();
+        log.Append("  target=").Append(vboxHeadless).AppendLine();
         log.Append("  args=").Append(quotedArgs).AppendLine();
         File.AppendAllText(LogPath, log.ToString(), Encoding.UTF8);
 
         var psi = new ProcessStartInfo
         {
-            FileName = OracleVBoxHeadless,
+            FileName = vboxHeadless,
             Arguments = quotedArgs,
-            WorkingDirectory = OracleVBoxDir,
+            WorkingDirectory = vboxRoot,
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -37,7 +39,7 @@ internal static class Program
         var machinePath = psi.Environment.ContainsKey("PATH")
             ? psi.Environment["PATH"]
             : Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-        psi.Environment["PATH"] = OracleVBoxDir + ";" + machinePath;
+        psi.Environment["PATH"] = vboxRoot + ";" + machinePath;
         psi.Environment["HOME"] = ManagerDir;
         psi.Environment["USERPROFILE"] = ManagerDir;
         psi.Environment["APPDATA"] = ManagerDir;
@@ -90,5 +92,11 @@ internal static class Program
         }
 
         return "\"" + arg.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+    }
+
+    private static string GetEnvOrDefault(string name, string fallback)
+    {
+        var value = Environment.GetEnvironmentVariable(name);
+        return string.IsNullOrWhiteSpace(value) ? fallback : value;
     }
 }

@@ -52,6 +52,34 @@ function Set-StringValue {
     New-ItemProperty -Path $RegistryPath -Name $Name -PropertyType String -Value $Value -Force | Out-Null
 }
 
+function Ensure-KernelService {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Name,
+        [Parameter(Mandatory = $true)]
+        [string]$BinaryPath
+    )
+
+    $service = Get-Service -Name $Name -ErrorAction SilentlyContinue
+    if (-not $service) {
+        & sc.exe create $Name type= kernel start= demand error= normal binPath= $BinaryPath | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to create service $Name"
+        }
+    }
+
+    & sc.exe config $Name start= demand binPath= $BinaryPath | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to configure service $Name"
+    }
+
+    $state = (& sc.exe query $Name) -join "`n"
+    if ($state -notmatch "RUNNING") {
+        & sc.exe start $Name | Out-Null
+        Start-Sleep -Seconds 1
+    }
+}
+
 Assert-Admin
 
 $repoRoot = "C:\vs\other\arelwars"
@@ -61,6 +89,8 @@ $portablePd = Join-Path $portableRoot 'PD'
 $machinePf = "C:\Program Files\BlueStacks_nxt"
 $machinePd = "C:\ProgramData\BlueStacks_nxt"
 $bstkTmp = "C:\bstk"
+$driverName = "BlueStacksDrv_nxt"
+$driverBinary = Join-Path $machinePf "BstkDrv_nxt.sys"
 
 Ensure-Directory -Path $bstkTmp
 Ensure-Junction -Path $machinePd -Target $portablePd
@@ -81,6 +111,8 @@ foreach ($key in @($blueStacksKey, $blueStacksServicesKey)) {
 [Environment]::SetEnvironmentVariable("VBOX_USER_HOME", (Join-Path $machinePd "Engine\Manager"), "Machine")
 [Environment]::SetEnvironmentVariable("VBOX_APP_HOME", $machinePd, "Machine")
 
+Ensure-KernelService -Name $driverName -BinaryPath $driverBinary
+
 & "C:\Program Files\Oracle\VirtualBox\VBoxSVC.exe" /reregserver
 & "C:\Windows\System32\regsvr32.exe" /s (Join-Path $portablePf "BstkProxyStub.dll")
 
@@ -96,6 +128,9 @@ $summary = [pscustomobject]@{
     machineHome = [Environment]::GetEnvironmentVariable("HOME", "Machine")
     machineVBoxUserHome = [Environment]::GetEnvironmentVariable("VBOX_USER_HOME", "Machine")
     machineVBoxAppHome = [Environment]::GetEnvironmentVariable("VBOX_APP_HOME", "Machine")
+    driverService = $driverName
+    driverBinary = $driverBinary
+    driverServiceState = ((& sc.exe query $driverName) -join "`n")
 }
 
 $summary | ConvertTo-Json -Depth 4

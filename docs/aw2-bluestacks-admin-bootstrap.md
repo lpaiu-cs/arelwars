@@ -39,6 +39,9 @@ powershell -ExecutionPolicy Bypass -File C:\vs\other\arelwars\tools\arel_wars2\e
   - `HOME`
   - `VBOX_USER_HOME`
   - `VBOX_APP_HOME`
+- registers and starts the kernel driver service:
+  - `BlueStacksDrv_nxt`
+  - binary: [BstkDrv_nxt.sys](/C:/vs/other/arelwars/$root/PF/BstkDrv_nxt.sys)
 - re-registers the Oracle VBox COM service
 - re-registers `BstkProxyStub.dll`
 - prints a compact verification summary at the end
@@ -52,6 +55,7 @@ The remaining blocked writes are all privileged:
 - `HKLM\SOFTWARE\BlueStacks*`
 - `C:\Program Files\BlueStacks_nxt`
 - machine-level environment variables
+- `SCM` kernel-driver registration for `BlueStacksDrv_nxt`
 
 Those are exactly the pieces the current portable payload still lacks.
 

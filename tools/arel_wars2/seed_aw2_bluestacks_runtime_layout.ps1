@@ -27,7 +27,15 @@ foreach ($dir in @(
 $guid = 'd43b53f0-7578-4956-b95e-6a4b868d2070'
 $versionMachineId = '4258b20c-ce11-4710-a0d7-9a11fe62afb9'
 $confLines = @(
+    'bst.oem=nxt',
+    'bst.version=5.22.166.1003',
+    "bst.guid=$guid",
+    "bst.install_id=$guid",
+    "bst.machine_id=$guid",
+    "bst.version_machine_id=$versionMachineId",
+    "bst.instance=$instanceName",
     'bst.version="5.22.166.1003"',
+    'bst.oem="nxt"',
     "bst.guid=`"$guid`"",
     "bst.install_id=`"$guid`"",
     "bst.machine_id=`"$guid`"",

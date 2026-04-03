@@ -18,6 +18,8 @@ LOAD_DLL_DEBUG_EVENT = 6
 OUTPUT_DEBUG_STRING_EVENT = 8
 EXCEPTION_BREAKPOINT = 0x80000003
 STATUS_ACCESS_VIOLATION = 0xC0000005
+TH32CS_SNAPMODULE = 0x00000008
+TH32CS_SNAPMODULE32 = 0x00000010
 
 
 class STARTUPINFOW(ctypes.Structure):
@@ -49,6 +51,21 @@ class PROCESS_INFORMATION(ctypes.Structure):
         ("hThread", wintypes.HANDLE),
         ("dwProcessId", wintypes.DWORD),
         ("dwThreadId", wintypes.DWORD),
+    ]
+
+
+class MODULEENTRY32W(ctypes.Structure):
+    _fields_ = [
+        ("dwSize", wintypes.DWORD),
+        ("th32ModuleID", wintypes.DWORD),
+        ("th32ProcessID", wintypes.DWORD),
+        ("GlblcntUsage", wintypes.DWORD),
+        ("ProccntUsage", wintypes.DWORD),
+        ("modBaseAddr", ctypes.POINTER(ctypes.c_byte)),
+        ("modBaseSize", wintypes.DWORD),
+        ("hModule", wintypes.HMODULE),
+        ("szModule", wintypes.WCHAR * 256),
+        ("szExePath", wintypes.WCHAR * 260),
     ]
 
 
@@ -174,6 +191,18 @@ CloseHandle = kernel32.CloseHandle
 CloseHandle.argtypes = [wintypes.HANDLE]
 CloseHandle.restype = wintypes.BOOL
 
+CreateToolhelp32Snapshot = kernel32.CreateToolhelp32Snapshot
+CreateToolhelp32Snapshot.argtypes = [wintypes.DWORD, wintypes.DWORD]
+CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+
+Module32FirstW = kernel32.Module32FirstW
+Module32FirstW.argtypes = [wintypes.HANDLE, ctypes.POINTER(MODULEENTRY32W)]
+Module32FirstW.restype = wintypes.BOOL
+
+Module32NextW = kernel32.Module32NextW
+Module32NextW.argtypes = [wintypes.HANDLE, ctypes.POINTER(MODULEENTRY32W)]
+Module32NextW.restype = wintypes.BOOL
+
 
 def load_patch_module():
     patch_path = Path(__file__).with_name("launch_aw2_hdplayer_patched.py")
@@ -188,6 +217,25 @@ def quote_arg(arg: str) -> str:
     if not arg or any(ch.isspace() or ch == '"' for ch in arg):
         return '"' + arg.replace("\\", "\\\\").replace('"', '\\"') + '"'
     return arg
+
+
+def find_module_for_address(pid: int, address: int) -> tuple[str, int, int] | None:
+    snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, pid)
+    if snapshot == wintypes.HANDLE(-1).value:
+        return None
+    try:
+        entry = MODULEENTRY32W()
+        entry.dwSize = ctypes.sizeof(entry)
+        ok = Module32FirstW(snapshot, ctypes.byref(entry))
+        while ok:
+            base = ctypes.cast(entry.modBaseAddr, ctypes.c_void_p).value
+            size = int(entry.modBaseSize)
+            if base <= address < base + size:
+                return entry.szModule, base, size
+            ok = Module32NextW(snapshot, ctypes.byref(entry))
+    finally:
+        CloseHandle(snapshot)
+    return None
 
 
 def read_bytes(process: wintypes.HANDLE, address: int, size: int) -> bytes:
@@ -301,6 +349,21 @@ def run(args: argparse.Namespace) -> int:
                         print(f"INITIAL_BREAKPOINT addr=0x{address:x}")
                     elif code == STATUS_ACCESS_VIOLATION:
                         print(f"ACCESS_VIOLATION addr=0x{address:x}")
+                        module = find_module_for_address(event.dwProcessId, address)
+                        if module is None:
+                            print("faultModule=<unknown>")
+                        else:
+                            module_name, module_base, module_size = module
+                            print(
+                                f"faultModule={module_name} base=0x{module_base:x} "
+                                f"offset=0x{address - module_base:x} size=0x{module_size:x}"
+                            )
+                        info = event.u.Exception.ExceptionRecord.ExceptionInformation
+                        print(
+                            "exceptionInfo="
+                            f"{int(info[0])},{int(info[1])},"
+                            f"{int(info[2])},{int(info[3])}"
+                        )
                         if patch_handle and base:
                             for offset, name in (
                                 (0x1A02520, "installDir"),

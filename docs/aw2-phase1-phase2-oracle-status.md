@@ -51,7 +51,9 @@ Current portable-client state:
 - `BstkVMMgr.exe` now reaches `VirtualBoxWrap`
 - creation fails at `Could not create the VirtualBox home directory ''`
 - direct `BstkSVC.exe --registervbox` produces the same empty-home error in its own release log
-- `HD-Player.exe` still crashes before guest bootstrap
+- a patched `HD-Player.exe` launch no longer crashes with `0xc0000005`
+- the patched player can stay resident without reaching `adb-online`
+- the current strongest portable-path blocker is the missing kernel service `BlueStacksDrv_nxt`
 - no client-side launch path yields a live guest
 
 So Phase 1 and Phase 2 remain blocked, but by `candidate-runtime incompleteness`, not by total runtime absence.
