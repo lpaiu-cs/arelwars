@@ -95,6 +95,18 @@ def build_report(lib_path: Path) -> dict[str, object]:
             "enterGateField": hex(field_379c),
             "popupGateField": hex(field_362c),
             "pendingAreaField": hex(field_36f8),
+            "genericAreaHitSource": {
+                "frameSourceField": "0xe0",
+                "cameraOffsetSourceField": "0xdc",
+                "helpers": [
+                    "_ZN11CGxPZxFrame19GetBoundingBoxCountEi",
+                    "_ZN11CGxPZxFrame14GetBoundingBoxEii",
+                ],
+                "notes": [
+                    "The generic 0..4 / 5 area scan is driven by bounding boxes from the active worldmap frame, not by a fixed hard-coded screen rectangle table.",
+                    "DoTouchMoveWorldArea also reads camera/scroll-style offsets from the object at this+0xdc before it compares the pointer coordinates against those bounding boxes.",
+                ],
+            },
             "newAreaBranch": {
                 "range": ["0x10a459", "0x10a467"],
                 "effect": [

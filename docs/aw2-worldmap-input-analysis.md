@@ -334,6 +334,26 @@ So the current live interpretation is now:
 - overlay buttons can still behave independently of that base-area state
 - `DESERT PLAIN` / `PVP` staying dead means the generic `0..4` area rectangle path is still the real blocker
 
+## Additional April 4 Bounding-Box Hit Closure
+
+`DoTouchMoveWorldArea(...)` was re-read again past the first area-gate branches.
+
+The generic area path is now better understood:
+
+- it does **not** use a simple hard-coded screen rectangle table
+- it resolves the active worldmap frame from `this + 0xe0`
+- it then enumerates bounding boxes from that frame
+- the helper symbols at the core of that loop are:
+  - `CGxPZxFrame::GetBoundingBoxCount(...)`
+  - `CGxPZxFrame::GetBoundingBox(...)`
+- before the final pointer comparison, it also reads offset/camera-style values from `this + 0xdc`
+
+That changes the debugging model again:
+
+- `Town SHOP` responding does not imply base-map hitboxes are geometrically correct
+- `DESERT PLAIN` / `PVP` can stay dead even when the generic area loop is running, if the active worldframe bounding boxes or their translated offsets no longer line up with what the user sees
+- the next safe target is therefore not only `0x100 / 0x36f8 / state 2`, but also whether the active worldmap frame and its bounding-box translation are still valid under the offline path
+
 ## Additional April 4 Pre-Area Gate Closure
 
 Another pre-area helper is now closed:
