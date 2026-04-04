@@ -3024,6 +3024,29 @@ def patch_native_worldmap_touchworldframe_ignore_popup_gate(lib_path: Path) -> d
     }
 
 
+def patch_native_worldmap_align_mainloop_worldframe_slot(lib_path: Path) -> dict[str, str | int]:
+    file_offset = 0x102FD8
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x18\x6a"  # ldr r0, [r3, #0x20]
+    patched = b"\x58\x69"   # ldr r0, [r3, #0x14]
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-align-mainloop-worldframe-slot",
+        "file": str(lib_path),
+        "symbol": "_ZN16CPdStateWorldmap14UpdateMainLoopEv",
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+        "note": "Align the state-5 worldframe update poller with the same fourth CCommonUI slot that the input-side worldframe click path can drive.",
+    }
+
+
 def patch_native_worldmap_gamevillive_popup_noop(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap28CallbackPop_GameVilLiveLoginEPKvs")
     file_offset = symbol_value & ~1
@@ -3186,12 +3209,12 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             # Debug-only worldmap input reopening:
             # keep official worldmap handlers intact, but ignore stale global gates
             # that currently suppress pointer latching and world-frame hit-testing.
-            applied.append(patch_native_worldmap_onpointerpress_ignore_touch_gate(lib_path))
             applied.append(patch_native_worldmap_release_expand_tap_slop(lib_path))
-            applied.append(patch_native_worldmap_touchworldmapmenu_ignore_global_gate(lib_path))
-            applied.append(patch_native_worldmap_touchstageselect_ignore_global_gate(lib_path))
-            applied.append(patch_native_worldmap_touchworldframe_ignore_global_gate(lib_path))
-            applied.append(patch_native_worldmap_touchworldframe_ignore_popup_gate(lib_path))
+            applied.append(patch_native_worldmap_align_mainloop_worldframe_slot(lib_path))
+            # Keep worldmap reopening patches on the consumer side only.
+            # Blindly removing the 0x1068 / 0x379c / 0x362c touch guards made the
+            # input lifecycle harder to reason about and risks desynchronizing
+            # the state machine from the latches that UpdateWorldMapMenu later consumes.
             # Do not force UpdateWorldMapMenu through the local branch.
             # Static trace shows that path sets both 0x379c and 0x362c to 1,
             # which are the same worldmap gate bytes consumed by touch handlers.

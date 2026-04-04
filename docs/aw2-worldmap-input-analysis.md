@@ -228,6 +228,86 @@ That makes the next safe target narrower than before:
 - stop treating `DoTouchMoveWorldArea` as the real stage owner
 - inspect the `state 5` `UpdateMainLoop` consumer path that runs after `TouchInputWorldFrame`
 
+## Additional April 4 Selection-Flow Closure
+
+The base worldframe path is now closed more tightly than before.
+
+Automated trace:
+
+- [trace_aw2_worldmap_selection_flow.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_selection_flow.py)
+- [aw2_worldmap_selection_flow.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_selection_flow.json)
+
+Confirmed structure:
+
+1. a new area hit inside `DoTouchMoveWorldArea(...)` does **not** immediately request stage select
+2. the new-area path stores the candidate index into `this + 0x100`
+3. it then calls `InitWorldmapSltAreaAni(...)`
+4. only a **same-area re-tap** goes through `IsCheckAreaEnter(...)`
+5. if enterable:
+   - `this + 0x379c = 1`
+   - `this + 0x36f8 = this + 0x100`
+6. if not enterable:
+   - `this + 0x362c = 1`
+   - a worldmap popup is created instead
+
+`UpdateWorldMapMenu(...)` is the first confirmed consumer of that armed area state:
+
+- it reads `this + 0x379c`
+- it reads `this + 0x36f8`
+- if `0x36f8` is `0..4`, it mirrors the area index into another worldmap field, sets `[this+8] = 2`, snapshots `[this+4] -> [this+0xc]`, and clears `0x36f8 = -1`
+- if `0x36f8 == 5`, it schedules state `0x19` instead
+
+That means the current bottleneck is even narrower:
+
+- overlay/menu buttons such as `Town SHOP` can still work without proving base area entry
+- `DESERT PLAIN` / `PVP` not reacting means either:
+  - the base-area hit-test never selects an area, or
+  - the same-area re-tap never arms `0x379c/0x36f8`, or
+  - `UpdateWorldMapMenu(...)` never consumes the armed pending-area state under the active runtime conditions
+
+This also justifies tightening the default build path:
+
+- blind guard removals on `OnPointerPress`, `TouchInputWorldMapMenu`, and `TouchInputWorldFrame` are no longer treated as safe default fixes
+- the default build keeps only the lower-risk worldmap reopening patches such as tap-slop widening and consumer-slot alignment
+- direct `CreateStageSelect` forcing remains out of bounds
+
+## Additional April 4 Area / State Closure
+
+Additional report:
+
+- [trace_aw2_worldmap_area_state_flow.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_area_state_flow.py)
+- [aw2_worldmap_area_state_flow.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_area_state_flow.json)
+
+Three new facts matter:
+
+1. `IsCheckAreaEnter(...)` is now simple enough to reason about.
+   - `area == 5` returns true immediately
+   - otherwise it compares a global progress field against `areaIndex * 15`
+   - for normal non-negative progress values, the effective condition is `globalProgress24 >= areaIndex * 15`
+2. `UpdateWorldMapMenu(...)` really does split the worldmap areas into two families.
+   - pending area `0..4`:
+     - mirror area into `this + 0x361c`
+     - set pending state `[this+8] = 2`
+     - snapshot `[this+4] -> [this+0xc]`
+     - clear `this + 0x36f8 = -1`
+   - pending area `5`:
+     - set pending state `[this+8] = 0x19`
+     - snapshot `[this+4] -> [this+0xc]`
+     - clear `this + 0x36f8 = -1`
+3. `MakeBufferStageSelect(...)` is the strongest current consumer of the generic path.
+   - it reads `this + 0x361c`
+   - it explicitly special-cases `[this+4] == 2`
+   - therefore state `2` is the confirmed generic world-area -> stage-select preparation state
+
+That gives a tighter interpretation of the current live behavior:
+
+- `Town SHOP` responding while base world objects do not is consistent with the special `pendingArea == 5` path still working
+- `DESERT PLAIN` / `PVP` not reacting means the generic `0..4` area path is still failing before or during the `state 2` transition
+- the next safe debugging targets are:
+  - whether `0x100` is actually updated on first hit
+  - whether a same-area re-tap is arming `0x379c / 0x36f8`
+  - whether the `state 2` transition is being consumed after `UpdateWorldMapMenu(...)`
+
 ## Tooling
 
 Automated literal/function scan:
@@ -236,3 +316,7 @@ Automated literal/function scan:
 - [aw2_worldmap_input_flags.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_input_flags.json)
 - [trace_aw2_worldmap_flag_accesses.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_flag_accesses.py)
 - [aw2_worldmap_flag_accesses.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_flag_accesses.json)
+- [trace_aw2_worldmap_selection_flow.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_selection_flow.py)
+- [aw2_worldmap_selection_flow.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_selection_flow.json)
+- [trace_aw2_worldmap_area_state_flow.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_area_state_flow.py)
+- [aw2_worldmap_area_state_flow.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_area_state_flow.json)
