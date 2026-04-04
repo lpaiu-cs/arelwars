@@ -2145,6 +2145,30 @@ def patch_native_touchcontinue_direct_newgame(lib_path: Path) -> dict[str, str |
     }
 
 
+def patch_native_touchcontinue_any_touch_select_slot0(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN12CPdStateMenu13TouchContinueEv")
+    file_offset = (symbol_value & ~1) + 0x6A
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x37\xd0"  # beq -> ignore touch when IsSelectSaveSlot misses
+    patched = b"\x00\xbf"  # nop -> keep default slot index 0 from StartContinue on any touch
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-touchcontinue-any-touch-select-slot0",
+        "file": str(lib_path),
+        "symbol": "_ZN12CPdStateMenu13TouchContinueEv",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
 def patch_native_touchcontinue_openmenu0(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN12CPdStateMenu13TouchContinueEv")
     openmenu_symbol = find_symbol_value(lib_path, "_ZN12CPdStateMenu8OpenMenuEi")
@@ -2884,7 +2908,7 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             applied.append(patch_native_menu_bootstrap_force_receive23(lib_path))
             applied.append(patch_native_menu_ignore_bootstrap_gate(lib_path))
             applied.append(patch_native_menu_ignore_touch_block(lib_path))
-            applied.append(patch_native_touchcontinue_direct_newgame(lib_path))
+            applied.append(patch_native_touchcontinue_any_touch_select_slot0(lib_path))
             applied.append(patch_native_touchnewgame_any_touch_select_slot0(lib_path))
             applied.append(patch_native_touchnewgame_force_state5(lib_path))
             applied.append(patch_native_touchnewgame_skip_yes_popup(lib_path))
