@@ -2893,9 +2893,9 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             applied.append(patch_native_menu_onneterror_noop(lib_path))
             applied.append(patch_native_game_onneterror_noop(lib_path))
             applied.append(patch_native_game_onnetreceive_noop(lib_path))
-            applied.append(patch_native_worldmap_onneterror_noop(lib_path))
-            applied.append(patch_native_worldmap_onnetreceive_noop(lib_path))
             applied.append(patch_native_worldmap_gamevillive_popup_noop(lib_path))
+            # Keep worldmap OnNetError/OnNetReceive intact for now.
+            # They appear to participate in state cleanup for 0x362c/0x379c/0x36f8.
             # Do not force worldmap control-flow into later scenes here.
             # The remaining blocker is an input/state gate, not missing scene creation.
             applied.append(patch_native_openurl_noop(lib_path))

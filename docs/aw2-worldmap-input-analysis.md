@@ -91,9 +91,42 @@ The next safe fix is to identify who sets and clears:
 
 and then restore the expected memory state at the right lifecycle point.
 
+## Lifecycle Update
+
+Additional access tracing now narrows the problem further:
+
+- `global + 0x1068`
+  - still appears as a read-side gate in worldmap and script/game paths
+  - no direct writer has been confirmed yet
+- `this + 0x379c`
+  - confirmed writers:
+    - `CreateMainLoop` clears it during setup
+    - `DrawUpdateFadeIN` clears it after fade completion
+    - `DrawNetMenu` writes it during menu visibility/update flow
+    - `UpdateWorldMapMenu` writes it when menu/UI control paths return transition state
+- `this + 0x362c`
+  - confirmed to be written by a large set of worldmap popup, shop, net, and menu flows
+- `this + 0x36f8`
+  - currently appears as a worldmap-local menu/state slot touched by `OnPointerRelease` and `UpdateWorldMapMenu`
+
+The current leading hypothesis is that the previous default patch set over-cut worldmap network handlers:
+
+- `CPdStateWorldmap::OnNetError`
+- `CPdStateWorldmap::OnNetReceive`
+
+Those callbacks were patched to `bx lr` no-op form to suppress dead-service fallout. Static analysis now suggests that this likely removed worldmap-local cleanup together with network UI, leaving `0x379c`, `0x362c`, or `0x36f8` latched when the map should have become interactive.
+
+Because of that, the default offline-hook build no longer patches worldmap `OnNetError`/`OnNetReceive`. The current direction is:
+
+1. keep upstream network bootstrap bypasses
+2. preserve worldmap-local callback cleanup
+3. only patch the specific network popup/launcher gates that are still external blockers
+
 ## Tooling
 
 Automated literal/function scan:
 
 - [analyze_worldmap_input_flags.py](/C:/vs/other/arelwars/tools/arel_wars2/analyze_worldmap_input_flags.py)
 - [aw2_worldmap_input_flags.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_input_flags.json)
+- [trace_aw2_worldmap_flag_accesses.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_flag_accesses.py)
+- [aw2_worldmap_flag_accesses.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_flag_accesses.json)

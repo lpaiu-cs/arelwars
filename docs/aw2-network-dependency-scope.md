@@ -39,6 +39,8 @@ The offline hook currently suppresses:
 - DRM `accept_terms` gating
 - `Natives.updateDialogue()` abnormal-file startup popup
 
+The current scope line is narrower than “patch every network callback to no-op”. In particular, worldmap-local handlers such as `CPdStateWorldmap::OnNetError` and `CPdStateWorldmap::OnNetReceive` are no longer treated as safe blanket no-op targets, because static analysis indicates they likely participate in post-popup/post-fade state cleanup for worldmap-local flags (`0x379c`, `0x362c`, `0x36f8`) as well as network UI.
+
 Static inspection also confirms that this dependency is real and not just a local UI stub. The original APK contains both the launcher error strings and live service endpoints in `classes.dex`, including:
 
 - `advance-service.gamevil.com/gv_connect?put=`
@@ -72,6 +74,7 @@ Immediate allowed work:
 - stage bootstrap binding
 - asset/runtime alignment against static tables and original pre-network scenes
 - offline differential work at and beyond the launcher boundary, using the offline-hook build as the current executable oracle substitute
+- worldmap state cleanup recovery without reintroducing dead-service dependence
 
 Deferred work:
 
