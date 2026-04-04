@@ -2900,6 +2900,35 @@ def patch_native_worldmap_onpointerpress_ignore_touch_gate(lib_path: Path) -> di
     }
 
 
+def patch_native_worldmap_dotouchmove_ignore_global_gate(lib_path: Path) -> dict[str, str | int]:
+    """Bypass the global+0x1068 early-return gate at DoTouchMoveWorldArea entry.
+
+    Without this, if global+0x1068 is nonzero (stuck from offline bootstrap),
+    the entire generic area scan is skipped on every touch release.
+    Change: beq (conditional) -> b (unconditional) so the function always
+    continues past the gate check.
+    """
+    file_offset = 0x10a32c
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x06\xd0"   # beq +6  (0xd006 stored little-endian)
+    patched = b"\x06\xe0"    # b +6    (0xe006 stored little-endian)
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: "
+            f"{original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-dotouchmove-ignore-global-gate",
+        "file": str(lib_path),
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
 def patch_native_worldmap_release_expand_tap_slop(lib_path: Path) -> dict[str, str | int]:
     data = bytearray(lib_path.read_bytes())
     first_offset = 0x10A366
@@ -3097,6 +3126,58 @@ def patch_native_worldmap_align_mainloop_worldframe_slot(lib_path: Path) -> dict
     }
 
 
+def patch_native_worldmap_trace_this_store(lib_path: Path) -> dict[str, str | int]:
+    """Instrument DoTouchMoveWorldArea to store `this` and the global-holder
+    pointer to a fixed .bss location so libtrace.so can poll them.
+
+    Strategy:
+    - Replace 4 bytes at DoTouchMoveWorldArea+0x18 (mov fp,r0 + ldr r2,[r3])
+      with a b.w to a trampoline in the freed IsCheckAreaEnter body.
+    - The trampoline stores r0 (this) and r3 (global-holder ptr) to the end
+      of .bss, then executes the displaced instructions and branches back.
+    """
+    dtmwa_sym = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap20DoTouchMoveWorldAreaEii")
+    dtmwa_file = dtmwa_sym & ~1  # 0x10a308
+
+    isce_sym = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap16IsCheckAreaEnterEi")
+    cave_file = (isce_sym & ~1) + 4  # right after the movs r0,1; bx lr patch
+
+    data = bytearray(lib_path.read_bytes())
+
+    # Verify displaced bytes are still original (or our patch)
+    patch_off = dtmwa_file + 0x18  # 0x10a320
+    displaced_orig = b"\x83\x46\x1a\x68"  # mov fp, r0; ldr r2, [r3]
+    branch_to_cave = b"\xc7\xf7\xda\xbf"  # b.w cave (pre-computed)
+
+    current = bytes(data[patch_off : patch_off + 4])
+    if current not in (displaced_orig, branch_to_cave):
+        raise RuntimeError(
+            f"Unexpected bytes at DoTouchMoveWorldArea+0x18 (0x{patch_off:x}): "
+            f"{current.hex()} (expected {displaced_orig.hex()} or {branch_to_cave.hex()})"
+        )
+
+    # Cave bytes (20 bytes): stores this+holder, runs displaced insns, branches back
+    # ldr r2,[pc,#12]; add r2,r7; str r0,[r2]; str r3,[r2,#4];
+    # mov fp,r0; ldr r2,[r3]; b.w back; .word trace_offset
+    cave_payload = bytes.fromhex("034a3a441060536083461a6838f01eb890100100")
+
+    # Write cave
+    data[cave_file : cave_file + len(cave_payload)] = cave_payload
+    # Write branch at DoTouchMoveWorldArea+0x18
+    data[patch_off : patch_off + 4] = branch_to_cave
+    lib_path.write_bytes(data)
+
+    return {
+        "label": "native-worldmap-trace-this-store",
+        "file": str(lib_path),
+        "note": "Trampoline at IsCheckAreaEnter+4 stores wm_this and global-holder "
+                "to .bss end-16 (offset 0x21c934) on every DoTouchMoveWorldArea call.",
+        "patchOffset": patch_off,
+        "caveOffset": cave_file,
+        "bssSlotOffset": 0x21c934,
+    }
+
+
 def patch_native_worldmap_ignore_stale_live_button_gate(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap20TouchGamevilLiveBtnsEii")
     file_offset = (symbol_value & ~1) + 0x26
@@ -3284,13 +3365,26 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             # Debug-only worldmap input reopening:
             # keep official worldmap handlers intact, but ignore stale global gates
             # that currently suppress pointer latching and world-frame hit-testing.
+            applied.append(patch_native_worldmap_onpointerpress_ignore_touch_gate(lib_path))
+            applied.append(patch_native_worldmap_dotouchmove_ignore_global_gate(lib_path))
+            applied.append(patch_native_worldmap_touchworldmapmenu_ignore_global_gate(lib_path))
+            applied.append(patch_native_worldmap_touchstageselect_ignore_global_gate(lib_path))
+            applied.append(patch_native_worldmap_touchworldframe_ignore_global_gate(lib_path))
+            applied.append(patch_native_worldmap_touchworldframe_ignore_popup_gate(lib_path))
             applied.append(patch_native_worldmap_release_expand_tap_slop(lib_path))
             applied.append(patch_native_worldmap_align_mainloop_worldframe_slot(lib_path))
             applied.append(patch_native_worldmap_ignore_stale_live_button_gate(lib_path))
             applied.append(patch_native_worldmap_ischeckareaenter_always_true(lib_path))
             applied.append(patch_native_worldmap_ischeckareaenterfromfrm_always_true(lib_path))
+            applied.append(patch_native_worldmap_trace_this_store(lib_path))
+            # The 0x1068 gate bypass on ALL worldmap touch handlers is required:
+            # global+0x1068 stays nonzero in the offline-hook environment,
+            # blocking OnPointerPress, TouchInputWorldMapMenu, TouchInputWorldFrame,
+            # TouchInputStageSelect, and DoTouchMoveWorldArea.
+            # Confirmed via runtime trace (2026-04-05): without these bypasses
+            # no touch events reach any worldmap handler at all.
             # Keep worldmap reopening patches on the consumer side only.
-            # Blindly removing the 0x1068 / 0x379c / 0x362c touch guards made the
+            # Blindly removing the 0x379c / 0x362c touch guards made the
             # input lifecycle harder to reason about and risks desynchronizing
             # the state machine from the latches that UpdateWorldMapMenu later consumes.
             # Do not force UpdateWorldMapMenu through the local branch.
@@ -3388,12 +3482,94 @@ def mirror_sound_bank(device: str, unpacked_dir: Path) -> list[dict[str, str]]:
     return mirrored
 
 
+FRIDA_GADGET_ARM = Path(__file__).resolve().parent / "frida-gadget-arm.so"
+TRACE_LIB_ARM = Path(__file__).resolve().parent / "native_trace" / "libtrace.so"
+FRIDA_GADGET_CONFIG = json.dumps({
+    "interaction": {
+        "type": "listen",
+        "address": "0.0.0.0",
+        "port": 27042,
+        "on_port_conflict": "pick-next",
+        "on_load": "resume",
+    }
+}, indent=2)
+
+
+def inject_frida_gadget(unpacked_dir: Path, patched_smali_dir: Path) -> list[dict[str, str]]:
+    """Inject Frida gadget into the unpacked APK for non-root tracing."""
+    applied: list[dict[str, str]] = []
+
+    if not FRIDA_GADGET_ARM.exists():
+        raise SystemExit(f"Frida gadget not found: {FRIDA_GADGET_ARM}\n"
+                         "Download from https://github.com/frida/frida/releases")
+
+    # Copy gadget + config into both ARM lib dirs
+    for abi_dir in ["lib/armeabi", "lib/armeabi-v7a"]:
+        dest_dir = unpacked_dir / abi_dir
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        gadget_dest = dest_dir / "libfrida-gadget.so"
+        config_dest = dest_dir / "libfrida-gadget.config.so"
+        shutil.copy2(FRIDA_GADGET_ARM, gadget_dest)
+        config_dest.write_text(FRIDA_GADGET_CONFIG, encoding="utf-8")
+        applied.append({"label": f"frida-gadget-{abi_dir.split('/')[-1]}", "file": str(gadget_dest)})
+        applied.append({"label": f"frida-gadget-config-{abi_dir.split('/')[-1]}", "file": str(config_dest)})
+
+    # Inject System.loadLibrary("frida-gadget") into DRMLicensing.onCreate
+    drm_smali = patched_smali_dir / "com" / "gamevil" / "ArelWars2" / "global" / "DRMLicensing.smali"
+    if drm_smali.exists():
+        content = drm_smali.read_text(encoding="utf-8")
+        load_lib = ('    const-string v0, "frida-gadget"\n'
+                    '    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V\n')
+        # Insert right after invoke-super in onCreate
+        marker = "invoke-super {p0, p1}, Lcom/gamevil/lib/GvDrmActivity;->onCreate(Landroid/os/Bundle;)V"
+        if marker in content and "frida-gadget" not in content:
+            content = content.replace(marker, marker + "\n\n" + load_lib)
+            drm_smali.write_text(content, encoding="utf-8")
+            applied.append({"label": "frida-gadget-smali-loadlib", "file": str(drm_smali)})
+    return applied
+
+
+def inject_trace_lib(unpacked_dir: Path, patched_smali_dir: Path) -> list[dict[str, str]]:
+    """Inject libtrace.so into the APK for logcat-based worldmap polling."""
+    applied: list[dict[str, str]] = []
+
+    if not TRACE_LIB_ARM.exists():
+        raise SystemExit(f"Trace library not found: {TRACE_LIB_ARM}\n"
+                         "Build it with the NDK first.")
+
+    # Copy libtrace.so into both ARM lib dirs
+    for abi_dir in ["lib/armeabi", "lib/armeabi-v7a"]:
+        dest_dir = unpacked_dir / abi_dir
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest = dest_dir / "libtrace.so"
+        shutil.copy2(TRACE_LIB_ARM, dest)
+        applied.append({"label": f"trace-lib-{abi_dir.split('/')[-1]}", "file": str(dest)})
+
+    # Inject System.loadLibrary("trace") into DRMLicensing.onCreate
+    # Must be loaded AFTER libgameDSO.so. Place it after invoke-super.
+    drm_smali = patched_smali_dir / "com" / "gamevil" / "ArelWars2" / "global" / "DRMLicensing.smali"
+    if drm_smali.exists():
+        content = drm_smali.read_text(encoding="utf-8")
+        load_lib = ('    const-string v0, "trace"\n'
+                    '    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V\n')
+        marker = "invoke-super {p0, p1}, Lcom/gamevil/lib/GvDrmActivity;->onCreate(Landroid/os/Bundle;)V"
+        if marker in content and '"trace"' not in content:
+            content = content.replace(marker, marker + "\n\n" + load_lib)
+            drm_smali.write_text(content, encoding="utf-8")
+            applied.append({"label": "trace-lib-smali-loadlib", "file": str(drm_smali)})
+    return applied
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build a test-only offline-hook APK for Arel Wars 2.")
     parser.add_argument("--apk", type=Path, default=APK_PATH)
     parser.add_argument("--device", default="emulator-5554")
     parser.add_argument("--force-disassembly", action="store_true")
     parser.add_argument("--install", action="store_true")
+    parser.add_argument("--frida-gadget", action="store_true",
+                        help="Embed Frida gadget for non-root runtime tracing")
+    parser.add_argument("--trace", action="store_true",
+                        help="Embed libtrace.so for logcat-based worldmap polling")
     args = parser.parse_args()
 
     if not args.apk.exists():
@@ -3425,6 +3601,20 @@ def main() -> int:
     shutil.copy2(rebuilt_dex, unpacked / "classes.dex")
     native_applied = patch_native_libs(unpacked)
 
+    gadget_applied: list[dict[str, str]] = []
+    if args.frida_gadget:
+        gadget_applied = inject_frida_gadget(unpacked, patched_smali)
+        # Re-assemble smali since we modified DRMLicensing
+        assemble_smali(patched_smali, rebuilt_dex)
+        shutil.copy2(rebuilt_dex, unpacked / "classes.dex")
+
+    trace_applied: list[dict[str, str]] = []
+    if args.trace:
+        trace_applied = inject_trace_lib(unpacked, patched_smali)
+        # Re-assemble smali since we modified DRMLicensing
+        assemble_smali(patched_smali, rebuilt_dex)
+        shutil.copy2(rebuilt_dex, unpacked / "classes.dex")
+
     repack_apk(unpacked, unsigned_apk, read_compression_map(args.apk))
     align_and_sign(unsigned_apk, aligned_apk, signed_apk)
 
@@ -3439,7 +3629,7 @@ def main() -> int:
         "sourceApkSha256": sha256(args.apk),
         "signedApk": str(signed_apk),
         "signedApkSha256": sha256(signed_apk),
-        "patches": [*applied, *native_applied],
+        "patches": [*applied, *native_applied, *gadget_applied, *trace_applied],
         "install": {
             "requested": args.install,
             "device": args.device,
