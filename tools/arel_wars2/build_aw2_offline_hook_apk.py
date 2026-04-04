@@ -2924,6 +2924,30 @@ def patch_native_worldmap_gamevillive_popup_noop(lib_path: Path) -> dict[str, st
     }
 
 
+def patch_native_worldmap_updatemenu_auto_local_branch(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap18UpdateWorldMapMenuEv")
+    file_offset = (symbol_value & ~1) + 0x106
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = bytes.fromhex("00d1")  # bne -> skip the existing local worldmap branch when no icon click is reported
+    patched = bytes.fromhex("00bf")   # nop -> always fall through to the existing branch at +0x108
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-updatemenu-auto-local-branch",
+        "file": str(lib_path),
+        "symbol": "_ZN16CPdStateWorldmap18UpdateWorldMapMenuEv",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
 def patch_native_worldmap_touchworldmapmenu_create_stage_select(lib_path: Path) -> dict[str, str | int]:
     return patch_native_branch_to_symbol(
         lib_path,
@@ -3035,9 +3059,11 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             applied.append(patch_native_game_onneterror_noop(lib_path))
             applied.append(patch_native_game_onnetreceive_noop(lib_path))
             applied.append(patch_native_worldmap_gamevillive_popup_noop(lib_path))
+            # Do not force UpdateWorldMapMenu through the local branch.
+            # Static trace shows that path sets both 0x379c and 0x362c to 1,
+            # which are the same worldmap gate bytes consumed by touch handlers.
             # Keep worldmap OnNetError/OnNetReceive intact for now.
             # They appear to participate in state cleanup for 0x362c/0x379c/0x36f8.
-            # Do not force worldmap control-flow into later scenes here.
             # The remaining blocker is an input/state gate, not missing scene creation.
             applied.append(patch_native_openurl_noop(lib_path))
     return applied

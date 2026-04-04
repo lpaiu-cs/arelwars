@@ -79,6 +79,37 @@ The current literal scan of the original `libgameDSO.so` shows these fields are 
 
 That makes the current bottleneck clear: the real issue is not “tap reaches Java but not native” in a generic sense. The issue is that one of the input gates remains asserted when worldmap should be interactive.
 
+## Additional April 4 Findings
+
+`UpdateWorldMapMenu` was traced again with Capstone around the previously patched branch. The earlier fallback patch that forced the branch at `+0x106` is now confirmed unsafe.
+
+The original branch body does this before it rejoins the normal update flow:
+
+```asm
+10b7e8: ldr  r3, [pc, ...]    ; 0x36f8
+10b7ea: ldr  r3, [r4, r3]
+10b7ec: adds r3, #1
+10b7ee: beq  skip
+10b7f0: ldr  r2, [pc, ...]    ; 0x379c
+10b7f2: movs r3, #1
+10b7f6: strb r3, [r4, r2]     ; this+0x379c = 1
+10b7f8: subs r2, #0x71
+10b7fa: subs r2, #0xff
+10b7fc: strb r3, [r4, r2]     ; this+0x362c = 1
+```
+
+That means the forced branch did not “open stage select.” It explicitly asserted the same two worldmap-local gate bytes that the touch handlers consume. Because of that, `native-worldmap-updatemenu-auto-local-branch` was removed from the default offline-hook build path.
+
+`OnPointerRelease` is also now clearly identified as a switch over `([this+4] - 5)`, not a generic tap sink. In the relevant cases it:
+
+- records touch coordinates into `this+0xf8/0xfa`
+- clears `this+0xfc/0xfd`
+- sets `this+0xfe = 1`
+- dispatches through a jump table based on the current worldmap substate
+- in one concrete branch, writes `this+0x36f8 = 7`
+
+So the correct next target is not another forced transition. The correct next target is the real writer/clearer path for `0x36f8`, `0x362c`, and `0x379c` under the active worldmap substate.
+
 ## Current Conclusion
 
 The next safe fix is not another branch redirection.
@@ -120,7 +151,8 @@ Because of that, the default offline-hook build no longer patches worldmap `OnNe
 
 1. keep upstream network bootstrap bypasses
 2. preserve worldmap-local callback cleanup
-3. only patch the specific network popup/launcher gates that are still external blockers
+3. avoid forced `UpdateWorldMapMenu` transitions that set `0x379c/0x362c`
+4. only patch the specific network popup/launcher gates that are still external blockers
 
 ## Tooling
 
