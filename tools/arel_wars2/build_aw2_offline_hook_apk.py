@@ -3047,6 +3047,31 @@ def patch_native_worldmap_align_mainloop_worldframe_slot(lib_path: Path) -> dict
     }
 
 
+def patch_native_worldmap_ignore_stale_live_button_gate(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap20TouchGamevilLiveBtnsEii")
+    file_offset = (symbol_value & ~1) + 0x26
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x01\x33"  # adds r3, #1 ; stale 0x36f0 != -1 blocks the generic area scan
+    patched = b"\x00\x23"   # movs r3, #0 ; keep the branch that continues into the live-button hit-test path
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-ignore-stale-live-button-gate",
+        "file": str(lib_path),
+        "symbol": "_ZN16CPdStateWorldmap20TouchGamevilLiveBtnsEii",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+        "note": "Ignore the stale [this+0x36f0] early-return gate so the helper continues into normal overlay hit-testing and no longer blocks the generic world-area scan just because a dead-service slot stayed latched.",
+    }
+
+
 def patch_native_worldmap_gamevillive_popup_noop(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap28CallbackPop_GameVilLiveLoginEPKvs")
     file_offset = symbol_value & ~1
@@ -3211,6 +3236,7 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             # that currently suppress pointer latching and world-frame hit-testing.
             applied.append(patch_native_worldmap_release_expand_tap_slop(lib_path))
             applied.append(patch_native_worldmap_align_mainloop_worldframe_slot(lib_path))
+            applied.append(patch_native_worldmap_ignore_stale_live_button_gate(lib_path))
             # Keep worldmap reopening patches on the consumer side only.
             # Blindly removing the 0x1068 / 0x379c / 0x362c touch guards made the
             # input lifecycle harder to reason about and risks desynchronizing

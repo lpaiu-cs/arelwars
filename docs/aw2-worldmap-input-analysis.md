@@ -169,17 +169,17 @@ Confirmed minimal access set:
   - writes `r0` into `[this + 0x200]` after `CCommonUI::TouchInputWorldFrame(...)`
 - `CPdStateWorldmap::DoTouchMoveWorldArea(int, int)`
   - reads `[this + 0x200]`
-  - if nonzero, it skips the overlay candidate scan and clears the byte on the way out
+  - if nonzero, it clears the byte and returns before the generic world-area rectangle scan runs
 
 This means `0x200` is not itself the stage-select transition field. It is only a short-lived press/result latch between the press handler and the mixed release helper.
 
 `CCommonUI::TouchInputWorldFrame(int, int)` was also re-read directly. It does not create stage select or game start. It only calls `CPdSharing::ClickButtonIcon(...)` against up to four icon pointers and returns the OR-ed hit result.
 
-That narrows the live hypothesis:
+That narrows the live hypothesis in a different direction than before:
 
-- base worldframe tap is accepted at press time
-- `ClickButtonIcon(...)` updates icon-local state
-- some later worldmap update path must consume that icon state and schedule the real transition
+- `0x200` is an overlay/button-layer hit latch, not a base-area index
+- a nonzero `0x200` means the release helper consumed an icon/button path and never entered the generic area scan
+- base world-area selection only begins when `0x200 == 0`
 
 ## DrawLoading / State Table Closure
 
@@ -219,14 +219,14 @@ So the current main-state structure is:
 The user observation that `Town SHOP` responds while `DESERT PLAIN` / `PVP` do not is now consistent with the static model:
 
 - overlay/town-menu path inside `DoTouchMoveWorldArea` is alive
-- base worldframe icons are a separate path
-- the remaining blocker is the consumer that should convert `ClickButtonIcon(...)` / `[this+0x200]` / current icon state into `[this+0x34] = 4` or equivalent loading-state scheduling
+- base world areas are a different release-time rectangle path that only runs after the overlay/button latch has already come back zero
+- the remaining blocker is therefore inside generic area selection (`0x100`, `0x36f8`, `state 2`) rather than inside `ClickButtonIcon(...)` follow-up scheduling
 
 That makes the next safe target narrower than before:
 
 - stop touching `CreateStageSelect` directly
 - stop treating `DoTouchMoveWorldArea` as the real stage owner
-- inspect the `state 5` `UpdateMainLoop` consumer path that runs after `TouchInputWorldFrame`
+- inspect the generic area rectangle / same-area re-tap / `UpdateWorldMapMenu` consumer path
 
 ## Additional April 4 Selection-Flow Closure
 
@@ -249,6 +249,12 @@ Confirmed structure:
 6. if not enterable:
    - `this + 0x362c = 1`
    - a worldmap popup is created instead
+
+One more correction matters here:
+
+- `CPdStateWorldmap::TouchInputWorldFrame(...)` is not the generic area selector
+- its `[this+0x200]` result comes from `CCommonUI::TouchInputWorldFrame(...)`, which only ORs button/icon hits
+- `DoTouchMoveWorldArea(...)` enters the generic area rectangle loop only when that overlay result is zero
 
 `UpdateWorldMapMenu(...)` is the first confirmed consumer of that armed area state:
 
@@ -307,6 +313,58 @@ That gives a tighter interpretation of the current live behavior:
   - whether `0x100` is actually updated on first hit
   - whether a same-area re-tap is arming `0x379c / 0x36f8`
   - whether the `state 2` transition is being consumed after `UpdateWorldMapMenu(...)`
+
+## Additional April 4 Layer Split / Seed Closure
+
+`Select_WorldmapMenu(...)` was re-read directly after the Town SHOP-only live result.
+
+Two more facts are now fixed:
+
+1. `Select_WorldmapMenu(...)` seeds `this + 0x100` during worldmap menu entry.
+   - it resolves an initial area index
+   - if that index is `0..4`, it stores it into `this + 0x100`
+   - it then calls `InitWorldmapSltAreaAni(...)`
+2. `Town SHOP` and generic world areas are not on the same press/release layer.
+   - `Town SHOP`-style buttons can respond through the overlay path
+   - generic areas `0..4` only progress through the rectangle loop and then the same-area re-tap latch path
+
+So the current live interpretation is now:
+
+- the worldmap already enters with some seeded selected area state
+- overlay buttons can still behave independently of that base-area state
+- `DESERT PLAIN` / `PVP` staying dead means the generic `0..4` area rectangle path is still the real blocker
+
+## Additional April 4 Pre-Area Gate Closure
+
+Another pre-area helper is now closed:
+
+- `DoTouchMoveWorldArea(...)` calls `TouchGamevilLiveBtns(x, y)` before it enters the generic world-area rectangle scan
+- if that helper returns nonzero, the base-area path is skipped entirely
+
+Static disassembly shows two immediate early-return conditions inside `TouchGamevilLiveBtns(...)`:
+
+1. `global + 0x1068 != 0`
+2. `this + 0x36f0 != -1`
+
+That second field is now a concrete candidate. `0x36f0` looks like a worldmap-local active GamevilLive / overlay button slot:
+
+- `DrawGamevilLiveBtns(...)` writes `-1` in its reset path
+- `OnNetError(...)` writes `1` in one network-error branch
+- `SelectNetFriendList(...)` also writes and clears the nearby block
+
+This still does **not** prove that `0x36f0` is the main live blocker, because `Town SHOP` responds and therefore the worldmap is not universally swallowed before any UI handling. But it is now a narrowed stale-state candidate:
+
+- if `0x36f0` is left at `1` by a dead-service/network branch
+- and the reset path no longer runs normally under offline conditions
+- then `TouchGamevilLiveBtns(...)` can keep returning `1`
+- and the generic `DESERT PLAIN` / `PVP` area scan never even starts
+
+So the current narrowed possibilities are:
+
+- generic area selection never latches (`0x100`)
+- same-area enter never arms (`0x379c / 0x36f8`)
+- pending `state 2` is never consumed
+- or `TouchGamevilLiveBtns(...)` is still swallowing some releases before the base-area path
 
 ## Tooling
 

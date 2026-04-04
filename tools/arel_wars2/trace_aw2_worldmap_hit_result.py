@@ -175,6 +175,9 @@ def scan_accesses(lib_path: Path, symbols: list[FuncSymbol]) -> dict[str, object
 
     notes = [
         "Target field 0x200 is the worldmap-local byte written by CPdStateWorldmap::TouchInputWorldFrame after CCommonUI::TouchInputWorldFrame returns.",
+        "Manual re-read shows CCommonUI::TouchInputWorldFrame only ORs CPdSharing::ClickButtonIcon hits over up to four icon pointers.",
+        "DoTouchMoveWorldArea clears 0x200 and returns before the generic world-area rectangle scan when the byte is nonzero.",
+        "This makes 0x200 an overlay/button-layer hit latch, not a base-area index or stage-transition request.",
         "The scanner tracks direct displacements, simple mov/add/sub/lsl-derived immediates, and PC-literal loads that later become memory-base or memory-index operands.",
         "This report is intended to identify the minimal reader/writer set for the worldframe hit-result byte, not to prove full control flow.",
     ]

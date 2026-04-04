@@ -36,6 +36,23 @@ def build_report() -> dict[str, object]:
                 "This means a first-hit area change only initializes selection animation/state; it does not itself request stage select.",
             ],
         },
+        "touchGamevilLiveBtns": {
+            "symbol": "_ZN16CPdStateWorldmap20TouchGamevilLiveBtnsEii",
+            "range": ["0x109c18", "0x10a010"],
+            "earlyReturnGuards": [
+                "if global+0x1068 != 0, return 1",
+                "if [this+0x36f0] != -1, return 1",
+            ],
+            "overlayFields": {
+                "activeLiveButtonField": "0x36f0",
+                "buttonRectFamily": ["0x36b4", "0x36bc", "0x36c8"],
+            },
+            "notes": [
+                "DoTouchMoveWorldArea calls this helper before it enters the generic world-area rectangle scan.",
+                "A nonzero return from this helper bypasses the base-area path entirely.",
+                "This makes 0x36f0 a plausible stale overlay-selection blocker when offline patches leave GamevilLive state half-open.",
+            ],
+        },
         "areaFields": {
             "selectedAreaField": {
                 "offset": "0x100",
@@ -78,6 +95,21 @@ def build_report() -> dict[str, object]:
                     "_ZN16CPdStateWorldmap18UpdateWorldMapMenuEv",
                 ],
             },
+            "activeLiveButtonField": {
+                "offset": "0x36f0",
+                "writers": [
+                    "_ZN16CPdStateWorldmap19SelectNetFriendListEv",
+                    "_ZN16CPdStateWorldmap19DrawGamevilLiveBtnsEv",
+                    "_ZN16CPdStateWorldmap10OnNetErrorEii",
+                ],
+                "readers": [
+                    "_ZN16CPdStateWorldmap20TouchGamevilLiveBtnsEii",
+                ],
+                "notes": [
+                    "DrawGamevilLiveBtns writes -1 to this field in the reset path.",
+                    "OnNetError writes 1 to this field in one worldmap network-error branch.",
+                ],
+            },
         },
         "updateWorldMapMenu": {
             "symbol": "_ZN16CPdStateWorldmap18UpdateWorldMapMenuEv",
@@ -115,6 +147,7 @@ def build_report() -> dict[str, object]:
         },
         "conclusion": [
             "Town SHOP responding while DESERT PLAIN/PVP do not is consistent with the special pendingArea_5 branch working while the generic 0..4 area path remains blocked.",
+            "The pre-area TouchGamevilLiveBtns helper can also swallow worldmap releases when global+0x1068 or this+0x36f0 remain latched.",
             "The next safe targets are selected-area latching (0x100), same-area re-tap arming (0x379c/0x36f8), and pending-state 2 consumption, not direct CreateStageSelect forcing.",
         ],
     }
