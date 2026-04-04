@@ -154,6 +154,80 @@ Because of that, the default offline-hook build no longer patches worldmap `OnNe
 3. avoid forced `UpdateWorldMapMenu` transitions that set `0x379c/0x362c`
 4. only patch the specific network popup/launcher gates that are still external blockers
 
+## Additional April 4 Static Closure
+
+The worldframe hit-result byte is now closed more tightly.
+
+Automated scan:
+
+- [trace_aw2_worldmap_hit_result.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_hit_result.py)
+- [aw2_worldmap_hit_result_accesses.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_hit_result_accesses.json)
+
+Confirmed minimal access set:
+
+- `CPdStateWorldmap::TouchInputWorldFrame(int, int)`
+  - writes `r0` into `[this + 0x200]` after `CCommonUI::TouchInputWorldFrame(...)`
+- `CPdStateWorldmap::DoTouchMoveWorldArea(int, int)`
+  - reads `[this + 0x200]`
+  - if nonzero, it skips the overlay candidate scan and clears the byte on the way out
+
+This means `0x200` is not itself the stage-select transition field. It is only a short-lived press/result latch between the press handler and the mixed release helper.
+
+`CCommonUI::TouchInputWorldFrame(int, int)` was also re-read directly. It does not create stage select or game start. It only calls `CPdSharing::ClickButtonIcon(...)` against up to four icon pointers and returns the OR-ed hit result.
+
+That narrows the live hypothesis:
+
+- base worldframe tap is accepted at press time
+- `ClickButtonIcon(...)` updates icon-local state
+- some later worldmap update path must consume that icon state and schedule the real transition
+
+## DrawLoading / State Table Closure
+
+State-table report:
+
+- [trace_aw2_worldmap_state_tables.py](/C:/vs/other/arelwars/tools/arel_wars2/trace_aw2_worldmap_state_tables.py)
+- [aw2_worldmap_state_tables.json](/C:/vs/other/arelwars/recovery/arel_wars2/native_tmp/aw2_worldmap_state_tables.json)
+
+Confirmed:
+
+- `DrawLoading` reads the pending loading action from `[this + 0x34]`
+- `DrawLoading` case `4` creates stage select
+- `DrawLoading` case `5` creates stage info
+- `DrawLoading` case `17` creates game start
+
+Direct caller scan shows:
+
+- `CreateStageSelect`, `CreateStageInfo`, and `CreateGameStart` are directly called from `DrawLoading`
+- they are not directly called from `TouchInputWorldMapMenu` or `OnPointerRelease`
+
+Pointer dispatch is also now fixed numerically:
+
+- `OnPointerPress` uses `([this+4] - 5)` jump dispatch
+  - state `5` goes directly to `TouchInputWorldFrame`
+- `OnPointerRelease` uses the same state bias
+  - state `5` goes to the mixed overlay helper `DoTouchMoveWorldArea`
+
+So the current main-state structure is:
+
+1. press on state `5` calls `TouchInputWorldFrame`
+2. `TouchInputWorldFrame` only latches the hit result and button state
+3. release on state `5` mainly resolves overlay/menu candidates
+4. the real stage transition must be scheduled later through update/loading state, not by direct release-time scene creation
+
+## Current Bottleneck After Town SHOP Progress
+
+The user observation that `Town SHOP` responds while `DESERT PLAIN` / `PVP` do not is now consistent with the static model:
+
+- overlay/town-menu path inside `DoTouchMoveWorldArea` is alive
+- base worldframe icons are a separate path
+- the remaining blocker is the consumer that should convert `ClickButtonIcon(...)` / `[this+0x200]` / current icon state into `[this+0x34] = 4` or equivalent loading-state scheduling
+
+That makes the next safe target narrower than before:
+
+- stop touching `CreateStageSelect` directly
+- stop treating `DoTouchMoveWorldArea` as the real stage owner
+- inspect the `state 5` `UpdateMainLoop` consumer path that runs after `TouchInputWorldFrame`
+
 ## Tooling
 
 Automated literal/function scan:
