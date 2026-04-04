@@ -2928,6 +2928,56 @@ def patch_native_worldmap_release_expand_tap_slop(lib_path: Path) -> dict[str, s
     }
 
 
+def patch_native_worldmap_ischeckareaenter_always_true(lib_path: Path) -> dict[str, str | int]:
+    symbol = "_ZN16CPdStateWorldmap16IsCheckAreaEnterEi"
+    symbol_value = find_symbol_value(lib_path, symbol)
+    file_offset = symbol_value & ~1
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 4])
+    expected = b"\x01\x20\x05\x29"  # movs r0, 1; cmp r1, 5
+    patched = b"\x01\x20\x70\x47"   # movs r0, 1; bx lr
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}:\n{original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 4] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-ischeckareaenter-always-true",
+        "file": str(lib_path),
+        "symbol": symbol,
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
+def patch_native_worldmap_ischeckareaenterfromfrm_always_true(lib_path: Path) -> dict[str, str | int]:
+    symbol = "_ZN16CPdStateWorldmap23IsCheckAreaEnterFromFrmEi"
+    symbol_value = find_symbol_value(lib_path, symbol)
+    file_offset = symbol_value & ~1
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 4])
+    expected = b"\x10\xb5\x0d\x4a"  # push {r4, lr}; ldr r2, [pc, 0x34]
+    patched = b"\x01\x20\x70\x47"   # movs r0, 1; bx lr
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}:\n{original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 4] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-ischeckareaenterfromfrm-always-true",
+        "file": str(lib_path),
+        "symbol": symbol,
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
 def patch_native_worldmap_touchworldmapmenu_ignore_global_gate(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap22TouchInputWorldMapMenuEv")
     file_offset = (symbol_value & ~1) + 0x10
@@ -3237,6 +3287,8 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             applied.append(patch_native_worldmap_release_expand_tap_slop(lib_path))
             applied.append(patch_native_worldmap_align_mainloop_worldframe_slot(lib_path))
             applied.append(patch_native_worldmap_ignore_stale_live_button_gate(lib_path))
+            applied.append(patch_native_worldmap_ischeckareaenter_always_true(lib_path))
+            applied.append(patch_native_worldmap_ischeckareaenterfromfrm_always_true(lib_path))
             # Keep worldmap reopening patches on the consumer side only.
             # Blindly removing the 0x1068 / 0x379c / 0x362c touch guards made the
             # input lifecycle harder to reason about and risks desynchronizing
