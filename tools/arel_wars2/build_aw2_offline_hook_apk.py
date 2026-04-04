@@ -2895,13 +2895,9 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             applied.append(patch_native_game_onnetreceive_noop(lib_path))
             applied.append(patch_native_worldmap_onneterror_noop(lib_path))
             applied.append(patch_native_worldmap_onnetreceive_noop(lib_path))
-            applied.append(patch_native_worldmap_onpointerpress_ignore_touch_gate(lib_path))
             applied.append(patch_native_worldmap_gamevillive_popup_noop(lib_path))
-            applied.append(patch_native_worldmap_select_worldmapmain_create_stage_select(lib_path))
-            applied.append(patch_native_worldmap_touchworldmapmenu_create_stage_select(lib_path))
-            applied.append(patch_native_worldmap_touchgamestart_create_stage_select(lib_path))
-            applied.append(patch_native_worldmap_touchstageselect_create_stage_info(lib_path))
-            applied.append(patch_native_worldmap_touchstageinfo_create_gamestart(lib_path))
+            # Do not force worldmap control-flow into later scenes here.
+            # The remaining blocker is an input/state gate, not missing scene creation.
             applied.append(patch_native_openurl_noop(lib_path))
     return applied
 
