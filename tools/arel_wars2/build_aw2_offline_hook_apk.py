@@ -2169,6 +2169,87 @@ def patch_native_touchcontinue_any_touch_select_slot0(lib_path: Path) -> dict[st
     }
 
 
+def patch_native_startnewgame_default_slot1(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN12CPdStateMenu12StartNewGameEv")
+    file_offset = (symbol_value & ~1) + 0x8
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = bytes.fromhex("0564")
+    patched = bytes.fromhex("0664")
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-startnewgame-default-slot1",
+        "file": str(lib_path),
+        "symbol": "_ZN12CPdStateMenu12StartNewGameEv",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
+def patch_native_callbackpop_emptyslot_force_state5(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN12CPdStateMenu21CallbackPop_EmptySlotEPKvs")
+    file_offset = (symbol_value & ~1) + 0x18
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = bytes.fromhex("04d0")
+    patched = bytes.fromhex("00bf")
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-callbackpop-emptyslot-force-state5",
+        "file": str(lib_path),
+        "symbol": "_ZN12CPdStateMenu21CallbackPop_EmptySlotEPKvs",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
+def patch_native_updatenewgame_auto_accept_empty_slot(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN12CPdStateMenu13UpdateNewGameEv")
+    callback_symbol = find_symbol_value(lib_path, "_ZN12CPdStateMenu21CallbackPop_EmptySlotEPKvs")
+    patch_addr = (symbol_value & ~1) + 0x10
+    branch_addr = patch_addr + 0x4
+    file_offset = patch_addr
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 18])
+    expected = bytes.fromhex("000c022801d0002010bd6368a060e360f9e7")
+    patched = (
+        bytes.fromhex("201c0121")
+        + encode_thumb_bl(branch_addr, callback_symbol & ~1)
+        + bytes.fromhex("002010bd00bf00bf00bf")
+    )
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 18] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-updatenewgame-auto-accept-empty-slot",
+        "file": str(lib_path),
+        "symbol": "_ZN12CPdStateMenu13UpdateNewGameEv",
+        "targetSymbol": "_ZN12CPdStateMenu21CallbackPop_EmptySlotEPKvs",
+        "symbolValue": symbol_value,
+        "targetSymbolValue": callback_symbol,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
 def patch_native_touchcontinue_openmenu0(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN12CPdStateMenu13TouchContinueEv")
     openmenu_symbol = find_symbol_value(lib_path, "_ZN12CPdStateMenu8OpenMenuEi")
@@ -2653,6 +2734,41 @@ def patch_native_touchselectrace_skip_yes_popup(lib_path: Path) -> dict[str, str
     }
 
 
+def patch_native_slotopenpopup_any_touch_select_first_slot(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN14CSlotOpenPopup10TouchEventEP8TGXPOINT")
+    click_symbol = find_symbol_value(lib_path, "_ZN10CUIControl5ClickEv")
+    patch_addr = (symbol_value & ~1) + 0x10
+    branch_click_addr = patch_addr + 0x6
+    branch_return_addr = patch_addr + 0xA
+    return_addr = (symbol_value & ~1) + 0xC2
+    file_offset = patch_addr
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 14])
+    expected = bytes.fromhex("89460a881420195e586b83b00328")
+    patched = (
+        bytes.fromhex("00233363f069")
+        + encode_thumb_bl(branch_click_addr, click_symbol & ~1)
+        + encode_thumb_b_w(branch_return_addr, return_addr)
+    )
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 14] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-slotopenpopup-any-touch-select-first-slot",
+        "file": str(lib_path),
+        "symbol": "_ZN14CSlotOpenPopup10TouchEventEP8TGXPOINT",
+        "targetSymbol": "_ZN10CUIControl5ClickEv",
+        "symbolValue": symbol_value,
+        "targetSymbolValue": click_symbol,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
 def patch_native_menu_onneterror_noop(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN12CPdStateMenu10OnNetErrorEii")
     file_offset = symbol_value & ~1
@@ -2908,12 +3024,13 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             applied.append(patch_native_menu_bootstrap_force_receive23(lib_path))
             applied.append(patch_native_menu_ignore_bootstrap_gate(lib_path))
             applied.append(patch_native_menu_ignore_touch_block(lib_path))
+            applied.append(patch_native_startnewgame_default_slot1(lib_path))
+            applied.append(patch_native_callbackpop_emptyslot_force_state5(lib_path))
+            applied.append(patch_native_updatenewgame_auto_accept_empty_slot(lib_path))
             applied.append(patch_native_touchcontinue_any_touch_select_slot0(lib_path))
-            applied.append(patch_native_touchnewgame_any_touch_select_slot0(lib_path))
-            applied.append(patch_native_touchnewgame_force_state5(lib_path))
-            applied.append(patch_native_touchnewgame_skip_yes_popup(lib_path))
             applied.append(patch_native_touchselectrace_any_touch_default(lib_path))
             applied.append(patch_native_touchselectrace_skip_yes_popup(lib_path))
+            applied.append(patch_native_slotopenpopup_any_touch_select_first_slot(lib_path))
             applied.append(patch_native_menu_onneterror_noop(lib_path))
             applied.append(patch_native_game_onneterror_noop(lib_path))
             applied.append(patch_native_game_onnetreceive_noop(lib_path))
