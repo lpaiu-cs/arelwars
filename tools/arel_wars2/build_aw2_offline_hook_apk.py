@@ -2900,6 +2900,130 @@ def patch_native_worldmap_onpointerpress_ignore_touch_gate(lib_path: Path) -> di
     }
 
 
+def patch_native_worldmap_release_expand_tap_slop(lib_path: Path) -> dict[str, str | int]:
+    data = bytearray(lib_path.read_bytes())
+    first_offset = 0x10A366
+    second_offset = 0x10A37A
+    expected = b"\x09\x2b"  # cmp r3, #9
+    patched = b"\x20\x2b"   # cmp r3, #32
+    originals = [
+        bytes(data[first_offset : first_offset + 2]),
+        bytes(data[second_offset : second_offset + 2]),
+    ]
+    for index, original in enumerate(originals):
+        if original not in (expected, patched):
+            raise RuntimeError(
+                f"Unexpected bytes at {lib_path} + 0x{[first_offset, second_offset][index]:x}: "
+                f"{original.hex()} (expected {expected.hex()} or {patched.hex()})"
+            )
+    data[first_offset : first_offset + 2] = patched
+    data[second_offset : second_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-release-expand-tap-slop",
+        "file": str(lib_path),
+        "fileOffsets": [first_offset, second_offset],
+        "original": [item.hex() for item in originals],
+        "patched": patched.hex(),
+    }
+
+
+def patch_native_worldmap_touchworldmapmenu_ignore_global_gate(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap22TouchInputWorldMapMenuEv")
+    file_offset = (symbol_value & ~1) + 0x10
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x11\xd1"  # bne -> early return when global 0x1068 gate is set
+    patched = b"\x00\xbf"   # nop -> let the official worldmap-menu handler continue
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-touchworldmapmenu-ignore-global-gate",
+        "file": str(lib_path),
+        "symbol": "_ZN16CPdStateWorldmap22TouchInputWorldMapMenuEv",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
+def patch_native_worldmap_touchstageselect_ignore_global_gate(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap21TouchInputStageSelectEv")
+    file_offset = (symbol_value & ~1) + 0x20
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x00\xd0"  # beq continue; otherwise fall into return branch
+    patched = b"\x00\xe0"   # unconditional branch to the same continue target
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-touchstageselect-ignore-global-gate",
+        "file": str(lib_path),
+        "symbol": "_ZN16CPdStateWorldmap21TouchInputStageSelectEv",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
+def patch_native_worldmap_touchworldframe_ignore_global_gate(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap20TouchInputWorldFrameEii")
+    file_offset = (symbol_value & ~1) + 0x12
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x06\xd1"  # bne -> early return when global 0x1068 gate is set
+    patched = b"\x00\xbf"   # nop
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-touchworldframe-ignore-global-gate",
+        "file": str(lib_path),
+        "symbol": "_ZN16CPdStateWorldmap20TouchInputWorldFrameEii",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
+def patch_native_worldmap_touchworldframe_ignore_popup_gate(lib_path: Path) -> dict[str, str | int]:
+    symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap20TouchInputWorldFrameEii")
+    file_offset = (symbol_value & ~1) + 0x20
+    data = bytearray(lib_path.read_bytes())
+    original = bytes(data[file_offset : file_offset + 2])
+    expected = b"\x01\xdb"  # blt continue; otherwise falls into early return
+    patched = b"\x01\xe0"   # unconditional branch to the same continue target
+    if original not in (expected, patched):
+        raise RuntimeError(
+            f"Unexpected bytes at {lib_path} + 0x{file_offset:x}: {original.hex()} (expected {expected.hex()} or {patched.hex()})"
+        )
+    data[file_offset : file_offset + 2] = patched
+    lib_path.write_bytes(data)
+    return {
+        "label": "native-worldmap-touchworldframe-ignore-popup-gate",
+        "file": str(lib_path),
+        "symbol": "_ZN16CPdStateWorldmap20TouchInputWorldFrameEii",
+        "symbolValue": symbol_value,
+        "fileOffset": file_offset,
+        "original": original.hex(),
+        "patched": patched.hex(),
+    }
+
+
 def patch_native_worldmap_gamevillive_popup_noop(lib_path: Path) -> dict[str, str | int]:
     symbol_value = find_symbol_value(lib_path, "_ZN16CPdStateWorldmap28CallbackPop_GameVilLiveLoginEPKvs")
     file_offset = symbol_value & ~1
@@ -3059,6 +3183,15 @@ def patch_native_libs(unpacked_dir: Path) -> list[dict[str, str | int]]:
             applied.append(patch_native_game_onneterror_noop(lib_path))
             applied.append(patch_native_game_onnetreceive_noop(lib_path))
             applied.append(patch_native_worldmap_gamevillive_popup_noop(lib_path))
+            # Debug-only worldmap input reopening:
+            # keep official worldmap handlers intact, but ignore stale global gates
+            # that currently suppress pointer latching and world-frame hit-testing.
+            applied.append(patch_native_worldmap_onpointerpress_ignore_touch_gate(lib_path))
+            applied.append(patch_native_worldmap_release_expand_tap_slop(lib_path))
+            applied.append(patch_native_worldmap_touchworldmapmenu_ignore_global_gate(lib_path))
+            applied.append(patch_native_worldmap_touchstageselect_ignore_global_gate(lib_path))
+            applied.append(patch_native_worldmap_touchworldframe_ignore_global_gate(lib_path))
+            applied.append(patch_native_worldmap_touchworldframe_ignore_popup_gate(lib_path))
             # Do not force UpdateWorldMapMenu through the local branch.
             # Static trace shows that path sets both 0x379c and 0x362c to 1,
             # which are the same worldmap gate bytes consumed by touch handlers.
